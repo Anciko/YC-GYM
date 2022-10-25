@@ -1,11 +1,12 @@
 <?php
 
+use Illuminate\Http\Request;
+use App\Models\TrainingGroup;
+use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\V1\AuthController;
 use App\Http\Controllers\Api\V1\TrainingGroupController;
 use App\Http\Controllers\Trainer\TrainerGroupController;
-use App\Models\TrainingGroup;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Trainer\TrainerManagementConntroller;
 
 /*
 |--------------------------------------------------------------------------
@@ -56,3 +57,6 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
 });
 
 Route::get('article/{id}', [TrainingGroupController::class, 'test']);
+
+//Group chat
+Route::post('sendmessage/{id}',[TrainerManagementConntroller::class,'send']);
