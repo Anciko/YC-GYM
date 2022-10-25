@@ -21,9 +21,10 @@ class TrainingMessageEvent implements ShouldBroadcast
      *
      * @return void
      */
-    public function __construct($message)
+    public function __construct($message, $media)
     {
         $this->message = $message;
+        $this->media = $media;
     }
 
     /**
