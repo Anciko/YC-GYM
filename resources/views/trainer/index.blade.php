@@ -93,7 +93,7 @@
                             </div>
 
                             <textarea id="mytextarea" name="text" class="group-chat-send-form-input trainer_message_input"
-                                placeholder="Message..." required></textarea>
+                                placeholder="Message..."></textarea>
                             <img class="group-chat-img-preview groupChatImg">
                             <div style="display: none;" class='video-prev'>
                                 <video height="200" width="300" class="video-preview" controls="controls"></video>
@@ -413,9 +413,8 @@
         var groupChatImgInput = document.querySelector('#groupChatImg');
         var fileName
         const groupChatImgPreview = document.querySelector('.groupChatImg');
-        const cancelBtn = document.querySelector(".group-chat-img-cancel")
-        const messageInput = document.querySelector(".group-chat-send-form-input")
-
+        const cancelBtn = document.querySelector(".group-chat-img-cancel");
+        const messageInput = document.querySelector(".group-chat-send-form-input");
         const emojibutton = document.querySelector('.emoji-trigger');
 
         const picker = new EmojiButton();
@@ -471,8 +470,6 @@
                 $(".video-prev").show()
             }
         }); // //
-
-
 
 
         const messageform = document.getElementById("trainer_message_form");
