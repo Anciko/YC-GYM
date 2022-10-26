@@ -5,6 +5,7 @@ use App\Models\TrainingGroup;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\V1\AuthController;
 use App\Http\Controllers\Api\V1\TrainingGroupController;
+use App\Http\Controllers\Api\V1\TrainingManagementController;
 use App\Http\Controllers\Trainer\TrainerGroupController;
 use App\Http\Controllers\Trainer\TrainerManagementConntroller;
 
@@ -62,3 +63,7 @@ Route::get('article/{id}', [TrainingGroupController::class, 'test']);
 
 //Group chat
 Route::post('sendmessage/{id}',[TrainerManagementConntroller::class,'send']);
+
+//Group chat for mobile
+Route::post('chat/sendmessage/{id}',[TrainingManagementController::class,'sendmessage']);
+Route::get('chat/showmessage/{id}',[TrainingManagementController::class,'chatshow']);

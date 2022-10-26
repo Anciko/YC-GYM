@@ -304,7 +304,10 @@ Route::prefix('admin')->group(function () {
             Route::get('customer/training_center/workout',[Customer_TrainingCenterController::class,'workout'])->name('training_center.workout');
 
             Route::post('customer/training_center/breakfast',[Customer_TrainingCenterController::class,'showbreakfast'])->name('customer/training_center/breakfast');
-
+            Route::post('customer/training_center/lunch',[Customer_TrainingCenterController::class,'showlunch'])->name('customer/training_center/lunch');
+            Route::post('customer/training_center/snack',[Customer_TrainingCenterController::class,'showsnack'])->name('customer/training_center/snack');
+            Route::post('customer/training_center/dinner',[Customer_TrainingCenterController::class,'showdinner'])->name('customer/training_center/dinner');
+            Route::post('customer/training_center/foodList',[Customer_TrainingCenterController::class,'foodList'])->name('customer/training_center/foodList');
 
         });
         Route::middleware(['role:Gold'])->group(function () {

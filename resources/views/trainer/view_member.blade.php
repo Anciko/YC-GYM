@@ -27,7 +27,7 @@
                         </div>
                     </a>
 
-                    <a href="../htmls/trainerTrainingCenterViewMedia.html" class="group-chat-view-midea-link">
+                    <a href="{{route('trainer/view_media',$selected_group->id)}}" class="group-chat-view-midea-link">
                         <p>View Media</p>
                         <iconify-icon icon="akar-icons:arrow-right" class="group-chat-view-midea-link-icon"></iconify-icon>
                     </a>
@@ -44,7 +44,7 @@
                                 <p>Add Member</p>
                             </button>
                             <form action="{{route('group.delete')}}">
-                                <input type ="text" name = "group_id" value="{{$group->id}}" hidden>
+                                <input type ="text" name = "group_id" value="{{$selected_group->id}}" hidden>
                                 <button  class="trainer-view-members-delete-btn customer-red-btn">
                                     Delete Group
                                 </button>
@@ -83,7 +83,7 @@
 
                             </form>
                             <form action="{{route('group.delete')}}">
-                                <input type ="text" name = "group_id" value="{{$group->id}}" hidden>
+                                <input type ="text" name = "group_id" value="{{$selected_group->id}}" hidden>
                                 <button  class="trainer-view-members-delete-btn customer-red-btn">
                                     Delete Group
                                 </button>
@@ -115,7 +115,6 @@
             $('#add_member').hide();
 
                 $(document).on('click', '#group-chat', function() {
-
                     localStorage.setItem('selectGroup',$(this).data('id'));
                 });
 
@@ -136,6 +135,7 @@
                         search();
                         function search(){
                             var keyword = $('#search').val();
+                            // console.log(keyword);
                             var group_id = {{$selected_group->id}};
 
                             var search_url = "{{ route('trainer/member/search',':id') }}";
