@@ -9,10 +9,48 @@ use Illuminate\Http\Request;
 use App\Models\TrainingGroup;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use App\Models\Workout;
+use App\Models\WorkoutPlan;
+use Carbon\Carbon;
 
 class TrainingGroupController extends Controller
 {
-    //
+    //For Platinum, Diamond
+    public function getWorkoutVideos()
+    {
+        $user = auth()->user();
+
+        $current_day = Carbon::now()->isoFormat('dddd');
+
+        if ($user->bmi < 18.5) { // For weight loss videos
+            $workout_plan = WorkoutPlan::where('plan_type', 'weightLoss')->first();
+            $workouts = Workout::where('workout_plan_id', $workout_plan->id)->where('day', $current_day)->get();
+            return response()->json([
+                'message' => 'success',
+                'workouts' => $workouts
+            ]);
+        }
+
+        if ($user->bmi >= 18.5 && $user->bmi <= 24.9) { // For BodyBeauty videos
+            $workout_plan = WorkoutPlan::where('plan_type', 'bodyBeauty')->first();
+            $workouts = Workout::where('workout_plan_id', $workout_plan->id)->where('day', $current_day)->get();
+            return response()->json([
+                'message' => 'success',
+                'workouts' => $workouts
+            ]);
+        }
+
+        if ($user->bmi >= 25 && $user->bmi <= 29.9) { // For overweight videos
+            $workout_plan = WorkoutPlan::where('plan_type', 'weightGain')->first();
+            $workouts = Workout::where('workout_plan_id', $workout_plan->id)->where('day', $current_day)->get();
+            return response()->json([
+                'message' => 'success',
+                'workouts' => $workouts
+            ]);
+        }
+    }
+
+    //For Gold, Ruby, RubyPremium
     public function getTrainningGroups()
     {
         $user = auth()->user();
@@ -159,7 +197,6 @@ class TrainingGroupController extends Controller
             $member->ingroup = 1;
             $member->update();
             $member->tainer_groups()->attach($group_id);
-
         }
 
         return response()->json([
@@ -185,11 +222,12 @@ class TrainingGroupController extends Controller
 
 
 
-    //For Platinum, Diamond
-    
 
 
-    public function test($name) {
+
+
+    public function test($name)
+    {
         return $name;
     }
 

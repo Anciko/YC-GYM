@@ -9,4 +9,8 @@ class WorkoutPlan extends Model
 {
     use HasFactory;
     protected $fillable = ['plan_type'];
+
+    public function workouts() {
+        return $this->hasMany(Workout::class);
+    }
 }
