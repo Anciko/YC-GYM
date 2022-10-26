@@ -57,6 +57,7 @@ class TrainerManagementConntroller extends Controller
         event(new TrainingMessageEvent($message,$messageFile));
     }
 
+
     public function kick($id)
     {
         //dd($id);
@@ -135,7 +136,7 @@ class TrainerManagementConntroller extends Controller
     }
 
 
-    public function showMember(Request $request,$id)
+    public function showMember(Request $request)
     {
         $group_id =  $request->id;
 
@@ -175,36 +176,38 @@ class TrainerManagementConntroller extends Controller
         //dd($request->keyword);
         if($request->keyword != ''){
             if($group->group_type === 'weightLoss'){
-                $members = User::where('ingroup' , '!=',1)
-                ->where('active_status',2)
-                ->where('member_type',$group->member_type)
-                ->where('membertype_level',$group->member_type_level)
-                ->where('gender',$group->gender)
-                ->where('bmi','>=',25)
-                ->where('name','LIKE','%'.$request->keyword.'%')
-                ->get();
+                            $members = User::where('ingroup' , '!=',1)
+                                    ->where('name','LIKE','%'.$request->keyword.'%')
+                                    ->where('active_status',2)
+                                    ->where('member_type',$group->member_type)
+                                    ->where('membertype_level',$group->member_type_level)
+                                    ->where('gender',$group->gender)
+                                    ->where('bmi','>=',25)
+                                    ->get();
                }
 
                if($group->group_type === 'weightGain'){
-                $members = User::where('ingroup' , '!=',1)
-                ->where('active_status',2)
-                ->where('member_type',$group->member_type)
-                ->where('membertype_level',$group->member_type_level)
-                ->where('gender',$group->gender)
-                ->where('bmi','<=',18.4)
-                ->where('name','LIKE','%'.$request->keyword.'%')
-                ->get();
+
+                            $members = User::where('ingroup' , '!=',1)
+                                    ->where('name','LIKE','%'.$request->keyword.'%')
+                                    ->where('active_status',2)
+                                    ->where('member_type',$group->member_type)
+                                    ->where('membertype_level',$group->member_type_level)
+                                    ->where('gender',$group->gender)
+                                    ->where('bmi','<=',18.5)
+                                    ->get();
                }
 
                if($group->group_type === 'bodyBeauty'){
-               $members = User::where('ingroup' , '!=',1)
-               ->where('active_status',2)
-                ->where('member_type',$group->member_type)
-                ->where('membertype_level',$group->member_type_level)
-                ->where('gender',$group->gender)
-                ->whereBetween('bmi', [18.5, 24.9])
-                ->where('name','LIKE','%'.$request->keyword.'%')
-                ->get();
+                $members = User::where('ingroup' , '!=',1)
+                                ->where('name','LIKE','%'.$request->keyword.'%')
+                                ->where('active_status',2)
+                                ->where('member_type',$group->member_type)
+                                ->where('membertype_level',$group->member_type_level)
+                                ->where('gender',$group->gender)
+                                ->whereBetween('bmi', [18.5, 24.9])
+                                ->get();
+
                }
 
             //$members = User::where('name','LIKE','%'.$request->keyword.'%')->get();
@@ -216,6 +219,7 @@ class TrainerManagementConntroller extends Controller
     }
     public function destroy(Request $request)
     {
+
         $group_users = TrainingUser::where('training_group_id',$request->group_id)->get();
         foreach($group_users as $gu){
             User::where('id',$gu->user_id)->update(["ingroup" => 0]);
@@ -225,6 +229,8 @@ class TrainerManagementConntroller extends Controller
         $group_user_delete->delete();
         $group_delete = TrainingGroup::where('id',$request->group_id);
         $group_delete->delete();
+        $group_message_delete = Message::where('training_group_id',$request->group_id);
+        $group_message_delete->delete();
         Alert::success('Success', 'Group Deleted!');
         return redirect('trainer');
     }
@@ -248,5 +254,4 @@ class TrainerManagementConntroller extends Controller
     {
         return view('Trainer.ruby_premium_user');
     }
-
 }

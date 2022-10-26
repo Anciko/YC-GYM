@@ -29,6 +29,7 @@
 
     <!--theme-->
     <script src="{{asset('js/theme.js')}}"></script>
+
     <!-- Optional JavaScript; choose one of the two! -->
 
     <!-- Option 1: Bootstrap Bundle with Popper -->

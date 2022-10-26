@@ -2,13 +2,15 @@
 
 namespace App\Http\Controllers\Customer;
 
-use App\Models\Workout;
-use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 use App\Models\Meal;
+use App\Models\Workout;
 use App\Models\MealPlan;
 use Illuminate\Http\Request;
+use App\Models\PersonalMealInfo;
+use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
-use Carbon\Carbon;
+use RealRashid\SweetAlert\Facades\Alert;
 
 class Customer_TrainingCenterController extends Controller
 
@@ -20,21 +22,71 @@ class Customer_TrainingCenterController extends Controller
 
     public function meal()
     {
-        $meals =Meal::all();
-        return view('customer.training_center.meal',compact('meals'));
+        // $user = auth()->user();
+        // $meal_plan = MealPlan::where('member_type',$user->member_type)->where('plan_name','Breakfast')->first();
+        // $meals = Meal::where('meal_plan_id',$meal_plan->id)->get();
+        // dd($meals);
+        return view('customer.training_center.meal');
     }
 
         public function showbreakfast(Request $request)
         {
 
-            $meals =Meal::all();
+            $user = auth()->user();
+            $meal_plan = MealPlan::where('member_type',$user->member_type)->where('plan_name','Breakfast')->first();
+            $meals = Meal::where('meal_plan_id',$meal_plan->id)->get();
 
             if($request->keyword != ''){
-                $meals = Meal::where('name','LIKE','%'.$request->keyword.'%')->get();
+                $meals = Meal::where('name','LIKE','%'.$request->keyword.'%')->where('meal_plan_id',$meal_plan->id)->get();
             }
             //dd($members);
             return response()->json([
                'breakfast' => $meals
+            ]);
+        }
+        public function showlunch(Request $request)
+        {
+
+            $user = auth()->user();
+            $meal_plan = MealPlan::where('member_type',$user->member_type)->where('plan_name','Lunch')->first();
+            $meals = Meal::where('meal_plan_id',$meal_plan->id)->get();
+
+            if($request->keyword != ''){
+                $meals = Meal::where('name','LIKE','%'.$request->keyword.'%')->where('meal_plan_id',$meal_plan->id)->get();
+            }
+            //dd($members);
+            return response()->json([
+               'lunch' => $meals
+            ]);
+        }
+        public function showdinner(Request $request)
+        {
+
+            $user = auth()->user();
+            $meal_plan = MealPlan::where('member_type',$user->member_type)->where('plan_name','Dinner')->first();
+            $meals = Meal::where('meal_plan_id',$meal_plan->id)->get();
+
+            if($request->keyword != ''){
+                $meals = Meal::where('name','LIKE','%'.$request->keyword.'%')->where('meal_plan_id',$meal_plan->id)->get();
+            }
+            //dd($members);
+            return response()->json([
+               'dinner' => $meals
+            ]);
+        }
+        public function showsnack(Request $request)
+        {
+
+            $user = auth()->user();
+            $meal_plan = MealPlan::where('member_type',$user->member_type)->where('plan_name','Snack')->first();
+            $meals = Meal::where('meal_plan_id',$meal_plan->id)->get();
+
+            if($request->keyword != ''){
+                $meals = Meal::where('name','LIKE','%'.$request->keyword.'%')->where('meal_plan_id',$meal_plan->id)->get();
+            }
+            //dd($members);
+            return response()->json([
+               'snack' => $meals
             ]);
         }
 
@@ -63,6 +115,27 @@ class Customer_TrainingCenterController extends Controller
 
         return view('customer.training_center.workout_plan',compact('tc_workouts'));
     }
+    public function foodList(Request $request)
+    {
+        $food_lists = $request->foodList; // json string
+        $food_lists =  json_decode(json_encode($food_lists));
+        $date = Carbon::Now();
+        $user = auth()->user()->id;
+        if($user){
+            foreach ($food_lists as $food) {
+                $personal_meal_infos = new PersonalMealInfo();
+               //  intval($num)
+                $personal_meal_infos->client_id = $user;
+                $personal_meal_infos->meal_id = $food->id;
+                $personal_meal_infos->date = $date;
+                $personal_meal_infos->serving =  $food->servings;
+                $personal_meal_infos->save();
+            }
+
+        }
+
+    }
+
 
     public function water()
     {

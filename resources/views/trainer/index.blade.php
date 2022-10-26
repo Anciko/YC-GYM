@@ -161,7 +161,6 @@
                                 $('#send_message').append(`
                                 <div class="group-chat-sender-container">
                                     <div class="group-chat-sender-text-container">
-
                                         <p>${value.text}</p>
                                     </div>
                                     <img src="{{ asset('image/default.jpg') }}" >
