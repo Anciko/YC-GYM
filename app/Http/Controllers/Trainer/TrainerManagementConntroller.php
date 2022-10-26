@@ -57,6 +57,7 @@ class TrainerManagementConntroller extends Controller
         event(new TrainingMessageEvent($message,$messageFile));
     }
 
+
     public function kick($id)
     {
         //dd($id);
@@ -247,5 +248,4 @@ class TrainerManagementConntroller extends Controller
     {
         return view('Trainer.ruby_premium_user');
     }
-
 }
