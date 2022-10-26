@@ -35,6 +35,7 @@ class TrainerManagementConntroller extends Controller
 
     public function send(Request $request,$id)
     {
+
         $messageFile='';
         if($request->file('fileInput') !=null){
             $file = $request->file('fileInput');
@@ -49,7 +50,7 @@ class TrainerManagementConntroller extends Controller
 
         $message = new Message();
         $message->training_group_id = $id;
-       $message->text = $request->text == null ?  null : $request->text;
+       $message->text = $request->text == null ?  '👍' : $request->text;
        $message->media = $request->fileInput == null ? null : $messageFile;
 
         $message->save();
