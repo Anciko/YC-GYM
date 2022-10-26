@@ -143,7 +143,7 @@
                         var view_member_url = '{{ route('trainer/view_member', ':id') }}';
                         view_member_url = view_member_url.replace(':id', data.group_chat.id);
                         var htmlView = `<a href="JavaScript:Void(0);" class="group-chat-header-name-container view_member" id="`+data.group_chat.id+`">
-                                        <img src=" "/><div class="group-chat-header-name-text-container">` + data
+                            <img src="{{ asset('image/default.jpg') }}" /><div class="group-chat-header-name-text-container">` + data
                             .group_chat.group_name + `<p id="group_name">
                                         </p>
                                         </div></a>
@@ -232,7 +232,7 @@
 
                 e.preventDefault();
                 view_member();
-                
+
             })
 
             $(document).on('click', '#view_media', function(e) {
@@ -313,7 +313,7 @@
 
                                         $('.trainer-group-chat-members-container').append(`<div class="trainer-group-chat-member-row">\
                                                 <div class="trainer-group-chat-member-name">\
-                                                    <img src="../imgs/avatar.png">\
+                                                    <img src="{{ asset('image/default.jpg') }}" />\
                                                     <p>` + value.name + `</p>\
                                                 </div>\
                                                 <div class="trainer-group-chat-member-btns-container">\
