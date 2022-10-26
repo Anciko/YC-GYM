@@ -3,8 +3,6 @@
 @section('content')
 @include('sweetalert::alert')
 
-    {{-- @include('trainer.trainer_groups') --}}
-
     <div class="trainer-two-columns-container">
         <div class="trainer-group-chats-parent-container">
             <p>Groups</p>
@@ -12,7 +10,7 @@
                 @forelse ($groups as $group)
                     <button class="tainer-group-chat-name-container" id="group-chat" value="{{ $group->id }}"
                         data-id="{{ $group->id }}"
-                        style=" background-color: transparent;          background-repeat: no-repeat;border: none;cursor: pointer;overflow: hidden;outline: none;">
+                        style=" background-color: transparent;background-repeat: no-repeat;border: none;cursor: pointer;overflow: hidden;outline: none;">
                         <img src="{{ asset('image/default.jpg') }}" />
                         <p>{{ $group->group_name }}</p>
                     </button>
@@ -234,14 +232,13 @@
 
                 e.preventDefault();
                 view_member();
+                
             })
 
             $(document).on('click', '#view_media', function(e) {
                 e.preventDefault();
                 $(".trainer-group-chat-media-container").empty();
                 $('.trainer-group-chat-media-container').show();
-
-
                 group_id = localStorage.getItem('group_id');
                 console.log("view_media", group_id);
                 $.ajax({
@@ -257,14 +254,14 @@
                                 $('.trainer-group-chat-media-container').append(`<div class="trainer-group-chat-media" title="video">\
                                 <a  data-bs-toggle="modal" href="#exampleModalToggle` + value.id + `" role="button">\
                                      <video class="w-100">\
-                                        <source src="{{ asset('/storage/trainer_message_media/`+value.media+`') }}" type="video/mp4">\
+                                        <source src="{{ asset('storage/trainer_message_media/`+value.media+`') }}" type="video/mp4">\
                                      </video>\
                                 </a>\
                                 </div>`);
                             } else {
                                 $('.trainer-group-chat-media-container').append(`<div class="trainer-group-chat-media" title="Photo">\
                                 <a  data-bs-toggle="modal" href="#exampleModalToggle` + value.id + `" role="button">\
-                                    <img src="{{ asset('/storage/trainer_message_media/`+value.media+`') }}" alt="test">\
+                                    <img src="{{ asset('storage/trainer_message_media/`+value.media+`') }}" alt="test">\
                                 </a>\
                                 </div>`);
                             }
@@ -340,6 +337,7 @@
                                 <div id="search_bar">\
                                 </div>\
                                 <form action="{{ route('group.delete') }}">\
+                                    <input type ="text" name = "group_id" value='+group_id+' hidden>\
                                     <button  class="trainer-view-members-delete-btn customer-red-btn">\
                                         Delete Group\
                                     </button>\
