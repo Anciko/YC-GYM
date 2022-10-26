@@ -17,6 +17,7 @@ use App\Models\TrainingGroup;
 use Illuminate\Support\Facades\DB;
 use App\Events\TrainingMessageEvent;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Storage;
 use RealRashid\SweetAlert\Facades\Alert;
 
 class TrainerManagementConntroller extends Controller
@@ -32,18 +33,30 @@ class TrainerManagementConntroller extends Controller
          return view('Trainer.index',compact('messages','members','groups'));
     }
 
-    public function send(Request $request,$group_id)
+    public function send(Request $request,$id)
     {
-        // dd("dd");
-        event(new TrainingMessageEvent($request->text));
+
+        $messageFile='';
+        if($request->file('fileInput') !=null){
+            $file = $request->file('fileInput');
+            $path =uniqid().'_'. $file->getClientOriginalName();
+            $disk = Storage::disk('public');
+            $disk->put(
+                'trainer_message_media/'.$path,file_get_contents($file)
+            );
+
+            $messageFile = $disk->url($path);
+        }
+
         $message = new Message();
-        $message->training_group_id = $request->id;
-        $message->text = $request->text == null ?  null : $request->text;
-        $message->media = $request->media == null ? null : $request->media;
+        $message->training_group_id = $id;
+       $message->text = $request->text == null ?  '👍' : $request->text;
+       $message->media = $request->fileInput == null ? null : $messageFile;
 
         $message->save();
-        return "success";
+        event(new TrainingMessageEvent($message,$messageFile));
     }
+
 
     public function kick($id)
     {
@@ -240,5 +253,4 @@ class TrainerManagementConntroller extends Controller
     {
         return view('Trainer.ruby_premium_user');
     }
-
 }
