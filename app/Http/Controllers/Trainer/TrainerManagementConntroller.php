@@ -30,6 +30,7 @@ class TrainerManagementConntroller extends Controller
                         ->where('member_type','!=','Free')
                         ->get();
          $groups=TrainingGroup::where('trainer_id',auth()->user()->id)->get();
+
          return view('Trainer.index',compact('messages','members','groups'));
     }
 
@@ -89,7 +90,7 @@ class TrainerManagementConntroller extends Controller
                             ->where('training_users.training_group_id',$id)
                             ->where('users.ingroup',1)
                             ->get();
-                          
+
         $groups=TrainingGroup::where('trainer_id',auth()->user()->id)->get();
         $members=Member::groupBy('member_type')
                         ->where('member_type','!=','Free')

@@ -386,6 +386,7 @@
                     search();
                     function search(){
                         var keyword = $('#search').val();
+
                         var group_id = {{$group->id}};
 
                         var search_url = "{{ route('trainer/member/search',':id') }}";
