@@ -77,7 +77,8 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
 Route::middleware(['role:Trainer'])->group(function () {
     Route::post('/trainer/group/create',[TrainerGroupController::class, 'store'])->name('trainer.group.create');
     Route::get('trainer/group/show/{id}',[TrainerGroupController::class, 'chat_show']);
-    Route::get('/trainer',[TrainerManagementConntroller::class,'index'])->name('trainer');
+    Route::get('/trainer',[TrainerManagementConntroller::class,'ind
+    ex'])->name('trainer');
     //Route::post('trainer/member/search',[TrainerManagementConntroller::class,'showMember'])->name('trainer/member/search');
 
 });

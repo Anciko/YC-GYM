@@ -143,8 +143,11 @@
       var totalFat = (totalCal/100) * 20
       var takenFat = 0
       var resultFat = takenFat/totalFat
+
+
       $(".save").click(function(){
         console.log(foodList,"final");
+
         $.ajax({
                         url : 'foodList',
                         method: 'post',
@@ -154,12 +157,17 @@
                         data:  {"foodList":foodList},
                         success   : function(data) {
                             console.log(data);
+                            swal("Success!", "Good Job!", "success");
                         },
                         // error : function(err){
                         //     console.log(err)
                         // }
                     });
+
+
       });
+
+
             $('#breakfast').on('keyup', function(){
                         search();
             });

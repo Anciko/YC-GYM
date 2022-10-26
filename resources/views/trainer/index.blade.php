@@ -37,9 +37,11 @@
 
                 </div>
                 <div class="group-chat-messages-container " id="send_message">
+                    <p id="p" class="text-secondary" style=" text-align: center;">
+                        Choose group and start chatting
+                    </p>
                     <div class="group-chat-sender-container" id="trainer_message_el">
-                        <p id="p" class="text-secondary" style=" text-align: center;">Choose group and start
-                            chatting</p>
+
                     </div>
                 </div>
                 <div class="chat-message-form">
@@ -142,7 +144,7 @@
                     success: function(data) {
                         var view_member_url = '{{ route('trainer/view_member', ':id') }}';
                         view_member_url = view_member_url.replace(':id', data.group_chat.id);
-                        var htmlView = `<a href="?id=` + data.group_chat.id + `" class="group-chat-header-name-container" id="view_member">
+                        var htmlView = `<a href="JavaScript:Void(0);" class="group-chat-header-name-container view_member" id="`+data.group_chat.id+`">
                                         <img src=" "/><div class="group-chat-header-name-text-container">` + data
                             .group_chat.group_name + `<p id="group_name">
                                         </p>
@@ -209,64 +211,29 @@
             });
 
 
-
-            $(document).on('click', '#view_member', function(e) {
-
+            $(document).on('click', '.kick_member', function(e) {
                 e.preventDefault();
-                $(".trainer-group-chat-view-members-header").empty();
-                $(".trainer-group-chat-members-container").empty();
-
-                $('.trainer-group-chat-view-members-header').show();
-                $('.trainer-group-chat-members-container').show();
-                $('.group-chat-messages-container').hide();
-                $('.trainer-group-chat-media-container').hide();
-
-                $('#send_form').hide();
-
                 var url = new URL(this.href);
-                var id = url.searchParams.get("id"); //get-id
-                 console.log("group_id",id);
+
+                var id = url.searchParams.get("id");
+                var group_id=$(this).attr("id");
+
+                console.log(group_id);
                 $.ajax({
                     type: "GET",
-                    url: "/trainer/view_member/" + id,
+                    url: "trainer/group/member/kick/" + group_id,
                     datatype: "json",
                     success: function(data) {
 
-                        $.each(data.group_members, function(key, value) {
-                            var kick_url = "{{ route('member.kick', ':id') }}";
-                            kick_url = kick_url.replace(':id', value.id);
-
-                            $('.trainer-group-chat-members-container').append(`<div class="trainer-group-chat-member-row">\
-                                    <div class="trainer-group-chat-member-name">\
-                                        <img src="../imgs/avatar.png">\
-                                        <p>` + value.name + `</p>\
-                                    </div>\
-                                    <div class="trainer-group-chat-member-btns-container">\
-                                        <a href="#" class="customer-secondary-btn">View Profile</a>\
-                                        <a href="` + kick_url + `" class="trainer-group-chat-member-kick-btn customer-red-btn">Kick Member</a>\
-                                    </div>\
-                                </div>`);
-                        });
+                        alert('Kick Member!');
+                        view_member();
                     }
                 });
-                group_id = localStorage.getItem('group_id');
-                $('.trainer-group-chat-view-members-header').append(
-                '<a class="back-btn">\
-                    <iconify-icon icon="bi:arrow-left" class="back-btn-icon"></iconify-icon>\
-                </a>\
-                <div class="trainer-view-members-add-delete-btn-contaier">\
-                    <button id="addMember"  class="trainer-view-members-add-btn" value='+group_id+'>\
-                        <iconify-icon icon="akar-icons:circle-plus" class="trainer-view-members-add-icon"></iconify-icon>\
-                        <p>Add Member</p>\
-                    </button>\
-                    <div id="search_bar">\
-                    </div>\
-                    <form action="{{ route('group.delete') }}">\
-                        <button  class="trainer-view-members-delete-btn customer-red-btn">\
-                            Delete Group\
-                        </button>\
-                    </form>\
-                </div>');
+            })
+            $(document).on('click', '.view_member', function(e) {
+
+                e.preventDefault();
+                view_member();
             })
 
             $(document).on('click', '#view_media', function(e) {
@@ -319,153 +286,163 @@
                 </form>\
                 `);
                 $('.add-member-form').show();
-                // search start
-                $('#search').on('keyup', function() {
-                    search();
-                });
+                add_member();
+            });
+            // Add member start
+            function view_member(){
+                $(".trainer-group-chat-view-members-header").empty();
+                            $(".trainer-group-chat-members-container").empty();
+
+                            $('.trainer-group-chat-view-members-header').show();
+                            $('.trainer-group-chat-members-container').show();
+                            $('.group-chat-messages-container').hide();
+                            $('.trainer-group-chat-media-container').hide();
+
+                            $('#send_form').hide();
+
+                            // var url = new URL(this.href);
+                            // var id = url.searchParams.get("id"); //get-id
+                            var id=$('.view_member').attr('id')
+                            console.log("group_id",id);
+                            $.ajax({
+                                type: "GET",
+                                url: "/trainer/view_member/" + id,
+                                datatype: "json",
+                                success: function(data) {
+
+                                    $.each(data.group_members, function(key, value) {
+                                        var kick_url = "{{ route('member.kick', ':id') }}";
+                                        kick_url = kick_url.replace(':id', value.id);
+
+                                        $('.trainer-group-chat-members-container').append(`<div class="trainer-group-chat-member-row">\
+                                                <div class="trainer-group-chat-member-name">\
+                                                    <img src="../imgs/avatar.png">\
+                                                    <p>` + value.name + `</p>\
+                                                </div>\
+                                                <div class="trainer-group-chat-member-btns-container">\
+                                                    <a href="#" class="customer-secondary-btn">View Profile</a>\
+                                                    <a href="?id=` + value.id+`"class="trainer-group-chat-member-kick-btn customer-red-btn kick_member" id="`+value.id+`">Kick Member</a>\
+                                                </div>\
+                                            </div>`);
+                                    });
+                                }
+                            });
+                            group_id = localStorage.getItem('group_id');
+                            $('.trainer-group-chat-view-members-header').append(
+                            '<a class="back-btn">\
+                                <iconify-icon icon="bi:arrow-left" class="back-btn-icon"></iconify-icon>\
+                            </a>\
+                            <div class="trainer-view-members-add-delete-btn-contaier">\
+                                <button id="addMember"  class="trainer-view-members-add-btn" value='+group_id+'>\
+                                    <iconify-icon icon="akar-icons:circle-plus" class="trainer-view-members-add-icon"></iconify-icon>\
+                                    <p>Add Member</p>\
+                                </button>\
+                                <div id="search_bar">\
+                                </div>\
+                                <form action="{{ route('group.delete') }}">\
+                                    <button  class="trainer-view-members-delete-btn customer-red-btn">\
+                                        Delete Group\
+                                    </button>\
+                                </form>\
+                            </div>');
+            }
+
+            function add_member(){
+
+            // e.preventDefault();
+            $('.view_member').show();
+            var id = $('#addMember').val();
+            $('#search').on('keyup', function(){
                 search();
+            });
+            search();
+            function search(){
+                var keyword = $('#search').val();
+                group_id = localStorage.getItem('group_id');
 
-                function search() {
-                    var keyword = $('#search').val();
-                    var group_id = localStorage.getItem('group_id');
-
-                    var search_url = "{{ route('trainer/member/search', ':id') }}";
-                    search_url = search_url.replace(':id', group_id);
-                    $.post(search_url, {
-                            _token: $('meta[name="csrf-token"]').attr('content'),
-                            keyword: keyword
-                        },
-                        function(data) {
-                            table_post_row(data);
-                            console.log(data);
-                        });
-                }
-                // table row with ajax
-                function table_post_row(res) {
-                    let htmlView = '';
-                    if (res.members.length <= 0) {
-                        htmlView += `
-                       No data found.
+                var search_url = "{{ route('trainer/member/search',':id') }}";
+                search_url = search_url.replace(':id', group_id);
+                $.post(search_url,
+                {
+                    _token: $('meta[name="csrf-token"]').attr('content'),
+                    keyword:keyword
+                },
+                function(data){
+                    table_post_row(data);
+                    console.log(data);
+                });
+            }
+            // table row with ajax
+            function table_post_row(res){
+            let htmlView = '';
+                if(res.members.length <= 0){
+                    htmlView+= `
+                    No data found.
                     `;
-                    }
-                    for (let i = 0; i < res.members.length; i++) {
-                        id = res.members[i].id;
-                        group_id = localStorage.getItem('group_id');
-                        var url = "{{ route('addMember', [':id', ':group_id']) }}";
-                        url = url.replace(':id', id);
-                        url = url.replace(':group_id', group_id);
-                        console.log(url);
-                        htmlView += `
+                }
+                for(let i = 0; i < res.members.length; i++){
+                    id = res.members[i].id;
+                    group_id = localStorage.getItem('group_id');
+                    console.log("select",group_id);
+                    var url = "{{ route('addMember',[':id',':group_id']) }}";
+                    url = url.replace(':id', id);
+                    url = url.replace(':group_id', group_id);
+                    // console.log(url);
+                    htmlView += `
                         <div class="add-member-row">
                             <div class="add-member-name-container">
                                 <img src="{{ asset('image/default.jpg') }}" />
                                 <p>`+res.members[i].name+`</p>
                             </div>
                             <div class="add-member-row-btns-container">
-                                <a href="?id=` + res.members[i].id+`" class="customer-secondary-btn add-member-btn" id="`+group_id+`">Add</a>
+                                <a href="?id=` + res.members[i].id+`" class="customer-secondary-btn add-member-btn" id="`+group_id+`" >Add</a>
                                 <a class="customer-secondary-btn add-member-view-profile-btn" id="`+res.members[i].id+`">View Profile</a>
 
                             </div>
                         </div>`
-                    }
-                    $('.add-member-rows-container').html(htmlView);
                 }
-
-                // search end
-                        add_member();
-                    });
-            // Add member start
-            function add_member(){
-
-                    // e.preventDefault();
-                    $('#view_member').show();
-                    var id = $('#addMember').val();
-                    $('#search').on('keyup', function(){
-                        search();
-                    });
-                    search();
-                    function search(){
-                        var keyword = $('#search').val();
-
-                        var group_id = {{$group->id}};
-
-                        var search_url = "{{ route('trainer/member/search',':id') }}";
-                        search_url = search_url.replace(':id', group_id);
-                        $.post(search_url,
-                        {
-                            _token: $('meta[name="csrf-token"]').attr('content'),
-                            keyword:keyword
-                        },
-                        function(data){
-                            table_post_row(data);
-                            console.log(data);
-                        });
-                    }
-                    // table row with ajax
-                    function table_post_row(res){
-                    let htmlView = '';
-                        if(res.members.length <= 0){
-                            htmlView+= `
-                            No data found.
-                            `;
-                        }
-                        for(let i = 0; i < res.members.length; i++){
-                            id = res.members[i].id;
-                            group_id = {{$group->id}};
-                            console.log("select",group_id);
-                            var url = "{{ route('addMember',[':id',':group_id']) }}";
-                            url = url.replace(':id', id);
-                            url = url.replace(':group_id', group_id);
-                            // console.log(url);
-                            htmlView += `
-                                <div class="add-member-row">
-                                    <div class="add-member-name-container">
-                                        <img src="{{ asset('image/default.jpg') }}" />
-                                        <p>`+res.members[i].name+`</p>
-                                    </div>
-                                    <div class="add-member-row-btns-container">
-                                        <a href="?id=` + res.members[i].id+`" class="customer-secondary-btn add-member-btn" id="`+group_id+`">Add</a>
-                                        <a class="customer-secondary-btn add-member-view-profile-btn" id="`+res.members[i].id+`">View Profile</a>
-
-                                    </div>
-                                </div>`
-                        }
-                        $('.trainer-group-chat-members-container').html(htmlView);
-                    }
-
-
+                $('.trainer-group-chat-members-container').html(htmlView);
             }
 
+
+            };
+
             $(document).on('click', '.add-member-btn', function(e) {
-                        e.preventDefault();
-                        var url = new URL(this.href);
+                e.preventDefault();
 
-                        var id = url.searchParams.get("id");
-                        var group_id=$(this).attr("id");
+                var url = new URL(this.href);
 
-                        var add_url = "{{ route('addMember',[':id',':group_id']) }}";
-                        add_url = add_url.replace(':id', id);
-                        add_url = add_url.replace(':group_id', group_id);
+                var id = url.searchParams.get("id");
+                var group_id=$(this).attr("id");
 
-                            $.ajax({
-                            type: "GET",
-                            url: add_url,
-                            datatype: "json",
-                            success: function(data) {
-                                if(data.status==200){
-                                        alert('Add Member Successfully');
+                var add_url = "{{ route('addMember',[':id',':group_id']) }}";
+                add_url = add_url.replace(':id', id);
+                add_url = add_url.replace(':group_id', group_id);
 
-                                        // $('.add-member-row').load(location.href);
-                                }else{
-                                    alert('Cannot Add Member');
-                                }
-                                add_member();
+                    $.ajax({
+                    type: "GET",
+                    url: add_url,
+                    datatype: "json",
+                    success: function(data) {
+                        if(data.status==200){
+                            // swal({
+                            //     text: "Add Member!!",
+                            //     buttons: true,
+                            //     dangerMode: true,
+                            //     })
+                            alert('Add Member Successfully');
 
-                                }
-                            })
+                                // $('.add-member-row').load(location.href);
+                        }else{
+                            alert('Cannot Add Member');
+                        }
+                        add_member();
 
-                    });
-            //Add member end
+                        }
+                    })
+
+            });
+                        //Add member end
         });
 
         ///start

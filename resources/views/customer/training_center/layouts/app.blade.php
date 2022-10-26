@@ -15,6 +15,11 @@
     <!--global css-->
     <link href={{ asset('css/customer/css/globals.css')}} rel="stylesheet"/>
     <link href={{ asset('css/customer/css/customerTrainingCenter.css')}} rel="stylesheet"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.css">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script src="https://code.jquery.com/jquery-2.1.3.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert-dev.js"></script>
 
     <title>YC-Training Center</title>
   </head>
