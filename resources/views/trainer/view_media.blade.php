@@ -24,16 +24,17 @@
 
             <div class="group-chat-container">
                 <div class="group-chat-header">
-                    <a href="../htmls/trainerGroupChatViewMembers.html" class="group-chat-header-name-container">
+                    <a href="#" id="group" class="group-chat-header-name-container">
+                        <img src="{{ asset('image/default.jpg') }}" />
                         <div class="group-chat-header-name-text-container">
-                            <a href="" id="group" class="group-chat-header-name-container">
-                                <img src="../imgs/avatar.png"/>
-                                <div class="group-chat-header-name-text-container">
-                                    <p>{{$selected_group->group_name}}</p>
-                                </div>
-                            </a>
+                            <p>{{$selected_group->group_name}}</p>
                         </div>
                     </a>
+
+                    {{-- <a href="../htmls/trainerTrainingCenterViewMedia.html" class="group-chat-view-midea-link">
+                        <p>View Media</p>
+                        <iconify-icon icon="akar-icons:arrow-right" class="group-chat-view-midea-link-icon"></iconify-icon>
+                    </a> --}}
                 </div>
                 <div class="trainer-group-chat-media-header">
                     <a class="back-btn">
