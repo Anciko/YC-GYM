@@ -124,7 +124,6 @@ class Customer_TrainingCenterController extends Controller
         if($user){
             foreach ($food_lists as $food) {
                 $personal_meal_infos = new PersonalMealInfo();
-               //  intval($num)
                 $personal_meal_infos->client_id = $user;
                 $personal_meal_infos->meal_id = $food->id;
                 $personal_meal_infos->date = $date;

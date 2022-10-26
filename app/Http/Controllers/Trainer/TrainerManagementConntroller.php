@@ -29,7 +29,7 @@ class TrainerManagementConntroller extends Controller
         $members=Member::groupBy('member_type')
                         ->where('member_type','!=','Free')
                         ->get();
-         $groups=TrainingGroup::where('trainer_id',auth()->user()->id)->get();
+        $groups=TrainingGroup::where('trainer_id',auth()->user()->id)->get();
         //  $group_id = $id;
         //  $selected_group = TrainingGroup::where('id',$groups->id)->first();
          return view('Trainer.index',compact('messages','members','groups'));
@@ -47,16 +47,16 @@ class TrainerManagementConntroller extends Controller
                 'trainer_message_media/'.$path,file_get_contents($file)
             );
 
-            $messageFile = $disk->url($path);
+            //$messageFile = $disk->url($path);
         }
 
         $message = new Message();
         $message->training_group_id = $id;
        $message->text = $request->text == null ?  '👍' : $request->text;
-       $message->media = $request->fileInput == null ? null : $messageFile;
+       $message->media = $request->fileInput == null ? null : $path;
 
         $message->save();
-        event(new TrainingMessageEvent($message,$messageFile));
+        event(new TrainingMessageEvent($message,$path));
     }
 
 
@@ -119,7 +119,14 @@ class TrainerManagementConntroller extends Controller
         ->where('member_type','!=','Free')
         ->get();
         $message = Message::where('training_group_id',$id)->where('media','!=',null)->get();
-         return view('Trainer.view_media',compact('members','selected_group','message','groups'));
+        return response()
+        ->json([
+            'members' => $members,
+            'groups'=>$groups,
+            'messages'=>$message,
+            'selected_group'=>$selected_group
+    ]);
+        //  return view('Trainer.view_media',compact('members','selected_group','message','groups'));
     }
 
     public function addMember(Request $request)
@@ -221,12 +228,11 @@ class TrainerManagementConntroller extends Controller
     }
     public function destroy(Request $request)
     {
-
+        // dd($request);
         $group_users = TrainingUser::where('training_group_id',$request->group_id)->get();
         foreach($group_users as $gu){
             User::where('id',$gu->user_id)->update(["ingroup" => 0]);
         }
-
         $group_user_delete = TrainingUser::where('training_group_id',$request->group_id);
         $group_user_delete->delete();
         $group_delete = TrainingGroup::where('id',$request->group_id);
