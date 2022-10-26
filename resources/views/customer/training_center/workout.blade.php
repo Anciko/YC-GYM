@@ -52,4 +52,122 @@
             <span class="customer-workout-sec">00</span></p>
     </div>
 </div>
+
 @endsection
+@push('scripts')
+    <script>
+
+        $(document).ready(function(){
+
+
+            $("#workoutVideo").on(
+                "timeupdate",
+                function(event){
+                onTrackedVideoFrame(this.currentTime, this.duration);
+            });
+
+            $("#workoutVideo").on("play",function(){
+                $(".customer-workout-play-btn").hide();
+                $(".customer-workout-pause-btn").show();
+            })
+
+            $("#workoutVideo").on("pause",function(){
+                $(".customer-workout-play-btn").show();
+                $(".customer-workout-pause-btn").hide();
+            })
+
+
+
+            $(".customer-workout-play-btn").click(function(){
+                $('#workoutVideo').trigger('play');
+                $(".customer-workout-play-btn").hide()
+                $(".customer-workout-pause-btn").show()
+            })
+
+            $(".customer-workout-pause-btn").click(function(){
+                $('#workoutVideo').trigger('pause');
+                $(".customer-workout-pause-btn").hide()
+                $(".customer-workout-play-btn").show()
+            })
+        });
+
+
+        function onTrackedVideoFrame(currentTime, duration){
+            const counter = parseInt(duration) - parseInt(currentTime)
+            if(duration){
+                const mins = Math.floor(counter/60)
+                const secs = Math.ceil(counter % 60)
+                // var counterText
+                // if(mins < 10 && secs < 10)
+                const minText = mins < 10 ? `0${mins}` : `${mins}`
+                const secText = secs < 10 ? `0${secs}` : `${secs}`
+                $(".customer-workout-counter").text(`${minText} : ${secText}`); //Change #current to currentTime
+            }else{
+                $(".customer-workout-counter").text("00 : 00")
+            }
+
+        }
+
+        let videoSource = new Array();
+        var tc_workout_video = @json($tc_workouts);
+        videoSource=tc_workout_video;
+        console.log(videoSource);
+
+        for(var a = 0;a < videoSource.length;a++){
+
+             videoSource[a] = '../../storage/upload/'+videoSource[a].video;
+        }
+        // videoSource[0] = 'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4';
+        // videoSource[1] = 'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4';
+        let i = 0; // global
+        const videoCount = videoSource.length;
+        const element = document.getElementById("workoutVideo");
+
+        for(var k = 0;k < videoSource.length;k++){
+            $(".customer-workout-video-progress").append(`<div></div>`)
+        }
+
+
+        document.getElementById('workoutVideo').addEventListener('ended', myHandler, false);
+
+        videoPlay(0); // load the first video
+        // ensureVideoPlays(); // play the video automatically
+
+        function myHandler() {
+            i++;
+            if (i == videoCount) {
+                alert("workout session ended")
+                // i = 0;
+                // videoPlay(i);
+            } else {
+                videoPlay(i);
+            }
+        }
+
+        function videoPlay(videoNum) {
+            element.setAttribute("src", videoSource[videoNum]);
+            // element.autoplay = true;
+            element.load();
+            // console.log(element)
+            $(".customer-workout-video-progress div")[i].classList.add("completed-workout")
+        }
+
+            // function ensureVideoPlays() {
+            //     const video = document.getElementById('workoutVideo');
+
+            //     if(!video) return;
+
+            //     const promise = video.play();
+            //     if(promise !== undefined){
+            //         promise.then(() => {
+            //             // Autoplay started
+            //         }).catch(error => {
+            //             // Autoplay was prevented.
+            //             video.muted = true;
+            //             video.play();
+            //         });
+            //     }
+            // }
+    </script>
+@endpush
+

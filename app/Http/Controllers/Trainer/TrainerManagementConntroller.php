@@ -88,6 +88,7 @@ class TrainerManagementConntroller extends Controller
                             ->where('training_users.training_group_id',$id)
                             ->where('users.ingroup',1)
                             ->get();
+                          
         $groups=TrainingGroup::where('trainer_id',auth()->user()->id)->get();
         $members=Member::groupBy('member_type')
                         ->where('member_type','!=','Free')
@@ -95,16 +96,16 @@ class TrainerManagementConntroller extends Controller
 
         $group_id = $id;
         $selected_group = TrainingGroup::where('id',$group_id)->first();
-        // return response()
-        //     ->json([
-        //         'members' => $members,
-        //         'group'=>$group,
-        //         'group_members'=>$group_members,
-        //         'groups'=>$groups
-        // ]);
-        // dd($group);
+        return response()
+            ->json([
+                'members' => $members,
+                'groups'=>$groups,
+                'group_members'=>$group_members,
+                'selected_group'=>$selected_group
+        ]);
 
-        return view('Trainer.view_member',compact('members','selected_group','group_members','groups'));
+
+        //return view('Trainer.view_member',compact('members','selected_group','group_members','groups'));
     }
 
     public function view_media($id)

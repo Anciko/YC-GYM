@@ -42,6 +42,17 @@ class Customer_TrainingCenterController extends Controller
     public function workout_plan()
     {
         $user=auth()->user();
+        $bmi=$user->bmi;
+        if($bmi< 18.5){
+            $workout_plan="under weight";
+        }elseif($bmi>=18.5 && $bmi<=24.9){
+            $workout_plan="normal weight";
+        }elseif($bmi>=25 && $bmi<=29.9){
+            $workout_plan="over weight";
+        }else{
+            $workout_plan="obesity";
+        }
+
         $current_day=Carbon::now()->format('l');
         $tc_workouts=DB::table('workouts')
                         ->where('member_type',$user->member_type)
@@ -60,6 +71,14 @@ class Customer_TrainingCenterController extends Controller
 
     public function workout()
     {
-        return view('customer.training_center.workout');
+        $user=auth()->user();
+        $current_day=Carbon::now()->format('l');
+        $tc_workouts=DB::table('workouts')
+                        ->where('member_type',$user->member_type)
+                        ->where('gender_type',$user->gender)
+                        ->where('workout_level',$user->membertype_level)
+                        ->where('day',$current_day)
+                        ->get();
+        return view('customer.training_center.workout',compact('tc_workouts'));
     }
 }
