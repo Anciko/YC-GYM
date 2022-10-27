@@ -168,22 +168,22 @@
                             } else if (value.media.split('.').pop() === 'png' || value
                                 .media.split('.').pop() === 'jpg' || value.media.split(
                                     '.').pop() === 'jpeg') {
-                                var filename = value.media.replace(
-                                    "http://localhost/storage/", "");
+                                // var filename = value.media.replace(
+                                //     "http://localhost/storage/", "");
                                 $('#send_message').append(`<div class="group-chat-sender-container" id="trainer_message_el">
                                         <div class="group-chat-sender-text-container">
-                                            <img src="{{ asset('storage/trainer_message_media/${filename}') }}" />
+                                            <img src="{{ asset('storage/trainer_message_media/${value.media}') }}" />
                                         </div>
                                         <img src="{{ asset('image/default.jpg') }}" />
                                     </div>`);
                             } else {
-                                var filename = value.media.replace(
-                                    "http://localhost/storage/", "");
+                                // var filename = value.media.replace(
+                                //     "http://localhost/storage/", "");
                                 $('#send_message').append(
                                     `<div class="group-chat-sender-container" id="trainer_message_el">
                                         <div class="group-chat-sender-text-container">
                                             <video width="100%" height="100%" controls>
-                                                <source src="{{ asset('storage/trainer_message_media/${filename}') }}" type="video/mp4">
+                                                <source src="{{ asset('storage/trainer_message_media/${value.media}') }}" type="video/mp4">
                                             </video>
                                         </div>
                                         <img src="{{ asset('image/default.jpg') }}" />
@@ -279,7 +279,7 @@
                 
                 $('#addMember').hide();
                 $('#search_bar').append(`<form class="add-member-form" action="" >\
-                    <input type="text"  placeholder="Search member" id="search">\
+                    <input type="text" class = "form-control"  placeholder="Search member" id="search">\
                 </form>\
                 `);
                 $('.add-member-form').show();
@@ -552,17 +552,17 @@
                 var Extension;
                 Extension = data.message.media.split('.').pop();
                 console.log('file extension is', Extension);
-                var dir = "storage/trainer_message_media/";
-                var filename = data.media.replace(
-                    "http://localhost/storage/", "");
-                console.log(filename);
+                // var dir = "storage/trainer_message_media/";
+                // var filename = data.media.replace(
+                //     "http://localhost/storage/", "");
+                // console.log(filename);
 
                 if (data.message.media.split('.').pop() === 'png' || data.message.media.split('.').pop() ===
                     'jpg' || data.message.media.split('.').pop() === 'jpeg') {
                     group_chat_messages_container.innerHTML += `
                                     <div class="group-chat-sender-container" id="trainer_message_el">
                                         <div class="group-chat-sender-text-container">
-                                            <img src="{{ asset('storage/trainer_message_media/${filename}') }}" />
+                                            <img src="{{ asset('storage/trainer_message_media/${data.message.media}') }}" />
                                         </div>
                                         <img src="{{ asset('image/default.jpg') }}" />
                                     </div>`;
@@ -572,7 +572,7 @@
                                     <div class="group-chat-sender-container" id="trainer_message_el">
                                         <div class="group-chat-sender-text-container">
                                             <video width="100%" height="100%" controls>
-                                                <source src="{{ asset('storage/trainer_message_media/${filename}') }}" type="video/mp4">
+                                                <source src="{{ asset('storage/trainer_message_media/${data.message.media}') }}" type="video/mp4">
                                             </video>
                                         </div>
                                         <img src="{{ asset('image/default.jpg') }}" />

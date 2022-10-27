@@ -39,7 +39,7 @@ class TrainerManagementConntroller extends Controller
     public function send(Request $request,$id)
     {
 
-        $messageFile='';
+        $path='';
         if($request->file('fileInput') !=null){
             $file = $request->file('fileInput');
             $path =uniqid().'_'. $file->getClientOriginalName();
