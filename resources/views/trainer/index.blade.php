@@ -276,10 +276,10 @@
             })
 
             $(document).on('click', '#addMember', function(e){
-
+                
                 $('#addMember').hide();
                 $('#search_bar').append(`<form class="add-member-form" action="" >\
-                    <input type="text"  placeholder="Search member" id="search">\
+                    <input type="text" class = "form-control"  placeholder="Search member" id="search">\
                 </form>\
                 `);
                 $('.add-member-form').show();
