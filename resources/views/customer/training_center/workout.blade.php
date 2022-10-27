@@ -12,11 +12,11 @@
 
         <div class="customer-workout-plan-header-detail-container">
             <iconify-icon icon="fluent-emoji-flat:fire" class="customer-workout-plan-detail-icon"></iconify-icon>
-            <p>Calories : <span>50</span></p>
+            <p>Calories : <span>0</span></p>
         </div>
         <div class="customer-workout-plan-header-detail-container">
             <iconify-icon icon="noto:alarm-clock" class="customer-workout-plan-detail-icon"></iconify-icon>
-            <p>Minutes : <span>15</span></p>
+            <p>Minutes : <span>0</span></p>
         </div>
     </div>
 

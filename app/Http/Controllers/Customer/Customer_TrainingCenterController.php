@@ -28,7 +28,7 @@ class Customer_TrainingCenterController extends Controller
         }
 
         $tc_workoutplans=DB::table('workouts')
-                            ->where('workout_plan_id',1)
+                            ->where('workout_plan_type',$workout_plan)
                             ->where('member_type',$user->member_type)
                             ->where('gender_type',$user->gender)
                             ->get();
@@ -45,9 +45,10 @@ class Customer_TrainingCenterController extends Controller
         }elseif($bmi>=25){
             $workout_plan="weight loss";
         }
+
         $current_day=Carbon::now()->format('l');
         $tc_workouts=DB::table('workouts')
-                        ->where('workout_plan_id',1)
+                        ->where('workout_plan_type',$workout_plan)
                         ->where('member_type',$user->member_type)
                         ->where('gender_type',$user->gender)
                         ->where('workout_level',$user->membertype_level)
@@ -65,11 +66,19 @@ class Customer_TrainingCenterController extends Controller
 
     public function workout_complete(Request $request,$t_sum,$cal_sum=null,$count_video)
     {
-        dd($t_sum,$cal_sum,$count_video);
+
         $total_time=$t_sum;
+        $sec=0;
+        $duration=0;
+        if($total_time < 60){
+            $sec=$t_sum;
+        }else{
+            $duration=round($t_sum/60);
+            $sec=$t_sum%60;
+        }
         $total_calories=$cal_sum;
         $total_video=$count_video;
-        return view('customer.training_center.workout_complete',compact('total_time','total_calories','total_video'));
+        return view('customer.training_center.workout_complete',compact('t_sum','sec','duration','total_calories','total_video'));
     }
 
 
@@ -179,8 +188,18 @@ class Customer_TrainingCenterController extends Controller
     public function workout()
     {
         $user=auth()->user();
+        $bmi=$user->bmi;
+        if($bmi< 18.5){
+            $workout_plan="weight gain";
+        }elseif($bmi>=18.5 && $bmi<=24.9){
+            $workout_plan="body beauty";
+        }elseif($bmi>=25){
+            $workout_plan="weight loss";
+        }
+
         $current_day=Carbon::now()->format('l');
         $tc_workouts=DB::table('workouts')
+                        ->where('workout_plan_type',$workout_plan)
                         ->where('member_type',$user->member_type)
                         ->where('gender_type',$user->gender)
                         ->where('workout_level',$user->membertype_level)

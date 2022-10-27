@@ -20,7 +20,7 @@ class CreateWorkoutsTable extends Migration
             $table->string('workout_name');
             $table->integer('time');
             $table->string('gender_type');
-            $table->string('calories');
+            $table->float('calories');
             $table->string('workout_level');
             $table->string('workout_periods');
             $table->string('place');

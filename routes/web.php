@@ -224,7 +224,6 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
     });
 
 
-});//admin prefix
 
         Route::middleware(['role:Free'])->group(function () {
             Route::get('/free',[TrainerManagementConntroller::class,'free'])->name('free');
@@ -273,4 +272,5 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
         Route::middleware(['role:Gold|Ruby|Ruby Premium'])->group(function () {
         Route::get('customer/{id}',[CustomerManagementController::class,'showchat']);
         });
-});
+
+    });
