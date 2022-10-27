@@ -45,8 +45,6 @@ Route::get('customer/checkemail',[CustomerRegisterController::class,'checkemail'
 Route::get('customer/checkemail',[CustomerRegisterController::class,'checkemail'])->name('checkPhone');
 
 
-Route::get('customer/{id}',[CustomerManagementController::class,'showchat']);
-
 //Route::get('/customer/signup', [App\Http\Controllers\HomeController::class, 'customersignup'])->name('home');
 
 Route::group(['middleware' => 'prevent-back-history'], function () {
@@ -77,27 +75,27 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
 
     Route::post('password_reset', [PassResetController::class, 'password_reset'])->name('password_reset');
 
-Route::middleware(['role:Trainer'])->group(function () {
-    Route::post('/trainer/group/create',[TrainerGroupController::class, 'store'])->name('trainer.group.create');
-    Route::get('trainer/group/show/{id}',[TrainerGroupController::class, 'chat_show']);
-    Route::get('/trainer',[TrainerManagementConntroller::class,'ind
-    ex'])->name('trainer');
-    //Route::post('trainer/member/search',[TrainerManagementConntroller::class,'showMember'])->name('trainer/member/search');
+    Route::middleware(['role:Trainer'])->group(function () {
+        Route::post('/trainer/group/create',[TrainerGroupController::class, 'store'])->name('trainer.group.create');
+        Route::get('trainer/group/show/{id}',[TrainerGroupController::class, 'chat_show']);
+        Route::get('/trainer',[TrainerManagementConntroller::class,'ind
+        ex'])->name('trainer');
+        //Route::post('trainer/member/search',[TrainerManagementConntroller::class,'showMember'])->name('trainer/member/search');
 
-});
+    });
 
-Route::middleware(['role:Trainer'])->group(function () {
-    Route::get('/trainer',[TrainerManagementConntroller::class,'index'])->name('trainer');
-    Route::post('trainer/view_member/search/{id}',[TrainerManagementConntroller::class,'showMember'])->name('trainer/member/search');
-    Route::get('/trainer/view_member/{id}',[TrainerManagementConntroller::class,'view_member'])->name('trainer/view_member');
-    Route::get('/trainer/add_member/{id}',[TrainerManagementConntroller::class,'add_member'])->name('trainer/add_member');
-    Route::get('/trainer/view_media/{id}',[TrainerManagementConntroller::class,'view_media'])->name('trainer/view_media');
-    Route::get('/addMember/{id}/{group_id}',[TrainerManagementConntroller::class,'addMember'])->name('addMember');
-    Route::get('trainer/group/show/{id}',[TrainerGroupController::class, 'chat_show']);
-    // Route::post('trainer/send/{id}', [TrainerManagementConntroller::class, 'send'])->name('trainer-send-message');
-    Route::get('trainer/group/delete', [TrainerManagementConntroller::class, 'destroy'])->name('group.delete');
-    Route::get('trainer/group/member/kick/{id}', [TrainerManagementConntroller::class, 'kick'])->name('member.kick');
-});
+    Route::middleware(['role:Trainer'])->group(function () {
+        Route::get('/trainer',[TrainerManagementConntroller::class,'index'])->name('trainer');
+        Route::post('trainer/view_member/search/{id}',[TrainerManagementConntroller::class,'showMember'])->name('trainer/member/search');
+        Route::get('/trainer/view_member/{id}',[TrainerManagementConntroller::class,'view_member'])->name('trainer/view_member');
+        Route::get('/trainer/add_member/{id}',[TrainerManagementConntroller::class,'add_member'])->name('trainer/add_member');
+        Route::get('/trainer/view_media/{id}',[TrainerManagementConntroller::class,'view_media'])->name('trainer/view_media');
+        Route::get('/addMember/{id}/{group_id}',[TrainerManagementConntroller::class,'addMember'])->name('addMember');
+        Route::get('trainer/group/show/{id}',[TrainerGroupController::class, 'chat_show']);
+        // Route::post('trainer/send/{id}', [TrainerManagementConntroller::class, 'send'])->name('trainer-send-message');
+        Route::get('trainer/group/delete', [TrainerManagementConntroller::class, 'destroy'])->name('group.delete');
+        Route::get('trainer/group/member/kick/{id}', [TrainerManagementConntroller::class, 'kick'])->name('member.kick');
+    });
 
 // Admin Site
 Route::prefix('admin')->group(function () {
@@ -275,30 +273,14 @@ Route::prefix('admin')->group(function () {
         });
     });
 
-    Route::middleware(['role:Free'])->group(function () {
-        Route::get('/free', [TrainerManagementConntroller::class, 'free'])->name('free');
-    });
-    Route::middleware(['role:Platinum'])->group(function () {
-        Route::get('/platinum', [TrainerManagementConntroller::class, 'platinum'])->name('platinum');
-    });
-    Route::middleware(['role:Gold'])->group(function () {
-        Route::get('/gold', [TrainerManagementConntroller::class, 'gold'])->name('gold');
-    });
-    Route::middleware(['role:Diamond'])->group(function () {
-        Route::get('/diamond', [TrainerManagementConntroller::class, 'diamond'])->name('diamond');
-    });
-    Route::middleware(['role:Ruby'])->group(function () {
-        Route::get('/ruby', [TrainerManagementConntroller::class, 'ruby'])->name('ruby');
-    });
-    Route::middleware(['role:Ruby Premium'])->group(function () {
-        Route::get('/ruby_premium', [TrainerManagementConntroller::class, 'ruby_premium'])->name('ruby_premium');
-    });
-});
+
+
+    });//admin prefix
 
         Route::middleware(['role:Free'])->group(function () {
             Route::get('/free',[TrainerManagementConntroller::class,'free'])->name('free');
         });
-        Route::middleware(['role:Platinum|Diamond'])->group(function () {
+        Route::middleware(['role:Platinum|Diamond|Gym Member'])->group(function () {
             Route::get('/platinum',[TrainerManagementConntroller::class,'platinum'])->name('platinum');
             Route::get('/diamond',[TrainerManagementConntroller::class,'diamond'])->name('diamond');
             Route::get('customer/training_center',[Customer_TrainingCenterController::class,'index'])->name('training_center.index');
@@ -314,24 +296,32 @@ Route::prefix('admin')->group(function () {
             Route::post('customer/training_center/foodList',[Customer_TrainingCenterController::class,'foodList'])->name('customer/training_center/foodList');
 
         });
-        Route::middleware(['role:Gold'])->group(function () {
-            Route::get('/gold',[TrainerManagementConntroller::class,'gold'])->name('gold');
+        Route::middleware(['role:Platinum'])->group(function () {
+            Route::get('/platinum', [TrainerManagementConntroller::class, 'platinum'])->name('platinum');
         });
-        // Route::middleware(['role:Diamond'])->group(function () {
-        //     Route::get('customer/training_center',[Customer_TrainingCenterController::class,'index'])->name('training_center.index');
-        //     Route::get('/diamond',[TrainerManagementConntroller::class,'diamond'])->name('diamond');
-        // });
+        Route::middleware(['role:Gold'])->group(function () {
+            Route::get('/gold', [TrainerManagementConntroller::class, 'gold'])->name('gold');
+        });
+        Route::middleware(['role:Diamond'])->group(function () {
+            Route::get('/diamond', [TrainerManagementConntroller::class, 'diamond'])->name('diamond');
+        });
         Route::middleware(['role:Ruby'])->group(function () {
-            Route::get('/ruby',[TrainerManagementConntroller::class,'ruby'])->name('ruby');
+            Route::get('/ruby', [TrainerManagementConntroller::class, 'ruby'])->name('ruby');
         });
         Route::middleware(['role:Ruby Premium'])->group(function () {
-            Route::get('/ruby_premium',[TrainerManagementConntroller::class,'ruby_premium'])->name('ruby_premium');
+            Route::get('/ruby_premium', [TrainerManagementConntroller::class, 'ruby_premium'])->name('ruby_premium');
+        });
+        Route::middleware(['role:Gold'])->group(function () {
+            Route::get('/gold',[TrainerManagementConntroller::class,'gold'])->name('gold');
         });
         Route::middleware(['role:Gym Member'])->group(function () {
             Route::get('/gym_member',[TrainerManagementConntroller::class,'gym_member'])->name('gym_member');
         });
 
+        Route::middleware(['role:Gold|Ruby|Ruby Premium'])->group(function () {
+        Route::get('customer/{id}',[CustomerManagementController::class,'showchat']);
         });
+    });
 
 
     });
