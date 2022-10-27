@@ -99,7 +99,7 @@ class TrainingGroupController extends Controller
         }
 
         return response()->json([
-            'message' => 'No meals here!'
+            'message' => 'Empty Lists!'
         ]);
     }
 
