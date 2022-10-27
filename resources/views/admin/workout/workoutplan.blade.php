@@ -12,11 +12,11 @@
         <div class="workout-plan-popup-container ">
             <div class="workout-plan-popup">
                 <div class="workout-plan-popup-header">
-                    <p>Create Workout plan</p>
+                    <p>Create Workout</p>
                     <i class="fa-sharp fa-solid fa-xmark close-workoutplan" title="close"></i>
                 </div>
 
-                <form class="workout-plan-input-container" action="{{route('createworkoutplan')}}" method = "POST" id="workplan-create">
+                <form class="workout-plan-input-container" action="{{route('createworkout')}}" method = "POST" id="workplan-create" enctype="multipart/form-data">
                     @csrf
                     <div class="form-floating mb-3">
                         <input type="text" class="form-control" id="floatingPassword" placeholder="Workout Plan Type" name="plantype">

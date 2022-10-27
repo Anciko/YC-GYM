@@ -21,6 +21,17 @@
                 </video>
             </div>
 
+            <div class="row mb-3">
+                <div class="form-floating">
+                    <select class="form-select" aria-label="Default select example"  placeholder="Select Workout Plan Type" name="plantype">
+                        <option value="weight loss" id="weightloss">Weight Loss</option>
+                        <option value="weight gain" id="weightgain">Weight Gain</option>
+                        <option value="body beauty" id="bodybeauty">Body Beauty</option>
+                    </select>
+                    <label for="floatingInput">Select Workout Plan Type</label>
+                </div>
+            </div>
+
             <div class="row g-3 mb-3">
                 <div class="form-floating col-md-6">
                     <input type="text" class="form-control" id="floatingInput" placeholder="Workout Name" name="workoutname" value="{{$data->workout_name}}">
@@ -51,10 +62,10 @@
                     </div>
                     <div class="form-floating col-md-6">
                         <select class="form-select" aria-label="Default select example" placeholder="Workout level select" name="workoutlevel">
-                            <option value="{{$data->workout_level}}"></option>
-                            <option value="Beginner" id="beginner">Beginner</option>
-                            <option value="Advance" id="advance">Advance</option>
-                            <option value="Professional" id="professional">Professional</option>
+
+                            <option value="beginner" id="beginner">Beginner</option>
+                            <option value="advance" id="advance">Advance</option>
+                            <option value="professional" id="professional">Professional</option>
                         </select>
                         <label for="floatingInput">Workout level select</label>
                     </div>
@@ -107,11 +118,10 @@
               </div>
 
               <div class="input-group mb-3">
-                <label class="input-group-text"> Upload video
+                <label class="input-group-text"> Upload video</label>
                 <input type="file" class="form-control" name="video" id="videoUpload">
                 <input type="input-group-text" value="{{$data->video}}" disabled>
                 <input type="hidden" name="videoTime" value="" class="video-duration">
-            </label>
               </div>
 
 
@@ -135,6 +145,17 @@
     $(document).ready(function(){
         var user = @json($data);
 
+        if(user.workout_plan_type == 'weight loss'){
+            var select = $("#weightloss");
+            select.attr('selected',true);
+        }else if(user.workout_plan_type == 'weight gain'){
+            var select = $("#weightgain");
+            select.attr('selected',true);
+        }else if(user.workout_plan_type == 'body beauty'){
+            var select = $("#bodybeauty");
+            select.attr('selected',true);
+        }
+
         if (user.gender_type == 'male') {
             $("#male").attr('checked', 'checked');
         }else if(user.gender_type == 'female'){
@@ -149,33 +170,33 @@
             $("#gold").attr('selected',true);
         }
 
-        if(user.workout_level == 'Beginner'){
+        if(user.workout_level == 'beginner'){
             var select = $("#beginner");
             select.attr('selected',true);
-        }else if(user.workout_level == 'Advance'){
+        }else if(user.workout_level == 'advance'){
             var select = $("#advance");
             select.attr('selected',true);
-        }else if(user.workout_level == 'Professional'){
+        }else if(user.workout_level == 'professional'){
             var select = $("#professional");
             select.attr('selected',true);
         }
-        if (user.day == 'Monday') {
+        if (user.day == 'monday') {
             $("#Monday").attr('selected',true);
-        } else if(user.day == 'Tuesday'){
+        } else if(user.day == 'tuesday'){
             $("#Tuesday").attr('selected',true);
-        }else if(user.day == 'Wednesday'){
+        }else if(user.day == 'wednesday'){
             $("#Wednesday").attr('selected',true);
-        }else if(user.day == 'Thursday'){
+        }else if(user.day == 'thursday'){
             $("#Thursday").attr('selected',true);
-        }else if(user.day == 'Friday'){
+        }else if(user.day == 'friday'){
             $("#Friday").attr('selected',true);
-        }else if(user.day == 'Saturday'){
+        }else if(user.day == 'saturday'){
             $("#Saturday").attr('selected',true);
-        }else if(user.day == 'Sunday'){
+        }else if(user.day == 'sunday'){
             $("#Sunday").attr('selected',true);
         }
 
-        if (user.place == 'Gym') {
+        if (user.place == 'gym') {
             $("#Gym").attr('selected',true);
         } else {
             $("#Home").attr('selected',true);
