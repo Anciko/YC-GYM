@@ -27,7 +27,7 @@ class TrainingGroupController extends Controller
         if ($user->bmi < 18.5) { // For weight gain
             $workouts = Workout::where('workout_plan_type', 'weight gain')
                 ->where('member_type', $user->member_type)
-                ->where('member_type_level', $user->membertype_level)
+                ->where('workout_level', $user->membertype_level)
                 ->where('day', $current_day)->get();
             // $workout_plan = WorkoutPlan::where('plan_type', 'weightLoss')->first();
             // $workouts = Workout::where('workout_plan_id', $workout_plan->id)->where('day', $current_day)->get();
@@ -40,7 +40,7 @@ class TrainingGroupController extends Controller
         if ($user->bmi >= 18.5 && $user->bmi <= 24.9) { // For BodyBeauty videos
             $workouts = Workout::where('workout_plan_type', 'body beauty')
                 ->where('member_type', $user->member_type)
-                ->where('member_type_level', $user->membertype_level)
+                ->where('workout_level', $user->membertype_level)
                 ->where('day', $current_day)->get();
 
             return response()->json([
@@ -52,7 +52,7 @@ class TrainingGroupController extends Controller
         if ($user->bmi >= 25 && $user->bmi <= 29.9) { // For weightloss
             $workouts = Workout::where('workout_plan_type', 'weight loss')
                 ->where('member_type', $user->member_type)
-                ->where('member_type_level', $user->membertype_level)
+                ->where('workout_level', $user->membertype_level)
                 ->where('day', $current_day)->get();
 
             return response()->json([
