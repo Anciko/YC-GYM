@@ -9,10 +9,16 @@
                 <div class="mb-4">
                     <label class="" for="meal_plan_id">Meal Plan Type</label> <br>
                     <select class="form-control " name="meal_plan_id" id="meal_plan_id">
-                        @foreach($meal_plan_type as $meal_plan)
-                        <option value="{{$meal_plan->id}}" {{ $meal_plan->id == $meal->meal_plan_id ? "selected":"" }}>{{$meal_plan->plan_name}} </option>
-                        @endforeach
-                    </select>
+                            <option value="weight_gain" @if ($meal->training_type == 'weight_gain') selected @endif>
+                                Weight Gain
+                            </option>
+                            <option value="weight_loss" @if ($meal->training_type == 'weight_loss') selected @endif>
+                                Weight Loss
+                            </option>
+                            <option value="body_beauty" @if ($meal->training_type == 'body_beauty') selected @endif>
+                                Body Beauty
+                            </option>
+                        </select>
                 </div>
 
                 <div class="mt-4">
