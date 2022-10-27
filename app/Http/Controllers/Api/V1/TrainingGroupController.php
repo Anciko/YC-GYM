@@ -68,27 +68,38 @@ class TrainingGroupController extends Controller
         $current_time = Carbon::now('Asia/Yangon')->toTimeString();
 
         if ($current_time >= 6 && $current_time <= 9) { // Breakfast
-
+            $meals = Meal::where('day', $current_day)->where('meal_plan_type', 'Breakfast')->get();
+            return response()->json([
+                'meals' => $meals
+            ]);
         }
 
         if ($current_time >= 12 && $current_time <= 14) { // Lunch
+            $meals = Meal::where('day', $current_day)->where('meal_plan_type', 'Lunch')->get();
 
+            return response()->json([
+                'meals' => $meals
+            ]);
         }
 
         if ($current_time > 14 && $current_time <= 16) { // Snack
+            $meals = Meal::where('day', $current_day)->where('meal_plan_type', 'Snack')->get();
 
+            return response()->json([
+                'meals' => $meals
+            ]);
         }
 
         if ($current_time >= 17 && $current_time <= 20) { // Dinner
+            $meals = Meal::where('day', $current_day)->where('meal_plan_type', 'Dinner')->get();
 
+            return response()->json([
+                'meals' => $meals
+            ]);
         }
 
-
-        $meals = Meal::where('day', $current_day)->get();
-
         return response()->json([
-            'message' => 'success',
-            'meals' => $meals
+            'message' => 'No meals here!'
         ]);
     }
 
@@ -198,7 +209,7 @@ class TrainingGroupController extends Controller
         $group_id = $request->id;
         $group = TrainingGroup::where('id', $group_id)->first();
 
-        if ($group->group_type == 'weightLoss') {
+        if ($group->group_type == 'weight loss') {
             $members = User::select('name', 'id')->where('ingroup', '!=', 1)
                 ->where('active_status', 2)
                 ->where('member_type', $group->member_type)
@@ -213,7 +224,7 @@ class TrainingGroupController extends Controller
             ]);
         }
 
-        if ($group->group_type == 'weightGain') {
+        if ($group->group_type == 'weight gain') {
             $members = User::select('name', 'id')->where('ingroup', '!=', 1)
                 ->where('active_status', 2)
                 ->where('member_type', $group->member_type)
@@ -228,7 +239,7 @@ class TrainingGroupController extends Controller
             ]);
         }
 
-        if ($group->group_type == 'bodyBeauty') {
+        if ($group->group_type == 'body beauty') {
             $members = User::select('name', 'id')->where('ingroup', '!=', 1)
                 ->where('active_status', 2)
                 ->where('member_type', $group->member_type)
