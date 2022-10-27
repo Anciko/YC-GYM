@@ -558,7 +558,7 @@
         channel.bind('training_message_event', function(data) {
 
 
-            // if (data.groupid.id == data.message.training_group_id) {
+            if (groupid == data.message.training_group_id) {
                 if (data.message.media != null) {
                     var Extension;
                     Extension = data.message.media.split('.').pop();
@@ -593,12 +593,12 @@
                                         <div class="group-chat-sender-text-container">
                                             <p>${data.message.text}</p>
                                         </div>
-                                        <img src="{{ asset('image/default.jpg') }}" />
+                                        <img src="f{{ asset('image/deault.jpg') }}" />
                                     </div>`;
                 }
-            // }else{
-            //     console.log('not same gp');
-            // }
+            }else{
+                console.log('not same gp');
+            }
 
 
         });
