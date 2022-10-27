@@ -36,7 +36,7 @@ class TrainerManagementConntroller extends Controller
     public function send(Request $request,$id)
     {
 
-        $messageFile='';
+        $path='';
         if($request->file('fileInput') !=null){
             $file = $request->file('fileInput');
             $path =uniqid().'_'. $file->getClientOriginalName();
@@ -45,16 +45,16 @@ class TrainerManagementConntroller extends Controller
                 'trainer_message_media/'.$path,file_get_contents($file)
             );
 
-            $messageFile = $disk->url($path);
+            //$messageFile = $disk->url($path);
         }
 
         $message = new Message();
         $message->training_group_id = $id;
        $message->text = $request->text == null ?  '👍' : $request->text;
-       $message->media = $request->fileInput == null ? null : $messageFile;
+       $message->media = $request->fileInput == null ? null : $path;
 
         $message->save();
-        event(new TrainingMessageEvent($message,$messageFile));
+        event(new TrainingMessageEvent($message,$path));
     }
 
 
