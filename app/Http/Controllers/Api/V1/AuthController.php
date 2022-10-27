@@ -105,7 +105,7 @@ class AuthController extends Controller
                 'message' => 'Successfully Login!',
                 'token' => $token->plainTextToken,
                 'user' => $user,
-                'user_role' => $user->roles->pluck('name')
+                'user_role' => $user->roles->pluck('name')[0]
             ]);
         } else {
             return response()->json([
