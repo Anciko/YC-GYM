@@ -837,15 +837,19 @@
                 const waist = allData.bodyMeasurements.waist
                 const neck = allData.bodyMeasurements.neck
                 const hip = allData.bodyMeasurements.hip
+                const age = allData.bodyMeasurements.age
                 var bfp
+                var bmr
 
                 if(allData.bodyMeasurements.gender === "male"){
                     console.log("male bfp")
                     bfp= Math.round((86.010*(Math.log(waist*1-neck*1)/Math.log(10))-70.041*(Math.log(overallInches)/Math.log(10))+36.76*1)*100)/100;
+                    bmr = (parseInt(weight.value)*4.536) + (parseInt(overallInches)*15.88) + - (parseInt(age)*5) + 5
                 }
                 if(allData.bodyMeasurements.gender === "female"){
                     console.log("female bfp")
                     bfp = Math.round((163.205*(Math.log(waist*1.0+hip*1.0-neck*1.0)/Math.log(10))- 97.684*(Math.log(overallInches)/Math.log(10))-78.387*1.0)*100)/100;
+                    bmr = (parseInt(weight.value)*4.536) + (parseInt(overallInches)*15.88) + - (parseInt(age)*5) - 161
                 }
 
                 weightData = {
@@ -853,6 +857,7 @@
                     idealWeight: idealWeight.value,
                     bmi : bmi,
                     bfp : bfp,
+                    bmr:bmr
                   }
                 allData = {
                   ...allData,
