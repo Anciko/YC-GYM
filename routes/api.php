@@ -40,20 +40,25 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::post('store-bank-payment', [AuthController::class, 'storeBankPayment']);
     Route::post('store-wallet-payment', [AuthController::class, 'storeWalletPayment']);
 
-    //Training Center
+    //Training Center - For Gold, Ruby, Ruby Premium
     Route::get('training-groups', [TrainingGroupController::class, 'getTrainningGroups']); // end
+    Route::get('member-groups', [TrainingGroupController::class, 'getTrainningGroups']);
     Route::post('create-training-group', [TrainingGroupController::class, 'createTrainingGroup']); //end
     Route::post('delete-training-group', [TrainingGroupController::class, 'deleteTrainingGroup']); // end
     Route::post('training-group-view-media', [TrainingGroupController::class, 'trainingGroupViewMedia']);
     // to change get method
 
     Route::post('members-for-training-group', [TrainingGroupController::class, 'memberForTrainingGroup']);
-
     Route::post('view-member', [TrainingGroupController::class, 'viewMembers']);//end // to change get method
     Route::get('view-member-profile', [TrainerGroupController::class, 'viewMemberProfile']);
     Route::post('add-member', [TrainingGroupController::class, 'addMember']);
     Route::post('kick-member', [TrainingGroupController::class, 'kickMember']);
 
+    //For Platinum, Diamond
+    Route::get('workout-videos', [TrainingGroupController::class, 'getWorkoutVideos']);
+    Route::get('meals', [TrainingGroupController::class, 'getMeals']);
+    Route::post('complete-workouts', [TrainingGroupController::class, 'completeWorkouts']);
+    Route::post('eat-meals', [TrainerGroupController::class, 'eatMeals']);
 
 });
 

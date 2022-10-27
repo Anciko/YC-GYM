@@ -20,14 +20,15 @@ class Customer_TrainingCenterController extends Controller
         $user=auth()->user();
         $bmi=$user->bmi;
         if($bmi< 18.5){
-            $workout_plan="under weight";
+            $workout_plan="weight gain";
         }elseif($bmi>=18.5 && $bmi<=24.9){
             $workout_plan="body beauty";
         }elseif($bmi>=25){
             $workout_plan="weight loss";
         }
+
         $tc_workoutplans=DB::table('workouts')
-                            ->where('workout_plan_id',4)
+                            ->where('workout_plan_id',1)
                             ->where('member_type',$user->member_type)
                             ->where('gender_type',$user->gender)
                             ->get();
@@ -38,7 +39,7 @@ class Customer_TrainingCenterController extends Controller
         $user=auth()->user();
         $bmi=$user->bmi;
         if($bmi< 18.5){
-            $workout_plan="under weight";
+            $workout_plan="weight gain";
         }elseif($bmi>=18.5 && $bmi<=24.9){
             $workout_plan="body beauty";
         }elseif($bmi>=25){
@@ -46,7 +47,7 @@ class Customer_TrainingCenterController extends Controller
         }
         $current_day=Carbon::now()->format('l');
         $tc_workouts=DB::table('workouts')
-                        ->where('workout_plan_id',4)
+                        ->where('workout_plan_id',1)
                         ->where('member_type',$user->member_type)
                         ->where('gender_type',$user->gender)
                         ->where('workout_level',$user->membertype_level)
@@ -56,11 +57,18 @@ class Customer_TrainingCenterController extends Controller
             $total_time=0;
             $total_time+=$wk->time;
             }
-            dd($tc_workouts->toArray());
+            //dd($tc_workouts->toArray());
 
 
         return view('customer.training_center.workout_plan',compact('tc_workouts'));
     }
+
+    public function workout_complete($sum)
+    {
+        dd($sum);
+        return view('customer.training_center.workout_complete');
+    }
+
 
     public function meal()
     {
@@ -175,6 +183,7 @@ class Customer_TrainingCenterController extends Controller
                         ->where('workout_level',$user->membertype_level)
                         ->where('day',$current_day)
                         ->get();
+
         return view('customer.training_center.workout',compact('tc_workouts'));
     }
 }

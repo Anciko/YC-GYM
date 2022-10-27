@@ -109,13 +109,16 @@
         }
 
         let videoSource = new Array();
+        let videoDuration=0;
+        let sum=0;
         var tc_workout_video = @json($tc_workouts);
         videoSource=tc_workout_video;
-        console.log(videoSource);
 
         for(var a = 0;a < videoSource.length;a++){
 
-             videoSource[a] = '../../storage/upload/'+videoSource[a].video;
+            videoDuration=@json($tc_workouts)[a].time;
+            sum+=videoDuration;
+            videoSource[a] = '../../storage/upload/'+videoSource[a].video;
         }
         // videoSource[0] = 'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4';
         // videoSource[1] = 'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4';
@@ -136,7 +139,10 @@
         function myHandler() {
             i++;
             if (i == videoCount) {
-                alert("workout session ended")
+                //console.log(sum);
+                alert("workout session ended");
+                    //window.location.href = "{{ route('workout_complete',"sum")}}";
+                    window.location.href = 'customer/workout_complete/' + sum;
                 // i = 0;
                 // videoPlay(i);
             } else {

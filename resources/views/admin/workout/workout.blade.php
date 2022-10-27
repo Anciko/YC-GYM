@@ -15,14 +15,13 @@
 <div class="d-flex">
 <h3 class="text-center mx-auto">Workouts</h3>
 </div>
-<a href="{{route('workoutplane')}}" class="btn btn-sm btn-primary"><i class="fa-solid fa-arrow-left-long"></i>&nbsp; Back</a>
 <a href="{{route('workout')}}" class="btn btn-sm btn-primary"><small>Create Workout</small></a>
     <div class="row my-3">
         @foreach ($workoutview as $workout)
         <div class="col-md-3">
-            <div class="card shadow rounded">
+            <div class="card shadow rounded text-capitalize">
                 <div class="card-header">
-                    {{$workout->plan_type}}
+                    {{$workout->workout_plan_type}}
                     <span class="bg-info text-white rounded-pill" style="font-size: 0.8rem; padding:3px; float: right;">{{$workout->day}}</span>
                 </div>
                 <div class="card-body" style="padding: 0;">
@@ -42,7 +41,7 @@
                             <p class="card-text mb-1"><b>Member Type :</b> {{$workout->member_type}}</p>
                             <p class="card-text mb-1"><b>Place :</b> {{$workout->place}}</p>
                             <p class="card-text mb-1"><b>Burn Calories :</b> {{$workout->calories}} Calories</p>
-                            <p class="card-text mb-3"><b>Video Duration :</b> {{$workout->time}} Minutes</p>
+                            {{-- <p class="card-text mb-3"><b>Video Duration :</b> {{$workout->time}} Minutes</p> --}}
                             <a href="{{route('workoutedit',[$workout->id])}}" class="btn btn-sm btn-primary">Edit</a>
                             <a href="{{route('workoutdelete',[$workout->id])}}" class="btn btn-sm btn-danger ms-2">Delete</a>
                         </div>

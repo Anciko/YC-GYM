@@ -282,7 +282,7 @@
 
                 $('#addMember').hide();
                 $('#search_bar').append(`<form class="add-member-form" action="" >\
-                    <input type="text"  placeholder="Search member" id="search">\
+                    <input type="text" class = "form-control"  placeholder="Search member" id="search">\
                 </form>\
                 `);
                 $('.add-member-form').show();
@@ -529,6 +529,7 @@
 
             var id = localStorage.getItem('group_id');
             console.log('group id',id);
+
             //formdata
             let formData = new FormData(messageform);
             formData.append('fileInput', fileName);

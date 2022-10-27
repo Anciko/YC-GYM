@@ -9,6 +9,11 @@ class TrainingUser extends Model
 {
     use HasFactory;
 
+
+    // public function trainingGroups() {
+    //     return $this->hasMany(TrainingGroup::class, 'training_group_id', 'user_id');
+    // }
+
     public function group() {
         return $this->belongsTo(TrainingGroup::class,'group_id', 'id');
     }

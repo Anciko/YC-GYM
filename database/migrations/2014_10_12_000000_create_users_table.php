@@ -39,6 +39,7 @@ class CreateUsersTable extends Migration
             $table->string('goal')->nullable();
             $table->string('activities')->nullable();
             $table->float('bmi')->default(0.0);
+            $table->float('bmr')->default(0.0);
             $table->float('bfp')->default(0.0);
             $table->string('gender')->nullable();
             $table->date('from_date')->nullable();

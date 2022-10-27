@@ -8,5 +8,10 @@ use Illuminate\Database\Eloquent\Model;
 class Workout extends Model
 {
     use HasFactory;
-    protected $fillable = ['workout_plan_id','member_type','workout_name','gender_type','time','calories','workout_level','workout_periods','place','day','image','video'];
+    protected $fillable = ['workout_plan_type','member_type','workout_name','gender_type','time','calories','workout_level','workout_periods','place','day','image','video'];
+
+
+    public function workoutPlan() {
+        return $this->belongsTo(WorkoutPlan::class,'workout_plan_id', 'id');
+    }
 }

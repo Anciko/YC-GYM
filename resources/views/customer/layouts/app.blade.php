@@ -7,6 +7,8 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
 
+
+
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 
@@ -27,15 +29,22 @@
 
     <link href="{{ asset('css/customer/css/transactionChoice.css')}}" rel="stylesheet"/>
 
-    <title>Hello, world!</title>
+    <title>YC-fitness</title>
   </head>
   <body class="customer-registeration-bgimg">
     <!-- <div class="customer-registeration-bgimg"> -->
+        <script>
+            const theme = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-theme', theme);
+        </script>
+
 
         <div class="overlay">
 
         </div>
         @include('customer.layouts.header')
+        <!--theme-->
+        <script src="{{asset('js/theme.js')}}"></script>
 
     <!-- </div> -->
         <div class="customer-main-content-container">
@@ -55,8 +64,7 @@
 
     <script src={{ asset('js/customer/js/customerRegisteration.js')}}></script>
 
-    <!--theme-->
-    <script src="{{asset('js/theme.js')}}"></script>
+
 
 
 

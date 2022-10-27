@@ -58,7 +58,7 @@ class WorkoutController extends Controller
         // $workoutplanId = $request->id;
         $member = Member::groupBy('member_type')->orWhere('member_type','Platinum')->orWhere('member_type','Diamond')->get();
         //dd($workoutplanId);
-        return view('admin.workout.workoutcreate', compact('workoutplanId', 'member'));
+        return view('admin.workout.workoutcreate', compact('member'));
     }
 
     public function createworkout(WorkoutRequest $request){
@@ -83,7 +83,7 @@ class WorkoutController extends Controller
 
         if($request->gendertype == 'both'){
             $data = new Workout();
-        $data->workout_plan_id = $request->workoutplanId;
+        $data->workout_plan_type = $request->plantype;
         $data->member_type = $request->memberType;
         $data->workout_name = $request->workoutname;
         $data->gender_type = 'male';
@@ -98,7 +98,7 @@ class WorkoutController extends Controller
         $data->save();
 
         $data = new Workout();
-        $data->workout_plan_id = $request->workoutplanId;
+        $data->workout_plan_type = $request->plantype;
         $data->member_type = $request->memberType;
         $data->workout_name = $request->workoutname;
         $data->gender_type = 'female';
@@ -115,7 +115,7 @@ class WorkoutController extends Controller
         }
         else{
             $data = new Workout();
-        $data->workout_plan_id = $request->workoutplanId;
+        $data->workout_plan_type = $request->plantype;
         $data->member_type = $request->memberType;
         $data->workout_name = $request->workoutname;
         $data->gender_type = $request->gendertype;
@@ -135,8 +135,7 @@ class WorkoutController extends Controller
     }
 
     public function workoutview(){
-        $workoutview = Workout::select('workouts.id','workouts.workout_name','workouts.gender_type','workouts.workout_level','workouts.time','workouts.calories','workouts.video','workouts.day','workouts.place','workouts.member_type')->get();
-        //dd($workoutview->toArray());
+        $workoutview = Workout::all();
         return view('admin.workout.workout')->with(['workoutview'=>$workoutview]);
     }
 
@@ -188,6 +187,7 @@ class WorkoutController extends Controller
             $image_name = $check->image;
         }
 
+        $check->workout_plan_type = $request->plantype ?? $check->workout_plan_type;
         $check->member_type = $request->memberType ?? $check->member_type;
         $check->workout_name = $request->workoutname ?? $check->workout_name;
         $check->gender_type = $request->gendertype ?? $check->gender_type;

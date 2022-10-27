@@ -9,10 +9,138 @@ use Illuminate\Http\Request;
 use App\Models\TrainingGroup;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use App\Models\Meal;
+use App\Models\PersonalMealInfo;
+use App\Models\Workout;
+use App\Models\WorkoutPlan;
+use Carbon\Carbon;
 
 class TrainingGroupController extends Controller
 {
-    //
+    //For Platinum, Diamond
+    public function getWorkoutVideos()
+    {
+        $user = auth()->user();
+
+        $current_day = Carbon::now()->isoFormat('dddd');
+
+        if ($user->bmi < 18.5) { // For weight loss videos
+            $workouts = Workout::where('plan_type', 'weightLoss')
+                ->where('member_type', $user->member_type)
+                ->where('member_type_level', $user->membertype_level)
+                ->where('day', $current_day)->get();
+            // $workout_plan = WorkoutPlan::where('plan_type', 'weightLoss')->first();
+            // $workouts = Workout::where('workout_plan_id', $workout_plan->id)->where('day', $current_day)->get();
+            return response()->json([
+                'message' => 'success',
+                'workouts' => $workouts
+            ]);
+        }
+
+        if ($user->bmi >= 18.5 && $user->bmi <= 24.9) { // For BodyBeauty videos
+            $workouts = Workout::where('plan_type', 'bodyBeauty')
+                ->where('member_type', $user->member_type)
+                ->where('member_type_level', $user->membertype_level)
+                ->where('day', $current_day)->get();
+
+            return response()->json([
+                'message' => 'success',
+                'workouts' => $workouts
+            ]);
+        }
+
+        if ($user->bmi >= 25 && $user->bmi <= 29.9) { // For weightGain videos
+            $workouts = Workout::where('plan_type', 'weightGain')
+                ->where('member_type', $user->member_type)
+                ->where('member_type_level', $user->membertype_level)
+                ->where('day', $current_day)->get();
+
+            return response()->json([
+                'message' => 'success',
+                'workouts' => $workouts
+            ]);
+        }
+    }
+
+    public function getMeals()
+    {
+        $current_day = Carbon::now('Asia/Yangon')->isoFormat('dddd');
+        $current_time = Carbon::now('Asia/Yangon')->toTimeString();
+
+        if ($current_time >= 6 && $current_time <= 9) { // Breakfast
+            $meals = Meal::where('day', $current_day)->where('meal_plan_type', 'Breakfast')->get();
+            return response()->json([
+                'meals' => $meals
+            ]);
+        }
+
+        if ($current_time >= 12 && $current_time <= 14) { // Lunch
+            $meals = Meal::where('day', $current_day)->where('meal_plan_type', 'Lunch')->get();
+
+            return response()->json([
+                'meals' => $meals
+            ]);
+        }
+
+        if ($current_time > 14 && $current_time <= 16) { // Snack
+            $meals = Meal::where('day', $current_day)->where('meal_plan_type', 'Snack')->get();
+
+            return response()->json([
+                'meals' => $meals
+            ]);
+        }
+
+        if ($current_time >= 17 && $current_time <= 20) { // Dinner
+            $meals = Meal::where('day', $current_day)->where('meal_plan_type', 'Dinner')->get();
+
+            return response()->json([
+                'meals' => $meals
+            ]);
+        }
+
+        return response()->json([
+            'message' => 'No meals here!'
+        ]);
+    }
+
+    public function completeWorkouts(Request $request)
+    {
+        $workouts = $request->all();
+        $workouts = json_decode(json_encode($workouts));
+
+        foreach ($workouts as $workout) {
+            $personal_workout_info = new PersonalWorkoutInfo();
+            $personal_workout_info->workout_id = $workout->workout_id;
+            $personal_workout_info->user_id = auth()->user()->id;
+
+            $personal_workout_info->save();
+        }
+
+        return response()->json([
+            'message' => 'success'
+        ]);
+    }
+
+    public function eatMeals(Request $request)
+    {
+
+        $meal_infos = $request->all();
+        $meal_infos = json_decode(json_encode($meal_infos));
+
+        foreach ($meal_infos as $meal_info) {
+            $personal_meal_info = new PersonalMealInfo();
+            $personal_meal_info->meal_id = $meal_info->meal_id;
+            $personal_meal_info->user_id = auth()->user()->id;
+            $personal_meal_info->meal_count = $meal_info->meal_count;
+            $personal_meal_info->save();
+        }
+
+        return response()->json([
+            'messaage' => 'success'
+        ]);
+    }
+
+    //For Gold, Ruby, RubyPremium
     public function getTrainningGroups()
     {
         $user = auth()->user();
@@ -22,6 +150,24 @@ class TrainingGroupController extends Controller
             'message' => 'success',
             'training_groups' => $training_groups
         ]);
+    }
+
+    public function getGroupsOfMember()
+    {
+        $user = auth()->user();
+        $training_users = TrainingUser::where('user_id', $user->id)->get();
+
+        $member_groups = [];
+        foreach($training_users as $training_user) {
+            $member_group = TrainingGroup::where('id', $training_user->group_id)->first();
+            array_push($member_groups, $member_group);
+        }
+
+        return response()->json([
+            'message' => 'success',
+            'member_groups' => $member_groups
+        ]);
+
     }
 
     public function createTrainingGroup(Request $request)
@@ -81,7 +227,7 @@ class TrainingGroupController extends Controller
         $group_id = $request->id;
         $group = TrainingGroup::where('id', $group_id)->first();
 
-        if ($group->group_type == 'weightLoss') {
+        if ($group->group_type == 'weight loss') {
             $members = User::select('name', 'id')->where('ingroup', '!=', 1)
                 ->where('active_status', 2)
                 ->where('member_type', $group->member_type)
@@ -96,7 +242,7 @@ class TrainingGroupController extends Controller
             ]);
         }
 
-        if ($group->group_type == 'weightGain') {
+        if ($group->group_type == 'weight gain') {
             $members = User::select('name', 'id')->where('ingroup', '!=', 1)
                 ->where('active_status', 2)
                 ->where('member_type', $group->member_type)
@@ -111,7 +257,7 @@ class TrainingGroupController extends Controller
             ]);
         }
 
-        if ($group->group_type == 'bodyBeauty') {
+        if ($group->group_type == 'body beauty') {
             $members = User::select('name', 'id')->where('ingroup', '!=', 1)
                 ->where('active_status', 2)
                 ->where('member_type', $group->member_type)
@@ -159,7 +305,6 @@ class TrainingGroupController extends Controller
             $member->ingroup = 1;
             $member->update();
             $member->tainer_groups()->attach($group_id);
-
         }
 
         return response()->json([
@@ -185,11 +330,12 @@ class TrainingGroupController extends Controller
 
 
 
-    //For Platinum, Diamond
-    
 
 
-    public function test($name) {
+
+
+    public function test($name)
+    {
         return $name;
     }
 

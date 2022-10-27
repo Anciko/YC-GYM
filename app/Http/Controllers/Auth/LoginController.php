@@ -82,6 +82,10 @@ class LoginController extends Controller
             Auth::login($user);
             return redirect('ruby_premium');
         }
+        if( $user->hasAnyRole(['Gym Member'])){
+            Auth::login($user);
+            return redirect('gym_member');
+        }
         else{
             return redirect('/');
         }

@@ -56,5 +56,12 @@ class MemberTypeSeeder extends Seeder
         'role_id'=>9
        ]);
 
+       Member::create([
+        'member_type' =>'Gym Member',
+        'price'=>40000,
+        'duration'=>1,
+        'role_id'=>11
+       ]);
+
     }
 }
