@@ -152,6 +152,24 @@ class TrainingGroupController extends Controller
         ]);
     }
 
+    public function getGroupsOfMember()
+    {
+        $user = auth()->user();
+        $training_users = TrainingUser::where('user_id', $user->id)->get();
+
+        $member_groups = [];
+        foreach($training_users as $training_user) {
+            $member_group = TrainingGroup::where('id', $training_user->group_id)->first();
+            array_push($member_groups, $member_group);
+        }
+
+        return response()->json([
+            'message' => 'success',
+            'member_groups' => $member_groups
+        ]);
+
+    }
+
     public function createTrainingGroup(Request $request)
     {
         $user = auth()->user();
