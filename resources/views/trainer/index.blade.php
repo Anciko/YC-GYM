@@ -533,7 +533,7 @@
             //formdata
             let formData = new FormData(messageform);
             formData.append('fileInput', fileName);
-            console.log('hahhahaha', fileName);
+            console.log('hahhahaha', id);
 
             if (trainer_message_input == null) {
                 axios.post('/api/sendmessage/' + id, formData).then();
@@ -552,8 +552,8 @@
         var pusher = new Pusher('576dc7f4f561e15a42ef', {
             cluster: 'eu'
         });
-
-        console.log('viewmessage', groupid);
+        var id = localStorage.getItem('group_id');
+        console.log("testing",id);
         var channel = pusher.subscribe('trainer-message');
         channel.bind('training_message_event', function(data) {
 

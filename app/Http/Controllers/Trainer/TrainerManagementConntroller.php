@@ -183,7 +183,10 @@ class TrainerManagementConntroller extends Controller
             ->get();
 
            }
-
+          // dd($members);
+        //    return response()->json([
+        //     'members' => $members
+        //    ]);
         //dd($request->keyword);
         if($request->keyword != ''){
             if($group->group_type === 'weight loss'){

@@ -274,7 +274,7 @@
                         </li>
                     </li>
 
-                    <li class="sidebar-item @yield('mealplan-active')">
+                    {{-- <li class="sidebar-item @yield('mealplan-active')">
 
                         <a class="sidebar-link" href="{{ route('mealplan.index') }}">
 
@@ -284,7 +284,7 @@
 
                         </a>
 
-                    </li>
+                    </li> --}}
 
 
 

@@ -28,6 +28,7 @@
             <a href="#">Shop</a>
             <a href="#">Search</a>
             <a href="{{route('training_center.index')}}">Training Center</a>
+            <a href="{{route('group')}}">Group</a>
             <a href="#">Notifications</a>
             <a href="#">Account</a>
             <div style="float:right;margin-left:30px">
