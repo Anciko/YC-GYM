@@ -189,7 +189,7 @@ Route::get('customer/checkemail',[CustomerRegisterController::class,'checkemail'
             Route::get('/platinum',[TrainerManagementConntroller::class,'platinum'])->name('platinum');
             Route::get('/diamond',[TrainerManagementConntroller::class,'diamond'])->name('diamond');
 
-            Route::get('customer/workout_complete/{sum}',[Customer_TrainingCenterController::class,'workout_complete'])->name('workout_complete');
+            Route::get('customer/training_center/workout_complete/{t_sum}/{cal_sum?}/{count_video?}',[Customer_TrainingCenterController::class,'workout_complete'])->name('workout_complete');
             Route::get('customer/training_center',[Customer_TrainingCenterController::class,'index'])->name('training_center.index');
             Route::get('customer/training_center/meal',[Customer_TrainingCenterController::class,'meal'])->name('training_center.meal');
             Route::get('customer/training_center/workout_plan',[Customer_TrainingCenterController::class,'workout_plan'])->name('training_center.workout_plan');

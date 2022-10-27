@@ -14,15 +14,15 @@
 
     <div class="customer-workout-completed-details-container">
         <div class="customer-workout-completed-detail">
-            <h1>5</h1>
+            <h1>{{$total_calories}}</h1>
             <span>Calories</span>
         </div>
         <div class="customer-workout-completed-detail">
-            <h1>1</h1>
+            <h1>{{$total_time}}</h1>
             <span>Minutes</span>
         </div>
         <div class="customer-workout-completed-detail">
-            <h1>10</h1>
+            <h1>{{$total_video}}</h1>
             <span>Exercises</span>
         </div>
     </div>

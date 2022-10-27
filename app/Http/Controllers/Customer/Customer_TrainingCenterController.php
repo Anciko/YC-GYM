@@ -63,10 +63,13 @@ class Customer_TrainingCenterController extends Controller
         return view('customer.training_center.workout_plan',compact('tc_workouts'));
     }
 
-    public function workout_complete($sum)
+    public function workout_complete(Request $request,$t_sum,$cal_sum=null,$count_video)
     {
-        dd($sum);
-        return view('customer.training_center.workout_complete');
+        dd($t_sum,$cal_sum,$count_video);
+        $total_time=$t_sum;
+        $total_calories=$cal_sum;
+        $total_video=$count_video;
+        return view('customer.training_center.workout_complete',compact('total_time','total_calories','total_video'));
     }
 
 
