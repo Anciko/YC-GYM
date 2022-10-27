@@ -13,11 +13,11 @@
 
         <div class="customer-workout-plan-header-detail-container">
             <iconify-icon icon="fluent-emoji-flat:fire" class="customer-workout-plan-detail-icon"></iconify-icon>
-            <p>Calories : <span>50</span></p>
+            <p>Calories : <span>0</span></p>
         </div>
         <div class="customer-workout-plan-header-detail-container">
             <iconify-icon icon="noto:alarm-clock" class="customer-workout-plan-detail-icon"></iconify-icon>
-            <p>Minutes : <span>15</span></p>
+            <p>Minutes : <span>0</span></p>
         </div>
     </div>
 
@@ -58,7 +58,19 @@
 
                     <div class="customer-workout-plan-name">
                         <p>{{$workout->workout_name}}</p>
-                        <span>{{$workout->time}}</span>
+                        <?php
+                           if ($workout->time < 60) {
+                            $sec=$workout->time;
+                           }else {
+                            $duration=round($workout->time/60);
+                            $sec=$workout->time%60;
+                           }
+                        ?>
+                        @if ($workout->time < 60)
+                        <span>0:{{$sec}}</span>
+                        @else
+                        <span>{{$duration}}:{{$sec}}</span>
+                        @endif
                     </div>
                 </div>
                 @empty
