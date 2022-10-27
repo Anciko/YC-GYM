@@ -9,9 +9,12 @@
                 <div class="mb-4">
                     <label class="" for="meal_plan_id">Meal Plan Type</label> <br>
                     <select class="form-control " name="meal_plan_id" id="meal_plan_id">
-                        @foreach($meal_plan_type as $meal_plan)
+                        {{-- @foreach($meal_plan_type as $meal_plan)
                         <option value="{{$meal_plan->id}}">{{$meal_plan->plan_name}}</option>
-                        @endforeach
+                        @endforeach --}}
+                        <option value="weight_gain">Weight Gain</option>
+                        <option value="weight_loss">Weight Loss</option>
+                        <option value="body_beauty">Body Beauty</option>
                     </select>
                 </div>
 

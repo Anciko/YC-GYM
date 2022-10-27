@@ -344,7 +344,7 @@ z-index: 10;
     margin-bottom: 20px;
 }
 
-.group-chat-receiver-container img{
+.group-chat-receiver-container > img{
     width: 35px;
     height: 35px;
     border-radius: 50%;
@@ -370,6 +370,11 @@ z-index: 10;
     background-color: var(--customer-primary-color);
     border-radius: 5px;
     color: white;
+}
+
+.group-chat-receiver-text-container img{
+    width: 200px;
+    height: auto;
 }
 
 .group-chat-sender-container{

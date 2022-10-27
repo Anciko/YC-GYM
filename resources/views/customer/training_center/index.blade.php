@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="customer-training-center-header-container">
-    <h1>Weight Loss Plan</h1>
+    <h1>{{Str::ucfirst($workout_plan)}}</h1>
     <p>Thursday Sep 22, 2022</p>
 </div>
 

@@ -15,22 +15,25 @@ class TrainingManagementController extends Controller
     //send message for mobile
     public function sendmessage(Request $request, $id)
     {
-
+        $file_name='';
         $message = new Message();
         $message->training_group_id = $id;
         $message->text = $request->text == null ?  '👍' : $request->text;
 
         // Store Image
-        $tmp = $request->file;
+        if($request->file != null){
+            $tmp = $request->file;
+            $file = base64_decode($tmp);
+            $file_name = $request->fileName;
+            Storage::disk('public')->put(
+                'trainer_message_media/' . $file_name,
+                $file
+            );
+            $message->media = $file_name;
+        }else{
+            $message->media = null;
+        }
 
-        $file = base64_decode($tmp);
-        $file_name = $request->fileName;
-
-        Storage::disk('public')->put(
-            'trainer_message_media/' . $file_name,
-            $file
-        );
-        $message->media = $file_name;
         $message->save();
         event(new TrainingMessageEvent($message, $file_name));
     }
