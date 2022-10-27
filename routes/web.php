@@ -265,7 +265,7 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
         });
 
         Route::middleware(['role:Gold|Ruby|Ruby Premium'])->group(function () {
-        Route::get('customer/{id}',[CustomerManagementController::class,'showchat']);
+        Route::get('customer',[CustomerManagementController::class,'showchat'])->name('group');
         });
 
     });
