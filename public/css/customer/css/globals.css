@@ -2,9 +2,10 @@
 
 
 
-:root{
+[data-theme = "light"]{
     --customer-primary-color: #3CDD57;
     --customer-primary-color-hover : #53f96f;
+    --customer-primary-soft-color: #cdffd5;
     --customer-placeholder-color: #dddddd;
     --customer-loggedin-bg-color : #ECECEC;
     --customer-red-color: #D70000;
@@ -18,7 +19,8 @@
 
 [data-theme = "dark"]{
     --customer-primary-color: #D9AE30;
-    --customer-primary-color-hover : #f2ca51;
+    --customer-primary-soft-color: #D9AE30;
+    --customer-primary-color-hover : #ffe493;
     --customer-placeholder-color: #dddddd;
     --customer-loggedin-bg-color : #535353;
     --customer-red-color: #D70000;
@@ -32,6 +34,7 @@
 
 [data-theme="pink"]{
     --customer-primary-color: #F98EAA;
+    --customer-primary-soft-color: #F98EAA;
     --customer-primary-color-hover : #ffa4bc;
     --customer-placeholder-color: #dddddd;
     --customer-loggedin-bg-color : #FFE0E8;

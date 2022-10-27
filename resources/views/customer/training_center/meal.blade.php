@@ -65,7 +65,7 @@
 
         </div>
         <form>
-            <input type="text" id="launch" placeholder="Search for food...">
+            <input type="text" id="lunch" placeholder="Search for food...">
         </form>
         <div class="customer-food-tracker-checkboxes-container lunch_container">
 
@@ -127,26 +127,188 @@
   <script>
   $(document).ready(function() {
       var foodList = []
-      var totalCal = 1775
-      var takenCal = 0
+
+    //   var localFoodList = JSON.parse(localStorage.getItem("foodList"));
+
+        var localFoodList = JSON.parse(localStorage.getItem("foodList"));
+       var localFoodListDate = JSON.parse(localStorage.getItem("foodListDate"));
+
+       const date = new Date();
+
+        let day = date.getDate();
+        let month = date.getMonth() + 1;
+        let year = date.getFullYear();
+        let currentDate = `${day}-${month}-${year}`;
+        let currentTime = date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds();
+        console.log(currentTime)
+        $("#breakfast").prop('disabled', true);
+        $("#lunch").prop('disabled', true);
+        $("#snack").prop('disabled', true);
+        $("#dinner").prop('disabled', true);
+
+
+
+        if(currentTime >= "06:00:00" && currentTime <= "09:00:00"){
+            $("#breakfast").prop('disabled', false);
+            // $("#lunch").prop('disabled', true);
+            // $("#snack").prop('disabled', true);
+            // $("#dinner").prop('disabled', true);
+        }
+
+        if(currentTime >= "12:00:00" && currentTime < "14:00:00"){
+            // $("#breakfast").prop('disabled', true);
+            $("#lunch").prop('disabled', false);
+            // $("#snack").prop('disabled', true);
+            // $("#dinner").prop('disabled', true);
+
+        }
+
+        if(currentTime >= "14:00:00" && currentTime <= "16:00:00"){
+            // $("#breakfast").prop('disabled', true);
+            // $("#lunch").prop('disabled', true);
+            $("#snack").prop('disabled', false);
+            // $("#dinner").prop('disabled', true);
+
+        }
+        if(currentTime >= "17:00:00" && currentTime <= "20:00:00"){
+            // $("#breakfast").prop('disabled', true);
+            // $("#lunch").prop('disabled', true);
+            // $("#snack").prop('disabled', true);
+            $("#dinner").prop('disabled', false);
+
+        }
+
+        var totalCal = 1775
+        var takenCal
+
+        var totalCarb = (totalCal/100) * 50
+        var takenCarb
+
+        var totalProtein = (totalCal/100) * 30
+        var takenProtein
+
+        var totalFat = (totalCal/100) * 20
+        var takenFat
+
+        console.log(localFoodListDate, currentDate)
+
+        if(!localFoodList ||  !localFoodListDate ){
+            takenCal = 0
+            takenCarb = 0
+            takenProtein = 0
+            takenFat = 0
+        }else{
+            if(localFoodListDate !== currentDate){
+                takenCal = 0
+                takenCarb = 0
+                takenProtein = 0
+                takenFat = 0
+                localStorage.removeItem("foodList");
+                localStorage.removeItem("foodListDate");
+            }else{
+                var calSum = 0
+                var carbSum = 0
+                var proteinSum = 0
+                var fatSum = 0
+                for(var i =0;i < localFoodList.length;i++){
+                    // console.log(localFoodList[i])
+                    calSum = calSum + (localFoodList[i].cal * localFoodList[i].servings)
+                }
+                for(var i =0;i < localFoodList.length;i++){
+                    // console.log(localFoodList[i])
+                    carbSum = carbSum + (localFoodList[i].carb * localFoodList[i].servings)
+                }
+                for(var i =0;i < localFoodList.length;i++){
+                    // console.log(localFoodList[i])
+                    proteinSum = proteinSum + (localFoodList[i].protein * localFoodList[i].servings)
+                }
+                for(var i =0;i < localFoodList.length;i++){
+                    // console.log(localFoodList[i])
+                    fatSum = fatSum + (localFoodList[i].fat * localFoodList[i].servings)
+                }
+                takenCal = calSum
+                takenCarb = carbSum
+                takenProtein = proteinSum
+                takenFat = fatSum
+                }
+
+        }
+
 
       var resultCal = takenCal / totalCal;
-
-      var totalCarb = (totalCal/100) * 50
-      var takenCarb = 0
       var resultCarb = takenCarb/totalCarb
-
-      var totalProtein = (totalCal/100) * 30
-      var takenProtein = 0
       var resultProtein = takenProtein/totalProtein
-
-      var totalFat = (totalCal/100) * 20
-      var takenFat = 0
       var resultFat = takenFat/totalFat
 
 
       $(".save").click(function(){
         console.log(foodList,"final");
+        // console.log(foodList.length)
+
+        if(foodList.length === 0){
+            alert("Please Add At least one food")
+            return
+        }
+
+        var today = new Date();
+        var timeMismatch = false
+        var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+        // var time = "06" + ":" + "00" + ":" + "00";
+        console.log(time)
+
+        if(time >= "06:00:00" && time <= "09:00:00"){
+            console.log("breakfast time")
+            for(var i =0; i < foodList.length ;i++){
+                if(foodList[i].type !== "Breakfast"){
+                    timeMismatch =true
+                }
+            }
+
+            if(timeMismatch){
+                alert("It is now breakfast time")
+                return
+            }
+        }
+
+        if(time >= "12:00:00" && time < "14:00:00"){
+            console.log("lunch time")
+            for(var i =0; i < foodList.length ;i++){
+                if(foodList[i].type !== "Lunch"){
+                    timeMismatch =true
+                }
+            }
+            if(timeMismatch){
+                alert("It is now lunch time")
+                return
+            }
+        }
+
+        if(time >= "14:00:00" && time <= "16:00:00"){
+            console.log("snack time")
+            for(var i =0; i < foodList.length ;i++){
+                if(foodList[i].type !== "Snack"){
+                    timeMismatch =true
+                }
+            }
+            if(timeMismatch){
+                alert("It is now snack time")
+                return
+            }
+        }
+        if(time >= "17:00:00" && time <= "20:00:00"){
+            console.log("dinner time")
+            for(var i =0; i < foodList.length ;i++){
+                if(foodList[i].type !== "Dinner"){
+                    timeMismatch =true
+                }
+            }
+            if(timeMismatch){
+                alert("It is now dinner time")
+                return
+            }
+        }
+
+        // return
 
         $.ajax({
                         url : 'foodList',
@@ -157,28 +319,25 @@
                         data:  {"foodList":foodList},
                         success   : function(data) {
                             console.log(data);
-                            // swal("Success!", "Good Job!", "success"),
-                            //     function(){
-                            //         location.reload();
-                            //     }
-                            // },
-                            Swal.fire({
-                                icon: 'success',
-                                title: 'Success',
-                                text: 'Great Job!',
-                                timer: 3000,
-                                timerProgressBar: true,
-                                showClass: {
-                                    popup: 'animate__animated animate__fadeInDown'
-                                },
-                                hideClass: {
-                                    popup: 'animate__animated animate__fadeOutUp'
-                                }
-                                }).then(okay => {
-                                if (okay) {
-                                    window.location.reload();
-                                }
-                            })
+                            swal("Success!", "Good Job!", "success");
+                            const date = new Date();
+
+                            let day = date.getDate();
+                            let month = date.getMonth() + 1;
+                            let year = date.getFullYear();
+                            let currentDate = `${day}-${month}-${year}`;
+
+                            if(!localFoodList ||  !localFoodListDate){
+                                localStorage.setItem("foodList", JSON.stringify(foodList))
+                                localStorage.setItem("foodListDate", JSON.stringify(currentDate))
+                            }else{
+                                const merged = [...localFoodList, ...foodList]
+                                localStorage.setItem("foodList", JSON.stringify(merged))
+                                localStorage.setItem("foodListDate", JSON.stringify(currentDate))
+                            }
+
+                            window.location.reload();
+                        },
                         // error : function(err){
                         //     console.log(err)
                         }
@@ -230,7 +389,17 @@
                   }
 
 
+
+                //   console.log($(".breakfast_add"))
+
+
                   $('.breakfast_container').html(htmlView);
+                  $(".breakfast_add").prop('disabled', true);
+                  $(".breakfast_add").css("opacity", ".5");
+                  if(currentTime >= "06:00:00" && currentTime <= "09:00:00"){
+                    $(".breakfast_add").prop('disabled', false);
+                    $(".breakfast_add").css("opacity", "1");
+                  }
                   $(".breakfast_add").click(function(){
                       $(".customer-added-food-list-container tbody").empty()
                       var id = $(this).data('id');
@@ -383,13 +552,19 @@
 
 
                   $('.lunch_container').html(htmlView);
+                  $(".lunch_add").prop('disabled', true);
+                  $(".lunch_add").css("opacity", ".5");
+                  if(currentTime >= "12:00:00" && currentTime < "14:00:00"){
+                    $(".lunch_add").prop('disabled', false);
+                    $(".lunch_add").css("opacity", "1");
+                  }
                   $(".lunch_add").click(function(){
                       $(".customer-added-food-list-container tbody").empty()
                       var id = $(this).data('id');
                       var i = $(this).val();
                       foodObj = {
                               id : res.lunch[i].id,
-                              type : 'lunch',
+                              type : 'Lunch',
                               name : res.lunch[i].name,
                               cal : res.lunch[i].calories,
                               carb : res.lunch[i].carbohydrates,
@@ -535,13 +710,20 @@
 
 
                   $('.dinner_container').html(htmlView);
+
+                  $(".dinner_add").prop('disabled', true);
+                  $(".dinner_add").css("opacity", ".5");
+                  if(currentTime >= "14:00:00" && currentTime <= "16:00:00"){
+                    $(".dinner_add").prop('disabled', false);
+                    $(".dinner_add").css("opacity", "1");
+                  }
                   $(".dinner_add").click(function(){
                       $(".customer-added-food-list-container tbody").empty()
                       var id = $(this).data('id');
                       var i = $(this).val();
                       foodObj = {
                               id : res.dinner[i].id,
-                              type : 'dinner',
+                              type : 'Dinner',
                               name : res.dinner[i].name,
                               cal : res.dinner[i].calories,
                               carb : res.dinner[i].carbohydrates,
@@ -687,13 +869,19 @@
 
 
                   $('.snack_container').html(htmlView);
+                  $(".snack_add").prop('disabled', true);
+                  $(".snack_add").css("opacity", ".5");
+                  if(currentTime >= "17:00:00" && currentTime <= "20:00:00"){
+                    $(".snack_add").prop('disabled', false);
+                    $(".snack_add").css("opacity", "1");
+                  }
                   $(".snack_add").click(function(){
                       $(".customer-added-food-list-container tbody").empty()
                       var id = $(this).data('id');
                       var i = $(this).val();
                       foodObj = {
                               id : res.snack[i].id,
-                              type : 'snack',
+                              type : 'Snack',
                               name : res.snack[i].name,
                               cal : res.snack[i].calories,
                               carb : res.snack[i].carbohydrates,
@@ -814,10 +1002,12 @@
 
   function circleCounter(totalCal,takenCal,resultCal,totalCarb,takenCarb,resultCarb,totalProtein,takenProtein,resultProtein,totalFat,takenFat,resultFat,foodList){
        // takenCal = 0
+
+
        if(foodList.length === 0){
                               // takenCal = 0
       }else{
-          var sum = 0
+          var sum = takenCal
           for(var i =0;i < foodList.length;i++){
               console.log(foodList[i])
               sum = sum + (foodList[i].cal * foodList[i].servings)
@@ -831,7 +1021,7 @@
       if(foodList.length === 0){
           // takenCarb = 0
       }else{
-          var sum = 0
+          var sum = takenCarb
           for(var i =0;i < foodList.length;i++){
               console.log(foodList[i])
               sum = sum + (foodList[i].carb * foodList[i].servings)
@@ -846,7 +1036,7 @@
       if(foodList.length === 0){
           // takenProtein = 0
       }else{
-          var sum = 0
+          var sum = takenProtein
           for(var i =0;i < foodList.length;i++){
               console.log(foodList[i])
               sum = sum + (foodList[i].protein * foodList[i].servings)
@@ -861,7 +1051,7 @@
       if(foodList.length === 0){
           // takenFat = 0
       }else{
-          var sum = 0
+          var sum = takenFat
           for(var i =0;i < foodList.length;i++){
               console.log(foodList[i])
               sum = sum + (foodList[i].fat * foodList[i].servings)

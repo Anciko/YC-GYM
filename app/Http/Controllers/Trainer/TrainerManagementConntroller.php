@@ -30,6 +30,7 @@ class TrainerManagementConntroller extends Controller
                         ->where('member_type','!=','Free')
                         ->where('member_type','!=','Platinum')
                         ->where('member_type','!=','Diamond')
+                        ->where('member_type','!=','Gym Member')
                         ->get();
          $groups=TrainingGroup::where('trainer_id',auth()->user()->id)->get();
          return view('Trainer.index',compact('messages','members','groups'));
@@ -264,5 +265,9 @@ class TrainerManagementConntroller extends Controller
     public function ruby_premium()
     {
         return view('Trainer.ruby_premium_user');
+    }
+    public function gym_member()
+    {
+        return view('Trainer.gym_member_user');
     }
 }

@@ -7,6 +7,10 @@ if (currentTheme) {
     // if (currentTheme === 'dark') {
         toggleSwitch.value = currentTheme;
     // }
+}else{
+    localStorage.setItem('theme', 'light');
+    document.documentElement.setAttribute('data-theme', "light");
+    toggleSwitch.value = "light";
 }
 
 function switchTheme(e) {
