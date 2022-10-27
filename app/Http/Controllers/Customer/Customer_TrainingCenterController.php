@@ -56,7 +56,7 @@ class Customer_TrainingCenterController extends Controller
             $total_time=0;
             $total_time+=$wk->time;
             }
-            dd($tc_workouts->toArray());
+            //dd($tc_workouts->toArray());
 
 
         return view('customer.training_center.workout_plan',compact('tc_workouts'));

@@ -324,6 +324,10 @@ Route::prefix('admin')->group(function () {
         Route::middleware(['role:Ruby Premium'])->group(function () {
             Route::get('/ruby_premium',[TrainerManagementConntroller::class,'ruby_premium'])->name('ruby_premium');
         });
+        Route::middleware(['role:Gym Member'])->group(function () {
+            Route::get('/gym_member',[TrainerManagementConntroller::class,'gym_member'])->name('gym_member');
+        });
+
         });
 
 
