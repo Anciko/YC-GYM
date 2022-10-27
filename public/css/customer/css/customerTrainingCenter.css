@@ -419,7 +419,7 @@ video::-webkit-media-controls-fullscreen-button {
 }
 
 .customer-food-tracker-container{
-    background-color: white;
+    background-color: var(--customer-card-bg-color);
     box-shadow: 1px 1px 10px 0px rgba(0,0,0,0.25);
     -webkit-box-shadow: 1px 1px 10px 0px rgba(0,0,0,0.25);
     -moz-box-shadow: 1px 1px 10px 0px rgba(0,0,0,0.25);
@@ -444,6 +444,7 @@ video::-webkit-media-controls-fullscreen-button {
 .customer-food-tracker-header > h1{
     font-size: 18px;
     font-weight: 600;
+    color: var(--customer-text-color);
 }
 
 .customer-food-tracker-header > p span{
@@ -501,8 +502,8 @@ video::-webkit-media-controls-fullscreen-button {
 
 .customer-food-tracker-checkbox button:hover{
     /* background-color: var(--customer-primary-color); */
-    color: var(--customer-primary-color);
-    border: 2px solid var(--customer-primary-color);
+    /* color: var(--customer-primary-color);
+    border: 2px solid var(--customer-primary-color); */
 }
 
 .customer-food-tracker-checkbox-label{
@@ -513,6 +514,7 @@ video::-webkit-media-controls-fullscreen-button {
 .customer-food-tracker-checkbox-label p{
     margin-bottom: 0;
     font-size: 14px;
+    color: var(--customer-text-color);
 }
 
 .customer-food-tracker-checkbox-label span{
@@ -529,7 +531,7 @@ video::-webkit-media-controls-fullscreen-button {
 .customer-diamond-food-track-header h1{
     font-size: 30px;
     font-weight: 600;
-
+    color: var(--customer-text-color);
 }
 
 .customer-diamond-food-track-header span{
@@ -670,11 +672,13 @@ video::-webkit-media-controls-fullscreen-button {
 }
 
 .customer-added-food-list-container tbody tr:nth-child(2n){
-    background-color: #ECECEC;
+    background-color: var(--customer-loggedin-bg-color);
 }
 
 .customer-added-food-list-container th{
     text-align: center;
+    color: var(--customer-text-color);
+    color: var(--customer-navlink-color);
 }
 
 .customer-added-food-list-container td{
@@ -682,6 +686,8 @@ video::-webkit-media-controls-fullscreen-button {
     text-align: center;
     /* display: table; */
     padding: 20px 0;
+    color: var(--customer-text-color);
+    color: var(--customer-navlink-color);
 }
 
 .customer-added-food-list-container input{
@@ -693,7 +699,7 @@ video::-webkit-media-controls-fullscreen-button {
     padding: 5px 10px;
     /* background-color: var(--customer-red); */
     border: none;
-    
+
 }
 
 .customer-addfood-confirm-btn{

@@ -19,7 +19,7 @@
 
         <div class="theme-contaier">
             <select class="theme">
-                <option selected value="light">Light</option>
+                <option value="light">Light</option>
                 <option value="dark">Dark</option>
                 <option value="pink">Pink</option>
             </select>
