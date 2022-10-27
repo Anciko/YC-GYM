@@ -43,35 +43,35 @@
                 {{-- end model box for chat photo view --}}
 
                 @if ($chat->media == null)
-                    <div class="group-chat-receiver-container">
-                        <img src="{{ asset('image/default.jpg') }}" />
-                        <div class="group-chat-receiver-text-container">
+                    <div class="group-chat-sender-container">
+                        <div class="group-chat-sender-text-container">
                             <span>Group Member</span>
                             <p>{{ $chat->text }}</p>
                         </div>
+                        <img src="{{ asset('image/default.jpg') }}" />
                     </div>
                 @elseif (pathinfo($chat->media, PATHINFO_EXTENSION) == 'mp4' ||
                     pathinfo($chat->media, PATHINFO_EXTENSION) == 'mov' ||
                     pathinfo($chat->media, PATHINFO_EXTENSION) == 'webm')
-                    <div class="group-chat-receiver-container">
-                        <img src="{{ asset('image/default.jpg') }}" />
-                        <div class="group-chat-receiver-text-container">
+                    <div class="group-chat-sender-container">
+                        <div class="group-chat-sender-text-container">
                             <span>Group Member</span>
                             <video width="100%" height="100%" controls>
                                 <source src="{{ asset('storage/trainer_message_media/' . $chat->media) }}" type="video/mp4">
                             </video>
                         </div>
+                        <img src="{{ asset('image/default.jpg') }}" />
                     </div>
                 @elseif (pathinfo($chat->media, PATHINFO_EXTENSION) == 'png' ||
                     pathinfo($chat->media, PATHINFO_EXTENSION) == 'jpg' ||
                     pathinfo($chat->media, PATHINFO_EXTENSION) == 'jpeg')
-                    <div class="group-chat-receiver-container">
-                        <img src="{{ asset('image/default.jpg') }}" />
-                        <div class="group-chat-receiver-text-container">
+                    <div class="group-chat-sender-container">
+                        <div class="group-chat-sender-text-container">
                             <span>Group Member</span>
                             <a data-bs-toggle="modal" href="#exampleModalToggle{{ $chat->id }}" role="button"><img
                                     src="{{ asset('storage/trainer_message_media/' . $chat->media) }}" alt=""></a>
                         </div>
+                        <img src="{{ asset('image/default.jpg') }}" />
                     </div>
                 @endif
             @endforeach
@@ -192,12 +192,13 @@
         channel.bind('training_message_event', (data) => {
             console.log(data.message.text);
             if (data.message.media == null || data.media == null) {
-                groupchatcontainer.innerHTML += `<div class="group-chat-receiver-container">
-                        <img src="{{ asset('image/default.jpg') }}" />
-                        <div class="group-chat-receiver-text-container">
+                groupchatcontainer.innerHTML += `<div class="group-chat-sender-container">
+
+                        <div class="group-chat-sender-text-container">
                             <span>Group Member</span>
                             <p>${data.message.text}</p>
                         </div>
+                        <img src="{{ asset('image/default.jpg') }}" />
                     </div>`;
             } else {
                 if (data.message.media.split('.').pop() === 'png' || data.message.media.split('.').pop() ===
@@ -217,25 +218,25 @@
                         </div>
                     </div>
                 </div>
-                <div class="group-chat-receiver-container">
-                        <img src="{{ asset('image/default.jpg') }}" />
-                        <div class="group-chat-receiver-text-container">
+                <div class="group-chat-sender-container">
+                        <div class="group-chat-sender-text-container">
                             <span>Group Member</span>
                             <a data-bs-toggle="modal" href="#exampleModalToggle${data.message.id}" role="button">
                                 <img src="{{ asset('storage/trainer_message_media/${data.message.media}') }}">
                             </a>
                         </div>
+                        <img src="{{ asset('image/default.jpg') }}" />
                     </div>`;
                 } else if (data.message.media.split('.').pop() === 'mp4' || data.message.media.split('.').pop() ===
                     'mov' || data.message.media.split('.').pop() === 'webm') {
-                    groupchatcontainer.innerHTML += `<div class="group-chat-receiver-container">
-                        <img src="{{ asset('image/default.jpg') }}" />
-                        <div class="group-chat-receiver-text-container">
+                    groupchatcontainer.innerHTML += `<div class="group-chat-sender-container">
+                        <div class="group-chat-sender-text-container">
                             <span>Group Member</span>
                             <video width="100%" height="100%" controls>
                                 <source src="{{ asset('storage/trainer_message_media/${data.message.media}') }}" type="video/mp4">
                             </video>
                         </div>
+                        <img src="{{ asset('image/default.jpg') }}" />
                     </div>`;
                 }
             }
