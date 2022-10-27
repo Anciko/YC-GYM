@@ -165,7 +165,7 @@ class TrainingGroupController extends Controller
 
         return response()->json([
             'message' => 'success',
-            'member_groups' => $member_groups
+            'training_groups' => $member_groups
         ]);
 
     }
