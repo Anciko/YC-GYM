@@ -159,7 +159,7 @@ class TrainingGroupController extends Controller
 
         $member_groups = [];
         foreach($training_users as $training_user) {
-            $member_group = TrainingGroup::where('id', $training_user->group_id)->first();
+            $member_group = TrainingGroup::where('id', $training_user->training_group_id)->first();
             array_push($member_groups, $member_group);
         }
 
