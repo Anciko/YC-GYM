@@ -276,7 +276,7 @@
             })
 
             $(document).on('click', '#addMember', function(e){
-                
+
                 $('#addMember').hide();
                 $('#search_bar').append(`<form class="add-member-form" action="" >\
                     <input type="text" class = "form-control"  placeholder="Search member" id="search">\
@@ -520,7 +520,6 @@
                 "#groupChatImg");
 
             var id = localStorage.getItem('group_id');
-
 
             //formdata
             let formData = new FormData(messageform);

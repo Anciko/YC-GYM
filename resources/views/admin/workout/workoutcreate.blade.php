@@ -47,7 +47,7 @@
                             <select class="form-select" aria-label="Default select example" placeholder="Workout level select" name="workoutlevel">
                                 <option value=""></option>
                                 <option value="beginner">Beginner</option>
-                                <option value="advance">Advance</option>
+                                <option value="advanced">Advanced</option>
                                 <option value="professional">Professional</option>
                             </select>
                             <label for="floatingInput">Workout level select</label>

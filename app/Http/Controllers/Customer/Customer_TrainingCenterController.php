@@ -63,6 +63,13 @@ class Customer_TrainingCenterController extends Controller
         return view('customer.training_center.workout_plan',compact('tc_workouts'));
     }
 
+    public function workout_complete($sum)
+    {
+        dd($sum);
+        return view('customer.training_center.workout_complete');
+    }
+
+
     public function meal()
     {
         // $user = auth()->user();
@@ -176,6 +183,7 @@ class Customer_TrainingCenterController extends Controller
                         ->where('workout_level',$user->membertype_level)
                         ->where('day',$current_day)
                         ->get();
+
         return view('customer.training_center.workout',compact('tc_workouts'));
     }
 }
