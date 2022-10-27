@@ -16,6 +16,7 @@ class TrainingMessageEvent implements ShouldBroadcast
 
     public $message;
     public $media;
+    public $group_id;
 
 
     /**
@@ -23,10 +24,12 @@ class TrainingMessageEvent implements ShouldBroadcast
      *
      * @return void
      */
-    public function __construct($message, $media)
+    public function __construct($message, $media, $group_id)
     {
         $this->message = $message;
         $this->media = $media;
+        $this->group_id = $group_id;
+
 
     }
 
@@ -38,7 +41,7 @@ class TrainingMessageEvent implements ShouldBroadcast
     public function broadcastOn()
     {
         // return new Channel('trainer-message');
-        return ['trainer-message'];
+        return ['trainer-message.'.$this->group_id];
     }
 
     public function broadcastAs() {
