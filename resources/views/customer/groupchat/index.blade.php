@@ -184,11 +184,12 @@
                 $('#chat').show();
             });
         });
+        var id = localStorage.getItem('group_id');
         var groupchatcontainer = document.querySelector('.group-chat-messages-container');
         var pusher = new Pusher('576dc7f4f561e15a42ef', {
             cluster: 'eu'
         });
-        var channel = pusher.subscribe('trainer-message');
+        var channel = pusher.subscribe('trainer-message.'+id);
         channel.bind('training_message_event', (data) => {
             console.log(data.message.text);
             if (data.message.media == null || data.media == null) {

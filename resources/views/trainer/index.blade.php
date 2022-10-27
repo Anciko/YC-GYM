@@ -574,10 +574,8 @@
         });
         var id = localStorage.getItem('group_id');
         console.log("testing", id);
-        var channel = pusher.subscribe('trainer-message');
+        var channel = pusher.subscribe('trainer-message.'+id);
         channel.bind('training_message_event', function(data) {
-
-
 
             if (data.message.media != null) {
                 var Extension;
