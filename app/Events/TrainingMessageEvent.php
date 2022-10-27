@@ -16,6 +16,8 @@ class TrainingMessageEvent implements ShouldBroadcast
 
     public $message;
     public $media;
+
+
     /**
      * Create a new event instance.
      *
@@ -25,6 +27,7 @@ class TrainingMessageEvent implements ShouldBroadcast
     {
         $this->message = $message;
         $this->media = $media;
+
     }
 
     /**
@@ -34,7 +37,8 @@ class TrainingMessageEvent implements ShouldBroadcast
      */
     public function broadcastOn()
     {
-        return new Channel('trainer-message');
+        // return new Channel('trainer-message');
+        return ['trainer-message'];
     }
 
     public function broadcastAs() {

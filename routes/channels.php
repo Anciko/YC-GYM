@@ -20,3 +20,7 @@ use Illuminate\Support\Facades\Broadcast;
 // Broadcast::channel('trainer-message', function () {
 //     return true;
 // });
+
+// Broadcast::channel('trainer-message', function ($group) {
+//     return true;
+// });

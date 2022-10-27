@@ -20,10 +20,7 @@ class CreateMealsTable extends Migration
             $table->float('protein')->default(0);
             $table->float('carbohydrates')->default(0);
             $table->float('fat')->default(0);
-            $table->integer('meal_plan_id');
-            $table->string('gender');
-            // $table->string('meal_time');
-            // $table->string('day');
+            $table->string('meal_plan_type');
             $table->timestamps();
         });
     }

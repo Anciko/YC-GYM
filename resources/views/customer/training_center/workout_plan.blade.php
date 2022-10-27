@@ -51,7 +51,7 @@
             @forelse ($tc_workouts as $workout)
                 <div class="customer-workout-plan-workout-container">
                     <div class="customer-workout-plan-video-container">
-                        <video controls>
+                        <video>
                             <source src="{{asset('/storage/upload/'.$workout->video)}}" type="video/mp4">
                         </video>
                     </div>
