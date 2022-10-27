@@ -21,7 +21,7 @@ class Customer_TrainingCenterController extends Controller
         $user=auth()->user();
         $bmi=$user->bmi;
         if($bmi< 18.5){
-            $workout_plan="under weight";
+            $workout_plan="weight gain";
         }elseif($bmi>=18.5 && $bmi<=24.9){
             $workout_plan="body beauty";
         }elseif($bmi>=25){
@@ -40,7 +40,7 @@ class Customer_TrainingCenterController extends Controller
         $user=auth()->user();
         $bmi=$user->bmi;
         if($bmi< 18.5){
-            $workout_plan="under weight";
+            $workout_plan="weight gain";
         }elseif($bmi>=18.5 && $bmi<=24.9){
             $workout_plan="body beauty";
         }elseif($bmi>=25){
@@ -63,6 +63,16 @@ class Customer_TrainingCenterController extends Controller
 
         return view('customer.training_center.workout_plan',compact('tc_workouts'));
     }
+
+    public function workout_complete(Request $request,$t_sum,$cal_sum=null,$count_video)
+    {
+        dd($t_sum,$cal_sum,$count_video);
+        $total_time=$t_sum;
+        $total_calories=$cal_sum;
+        $total_video=$count_video;
+        return view('customer.training_center.workout_complete',compact('total_time','total_calories','total_video'));
+    }
+
 
     public function meal()
     {
@@ -171,6 +181,7 @@ class Customer_TrainingCenterController extends Controller
                         ->where('workout_level',$user->membertype_level)
                         ->where('day',$current_day)
                         ->get();
+
         return view('customer.training_center.workout',compact('tc_workouts'));
     }
 }

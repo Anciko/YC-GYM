@@ -29,7 +29,7 @@
 
     <link href="{{ asset('css/customer/css/transactionChoice.css')}}" rel="stylesheet"/>
 
-    <title>Hello, world!</title>
+    <title>YC-fitness</title>
   </head>
   <body class="customer-registeration-bgimg">
     <!-- <div class="customer-registeration-bgimg"> -->

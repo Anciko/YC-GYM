@@ -58,8 +58,8 @@ class MemberTypeSeeder extends Seeder
 
        Member::create([
         'member_type' =>'Gym Member',
-        'price'=>0,
-        'duration'=>0,
+        'price'=>40000,
+        'duration'=>1,
         'role_id'=>11
        ]);
 
