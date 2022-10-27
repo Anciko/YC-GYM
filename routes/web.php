@@ -273,4 +273,4 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
         Route::middleware(['role:Gold|Ruby|Ruby Premium'])->group(function () {
         Route::get('customer/group',[CustomerManagementController::class,'showchat'])->name('group');
         });
-});
+// });

@@ -536,7 +536,7 @@
             console.log('hahhahaha', id);
 
             if (trainer_message_input == null) {
-                axios.post('/api/sendmessage/' + id, formData).then();
+                axios.post('/api/sendmessage/' + id , formData).then();
             } else {
                 axios.post('/api/sendmessage/' + id, {
                     text: trainer_message_input.value,
@@ -550,14 +550,13 @@
         var groupid = localStorage.getItem('group_id');
         Pusher.logToConsole = true;
         var pusher = new Pusher('576dc7f4f561e15a42ef', {
-            cluster: 'eu'
+            cluster: 'eu',
+            encrypted: true
         });
         var id = localStorage.getItem('group_id');
         console.log("testing",id);
-        var channel = pusher.subscribe('trainer-message');
+        var channel = pusher.subscribe('trainer-message.'+id);
         channel.bind('training_message_event', function(data) {
-
-
             // if (data.groupid.id == data.message.training_group_id) {
                 if (data.message.media != null) {
                     var Extension;

@@ -57,7 +57,7 @@ class TrainerManagementConntroller extends Controller
 
         $message->save();
         // $groupid = TrainingGroup::select('training_groups.id')->where('training_groups.id',$message->training_group_id)->first();
-        event(new TrainingMessageEvent($message,$path));
+        event(new TrainingMessageEvent($message,$path,$id));
 
     }
 
