@@ -319,7 +319,24 @@
                         data:  {"foodList":foodList},
                         success   : function(data) {
                             console.log(data);
-                            swal("Success!", "Good Job!", "success");
+                           // swal("Success!", "Good Job!", "success");
+                           Swal.fire({
+                                    icon: 'success',
+                                    title: 'Success',
+                                    text: 'Great Job!',
+                                    timer: 3000,
+                                    timerProgressBar: true,
+                                    showClass: {
+                                        popup: 'animate__animated animate__fadeInDown'
+                                    },
+                                    hideClass: {
+                                        popup: 'animate__animated animate__fadeOutUp'
+                                    }
+                                    }).then(okay => {
+                                    if (okay) {
+                                        window.location.reload();
+                                    }
+                                })
                         },
                         // error : function(err){
                         //     console.log(err)
