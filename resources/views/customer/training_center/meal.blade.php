@@ -143,8 +143,11 @@
       var totalFat = (totalCal/100) * 20
       var takenFat = 0
       var resultFat = takenFat/totalFat
+
+
       $(".save").click(function(){
         console.log(foodList,"final");
+
         $.ajax({
                         url : 'foodList',
                         method: 'post',
@@ -154,12 +157,37 @@
                         data:  {"foodList":foodList},
                         success   : function(data) {
                             console.log(data);
-                        },
+                            // swal("Success!", "Good Job!", "success"),
+                            //     function(){
+                            //         location.reload();
+                            //     }
+                            // },
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Success',
+                                text: 'Great Job!',
+                                timer: 3000,
+                                timerProgressBar: true,
+                                showClass: {
+                                    popup: 'animate__animated animate__fadeInDown'
+                                },
+                                hideClass: {
+                                    popup: 'animate__animated animate__fadeOutUp'
+                                }
+                                }).then(okay => {
+                                if (okay) {
+                                    window.location.reload();
+                                }
+                            })
                         // error : function(err){
                         //     console.log(err)
-                        // }
+                        }
                     });
+
+
       });
+
+
             $('#breakfast').on('keyup', function(){
                         search();
             });

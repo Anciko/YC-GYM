@@ -17,7 +17,49 @@ class Customer_TrainingCenterController extends Controller
 {
     public function index()
     {
-        return view('customer.training_center.index');
+        $user=auth()->user();
+        $bmi=$user->bmi;
+        if($bmi< 18.5){
+            $workout_plan="under weight";
+        }elseif($bmi>=18.5 && $bmi<=24.9){
+            $workout_plan="body beauty";
+        }elseif($bmi>=25){
+            $workout_plan="weight loss";
+        }
+        $tc_workoutplans=DB::table('workouts')
+                            ->where('workout_plan_id',4)
+                            ->where('member_type',$user->member_type)
+                            ->where('gender_type',$user->gender)
+                            ->get();
+        return view('customer.training_center.index',compact('workout_plan','tc_workoutplans'));
+    }
+    public function workout_plan()
+    {
+        $user=auth()->user();
+        $bmi=$user->bmi;
+        if($bmi< 18.5){
+            $workout_plan="under weight";
+        }elseif($bmi>=18.5 && $bmi<=24.9){
+            $workout_plan="body beauty";
+        }elseif($bmi>=25){
+            $workout_plan="weight loss";
+        }
+        $current_day=Carbon::now()->format('l');
+        $tc_workouts=DB::table('workouts')
+                        ->where('workout_plan_id',4)
+                        ->where('member_type',$user->member_type)
+                        ->where('gender_type',$user->gender)
+                        ->where('workout_level',$user->membertype_level)
+                        ->where('day',$current_day)
+                        ->get();
+        foreach ($tc_workouts as $wk) {
+            $total_time=0;
+            $total_time+=$wk->time;
+            }
+            dd($tc_workouts->toArray());
+
+
+        return view('customer.training_center.workout_plan',compact('tc_workouts'));
     }
 
     public function meal()
@@ -91,30 +133,7 @@ class Customer_TrainingCenterController extends Controller
         }
 
 
-    public function workout_plan()
-    {
-        $user=auth()->user();
-        $bmi=$user->bmi;
-        if($bmi< 18.5){
-            $workout_plan="under weight";
-        }elseif($bmi>=18.5 && $bmi<=24.9){
-            $workout_plan="normal weight";
-        }elseif($bmi>=25 && $bmi<=29.9){
-            $workout_plan="over weight";
-        }else{
-            $workout_plan="obesity";
-        }
 
-        $current_day=Carbon::now()->format('l');
-        $tc_workouts=DB::table('workouts')
-                        ->where('member_type',$user->member_type)
-                        ->where('gender_type',$user->gender)
-                        ->where('workout_level',$user->membertype_level)
-                        ->where('day',$current_day)
-                        ->get();
-
-        return view('customer.training_center.workout_plan',compact('tc_workouts'));
-    }
     public function foodList(Request $request)
     {
         $food_lists = $request->foodList; // json string
@@ -124,7 +143,6 @@ class Customer_TrainingCenterController extends Controller
         if($user){
             foreach ($food_lists as $food) {
                 $personal_meal_infos = new PersonalMealInfo();
-               //  intval($num)
                 $personal_meal_infos->client_id = $user;
                 $personal_meal_infos->meal_id = $food->id;
                 $personal_meal_infos->date = $date;
@@ -133,6 +151,11 @@ class Customer_TrainingCenterController extends Controller
             }
 
         }
+        return response()
+        ->json([
+            'status'=>200,
+            'message'=>"Good Job!"
+        ]);
 
     }
 
