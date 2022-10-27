@@ -128,7 +128,7 @@
   $(document).ready(function() {
       var foodList = []
 
-    //   var localFoodList = JSON.parse(localStorage.getItem("foodList"));
+        //   var localFoodList = JSON.parse(localStorage.getItem("foodList"));
 
         var localFoodList = JSON.parse(localStorage.getItem("foodList"));
        var localFoodListDate = JSON.parse(localStorage.getItem("foodListDate"));
@@ -320,27 +320,10 @@
                         success   : function(data) {
                             console.log(data);
                             swal("Success!", "Good Job!", "success");
-                            const date = new Date();
-
-                            let day = date.getDate();
-                            let month = date.getMonth() + 1;
-                            let year = date.getFullYear();
-                            let currentDate = `${day}-${month}-${year}`;
-
-                            if(!localFoodList ||  !localFoodListDate){
-                                localStorage.setItem("foodList", JSON.stringify(foodList))
-                                localStorage.setItem("foodListDate", JSON.stringify(currentDate))
-                            }else{
-                                const merged = [...localFoodList, ...foodList]
-                                localStorage.setItem("foodList", JSON.stringify(merged))
-                                localStorage.setItem("foodListDate", JSON.stringify(currentDate))
-                            }
-
-                            window.location.reload();
                         },
                         // error : function(err){
                         //     console.log(err)
-                        }
+
                     });
 
 
@@ -865,7 +848,7 @@
                        <button class="customer-food-tracker-checkbox-btn snack_add" data-id = `+res.snack[i].id+` value=`+i+` >Add</button>
                        </div>
                               `
-                  }
+                }
 
 
                   $('.snack_container').html(htmlView);
