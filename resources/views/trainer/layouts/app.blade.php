@@ -70,8 +70,9 @@
                 <p>Group Type</p>
                 <select name="group_type" class="@error('gender') is-invalid @enderror" id="group_type">
                     <option value="">Choose Group Type</option>
-                    <option value="weightLoss">Weight Loss</option>
-                    <option value="bodyBeauty">Body Beauty</option>
+                    <option value="weight gain">Weight Gain</option>
+                    <option value="body beauty">Body Beauty</option>
+                    <option value="weight loss">Weight Loss</option>
                 </select>
             </div>
 

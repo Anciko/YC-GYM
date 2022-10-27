@@ -10,7 +10,7 @@
                     <label class="" for="meal_plan_id">Meal Plan Type</label> <br>
                     <select class="form-control " name="meal_plan_id" id="meal_plan_id">
                         @foreach($meal_plan_type as $meal_plan)
-                        <option value="{{$meal_plan->id}}" {{ $meal_plan->id == $meal->meal_plan_id ? "selected":"" }}>{{$meal_plan->meal_plan_type}} - For {{$meal_plan->gender}}</option>
+                        <option value="{{$meal_plan->id}}" {{ $meal_plan->id == $meal->meal_plan_id ? "selected":"" }}>{{$meal_plan->plan_name}} </option>
                         @endforeach
                     </select>
                 </div>

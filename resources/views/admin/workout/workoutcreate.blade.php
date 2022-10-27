@@ -46,9 +46,9 @@
                         <div class="form-floating col-md-6">
                             <select class="form-select" aria-label="Default select example" placeholder="Workout level select" name="workoutlevel">
                                 <option value=""></option>
-                                <option value="Beginner">Beginner</option>
-                                <option value="Advance">Advance</option>
-                                <option value="Professional">Professional</option>
+                                <option value="beginner">Beginner</option>
+                                <option value="advance">Advance</option>
+                                <option value="professional">Professional</option>
                             </select>
                             <label for="floatingInput">Workout level select</label>
                         </div>
