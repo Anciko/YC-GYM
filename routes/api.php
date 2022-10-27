@@ -55,7 +55,9 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
 
     //For Platinum, Diamond
     Route::get('workout-videos', [TrainingGroupController::class, 'getWorkoutVideos']);
-    
+    Route::get('meals', [TrainingGroupController::class, 'getMeals']);
+    Route::post('complete-workouts', [TrainingGroupController::class, 'completeWorkouts']);
+    Route::post('eat-meals', [TrainerGroupController::class, 'eatMeals']);
 
 });
 
