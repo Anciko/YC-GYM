@@ -23,9 +23,8 @@ class WorkoutController extends Controller
     }
 
     public function index(){
-        $workoutplan = WorkoutPlan::select('id','plan_type')->get();
-        //dd($workoutplan->toArray());
-        return view('admin.workout.workoutplan', compact('workoutplan'));
+
+        return view('admin.workout.workout');
     }
 
     public function createworkoutplan(WorkoutplanRequest $request){
@@ -55,8 +54,8 @@ class WorkoutController extends Controller
         return back();
     }
 
-    public function workoutindex(Request $request){
-        $workoutplanId = $request->id;
+    public function workoutindex(){
+        // $workoutplanId = $request->id;
         $member = Member::groupBy('member_type')->orWhere('member_type','Platinum')->orWhere('member_type','Diamond')->get();
         //dd($workoutplanId);
         return view('admin.workout.workoutcreate', compact('workoutplanId', 'member'));
@@ -136,7 +135,7 @@ class WorkoutController extends Controller
     }
 
     public function workoutview(){
-        $workoutview = Workout::select('workouts.id','workout_plans.plan_type','workouts.workout_name','workouts.gender_type','workouts.workout_level','workouts.time','workouts.calories','workouts.video','workouts.day','workouts.place','workouts.member_type')->join('workout_plans','workout_plans.id','workouts.workout_plan_id')->get();
+        $workoutview = Workout::select('workouts.id','workouts.workout_name','workouts.gender_type','workouts.workout_level','workouts.time','workouts.calories','workouts.video','workouts.day','workouts.place','workouts.member_type')->get();
         //dd($workoutview->toArray());
         return view('admin.workout.workout')->with(['workoutview'=>$workoutview]);
     }

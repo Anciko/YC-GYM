@@ -117,12 +117,12 @@ Route::prefix('admin')->group(function () {
         Route::get('/requestlist', [HomeController::class, 'requestlist'])->name('requestlist');
 
         //Workout
-        Route::get('/workoutplan', [WorkoutController::class, 'index'])->name('workoutplane');
-        Route::post('/workoutplan/create', [WorkoutController::class, 'createworkoutplan'])->name('createworkoutplan');
-        Route::post('/workoutplan/update/{id}', [WorkoutController::class, 'updateworkoutplan'])->name('updateworkoutplan');
-        Route::get('/workoutplan/delete/{id}', [WorkoutController::class, 'deleteworkoutplan'])->name('deleteworkoutplan');
-        Route::get('/workoutplan/edit/{id}', [WorkoutController::class, 'editworkoutplan'])->name('editworkoutplan');
-        Route::get('/workout/{id}', [WorkoutController::class, 'workoutindex'])->name('workout');
+       Route::get('/workout/index', [WorkoutController::class, 'index'])->name('workoutindex');
+        // Route::post('/workoutplan/create', [WorkoutController::class, 'createworkoutplan'])->name('createworkoutplan');
+        // Route::post('/workoutplan/update/{id}', [WorkoutController::class, 'updateworkoutplan'])->name('updateworkoutplan');
+        // Route::get('/workoutplan/delete/{id}', [WorkoutController::class, 'deleteworkoutplan'])->name('deleteworkoutplan');
+        // Route::get('/workoutplan/edit/{id}', [WorkoutController::class, 'editworkoutplan'])->name('editworkoutplan');
+        Route::get('create/workout', [WorkoutController::class, 'workoutindex'])->name('workout');
         Route::get('/workout', [WorkoutController::class, 'workoutview'])->name('workoutview');
         Route::get('/workout/delete/{id}', [WorkoutController::class, 'workoutdelete'])->name('workoutdelete');
         Route::get('/workout/edit/{id}', [WorkoutController::class, 'workoutedit'])->name('workoutedit');
@@ -205,12 +205,12 @@ Route::prefix('admin')->group(function () {
             Route::get('/requestlist', [HomeController::class, 'requestlist'])->name('requestlist');
 
             //Workout
-            Route::get('/workoutplan', [WorkoutController::class, 'index'])->name('workoutplane');
-            Route::post('/workoutplan/create', [WorkoutController::class, 'createworkoutplan'])->name('createworkoutplan');
-            Route::post('/workoutplan/update/{id}', [WorkoutController::class, 'updateworkoutplan'])->name('updateworkoutplan');
-            Route::get('/workoutplan/delete/{id}', [WorkoutController::class, 'deleteworkoutplan'])->name('deleteworkoutplan');
-            Route::get('/workoutplan/edit/{id}', [WorkoutController::class, 'editworkoutplan'])->name('editworkoutplan');
-            Route::get('/workout/{id}', [WorkoutController::class, 'workoutindex'])->name('workout');
+            // Route::get('/workoutplan', [WorkoutController::class, 'index'])->name('workoutplane');
+            // Route::post('/workoutplan/create', [WorkoutController::class, 'createworkoutplan'])->name('createworkoutplan');
+            // Route::post('/workoutplan/update/{id}', [WorkoutController::class, 'updateworkoutplan'])->name('updateworkoutplan');
+            // Route::get('/workoutplan/delete/{id}', [WorkoutController::class, 'deleteworkoutplan'])->name('deleteworkoutplan');
+            // Route::get('/workoutplan/edit/{id}', [WorkoutController::class, 'editworkoutplan'])->name('editworkoutplan');
+            Route::get('create/workout', [WorkoutController::class, 'workoutindex'])->name('workout');
             Route::get('/workout', [WorkoutController::class, 'workoutview'])->name('workoutview');
             Route::get('/workout/delete/{id}', [WorkoutController::class, 'workoutdelete'])->name('workoutdelete');
             Route::get('/workout/edit/{id}', [WorkoutController::class, 'workoutedit'])->name('workoutedit');

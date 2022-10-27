@@ -13,7 +13,7 @@
               {{-- <h5 class="card-title">Primary card title</h5> --}}
               <form class="referee-remark-input-container" action="{{route('createworkout')}}" enctype="multipart/form-data" method = "POST" id="create-workout">
                 @csrf
-                <input type="hidden" name="workoutplanId" value="{{$workoutplanId}}">
+                {{-- <input type="hidden" name="workoutplanId" value="{{$workoutplanId}}"> --}}
 
                 <div class="offset-1 col-md-10" class="previewvideo">
                     <video width="100%" height="200px" controls>
