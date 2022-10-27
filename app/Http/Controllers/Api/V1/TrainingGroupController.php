@@ -24,8 +24,8 @@ class TrainingGroupController extends Controller
 
         $current_day = Carbon::now()->isoFormat('dddd');
 
-        if ($user->bmi < 18.5) { // For weight loss videos
-            $workouts = Workout::where('plan_type', 'weightLoss')
+        if ($user->bmi < 18.5) { // For weight gain
+            $workouts = Workout::where('plan_type', 'weight gain')
                 ->where('member_type', $user->member_type)
                 ->where('member_type_level', $user->membertype_level)
                 ->where('day', $current_day)->get();
@@ -38,7 +38,7 @@ class TrainingGroupController extends Controller
         }
 
         if ($user->bmi >= 18.5 && $user->bmi <= 24.9) { // For BodyBeauty videos
-            $workouts = Workout::where('plan_type', 'bodyBeauty')
+            $workouts = Workout::where('plan_type', 'body beauty')
                 ->where('member_type', $user->member_type)
                 ->where('member_type_level', $user->membertype_level)
                 ->where('day', $current_day)->get();
@@ -49,8 +49,8 @@ class TrainingGroupController extends Controller
             ]);
         }
 
-        if ($user->bmi >= 25 && $user->bmi <= 29.9) { // For weightGain videos
-            $workouts = Workout::where('plan_type', 'weightGain')
+        if ($user->bmi >= 25 && $user->bmi <= 29.9) { // For weightloss
+            $workouts = Workout::where('plan_type', 'weight loss')
                 ->where('member_type', $user->member_type)
                 ->where('member_type_level', $user->membertype_level)
                 ->where('day', $current_day)->get();
@@ -159,13 +159,13 @@ class TrainingGroupController extends Controller
 
         $member_groups = [];
         foreach($training_users as $training_user) {
-            $member_group = TrainingGroup::where('id', $training_user->group_id)->first();
+            $member_group = TrainingGroup::where('id', $training_user->training_group_id)->first();
             array_push($member_groups, $member_group);
         }
 
         return response()->json([
             'message' => 'success',
-            'member_groups' => $member_groups
+            'training_groups' => $member_groups
         ]);
 
     }

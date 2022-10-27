@@ -43,6 +43,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     //Training Center - For Gold, Ruby, Ruby Premium
     Route::get('training-groups', [TrainingGroupController::class, 'getTrainningGroups']); // end
     Route::get('member-groups', [TrainingGroupController::class, 'getTrainningGroups']);
+    Route::get('group-of-members', [TrainingGroupController::class, 'getGroupsOfMember']);
     Route::post('create-training-group', [TrainingGroupController::class, 'createTrainingGroup']); //end
     Route::post('delete-training-group', [TrainingGroupController::class, 'deleteTrainingGroup']); // end
     Route::post('training-group-view-media', [TrainingGroupController::class, 'trainingGroupViewMedia']);

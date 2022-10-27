@@ -171,11 +171,29 @@
                             } else if (value.media.split('.').pop() === 'png' || value
                                 .media.split('.').pop() === 'jpg' || value.media.split(
                                     '.').pop() === 'jpeg') {
-                                // var filename = value.media.replace(
-                                //     "http://localhost/storage/", "");
-                                $('#send_message').append(`<div class="group-chat-sender-container" id="trainer_message_el">
+
+                                $('#send_message').append(`
+                <div class="modal fade" id="exampleModalToggle${value.id}" aria-hidden="true"
+                    aria-labelledby="exampleModalToggleLabel" tabindex="-1">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <img src="{{ asset('/storage/trainer_message_media/${value.media}') }}" alt="test"
+                                    class="w-100">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                                <div class="group-chat-sender-container" id="trainer_message_el">
                                         <div class="group-chat-sender-text-container">
-                                            <img src="{{ asset('storage/trainer_message_media/${value.media}') }}" />
+                                            <a data-bs-toggle="modal" href="#exampleModalToggle${value.id}" role="button">
+                                            <img src="{{ asset('storage/trainer_message_media/${value.media}') }}">
+                                            </a>
                                         </div>
                                         <img src="{{ asset('image/default.jpg') }}" />
                                     </div>`);
@@ -565,10 +583,27 @@
 
                     if (data.message.media.split('.').pop() === 'png' || data.message.media.split('.').pop() ===
                         'jpg' || data.message.media.split('.').pop() === 'jpeg') {
-                        group_chat_messages_container.innerHTML += `
+                        group_chat_messages_container.innerHTML += `<div class="modal fade" id="exampleModalToggle${data.message.id}" aria-hidden="true"
+                    aria-labelledby="exampleModalToggleLabel" tabindex="-1">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                    <img src="{{ asset('/storage/trainer_message_media/${data.message.media}') }}" alt="test"
+                                        class="w-100">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                                     <div class="group-chat-sender-container" id="trainer_message_el">
                                         <div class="group-chat-sender-text-container">
-                                            <img src="{{ asset('storage/trainer_message_media/${data.message.media}') }}" />
+                                            <a data-bs-toggle="modal" href="#exampleModalToggle${data.message.id}" role="button">
+                                <img src="{{ asset('storage/trainer_message_media/${data.message.media}') }}">
+                            </a>
                                         </div>
                                         <img src="{{ asset('image/default.jpg') }}" />
                                     </div>`;
@@ -592,13 +627,9 @@
                                         <div class="group-chat-sender-text-container">
                                             <p>${data.message.text}</p>
                                         </div>
-                                        <img src="{{ asset('image/default.jpg') }}" />
+                                        <img src="f{{ asset('image/deault.jpg') }}" />
                                     </div>`;
                 }
-            // }else{
-            //     console.log('not same gp');
-            // }
-
 
         });
         //end
