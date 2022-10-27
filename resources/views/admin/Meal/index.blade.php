@@ -93,8 +93,8 @@
                         name: 'protein'
                     },
                     {
-                        data: 'meal_plans.plan_name',
-                        name: 'meal_plans.plan_name'
+                        data: 'meal_plan_type',
+                        name: 'meal_plan_type'
                     },
                     {
                         data: 'action',

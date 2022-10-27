@@ -12,9 +12,11 @@
                         {{-- @foreach($meal_plan_type as $meal_plan)
                         <option value="{{$meal_plan->id}}">{{$meal_plan->plan_name}}</option>
                         @endforeach --}}
-                        <option value="weight gain">Weight Gain</option>
-                        <option value="weight loss">Weight Loss</option>
-                        <option value="body beauty">Body Beauty</option>
+                        <option value="Breakfast">Breakfast</option>
+                        <option value="Lunch">Lunch</option>
+                        <option value="Snack">Snack</option>
+                        <option value="Dinner">Dinner</option>
+
                     </select>
                 </div>
 

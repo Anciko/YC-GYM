@@ -178,7 +178,7 @@
 
         }
 
-        var totalCal = 1775
+        var totalCal = {{$bmr->bmr}}
         var takenCal
 
         var totalCarb = (totalCal/100) * 50

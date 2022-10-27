@@ -276,7 +276,7 @@
             })
 
             $(document).on('click', '#addMember', function(e){
-                
+
                 $('#addMember').hide();
                 $('#search_bar').append(`<form class="add-member-form" action="" >\
                     <input type="text" class = "form-control"  placeholder="Search member" id="search">\
@@ -520,12 +520,15 @@
                 "#groupChatImg");
 
             var id = localStorage.getItem('group_id');
+            //var send_group_id = $('#group-chat').data('id');
+
+          //  alert(send_group_id);
 
 
             //formdata
             let formData = new FormData(messageform);
             formData.append('fileInput', fileName);
-            console.log('hahhahaha', fileName);
+            console.log('hahhahaha', id);
 
             if (trainer_message_input == null) {
                 axios.post('/api/sendmessage/' + id, formData).then();
@@ -543,7 +546,8 @@
         var pusher = new Pusher('576dc7f4f561e15a42ef', {
             cluster: 'eu'
         });
-
+        var id = localStorage.getItem('group_id');
+        console.log("testing",id);
         var channel = pusher.subscribe('trainer-message');
         channel.bind('training_message_event', function(data) {
             console.log('viewmessage', data);

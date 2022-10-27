@@ -319,7 +319,7 @@ Route::prefix('admin')->group(function () {
         });
 
         Route::middleware(['role:Gold|Ruby|Ruby Premium'])->group(function () {
-        Route::get('customer/{id}',[CustomerManagementController::class,'showchat']);
+        Route::get('customer/group',[CustomerManagementController::class,'showchat'])->name('group');
         });
     });
 

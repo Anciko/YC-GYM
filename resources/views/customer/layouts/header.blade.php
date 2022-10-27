@@ -38,10 +38,13 @@
 
             <a href="{{route('customer_register')}}" class="customer-secondary-btn customer-signup-btn">Sign Up</a>
 
+
             @endguest
 
             @if(Auth::user())
+            <a href="{{route('group')}}" class="customer-secondary-btn customer-signup-btn">Group</a>
             <p>{{Auth()->user()->name}}</p>
+
             <form id="logout-form" action="{{ route('logout') }}" method="POST">
                 @csrf
                 <button class="customer-primary-btn customer-login-btn" type="submit">Logout</button>

@@ -10,7 +10,7 @@ class TrainingUser extends Model
     use HasFactory;
 
     public function group() {
-        return $this->belongsTo(TrainingGroup::class,'group_id', 'id');
+        return $this->belongsTo(TrainingGroup::class,'training_group_id', 'id');
     }
 
     public function user() {
