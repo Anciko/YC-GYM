@@ -220,9 +220,7 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
     });
 
 
-});//admin prefix
-
-        Route::middleware(['role:Free'])->group(function () {
+         Route::middleware(['role:Free'])->group(function () {
             Route::get('/free',[TrainerManagementConntroller::class,'free'])->name('free');
         });
         Route::middleware(['role:Platinum|Diamond|Gym Member'])->group(function () {
@@ -267,5 +265,7 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
         });
 
         Route::middleware(['role:Gold|Ruby|Ruby Premium'])->group(function () {
-        Route::get('customer/group',[CustomerManagementController::class,'showchat'])->name('group');
+        Route::get('customer/{id}',[CustomerManagementController::class,'showchat']);
         });
+
+    });
