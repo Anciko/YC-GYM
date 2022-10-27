@@ -20,7 +20,7 @@ class Customer_TrainingCenterController extends Controller
         $user=auth()->user();
         $bmi=$user->bmi;
         if($bmi< 18.5){
-            $workout_plan="under weight";
+            $workout_plan="weight gain";
         }elseif($bmi>=18.5 && $bmi<=24.9){
             $workout_plan="body beauty";
         }elseif($bmi>=25){
@@ -39,7 +39,7 @@ class Customer_TrainingCenterController extends Controller
         $user=auth()->user();
         $bmi=$user->bmi;
         if($bmi< 18.5){
-            $workout_plan="under weight";
+            $workout_plan="weight gain";
         }elseif($bmi>=18.5 && $bmi<=24.9){
             $workout_plan="body beauty";
         }elseif($bmi>=25){

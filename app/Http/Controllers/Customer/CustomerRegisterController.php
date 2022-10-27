@@ -73,6 +73,7 @@ class CustomerRegisterController extends Controller
         $user->ideal_weight = $weight->idealWeight;
         $user->bfp = $weight->bfp;
         $user->bmi = $weight->bmi;
+        $user->bmi = $weight->bmr;
 
         $user->bad_habits = $user_bad_habits;
         $user->body_type = $all_info->bodyType[0];
