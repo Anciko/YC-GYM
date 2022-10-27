@@ -111,10 +111,6 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
 
             //Workout
             Route::get('/workout/index', [WorkoutController::class, 'index'])->name('workoutindex');
-            // Route::post('/workoutplan/create', [WorkoutController::class, 'createworkoutplan'])->name('createworkoutplan');
-            // Route::post('/workoutplan/update/{id}', [WorkoutController::class, 'updateworkoutplan'])->name('updateworkoutplan');
-            // Route::get('/workoutplan/delete/{id}', [WorkoutController::class, 'deleteworkoutplan'])->name('deleteworkoutplan');
-            // Route::get('/workoutplan/edit/{id}', [WorkoutController::class, 'editworkoutplan'])->name('editworkoutplan');
             Route::get('create/workout', [WorkoutController::class, 'workoutindex'])->name('workout');
             Route::get('/workout', [WorkoutController::class, 'workoutview'])->name('workoutview');
             Route::get('/workout/delete/{id}', [WorkoutController::class, 'workoutdelete'])->name('workoutdelete');
