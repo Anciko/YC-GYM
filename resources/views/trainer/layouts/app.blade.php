@@ -5,8 +5,6 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-     <!--theme-->
-     <script src="{{asset('js/theme.js')}}"></script>
 
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
@@ -27,8 +25,12 @@
   <body class="customer-loggedin-bg">
     <script>
         const theme = localStorage.getItem('theme') || 'light';
+        console.log(theme)
         document.documentElement.setAttribute('data-theme', theme);
     </script>
+
+    <div class="nav-overlay">
+    </div>
 
     @include('trainer.layouts.header')
     <!--theme-->
@@ -115,10 +117,8 @@
     <script src="https://js.pusher.com/7.2/pusher.min.js"></script>
      {{-- emoji --}}
      <script src="https://cdn.jsdelivr.net/npm/@joeattardi/emoji-button@3.0.3/dist/index.min.js"></script>
-    @stack('scripts')
 
-
-    {{-- Sweet Alert --}}
+      {{-- Sweet Alert --}}
     <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <!-- Optional JavaScript; choose one of the two! -->
@@ -126,6 +126,15 @@
     <!-- Option 1: Bootstrap Bundle with Popper -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/@joeattardi/emoji-button@3.0.3/dist/index.min.js"></script>
+
+     <!--nav bar-->
+     <script src={{asset('js/navBar.js')}}></script>
+    @stack('scripts')
+
+
+
+
+
 
     <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/emoji-picker/1.1.5/js/emoji-picker.min.js" integrity="sha512-EDnYyP0SRH/j5K7bYQlIQCwjm8dQtwtsE+Xt0Oyo9g2qEPDlwE+1fbvKqXuCoMfRR/9zsjSBOFDO6Urjefo28w==" crossorigin="anonymous" referrerpolicy="no-referrer"></script> -->
     <!-- <script src="../js/emoji.js"></script> -->
@@ -141,78 +150,78 @@
             }
         }
 
-        const groupChatImgInput = document.querySelector('#groupChatImg');
-        const groupChatImgPreview = document.querySelector('.groupChatImg');
-        const cancelBtn = document.querySelector(".group-chat-img-cancel")
-        const messageInput = document.querySelector(".group-chat-send-form-input")
+    //     const groupChatImgInput = document.querySelector('#groupChatImg');
+    //     const groupChatImgPreview = document.querySelector('.groupChatImg');
+    //     const cancelBtn = document.querySelector(".group-chat-img-cancel")
+    //     const messageInput = document.querySelector(".group-chat-send-form-input")
 
-        const button = document.querySelector('#emoji-button');
+    //     const button = document.querySelector('#emoji-button');
 
-        const picker = new EmojiButton();
+    //     const picker = new EmojiButton();
 
-        button.addEventListener('click', () => {
-        picker.togglePicker(button);
+    //     button.addEventListener('click', () => {
+    //     picker.togglePicker(button);
 
-        });
+    //     });
 
-        picker.on('emoji', emoji => {
-            messageInput.value += emoji;
-        });
-
-
-        if(!groupChatImgPreview.hasAttribute("src")){
-            groupChatImgPreview.remove()
-            // $('.video-prev').remove();
-            cancelBtn.remove()
-        }
+    //     picker.on('emoji', emoji => {
+    //         messageInput.value += emoji;
+    //     });
 
 
-        groupChatImgInput.addEventListener('change', (e) =>{
-        // console.log(e.target.value)
-        // groupChatImgInput.value = ""
-        var  fileExtension;
-
-        fileExtension = e.target.value.replace(/^.*\./, '');
-        console.log(fileExtension)
-        if(fileExtension === "jpg" || fileExtension === "jpeg" || fileExtension === "png" || fileExtension === "jfif"){
-            const reader = new FileReader();
-            reader.onloadend = e => groupChatImgPreview.setAttribute('src', e.target.result);
-            reader.readAsDataURL(groupChatImgInput.files[0]);
-            groupChatImgInput.value = ""
-            $('.video-preview').removeAttr("src")
-            $('.video-prev').hide();
-            // if(groupChatImgPreview.hasAttribute("src")){
-                console.log(reader)
-                messageInput.remove()
-                document.querySelector(".group-chat-send-form-message-parent-container").append(groupChatImgPreview)
-                document.querySelector(".group-chat-send-form-message-parent-container").append(cancelBtn)
-            // }
-        }
-
-        if(fileExtension === "mp4"){
-            var fileUrl = window.URL.createObjectURL(groupChatImgInput.files[0]);
-            $(".video-preview").attr("src", fileUrl)
-            groupChatImgInput.value = ""
-            groupChatImgPreview.removeAttribute("src")
-            groupChatImgPreview.remove()
-            messageInput.remove()
-            document.querySelector(".group-chat-send-form-message-parent-container").append(cancelBtn)
-            // document.querySelector(".group-chat-send-form-message-parent-container").append($(".video-prev"))
-            $(".video-prev").show()
-            }
-    });//
+    //     if(!groupChatImgPreview.hasAttribute("src")){
+    //         groupChatImgPreview.remove()
+    //         // $('.video-prev').remove();
+    //         cancelBtn.remove()
+    //     }
 
 
-        function clearGroupChatImg(){
-            groupChatImgPreview.removeAttribute("src")
-            groupChatImgPreview.remove()
-            cancelBtn.remove()
-            $('.video-preview').removeAttr("src")
-            $('.video-prev').hide();
-            document.querySelector(".group-chat-send-form-message-parent-container").append(messageInput)
-            groupChatImgInput.value = ""
+    //     groupChatImgInput.addEventListener('change', (e) =>{
+    //     // console.log(e.target.value)
+    //     // groupChatImgInput.value = ""
+    //     var  fileExtension;
 
-        }
+    //     fileExtension = e.target.value.replace(/^.*\./, '');
+    //     console.log(fileExtension)
+    //     if(fileExtension === "jpg" || fileExtension === "jpeg" || fileExtension === "png" || fileExtension === "jfif"){
+    //         const reader = new FileReader();
+    //         reader.onloadend = e => groupChatImgPreview.setAttribute('src', e.target.result);
+    //         reader.readAsDataURL(groupChatImgInput.files[0]);
+    //         groupChatImgInput.value = ""
+    //         $('.video-preview').removeAttr("src")
+    //         $('.video-prev').hide();
+    //         // if(groupChatImgPreview.hasAttribute("src")){
+    //             console.log(reader)
+    //             messageInput.remove()
+    //             document.querySelector(".group-chat-send-form-message-parent-container").append(groupChatImgPreview)
+    //             document.querySelector(".group-chat-send-form-message-parent-container").append(cancelBtn)
+    //         // }
+    //     }
+
+    //     if(fileExtension === "mp4"){
+    //         var fileUrl = window.URL.createObjectURL(groupChatImgInput.files[0]);
+    //         $(".video-preview").attr("src", fileUrl)
+    //         groupChatImgInput.value = ""
+    //         groupChatImgPreview.removeAttribute("src")
+    //         groupChatImgPreview.remove()
+    //         messageInput.remove()
+    //         document.querySelector(".group-chat-send-form-message-parent-container").append(cancelBtn)
+    //         // document.querySelector(".group-chat-send-form-message-parent-container").append($(".video-prev"))
+    //         $(".video-prev").show()
+    //         }
+    // });//
+
+
+    //     function clearGroupChatImg(){
+    //         groupChatImgPreview.removeAttribute("src")
+    //         groupChatImgPreview.remove()
+    //         cancelBtn.remove()
+    //         $('.video-preview').removeAttr("src")
+    //         $('.video-prev').hide();
+    //         document.querySelector(".group-chat-send-form-message-parent-container").append(messageInput)
+    //         groupChatImgInput.value = ""
+
+    //     }
 
 
 

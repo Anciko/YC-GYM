@@ -2,7 +2,7 @@
     <div class="customer-main-content-container customer-navbar-container">
         <div class="customer-logo-language-container">
             <div class="customer-logo">
-                LOGO
+                {{-- LOGO --}}
             </div>
             <div class="customer-language-container">
                 <div class="customer-language-flag-container">
@@ -56,7 +56,13 @@
                 @csrf
                 <button class="customer-primary-btn customer-login-btn" type="submit">Logout</button>
             </form>
+
             @endif
         </div>
+
+
+
+        <iconify-icon icon="pajamas:hamburger" class="burger-icon"></iconify-icon>
+        <iconify-icon icon="akar-icons:cross" class="close-nav-icon"></iconify-icon>
     </div>
 </div>
