@@ -83,7 +83,7 @@
 
         {{-- pop up for video and image  --}}
         @foreach ($messages as $sms)
-            <div class="modal fade" id="exampleModalToggle{{ $sms->id }}" aria-hidden="true"
+            <div class="modal fade" id="exampleModalToggle1{{ $sms->id }}" aria-hidden="true"
                 aria-labelledby="exampleModalToggleLabel" tabindex="-1">
                 <div class="modal-dialog modal-dialog-centered">
                     <div class="modal-content">
@@ -274,7 +274,7 @@
                             console.log("Type: " + fileExtension);
                             if (fileExtension === "mp4") {
                                 $('.trainer-group-chat-media-container').append(`<div class="trainer-group-chat-media" title="video">\
-                                <a  data-bs-toggle="modal" href="#exampleModalToggle` + value.id + `" role="button">\
+                                <a  data-bs-toggle="modal" href="#exampleModalToggle1` + value.id + `" role="button">\
                                      <video class="w-100">\
                                         <source src="{{ asset('storage/trainer_message_media/`+value.media+`') }}" type="video/mp4">\
                                      </video>\
@@ -282,7 +282,7 @@
                                 </div>`);
                             } else {
                                 $('.trainer-group-chat-media-container').append(`<div class="trainer-group-chat-media" title="Photo">\
-                                <a  data-bs-toggle="modal" href="#exampleModalToggle` + value.id + `" role="button">\
+                                <a  data-bs-toggle="modal" href="#exampleModalToggle1` + value.id + `" role="button">\
                                     <img src="{{ asset('storage/trainer_message_media/`+value.media+`') }}" alt="test">\
                                 </a>\
                                 </div>`);

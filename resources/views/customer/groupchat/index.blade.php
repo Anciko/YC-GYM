@@ -108,7 +108,7 @@
     <script>
         $(document).ready(function() {
             $('#members').hide();
-          
+
             $(document).on('click', '#view_group_member', function(e) {
                 e.preventDefault();
                 $('#members').show();
