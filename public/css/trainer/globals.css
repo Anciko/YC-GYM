@@ -14,6 +14,7 @@
     --customer-text-color : #000000;
     --customer-card-bg-color: #ffffff;
     --customer-navlink-color:#000000;
+    --customer-cup-color:#3CADDD;
 }
 
 [data-theme = "dark"]{
@@ -29,6 +30,9 @@
     --customer-text-color : #ffffff;
     --customer-card-bg-color: #3C3C3C;
     --customer-navlink-color:#ffffff;
+    --customer-cup-color:#ffffff;
+    --customer-water-add-color:#ffffff;
+    --customer-water-add-color:#D9AE30;
 }
 
 [data-theme="pink"]{
@@ -45,6 +49,8 @@
     --customer-card-bg-color: #FFACC2;
     --customer-text-bold: 600;
     --customer-navlink-color:#000000;
+    --customer-cup-color:#ffffff;
+    --customer-water-add-color:#F98EAA;
 }
 
 p,a,h1,h2,h3,h4,h5,h6,span{
