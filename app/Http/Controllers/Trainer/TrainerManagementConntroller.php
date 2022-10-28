@@ -38,27 +38,29 @@ class TrainerManagementConntroller extends Controller
 
     public function send(Request $request,$id)
     {
-        $path='';
-        if($request->file('fileInput') !=null){
-            $file = $request->file('fileInput');
-            $path =uniqid().'_'. $file->getClientOriginalName();
-            $disk = Storage::disk('public');
-            $disk->put(
-                'trainer_message_media/'.$path,file_get_contents($file)
-            );
+        if($request->text ==null && $request->fileInput == null ){
 
-            //$messageFile = $disk->url($path);
+        }else{
+            $path='';
+            if($request->file('fileInput') !=null){
+                $file = $request->file('fileInput');
+                $path =uniqid().'_'. $file->getClientOriginalName();
+                $disk = Storage::disk('public');
+                $disk->put(
+                    'trainer_message_media/'.$path,file_get_contents($file)
+                );
+
+            }
+
+            $message = new Message();
+            $message->training_group_id = $id;
+            $message->text = $request->text == null ?  null : $request->text;
+            $message->media = $request->fileInput == null ? null : $path;
+
+            $message->save();
+            // $groupid = TrainingGroup::select('training_groups.id')->where('training_groups.id',$message->training_group_id)->first();
+            event(new TrainingMessageEvent($message,$path,$id));
         }
-
-        $message = new Message();
-        $message->training_group_id = $id;
-       $message->text = $request->text == null ?  '👍' : $request->text;
-       $message->media = $request->fileInput == null ? null : $path;
-
-        $message->save();
-        // $groupid = TrainingGroup::select('training_groups.id')->where('training_groups.id',$message->training_group_id)->first();
-        event(new TrainingMessageEvent($message,$path,$id));
-
     }
 
 
