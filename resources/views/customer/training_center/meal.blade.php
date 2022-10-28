@@ -734,7 +734,7 @@
 
                   $(".dinner_add").prop('disabled', true);
                   $(".dinner_add").css("opacity", ".5");
-                  if(currentTime >= '14:00:00' && currentTime <= '16:00:00'){
+                  if(currentTime >= '17:00:00' && currentTime <= '20:00:00'){
                     $(".dinner_add").prop('disabled', false);
                     $(".dinner_add").css("opacity", "1");
                   }
@@ -892,7 +892,7 @@
                   $('.snack_container').html(htmlView);
                   $(".snack_add").prop('disabled', true);
                   $(".snack_add").css("opacity", ".5");
-                  if(currentTime >= '17:00:00' && currentTime <= '20:00:00'){
+                  if(currentTime >= '14:00:00' && currentTime <= '16:00:00'){
                     $(".snack_add").prop('disabled', false);
                     $(".snack_add").css("opacity", "1");
                   }
