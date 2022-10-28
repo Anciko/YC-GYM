@@ -67,7 +67,7 @@ class TrainingGroupController extends Controller
         $current_day = Carbon::now('Asia/Yangon')->isoFormat('dddd');
         $current_time = Carbon::now('Asia/Yangon')->toTimeString();
 
-        if ($current_time >= 6 && $current_time <= 9) { // Breakfast
+        if ($current_time < 11 ) { // Breakfast
 
             $meals = Meal::where('meal_plan_type', 'Breakfast')->get();
             return response()->json([
@@ -122,7 +122,7 @@ class TrainingGroupController extends Controller
         ]);
     }
 
-    public function Meals(Request $request)
+    public function eatMeals(Request $request)
     {
 
         $meal_infos = $request->all();
