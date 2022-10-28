@@ -262,7 +262,7 @@
                                     }
                                     })
             // alert("Please Add At least one food")
-            // return
+            return
         }
 
         var today = new Date();

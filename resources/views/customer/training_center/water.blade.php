@@ -39,6 +39,7 @@
         <span class="right"></span>
         <span class="bottom"></span>
         <span class="water"></span>
+        <span class="handle"></span>
     </div>
 
     <div class="customer-water-track-text-container">
@@ -59,13 +60,21 @@
 
 <script>
     $(document).ready(function(){
+        var total = 3000
+            var taken = 0
         $(".customer-water-add-btn").click(function(){
             // console.log("water add")
-            var total = 3000
-            var taken = 250
+
+            taken = taken + 250
             var fill = (taken / total) * 100
-            // console.log(fill)
-            $(".water").
+            console.log(fill)
+
+            if(fill > 100){
+                alert("cant drink anymore")
+                return
+            }
+            $('.water').animate({height:`${fill}%`}, 300)
+
         })
     })
 </script>
