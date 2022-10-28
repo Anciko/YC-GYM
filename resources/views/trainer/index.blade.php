@@ -225,8 +225,13 @@
                     url: "trainer/group/member/kick/" + group_id,
                     datatype: "json",
                     success: function(data) {
+                        Swal.fire({
+                                    icon: 'danger',
+                                    text:'Kicked Member',
+                                    timer: 1000,
 
-                        alert('Kick Member!');
+                                    })
+
                         view_member();
                     }
                 });
@@ -430,16 +435,19 @@
                     datatype: "json",
                     success: function(data) {
                         if (data.status == 200) {
-                            // swal({
-                            //     text: "Add Member!!",
-                            //     buttons: true,
-                            //     dangerMode: true,
-                            //     })
-                            alert('Add Member Successfully');
+                            Swal.fire({
+                                    title:'Success',
+                                    text:'Add Member Successfully',
+                                    timer: 500,
 
+                                    })
                             // $('.add-member-row').load(location.href);
                         } else {
-                            alert('Cannot Add Member');
+                            Swal.fire({
+                                    text:'Cannot Add Member',
+                                    timer: 500,
+
+                                    })
                         }
                         add_member();
 

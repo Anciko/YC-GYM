@@ -5,53 +5,53 @@
     <iconify-icon icon="bi:arrow-left" class="back-btn-icon"></iconify-icon>
 </a>
 
-<div class="customer-workout-plan-header-container">
-    <h1>Get Lean At Home</h1>
-    <div class="customer-workout-plan-header-details-container">
+    <div class="customer-workout-plan-header-container">
+        <h1>Get Lean At Home</h1>
+        <div class="customer-workout-plan-header-details-container">
 
 
-        <div class="customer-workout-plan-header-detail-container">
-            <iconify-icon icon="fluent-emoji-flat:fire" class="customer-workout-plan-detail-icon"></iconify-icon>
-            <p>Calories : <span>0</span></p>
+            <div class="customer-workout-plan-header-detail-container">
+                <iconify-icon icon="fluent-emoji-flat:fire" class="customer-workout-plan-detail-icon"></iconify-icon>
+                <p>Calories : <span>0</span></p>
+            </div>
+            <div class="customer-workout-plan-header-detail-container">
+                <iconify-icon icon="noto:alarm-clock" class="customer-workout-plan-detail-icon"></iconify-icon>
+                <p>Minutes : <span>0</span></p>
+            </div>
         </div>
-        <div class="customer-workout-plan-header-detail-container">
-            <iconify-icon icon="noto:alarm-clock" class="customer-workout-plan-detail-icon"></iconify-icon>
-            <p>Minutes : <span>0</span></p>
+
+        <div class="customer-workout-video-parent-container">
+            <div class="customer-workout-video" >
+                <video id="workoutVideo" controls>
+                    <!-- <source src="../imgs/Y2Mate.is - 8 Best Bicep Exercises at Gym for Bigger Arms-3pm_L-H3Th4-720p-1655925997409.mp4" type="video/mp4"> -->
+                </video>
+            </div>
+
+            <div class="customer-workout-video-progress">
+                <!-- <div class="completed-workout"></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div> -->
+            </div>
+
+            <button style="display: none;" class="customer-workout-pause-btn">
+                <iconify-icon icon="ant-design:pause-circle-outlined" class="customer-workout-pause-icon"></iconify-icon>
+
+            </button>
+            <button  class="customer-workout-play-btn">
+                <iconify-icon icon="akar-icons:play" class="customer-workout-play-icon"></iconify-icon>
+            </button>
+
+
+            <h1 class="customer-workout-name"></h1>
+
+            <p class="customer-workout-counter">
+                <span class="customer-workout-min">00 :</span>
+                <span class="customer-workout-sec">00</span></p>
         </div>
     </div>
-
-    <div class="customer-workout-video-parent-container">
-        <div class="customer-workout-video" >
-            <video id="workoutVideo" controls>
-                <!-- <source src="../imgs/Y2Mate.is - 8 Best Bicep Exercises at Gym for Bigger Arms-3pm_L-H3Th4-720p-1655925997409.mp4" type="video/mp4"> -->
-            </video>
-        </div>
-
-        <div class="customer-workout-video-progress">
-            <!-- <div class="completed-workout"></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div> -->
-        </div>
-
-        <button style="display: none;" class="customer-workout-pause-btn">
-            <iconify-icon icon="ant-design:pause-circle-outlined" class="customer-workout-pause-icon"></iconify-icon>
-
-        </button>
-        <button  class="customer-workout-play-btn">
-            <iconify-icon icon="akar-icons:play" class="customer-workout-play-icon"></iconify-icon>
-        </button>
-
-
-        <h1 class="customer-workout-name"></h1>
-
-        <p class="customer-workout-counter">
-            <span class="customer-workout-min">00 :</span>
-            <span class="customer-workout-sec">00</span></p>
-    </div>
-</div>
 
 @endsection
 @push('scripts')
@@ -109,12 +109,12 @@
         }
 
         let videoSource = new Array();
-        let workout_id = new Array();
+
+        var workout_id = []
         let videoDuration=0;
         let calories=0;
         let t_sum=0;
         let cal_sum=0;
-
 
         var tc_workout_video = @json($tc_workouts);
         videoSource=tc_workout_video;
@@ -126,11 +126,9 @@
             t_sum+=videoDuration;
             cal_sum+=calories;
             videoSource[a] = '../../storage/upload/'+videoSource[a].video;
+            workout_id.push(@json($tc_workouts)[a].id);
 
-            // workout_id+=@json($tc_workouts)[a].id;
-            // console.log();
         }
-
 
         // videoSource[0] = 'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4';
         // videoSource[1] = 'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4';
@@ -150,12 +148,25 @@
         function myHandler() {
             i++;
             if (i == videoCount) {
-                alert("workout session ended");
+                console.log(workout_id);
+                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Done',
+                                    text: 'Workout session ended',
+                                    timer: 3000,
+                                    timerProgressBar: true,
+                                    showClass: {
+                                        popup: 'animate__animated animate__fadeInDown'
+                                    },
+                                    hideClass: {
+                                        popup: 'animate__animated animate__fadeOutUp'
+                                    }
+                                    }).then(okay => {
+                                    if (okay) {
+                                        window.location.href = 'workout_complete/'+t_sum+'/'+cal_sum+'/'+videoSource.length;
+                                    }
+                                })
                     //window.location.href = "{{ route('workout_complete',"sum")}}";
-
-                    window.location.href = 'workout_complete/'+t_sum+'/'+cal_sum+'/'+videoSource.length;
-                // i = 0;
-                // videoPlay(i);
             } else {
                 videoPlay(i);
             }
