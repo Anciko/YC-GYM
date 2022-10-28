@@ -2,7 +2,7 @@
     <div class="customer-main-content-container customer-navbar-container">
         <div class="customer-logo-language-container">
             <div class="customer-logo">
-                LOGO
+                {{-- LOGO --}}
             </div>
             <div class="customer-language-container">
                 <div class="customer-language-flag-container">
@@ -23,19 +23,63 @@
                 <option value="pink">Pink</option>
             </select>
         </div>
+
+
         <div class="customer-navlinks-container">
             <a href="/">Home</a>
             <a href="#">Shop</a>
             <a href="#">Search</a>
             <a href="{{route('training_center.index')}}">Training Center</a>
-            <a href="#">Notifications</a>
-            <a href="#">Account</a>
-            <div style="float:right;margin-left:30px">
-            <form id="logout-form" action="{{ route('logout') }}" method="POST">
-                @csrf
-                <button class="customer-primary-btn customer-login-btn" type="submit">Logout</button>
-            </form>
+
+            {{-- <div style="float:right;margin-left:30px">
+                <form id="logout-form" action="{{ route('logout') }}" method="POST">
+                    @csrf
+                    <button class="customer-primary-btn customer-login-btn" type="submit">Logout</button>
+                </form>
+            </div> --}}
+        </div>
+
+        {{-- <div class="customer-navlinks-notiprofile-container">
+            <a href="#"><iconify-icon icon="akar-icons:bell" class="nav-icon"></iconify-icon></a>
+            <div class="dropdown customer-navlinks-profile-dropdown">
+                <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                    <img class="nav-profile-img" src="{{asset('img/avatar.jpg')}}"/>
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                  <li><a class="dropdown-item" href="#">Profile</a></li>
+                  <li><form class="dropdown-item" id="logout-form" action="{{ route('logout') }}" method="POST">
+                    @csrf
+                    <button class="customer-primary-btn customer-login-btn" type="submit">Logout</button>
+                </form></li>
+
+                </ul>
+            </div>
+
+        </div> --}}
+        <div class="customer-navlinks-notiprofile-container">
+            <a href="#"><iconify-icon icon="akar-icons:bell" class="nav-icon"></iconify-icon></a>
+            <div class="customer-dropdown-container">
+                <ul>
+                    <li class="customer-dropdown">
+                    <a href="#" data-toggle="dropdown">
+                        <img class="nav-profile-img" src="{{asset('img/avatar.jpg')}}"/>
+                        <i class="icon-arrow"></i></a>
+                    <ul class="customer-dropdown-menu">
+                        <li><a href="#">Profile</a></li>
+                        <li><form class="dropdown-item" id="logout-form" action="{{ route('logout') }}" method="POST">
+                            @csrf
+                            <button class="customer-primary-btn customer-login-btn" type="submit">Logout</button>
+                        </form></li>
+
+                    </ul>
+                    </li>
+                </ul>
             </div>
         </div>
+
+
+
+        <iconify-icon icon="pajamas:hamburger" class="burger-icon"></iconify-icon>
+        <iconify-icon icon="akar-icons:cross" class="close-nav-icon"></iconify-icon>
     </div>
 </div>

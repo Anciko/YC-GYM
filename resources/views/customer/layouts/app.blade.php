@@ -37,7 +37,8 @@
             const theme = localStorage.getItem('theme') || 'light';
             document.documentElement.setAttribute('data-theme', theme);
         </script>
-
+        <div class="nav-overlay">
+        </div>
 
         <div class="overlay">
 
@@ -64,9 +65,8 @@
 
     <script src={{ asset('js/customer/js/customerRegisteration.js')}}></script>
 
-
-
-
+    <!--nav bar-->
+    <script src={{asset('js/navBar.js')}}></script>
 
     @stack('scripts')
 
