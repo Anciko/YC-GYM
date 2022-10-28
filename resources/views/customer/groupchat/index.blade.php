@@ -57,7 +57,7 @@
                         <div class="group-chat-sender-text-container">
                             <span>Group Member</span>
                             <video width="100%" height="100%" controls>
-                                <source src="{{ asset('storage/trainer_message_media/' . $chat->media) }}" type="video/mp4">
+                                <source src="{{ asset('/storage/trainer_message_media/' . $chat->media) }}" type="video/mp4">
                             </video>
                         </div>
                         <img src="{{ asset('image/default.jpg') }}" />
@@ -69,7 +69,7 @@
                         <div class="group-chat-sender-text-container">
                             <span>Group Member</span>
                             <a data-bs-toggle="modal" href="#exampleModalToggle{{ $chat->id }}" role="button"><img
-                                    src="{{ asset('storage/trainer_message_media/' . $chat->media) }}" alt=""></a>
+                                    src="{{ asset('/storage/trainer_message_media/' . $chat->media) }}" alt=""></a>
                         </div>
                         <img src="{{ asset('image/default.jpg') }}" />
                     </div>
@@ -184,11 +184,12 @@
                 $('#chat').show();
             });
         });
+        var id = localStorage.getItem('group_id');
         var groupchatcontainer = document.querySelector('.group-chat-messages-container');
         var pusher = new Pusher('576dc7f4f561e15a42ef', {
             cluster: 'eu'
         });
-        var channel = pusher.subscribe('trainer-message');
+        var channel = pusher.subscribe('trainer-message.'+id);
         channel.bind('training_message_event', (data) => {
             console.log(data.message.text);
             if (data.message.media == null || data.media == null) {

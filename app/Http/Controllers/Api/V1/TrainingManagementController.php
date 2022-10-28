@@ -35,7 +35,7 @@ class TrainingManagementController extends Controller
         }
 
         $message->save();
-        event(new TrainingMessageEvent($message, $file_name));
+        event(new TrainingMessageEvent($message, $file_name, $id));
     }
 
     //chat show for mobile
