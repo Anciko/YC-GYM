@@ -112,7 +112,7 @@
 
             <div class="group-chat-media-container customer-trainingcenter-media-container">
                 @foreach ($medias as $media)
-                    <div class="modal fade" id="exampleModalToggle{{ $media->id }}" aria-hidden="true"
+                    <div class="modal fade" id="exampleModalToggle1{{ $media->id }}" aria-hidden="true"
                         aria-labelledby="exampleModalToggleLabel" tabindex="-1">
                         <div class="modal-dialog modal-dialog-centered">
                             <div class="modal-content">
@@ -139,16 +139,16 @@
 
                     @if (pathinfo($media->media, PATHINFO_EXTENSION) == 'mp4')
                         <div class="group-chat-media">
-                            <a data-bs-toggle="modal" href="#exampleModalToggle{{ $media->id }}" role="button">
+                            <a data-bs-toggle="modal" href="#exampleModalToggle1{{ $media->id }}" role="button">
                                 <video style="z-index: -1;">
-                                    <source src="{{ asset('/storage/trainer_message_media/' . $media->media) }}"
+                                    <source src="{{ asset('storage/trainer_message_media/' . $media->media) }}"
                                         type="video/mp4">
                                 </video>
                             </a>
                         </div>
                     @else
                         <div class="group-chat-media">
-                            <a data-bs-toggle="modal" href="#exampleModalToggle{{ $media->id }}" role="button">
+                            <a data-bs-toggle="modal" href="#exampleModalToggle1{{ $media->id }}" role="button">
                                 <img src="{{ asset('/storage/trainer_message_media/' . $media->media) }}" alt="test">
                             </a>
                         </div>
@@ -223,7 +223,7 @@
                         <div class="group-chat-sender-text-container">
                             <span>Group Member</span>
                             <a data-bs-toggle="modal" href="#exampleModalToggle${data.message.id}" role="button">
-                                <img src="{{ asset('storage/trainer_message_media/${data.message.media}') }}">
+                                <img src="{{ asset('/storage/trainer_message_media/${data.message.media}') }}">
                             </a>
                         </div>
                         <img src="{{ asset('image/default.jpg') }}" />
@@ -234,7 +234,7 @@
                         <div class="group-chat-sender-text-container">
                             <span>Group Member</span>
                             <video width="100%" height="100%" controls>
-                                <source src="{{ asset('storage/trainer_message_media/${data.message.media}') }}" type="video/mp4">
+                                <source src="{{ asset('/storage/trainer_message_media/${data.message.media}') }}" type="video/mp4">
                             </video>
                         </div>
                         <img src="{{ asset('image/default.jpg') }}" />
