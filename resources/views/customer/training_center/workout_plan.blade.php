@@ -25,7 +25,13 @@
             </div>
             <div class="customer-workout-plan-header-detail-container">
                 <iconify-icon icon="noto:alarm-clock" class="customer-workout-plan-detail-icon"></iconify-icon>
-                <p>Minutes : <span>{{$t_sum}}</span></p>
+                <p>Minutes :
+                    @if ($time_sum < 60)
+                    <span>0:{{$sec}}</span>
+                    @elseif ($time_sum >= 60)
+                    <span>{{$duration}}:{{$sec}}</span>
+                    @endif
+                </p>
             </div>
         </div>
 
@@ -70,7 +76,7 @@
                             if ($workout->time < 60) {
                                 $sec=$workout->time;
                             }else {
-                                $duration=round($workout->time/60);
+                                $duration=floor($workout->time/60);
                                 $sec=$workout->time%60;
                             }
                             ?>
