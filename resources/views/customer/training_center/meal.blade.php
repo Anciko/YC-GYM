@@ -131,9 +131,9 @@
         //   var localFoodList = JSON.parse(localStorage.getItem("foodList"));
 
         var localFoodList = JSON.parse(localStorage.getItem("foodList"));
-       var localFoodListDate = JSON.parse(localStorage.getItem("foodListDate"));
+       var localFoodListDate = localStorage.getItem("foodListDate")
 
-       const date = new Date();
+        const date = new Date();
 
         let day = date.getDate();
         let month = date.getMonth() + 1;
@@ -149,7 +149,7 @@
 
 
 
-        if(currentTime >= '06:00:00'  && currentTime <= '11:00:00'){
+        if(currentTime >= '06:00:00'  && currentTime <= '09:00:00'){
             console.log(typeof(currentTime),"breakfast time")
             $("#breakfast").prop('disabled', false);
             // $("#lunch").prop('disabled', true);
@@ -255,6 +255,15 @@
         var today = new Date();
         var timeMismatch = false
         var time = today.toLocaleTimeString('en-US', { hour12: false });
+        // const date = new Date();
+
+        let foodListday = today.getDate();
+        let foodListmonth = today.getMonth() + 1;
+        let foodLIstyear = today.getFullYear();
+        let foodListDate = `${foodListday}-${foodListmonth}-${foodLIstyear}`;
+        console.log(foodListDate)
+
+        // return
 
         // var time = "06" + ":" + "00" + ":" + "00";
         console.log(time)
@@ -340,6 +349,15 @@
                                         window.location.reload();
                                     }
                                 })
+                            if(!localFoodList || !localFoodListDate){
+                                localStorage.setItem('foodList', JSON.stringify(foodList))
+                                localStorage.setItem('foodListDate', foodListDate)
+                            }else{
+                                const merged = [...foodList, ...localFoodList]
+                                localStorage.setItem('foodList', JSON.stringify(merged))
+                                localStorage.setItem('foodListDate', foodListDate)
+                            }
+
                         },
                         // error : function(err){
                         //     console.log(err)
@@ -399,7 +417,7 @@
                   $('.breakfast_container').html(htmlView);
                   $(".breakfast_add").prop('disabled', true);
                   $(".breakfast_add").css("opacity", ".5");
-                  if(currentTime >= '06:00:00' && currentTime <= "11:00:00"){
+                  if(currentTime >= '06:00:00' && currentTime <= "09:00:00"){
                     $(".breakfast_add").prop('disabled', false);
                     $(".breakfast_add").css("opacity", "1");
                   }
