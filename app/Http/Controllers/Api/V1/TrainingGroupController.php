@@ -26,8 +26,8 @@ class TrainingGroupController extends Controller
 
         if ($user->bmi < 18.5) { // For weight gain
             $workouts = Workout::where('workout_plan_type', 'weight gain')
-                ->where('member_type', $user->member_type)
-                ->where('workout_level', $user->membertype_level)
+                ->where('member_type', $user->member_type) // Platinunm
+                ->where('workout_level', $user->membertype_level) // beginner
                 ->where('day', $current_day)->get();
             // $workout_plan = WorkoutPlan::where('plan_type', 'weightLoss')->first();
             // $workouts = Workout::where('workout_plan_id', $workout_plan->id)->where('day', $current_day)->get();
@@ -68,14 +68,15 @@ class TrainingGroupController extends Controller
         $current_time = Carbon::now('Asia/Yangon')->toTimeString();
 
         if ($current_time >= 6 && $current_time <= 9) { // Breakfast
-            $meals = Meal::where('day', $current_day)->where('meal_plan_type', 'Breakfast')->get();
+
+            $meals = Meal::where('meal_plan_type', 'Breakfast')->get();
             return response()->json([
                 'meals' => $meals
             ]);
         }
 
         if ($current_time >= 12 && $current_time <= 14) { // Lunch
-            $meals = Meal::where('day', $current_day)->where('meal_plan_type', 'Lunch')->get();
+            $meals = Meal::where('meal_plan_type', 'Lunch')->get();
 
             return response()->json([
                 'meals' => $meals
@@ -83,7 +84,7 @@ class TrainingGroupController extends Controller
         }
 
         if ($current_time > 14 && $current_time <= 16) { // Snack
-            $meals = Meal::where('day', $current_day)->where('meal_plan_type', 'Snack')->get();
+            $meals = Meal::where('meal_plan_type', 'Snack')->get();
 
             return response()->json([
                 'meals' => $meals
@@ -99,7 +100,7 @@ class TrainingGroupController extends Controller
         }
 
         return response()->json([
-            'message' => 'Empty Lists!'
+            'meals' => []
         ]);
     }
 
@@ -108,9 +109,9 @@ class TrainingGroupController extends Controller
         $workouts = $request->all();
         $workouts = json_decode(json_encode($workouts));
 
-        foreach ($workouts as $workout) {
+        foreach ($workouts->workout_id_list as $workout) {
             $personal_workout_info = new PersonalWorkoutInfo();
-            $personal_workout_info->workout_id = $workout->workout_id;
+            $personal_workout_info->workout_id = $workout->id;
             $personal_workout_info->user_id = auth()->user()->id;
 
             $personal_workout_info->save();
@@ -121,13 +122,13 @@ class TrainingGroupController extends Controller
         ]);
     }
 
-    public function eatMeals(Request $request)
+    public function Meals(Request $request)
     {
 
         $meal_infos = $request->all();
         $meal_infos = json_decode(json_encode($meal_infos));
 
-        foreach ($meal_infos as $meal_info) {
+        foreach ($meal_infos->eat_meal as $meal_info) {
             $personal_meal_info = new PersonalMealInfo();
             $personal_meal_info->meal_id = $meal_info->meal_id;
             $personal_meal_info->user_id = auth()->user()->id;
