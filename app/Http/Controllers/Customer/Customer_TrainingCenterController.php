@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 use App\Models\PersonalMealInfo;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use App\Models\PersonalWorkOutInfo;
 use RealRashid\SweetAlert\Facades\Alert;
 
 class Customer_TrainingCenterController extends Controller
@@ -33,6 +34,8 @@ class Customer_TrainingCenterController extends Controller
                             ->where('member_type',$user->member_type)
                             ->where('gender_type',$user->gender)
                             ->get();
+
+
         return view('customer.training_center.index',compact('workout_plan','tc_workoutplans'));
     }
     public function workout_plan()
@@ -55,19 +58,50 @@ class Customer_TrainingCenterController extends Controller
                         ->where('workout_level',$user->membertype_level)
                         ->where('day',$current_day)
                         ->get();
-        foreach ($tc_workouts as $wk) {
-            $total_time=0;
-            $total_time+=$wk->time;
+        $time_sum=0;
+        foreach($tc_workouts as $s){
+            $time_sum+=$s->time;
+            if($time_sum < 60){
+                $t_sum=$time_sum;
+            }else{
+                $duration=round($time_sum/60);
+                $t_sum=$time_sum%60;
             }
-            //dd($tc_workouts->toArray());
+        }
+        $c_sum=0;
+        foreach($tc_workouts as $s){
+            $c_sum+=$s->calories;
+        }
 
-
-        return view('customer.training_center.workout_plan',compact('tc_workouts'));
+        return view('customer.training_center.workout_plan',compact('tc_workouts','t_sum','c_sum'));
     }
 
+    public function workout_complete_store(Request $request)
+    {
+        $groups_id=$request->workout_id;
+        $groups =  json_decode(json_encode($groups_id));
+        $date = Carbon::Now();
+        $user = auth()->user()->id;
+        if($user){
+            foreach ($groups as $gp) {
+                $personal_workout_info = new PersonalWorkOutInfo();
+                $personal_workout_info->user_id = $user;
+                $personal_workout_info->workout_id = $gp;
+                $personal_workout_info->complete_status = 1;
+                $personal_workout_info->save();
+            }
+
+        }
+        return response()
+        ->json([
+            'status'=>200,
+            'message'=>"Good Job!"
+        ]);
+
+        return redirect()->back();
+    }
     public function workout_complete(Request $request,$t_sum,$cal_sum=null,$count_video)
     {
-
         $total_time=$t_sum;
         $sec=0;
         $duration=0;
@@ -79,7 +113,26 @@ class Customer_TrainingCenterController extends Controller
         }
         $total_calories=$cal_sum;
         $total_video=$count_video;
-        return view('customer.training_center.workout_complete',compact('t_sum','sec','duration','total_calories','total_video'));
+
+        $user=auth()->user();
+        $bmi=$user->bmi;
+        if($bmi< 18.5){
+            $workout_plan="weight gain";
+        }elseif($bmi>=18.5 && $bmi<=24.9){
+            $workout_plan="body beauty";
+        }elseif($bmi>=25){
+            $workout_plan="weight loss";
+        }
+
+        $current_day=Carbon::now()->format('l');
+        $tc_workouts=DB::table('workouts')
+                        ->where('workout_plan_type',$workout_plan)
+                        ->where('member_type',$user->member_type)
+                        ->where('gender_type',$user->gender)
+                        ->where('workout_level',$user->membertype_level)
+                        ->where('day',$current_day)
+                        ->get();
+        return view('customer.training_center.workout_complete',compact('t_sum','sec','duration','total_calories','total_video','tc_workouts'));
     }
 
 

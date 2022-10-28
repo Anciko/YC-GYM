@@ -27,8 +27,15 @@
         <div class="customer-navlinks-container">
             <a href="/">Home</a>
             <a href="#">Shop</a>
+            @hasanyrole('Diamond|Platinum|Gym Member')
             <a href="{{route('training_center.index')}}">Training Center</a>
-
+            @endhasanyrole
+            @hasanyrole('Gold|Ruby|Ruby Premium')
+            <a href="{{route('group')}}">Training Center</a>
+            @endhasanyrole
+            @hasanyrole('Trainer')
+            <a href="{{route('trainer')}}">Training Center</a>
+            @endhasanyrole
         </div>
 
         <div class="customer-nav-btns-container">
@@ -42,7 +49,7 @@
             @endguest
 
             @if(Auth::user())
-            <a href="{{route('group')}}" class="customer-secondary-btn customer-signup-btn">Group</a>
+
             <p>{{Auth()->user()->name}}</p>
 
             <form id="logout-form" action="{{ route('logout') }}" method="POST">
