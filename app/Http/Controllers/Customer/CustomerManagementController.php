@@ -16,6 +16,14 @@ class CustomerManagementController extends Controller
         return view('customer.groupchat.index');
     }
 
+    public function view_media(){
+        $id = auth()->user()->id;
+        // dd($id);
+        $group = TrainingUser::where('user_id',$id)->first();
+        $photo_video = Message::where('training_group_id',$group->training_group_id)->where('media','!=',null)->get();
+        return view('customer.groupchat.media',compact('photo_video','group'));
+    }
+
     public function showchat(){
         $id = auth()->user()->id;
         // dd($id);
