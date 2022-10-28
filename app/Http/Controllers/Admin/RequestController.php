@@ -21,7 +21,7 @@ class RequestController extends Controller
 
     public function ssd()
     {
-        $memberRequest = User::where('active_status',1)->get();
+        $memberRequest = User::where('active_status',1)->where('member_type','!=','Free')->get();
 
         return Datatables::of($memberRequest)
             ->addIndexColumn()

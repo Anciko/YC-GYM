@@ -2,7 +2,7 @@
     <div class="customer-main-content-container customer-navbar-container">
         <div class="customer-logo-language-container">
             <div class="customer-logo">
-                LOGO
+                {{-- LOGO --}}
             </div>
             <div class="customer-language-container">
                 <div class="customer-language-flag-container">
@@ -27,8 +27,15 @@
         <div class="customer-navlinks-container">
             <a href="/">Home</a>
             <a href="#">Shop</a>
+            @hasanyrole('Diamond|Platinum|Gym Member')
             <a href="{{route('training_center.index')}}">Training Center</a>
-
+            @endhasanyrole
+            @hasanyrole('Gold|Ruby|Ruby Premium')
+            <a href="{{route('group')}}">Training Center</a>
+            @endhasanyrole
+            @hasanyrole('Trainer')
+            <a href="{{route('trainer')}}">Training Center</a>
+            @endhasanyrole
         </div>
 
         <div class="customer-nav-btns-container">
@@ -42,14 +49,20 @@
             @endguest
 
             @if(Auth::user())
-            <a href="{{route('group')}}" class="customer-secondary-btn customer-signup-btn">Group</a>
+
             <p>{{Auth()->user()->name}}</p>
 
             <form id="logout-form" action="{{ route('logout') }}" method="POST">
                 @csrf
                 <button class="customer-primary-btn customer-login-btn" type="submit">Logout</button>
             </form>
+
             @endif
         </div>
+
+
+
+        <iconify-icon icon="pajamas:hamburger" class="burger-icon"></iconify-icon>
+        <iconify-icon icon="akar-icons:cross" class="close-nav-icon"></iconify-icon>
     </div>
 </div>

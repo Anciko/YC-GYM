@@ -73,8 +73,7 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
     Route::middleware(['role:Trainer'])->group(function () {
         Route::post('/trainer/group/create', [TrainerGroupController::class, 'store'])->name('trainer.group.create');
         Route::get('trainer/group/show/{id}', [TrainerGroupController::class, 'chat_show']);
-        Route::get('/trainer', [TrainerManagementConntroller::class, 'ind
-        ex'])->name('trainer');
+        Route::get('/trainer', [TrainerManagementConntroller::class, 'index'])->name('trainer');
         //Route::post('trainer/member/search',[TrainerManagementConntroller::class,'showMember'])->name('trainer/member/search');
 
     });
@@ -184,7 +183,6 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
         Route::get('/platinum', [TrainerManagementConntroller::class, 'platinum'])->name('platinum');
         Route::get('/diamond', [TrainerManagementConntroller::class, 'diamond'])->name('diamond');
 
-        Route::get('customer/workout_complete/{sum}', [Customer_TrainingCenterController::class, 'workout_complete'])->name('workout_complete');
         Route::get('customer/training_center', [Customer_TrainingCenterController::class, 'index'])->name('training_center.index');
         Route::get('customer/training_center/meal', [Customer_TrainingCenterController::class, 'meal'])->name('training_center.meal');
         Route::get('customer/training_center/workout_plan', [Customer_TrainingCenterController::class, 'workout_plan'])->name('training_center.workout_plan');
@@ -228,8 +226,10 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
             Route::get('/platinum',[TrainerManagementConntroller::class,'platinum'])->name('platinum');
             Route::get('/diamond',[TrainerManagementConntroller::class,'diamond'])->name('diamond');
 
-            Route::get('customer/training_center/workout_complete/{t_sum}/{cal_sum?}/{count_video?}',[Customer_TrainingCenterController::class,'workout_complete'])->name('workout_complete');
+            Route::get('customer/training_center/workout_complete/{t_sum}/{cal_sum?}/{count_video?}/{group_id?}',[Customer_TrainingCenterController::class,'workout_complete'])->name('workout_complete');
             Route::get('customer/training_center',[Customer_TrainingCenterController::class,'index'])->name('training_center.index');
+            Route::post('customer/training_center/workout_complete/store/',[Customer_TrainingCenterController::class,'workout_complete_store'])->name('workout_complete.store');
+
             Route::get('customer/training_center/meal',[Customer_TrainingCenterController::class,'meal'])->name('training_center.meal');
             Route::get('customer/training_center/workout_plan',[Customer_TrainingCenterController::class,'workout_plan'])->name('training_center.workout_plan');
             Route::get('customer/training_center/water',[Customer_TrainingCenterController::class,'water'])->name('training_center.water');
@@ -266,6 +266,7 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
 
         Route::middleware(['role:Gold|Ruby|Ruby Premium'])->group(function () {
         Route::get('customer',[CustomerManagementController::class,'showchat'])->name('group');
+        Route::get('customer/view_media',[CustomerManagementController::class,'view_media'])->name('view_media');
         });
 
     });
