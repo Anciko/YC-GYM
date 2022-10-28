@@ -131,15 +131,16 @@
         //   var localFoodList = JSON.parse(localStorage.getItem("foodList"));
 
         var localFoodList = JSON.parse(localStorage.getItem("foodList"));
-       var localFoodListDate = JSON.parse(localStorage.getItem("foodListDate"));
+       var localFoodListDate = localStorage.getItem("foodListDate")
 
-       const date = new Date();
+        const date = new Date();
 
         let day = date.getDate();
         let month = date.getMonth() + 1;
         let year = date.getFullYear();
         let currentDate = `${day}-${month}-${year}`;
-        let currentTime = date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds();
+        let currentTime =  date.toLocaleTimeString('en-US', { hour12: false });
+        // let currentMins = date.getMinutes()
         console.log(currentTime)
         $("#breakfast").prop('disabled', true);
         $("#lunch").prop('disabled', true);
@@ -148,14 +149,15 @@
 
 
 
-        if(currentTime >= "06:00:00" && currentTime <= "09:00:00"){
+        if(currentTime >= '06:00:00'  && currentTime <= '09:00:00'){
+            console.log(typeof(currentTime),"breakfast time")
             $("#breakfast").prop('disabled', false);
             // $("#lunch").prop('disabled', true);
             // $("#snack").prop('disabled', true);
             // $("#dinner").prop('disabled', true);
         }
 
-        if(currentTime >= "12:00:00" && currentTime < "14:00:00"){
+        if(currentTime >= '12:00:00' && currentTime < '14:00:00'){
             // $("#breakfast").prop('disabled', true);
             $("#lunch").prop('disabled', false);
             // $("#snack").prop('disabled', true);
@@ -163,14 +165,14 @@
 
         }
 
-        if(currentTime >= "14:00:00" && currentTime <= "16:00:00"){
+        if(currentTime >= '14:00:00' && currentTime <= '16:00:00'){
             // $("#breakfast").prop('disabled', true);
             // $("#lunch").prop('disabled', true);
             $("#snack").prop('disabled', false);
             // $("#dinner").prop('disabled', true);
 
         }
-        if(currentTime >= "17:00:00" && currentTime <= "20:00:00"){
+        if(currentTime >= '17:00:00' && currentTime <= '20:00:00'){
             // $("#breakfast").prop('disabled', true);
             // $("#lunch").prop('disabled', true);
             // $("#snack").prop('disabled', true);
@@ -246,17 +248,40 @@
         // console.log(foodList.length)
 
         if(foodList.length === 0){
-            alert("Please Add At least one food")
-            return
+            Swal.fire({
+                                    icon: 'info',
+                                    title: 'Opps!',
+                                    text: 'Please Add at least one food!',
+                                    timer: 3000,
+                                    timerProgressBar: true,
+                                    showClass: {
+                                        popup: 'animate__animated animate__fadeInDown'
+                                    },
+                                    hideClass: {
+                                        popup: 'animate__animated animate__fadeOutUp'
+                                    }
+                                    })
+            // alert("Please Add At least one food")
+            // return
         }
 
         var today = new Date();
         var timeMismatch = false
-        var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+        var time = today.toLocaleTimeString('en-US', { hour12: false });
+        // const date = new Date();
+
+        let foodListday = today.getDate();
+        let foodListmonth = today.getMonth() + 1;
+        let foodLIstyear = today.getFullYear();
+        let foodListDate = `${foodListday}-${foodListmonth}-${foodLIstyear}`;
+        console.log(foodListDate)
+
+        // return
+
         // var time = "06" + ":" + "00" + ":" + "00";
         console.log(time)
 
-        if(time >= "06:00:00" && time <= "09:00:00"){
+        if(time >= '06:00:00' && time <= '09:00:00'){
             console.log("breakfast time")
             for(var i =0; i < foodList.length ;i++){
                 if(foodList[i].type !== "Breakfast"){
@@ -265,12 +290,29 @@
             }
 
             if(timeMismatch){
-                alert("It is now breakfast time")
-                return
+                            Swal.fire({
+                                    icon: 'info',
+                                    title: 'Opps!',
+                                    text: 'It it now breakfast time!',
+                                    timer: 3000,
+                                    timerProgressBar: true,
+                                    showClass: {
+                                        popup: 'animate__animated animate__fadeInDown'
+                                    },
+                                    hideClass: {
+                                        popup: 'animate__animated animate__fadeOutUp'
+                                    }
+                                    }).then(okay => {
+                                    if (okay) {
+                                        window.location.reload();
+                                    }
+                                })
+                // alert("It is now breakfast time page refresh")
+                // return
             }
         }
 
-        if(time >= "12:00:00" && time < "14:00:00"){
+        if(time >= '12:00:00' && time < '14:00:00'){
             console.log("lunch time")
             for(var i =0; i < foodList.length ;i++){
                 if(foodList[i].type !== "Lunch"){
@@ -278,12 +320,29 @@
                 }
             }
             if(timeMismatch){
-                alert("It is now lunch time")
-                return
+                Swal.fire({
+                                    icon: 'info',
+                                    title: 'Opps!',
+                                    text: 'It it now lunch time!',
+                                    timer: 3000,
+                                    timerProgressBar: true,
+                                    showClass: {
+                                        popup: 'animate__animated animate__fadeInDown'
+                                    },
+                                    hideClass: {
+                                        popup: 'animate__animated animate__fadeOutUp'
+                                    }
+                                    }).then(okay => {
+                                    if (okay) {
+                                        window.location.reload();
+                                    }
+                                })
+                // alert("It is now lunch time")
+                // return
             }
         }
 
-        if(time >= "14:00:00" && time <= "16:00:00"){
+        if(time >= '14:00:00' && time <= '16:00:00'){
             console.log("snack time")
             for(var i =0; i < foodList.length ;i++){
                 if(foodList[i].type !== "Snack"){
@@ -291,11 +350,28 @@
                 }
             }
             if(timeMismatch){
-                alert("It is now snack time")
-                return
+                Swal.fire({
+                                    icon: 'info',
+                                    title: 'Opps!',
+                                    text: 'It it now snack time!',
+                                    timer: 3000,
+                                    timerProgressBar: true,
+                                    showClass: {
+                                        popup: 'animate__animated animate__fadeInDown'
+                                    },
+                                    hideClass: {
+                                        popup: 'animate__animated animate__fadeOutUp'
+                                    }
+                                    }).then(okay => {
+                                    if (okay) {
+                                        window.location.reload();
+                                    }
+                                })
+                // alert("It is now snack time")
+                // return
             }
         }
-        if(time >= "17:00:00" && time <= "20:00:00"){
+        if(time >= '17:00:00' && time <= '20:00:00'){
             console.log("dinner time")
             for(var i =0; i < foodList.length ;i++){
                 if(foodList[i].type !== "Dinner"){
@@ -303,8 +379,25 @@
                 }
             }
             if(timeMismatch){
-                alert("It is now dinner time")
-                return
+                Swal.fire({
+                                    icon: 'info',
+                                    title: 'Opps!',
+                                    text: 'It it now dinner time!',
+                                    timer: 3000,
+                                    timerProgressBar: true,
+                                    showClass: {
+                                        popup: 'animate__animated animate__fadeInDown'
+                                    },
+                                    hideClass: {
+                                        popup: 'animate__animated animate__fadeOutUp'
+                                    }
+                                    }).then(okay => {
+                                    if (okay) {
+                                        window.location.reload();
+                                    }
+                                })
+                // alert("It is now dinner time")
+                // return
             }
         }
 
@@ -337,6 +430,15 @@
                                         window.location.reload();
                                     }
                                 })
+                            if(!localFoodList || !localFoodListDate){
+                                localStorage.setItem('foodList', JSON.stringify(foodList))
+                                localStorage.setItem('foodListDate', foodListDate)
+                            }else{
+                                const merged = [...foodList, ...localFoodList]
+                                localStorage.setItem('foodList', JSON.stringify(merged))
+                                localStorage.setItem('foodListDate', foodListDate)
+                            }
+
                         },
                         // error : function(err){
                         //     console.log(err)
@@ -396,7 +498,7 @@
                   $('.breakfast_container').html(htmlView);
                   $(".breakfast_add").prop('disabled', true);
                   $(".breakfast_add").css("opacity", ".5");
-                  if(currentTime >= "06:00:00" && currentTime <= "09:00:00"){
+                  if(currentTime >= '06:00:00' && currentTime <= "09:00:00"){
                     $(".breakfast_add").prop('disabled', false);
                     $(".breakfast_add").css("opacity", "1");
                   }
@@ -554,7 +656,7 @@
                   $('.lunch_container').html(htmlView);
                   $(".lunch_add").prop('disabled', true);
                   $(".lunch_add").css("opacity", ".5");
-                  if(currentTime >= "12:00:00" && currentTime < "14:00:00"){
+                  if(currentTime >= '12:00:00' && currentTime < '14:00:00'){
                     $(".lunch_add").prop('disabled', false);
                     $(".lunch_add").css("opacity", "1");
                   }
@@ -713,7 +815,7 @@
 
                   $(".dinner_add").prop('disabled', true);
                   $(".dinner_add").css("opacity", ".5");
-                  if(currentTime >= "14:00:00" && currentTime <= "16:00:00"){
+                  if(currentTime >= '14:00:00' && currentTime <= '16:00:00'){
                     $(".dinner_add").prop('disabled', false);
                     $(".dinner_add").css("opacity", "1");
                   }
@@ -871,7 +973,7 @@
                   $('.snack_container').html(htmlView);
                   $(".snack_add").prop('disabled', true);
                   $(".snack_add").css("opacity", ".5");
-                  if(currentTime >= "17:00:00" && currentTime <= "20:00:00"){
+                  if(currentTime >= '17:00:00' && currentTime <= '20:00:00'){
                     $(".snack_add").prop('disabled', false);
                     $(".snack_add").css("opacity", "1");
                   }

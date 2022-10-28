@@ -530,3 +530,8 @@ input.invalid, select.invalid {
     text-align: center;
     font-weight: 600;
 }
+
+
+@media screen and (max-width:1000px){
+
+}
