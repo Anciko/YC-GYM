@@ -274,7 +274,7 @@
                         </li>
                     </li>
 
-                    <li class="sidebar-item @yield('mealplan-active')">
+                    {{-- <li class="sidebar-item @yield('mealplan-active')">
 
                         <a class="sidebar-link" href="{{ route('mealplan.index') }}">
 
@@ -284,7 +284,7 @@
 
                         </a>
 
-                    </li>
+                    </li> --}}
 
 
 
@@ -332,11 +332,11 @@
 
                     <li class="sidebar-item @yield('workoutplan-active')">
 
-                        <a class="sidebar-link" href="{{ route('workoutplane') }}">
+                        <a class="sidebar-link" href="{{ route('workoutview') }}">
 
                             <i class="fa-solid fa-clipboard-list"></i>
 
-                            <span class="align-middle">Workout Plan</span>
+                            <span class="align-middle">Workout</span>
 
                         </a>
 

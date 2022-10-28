@@ -6,6 +6,8 @@ use App\Models\Message;
 use Illuminate\Http\Request;
 use App\Events\TrainingMessageEvent;
 use App\Http\Controllers\Controller;
+use App\Models\TrainingGroup;
+use App\Models\TrainingUser;
 
 class CustomerManagementController extends Controller
 {
@@ -13,9 +15,20 @@ class CustomerManagementController extends Controller
         return view('customer.groupchat.index');
     }
 
-    public function showchat($id){
-        
-        $chats = Message::where('training_group_id',$id)->get();
-        return view('customer.groupchat.index', compact('chats'));
+    public function view_media(){
+        $id = auth()->user()->id;
+        // dd($id);
+        $group = TrainingUser::where('user_id',$id)->first();
+        $photo_video = Message::where('training_group_id',$group->training_group_id)->where('media','!=',null)->get();
+        return view('customer.groupchat.media',compact('photo_video','group'));
+    }
+
+    public function showchat(){
+        $id = auth()->user()->id;
+        // dd($id);
+        $group = TrainingUser::where('user_id',$id)->first();
+        $chats = Message::where('training_group_id',$group->training_group_id)->get();
+        $group_members = TrainingUser::where('training_group_id',$group->training_group_id)->get();
+        return view('customer.groupchat.index', compact('chats','group','group_members'));
     }
 }

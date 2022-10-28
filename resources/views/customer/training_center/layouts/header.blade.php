@@ -30,6 +30,7 @@
             <a href="#">Shop</a>
             <a href="#">Search</a>
             <a href="{{route('training_center.index')}}">Training Center</a>
+            <a href="{{route('group')}}">Group</a>
 
             {{-- <div style="float:right;margin-left:30px">
                 <form id="logout-form" action="{{ route('logout') }}" method="POST">

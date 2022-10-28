@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateMealsTable extends Migration
+class CreatePersonalWorkOutInfosTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,14 +13,11 @@ class CreateMealsTable extends Migration
      */
     public function up()
     {
-        Schema::create('meals', function (Blueprint $table) {
+        Schema::create('personal_work_out_infos', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->float('calories')->default(0);
-            $table->float('protein')->default(0);
-            $table->float('carbohydrates')->default(0);
-            $table->float('fat')->default(0);
-            $table->string('meal_plan_type');
+            $table->integer('workout_id');
+            $table->integer('user_id');
+            $table->boolean('complete_status');
             $table->timestamps();
         });
     }
@@ -32,6 +29,6 @@ class CreateMealsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('meals');
+        Schema::dropIfExists('personal_work_out_infos');
     }
 }

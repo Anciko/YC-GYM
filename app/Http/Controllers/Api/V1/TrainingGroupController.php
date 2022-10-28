@@ -24,10 +24,10 @@ class TrainingGroupController extends Controller
 
         $current_day = Carbon::now()->isoFormat('dddd');
 
-        if ($user->bmi < 18.5) { // For weight loss videos
-            $workouts = Workout::where('plan_type', 'weightLoss')
-                ->where('member_type', $user->member_type)
-                ->where('member_type_level', $user->membertype_level)
+        if ($user->bmi < 18.5) { // For weight gain
+            $workouts = Workout::where('workout_plan_type', 'weight gain')
+                ->where('member_type', $user->member_type) // Platinunm
+                ->where('workout_level', $user->membertype_level) // beginner
                 ->where('day', $current_day)->get();
             // $workout_plan = WorkoutPlan::where('plan_type', 'weightLoss')->first();
             // $workouts = Workout::where('workout_plan_id', $workout_plan->id)->where('day', $current_day)->get();
@@ -38,9 +38,9 @@ class TrainingGroupController extends Controller
         }
 
         if ($user->bmi >= 18.5 && $user->bmi <= 24.9) { // For BodyBeauty videos
-            $workouts = Workout::where('plan_type', 'bodyBeauty')
+            $workouts = Workout::where('workout_plan_type', 'body beauty')
                 ->where('member_type', $user->member_type)
-                ->where('member_type_level', $user->membertype_level)
+                ->where('workout_level', $user->membertype_level)
                 ->where('day', $current_day)->get();
 
             return response()->json([
@@ -49,10 +49,10 @@ class TrainingGroupController extends Controller
             ]);
         }
 
-        if ($user->bmi >= 25 && $user->bmi <= 29.9) { // For weightGain videos
-            $workouts = Workout::where('plan_type', 'weightGain')
+        if ($user->bmi >= 25 && $user->bmi <= 29.9) { // For weightloss
+            $workouts = Workout::where('workout_plan_type', 'weight loss')
                 ->where('member_type', $user->member_type)
-                ->where('member_type_level', $user->membertype_level)
+                ->where('workout_level', $user->membertype_level)
                 ->where('day', $current_day)->get();
 
             return response()->json([
@@ -69,26 +69,38 @@ class TrainingGroupController extends Controller
 
         if ($current_time >= 6 && $current_time <= 9) { // Breakfast
 
+            $meals = Meal::where('meal_plan_type', 'Breakfast')->get();
+            return response()->json([
+                'meals' => $meals
+            ]);
         }
 
         if ($current_time >= 12 && $current_time <= 14) { // Lunch
+            $meals = Meal::where('meal_plan_type', 'Lunch')->get();
 
+            return response()->json([
+                'meals' => $meals
+            ]);
         }
 
         if ($current_time > 14 && $current_time <= 16) { // Snack
+            $meals = Meal::where('meal_plan_type', 'Snack')->get();
 
+            return response()->json([
+                'meals' => $meals
+            ]);
         }
 
         if ($current_time >= 17 && $current_time <= 20) { // Dinner
+            $meals = Meal::where('day', $current_day)->where('meal_plan_type', 'Dinner')->get();
 
+            return response()->json([
+                'meals' => $meals
+            ]);
         }
 
-
-        $meals = Meal::where('day', $current_day)->get();
-
         return response()->json([
-            'message' => 'success',
-            'meals' => $meals
+            'meals' => []
         ]);
     }
 
@@ -97,9 +109,9 @@ class TrainingGroupController extends Controller
         $workouts = $request->all();
         $workouts = json_decode(json_encode($workouts));
 
-        foreach ($workouts as $workout) {
+        foreach ($workouts->workout_id_list as $workout) {
             $personal_workout_info = new PersonalWorkoutInfo();
-            $personal_workout_info->workout_id = $workout->workout_id;
+            $personal_workout_info->workout_id = $workout->id;
             $personal_workout_info->user_id = auth()->user()->id;
 
             $personal_workout_info->save();
@@ -110,13 +122,13 @@ class TrainingGroupController extends Controller
         ]);
     }
 
-    public function eatMeals(Request $request)
+    public function Meals(Request $request)
     {
 
         $meal_infos = $request->all();
         $meal_infos = json_decode(json_encode($meal_infos));
 
-        foreach ($meal_infos as $meal_info) {
+        foreach ($meal_infos->eat_meal as $meal_info) {
             $personal_meal_info = new PersonalMealInfo();
             $personal_meal_info->meal_id = $meal_info->meal_id;
             $personal_meal_info->user_id = auth()->user()->id;
@@ -139,6 +151,24 @@ class TrainingGroupController extends Controller
             'message' => 'success',
             'training_groups' => $training_groups
         ]);
+    }
+
+    public function getGroupsOfMember()
+    {
+        $user = auth()->user();
+        $training_users = TrainingUser::where('user_id', $user->id)->get();
+
+        $member_groups = [];
+        foreach($training_users as $training_user) {
+            $member_group = TrainingGroup::where('id', $training_user->training_group_id)->first();
+            array_push($member_groups, $member_group);
+        }
+
+        return response()->json([
+            'message' => 'success',
+            'training_groups' => $member_groups
+        ]);
+
     }
 
     public function createTrainingGroup(Request $request)
@@ -198,7 +228,7 @@ class TrainingGroupController extends Controller
         $group_id = $request->id;
         $group = TrainingGroup::where('id', $group_id)->first();
 
-        if ($group->group_type == 'weightLoss') {
+        if ($group->group_type == 'weight loss') {
             $members = User::select('name', 'id')->where('ingroup', '!=', 1)
                 ->where('active_status', 2)
                 ->where('member_type', $group->member_type)
@@ -213,7 +243,7 @@ class TrainingGroupController extends Controller
             ]);
         }
 
-        if ($group->group_type == 'weightGain') {
+        if ($group->group_type == 'weight gain') {
             $members = User::select('name', 'id')->where('ingroup', '!=', 1)
                 ->where('active_status', 2)
                 ->where('member_type', $group->member_type)
@@ -228,7 +258,7 @@ class TrainingGroupController extends Controller
             ]);
         }
 
-        if ($group->group_type == 'bodyBeauty') {
+        if ($group->group_type == 'body beauty') {
             $members = User::select('name', 'id')->where('ingroup', '!=', 1)
                 ->where('active_status', 2)
                 ->where('member_type', $group->member_type)

@@ -9,10 +9,19 @@
                 <div class="mb-4">
                     <label class="" for="meal_plan_id">Meal Plan Type</label> <br>
                     <select class="form-control " name="meal_plan_id" id="meal_plan_id">
-                        @foreach($meal_plan_type as $meal_plan)
-                        <option value="{{$meal_plan->id}}" {{ $meal_plan->id == $meal->meal_plan_id ? "selected":"" }}>{{$meal_plan->plan_name}} </option>
-                        @endforeach
-                    </select>
+                            <option value="Breakfast" @if ($meal->meal_plan_type == 'Breakfast') selected @endif>
+                                Breakfast
+                            </option>
+                            <option value="Lunch" @if ($meal->meal_plan_type == 'Lunch') selected @endif>
+                                Lunch
+                            </option>
+                            <option value="Snack" @if ($meal->meal_plan_type == 'Snack') selected @endif>
+                                Snack
+                            </option>
+                            <option value="Dinner" @if ($meal->meal_plan_type == 'Dinner') selected @endif>
+                                Dinner
+                            </option>
+                        </select>
                 </div>
 
                 <div class="mt-4">
