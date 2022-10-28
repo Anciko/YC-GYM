@@ -122,14 +122,14 @@
                                 </div>
                                 <div class="modal-body">
 
-                                    @if (pathinfo($media->media, PATHINFO_EXTENSION) == 'mp4')
+                                    @if (pathinfo($media->media, PATHINFO_EXTENSION) == 'mp4' || pathinfo($media->media, PATHINFO_EXTENSION) == 'webm' ||pathinfo($media->media, PATHINFO_EXTENSION) == 'mov')
                                         <video class="w-100" controls>
-                                            <source src="{{ asset('/storage/trainer_message_media/' . $media->media) }}"
+                                            <source src="{{ asset('storage/trainer_message_media/'.$media->media) }}"
                                                 type="video/mp4">
                                             Your browser does not support the video tag.
                                         </video>
                                     @else
-                                        <img src="{{ asset('/storage/trainer_message_media/' . $media->media) }}"
+                                        <img src="{{ asset('storage/trainer_message_media/'.$media->media) }}"
                                             alt="test" class="w-100">
                                     @endif
                                 </div>
@@ -137,11 +137,11 @@
                         </div>
                     </div>
 
-                    @if (pathinfo($media->media, PATHINFO_EXTENSION) == 'mp4')
+                    @if (pathinfo($media->media, PATHINFO_EXTENSION) == 'mp4' || pathinfo($media->media, PATHINFO_EXTENSION) == 'webm' ||pathinfo($media->media, PATHINFO_EXTENSION) == 'mov')
                         <div class="group-chat-media">
                             <a data-bs-toggle="modal" href="#exampleModalToggle1{{ $media->id }}" role="button">
                                 <video style="z-index: -1;">
-                                    <source src="{{ asset('storage/trainer_message_media/' . $media->media) }}"
+                                    <source src="{{ asset('storage/trainer_message_media/'.$media->media) }}"
                                         type="video/mp4">
                                 </video>
                             </a>
@@ -149,7 +149,7 @@
                     @else
                         <div class="group-chat-media">
                             <a data-bs-toggle="modal" href="#exampleModalToggle1{{ $media->id }}" role="button">
-                                <img src="{{ asset('/storage/trainer_message_media/' . $media->media) }}" alt="test">
+                                <img src="{{ asset('/storage/trainer_message_media/'.$media->media) }}" alt="test">
                             </a>
                         </div>
                     @endif
