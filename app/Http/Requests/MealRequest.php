@@ -27,6 +27,9 @@ class MealRequest extends FormRequest
             'name' => 'required',
             'calories' => 'required',
             'meal_plan_id' => 'required',
+            'carbohydrates' => 'required',
+            'protein' => 'required',
+            'fat' => 'required',
         ];
     }
 }
