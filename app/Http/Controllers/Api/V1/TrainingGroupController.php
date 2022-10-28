@@ -140,6 +140,10 @@ class TrainingGroupController extends Controller
         ]);
     }
 
+    public function trackWater() {
+        
+    }
+
     //For Gold, Ruby, RubyPremium
     public function getTrainningGroups()
     {
