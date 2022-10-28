@@ -58,9 +58,15 @@ class Customer_TrainingCenterController extends Controller
                         ->where('workout_level',$user->membertype_level)
                         ->where('day',$current_day)
                         ->get();
-        $t_sum=0;
+        $time_sum=0;
         foreach($tc_workouts as $s){
-            $t_sum+=$s->time;
+            $time_sum+=$s->time;
+            if($time_sum < 60){
+                $t_sum=$time_sum;
+            }else{
+                $duration=round($time_sum/60);
+                $t_sum=$time_sum%60;
+            }
         }
         $c_sum=0;
         foreach($tc_workouts as $s){
