@@ -424,7 +424,7 @@
                             </div>
                             <div class="add-member-row-btns-container">
                                 <a href="?id=` + res.members[i].id +
-                            `" class="customer-secondary-btn add-member-btn" id="` + group_id + `" >Add</a>
+                            `" class="customer-secondary-btn add-member-btn" id="` + group_id + `">Add</a>
                                 <a class="customer-secondary-btn add-member-view-profile-btn" id="` + res.members[i]
                             .id + `">View Profile</a>
 
@@ -448,27 +448,28 @@
                 var add_url = "{{ route('addMember', [':id', ':group_id']) }}";
                 add_url = add_url.replace(':id', id);
                 add_url = add_url.replace(':group_id', group_id);
-
+                $(".add-member-btn").attr('href','');
                 $.ajax({
                     type: "GET",
                     url: add_url,
                     datatype: "json",
                     success: function(data) {
-                        if (data.status == 200) {
-                            Swal.fire({
-                                    title:'Success',
-                                    text:'Add Member Successfully',
-                                    timer: 500,
 
-                                    })
-                            // $('.add-member-row').load(location.href);
-                        } else {
-                            Swal.fire({
-                                    text:'Cannot Add Member',
-                                    timer: 500,
+                        // if (data.status == 200) {
+                        //     Swal.fire({
+                        //             title:'Success',
+                        //             text:'Add Member Successfully',
+                        //             timer: 500,
 
-                                    })
-                        }
+                        //             })
+                        //     // $('.add-member-row').load(location.href);
+                        // } else {
+                        //     Swal.fire({
+                        //             text:'Cannot Add Member',
+                        //             timer: 500,
+
+                        //             })
+                        // }
                         add_member();
 
                     }
