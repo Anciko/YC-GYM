@@ -16,7 +16,7 @@
                 </div>
             </a>
 
-            <a href="" class="group-chat-view-midea-link" id="view_media">
+            <a href="{{route('view_media')}}" class="group-chat-view-midea-link" id="view_media">
                 <p>View Media</p>
                 <iconify-icon icon="akar-icons:arrow-right" class="group-chat-view-midea-link-icon"></iconify-icon>
             </a>
@@ -34,7 +34,7 @@
                                     aria-label="Close"></button>
                             </div>
                             <div class="modal-body">
-                                <img src="{{ asset('/storage/trainer_message_media/' . $chat->media) }}" alt="test"
+                                <img src="{{ asset('storage/trainer_message_media/' . $chat->media) }}" alt="test"
                                     class="w-100">
                             </div>
                         </div>
@@ -57,7 +57,7 @@
                         <div class="group-chat-sender-text-container">
                             <span>Group Member</span>
                             <video width="100%" height="100%" controls>
-                                <source src="{{ asset('/storage/trainer_message_media/' . $chat->media) }}" type="video/mp4">
+                                <source src="{{ asset('storage/trainer_message_media/' . $chat->media) }}" type="video/mp4">
                             </video>
                         </div>
                         <img src="{{ asset('image/default.jpg') }}" />
@@ -68,8 +68,9 @@
                     <div class="group-chat-sender-container">
                         <div class="group-chat-sender-text-container">
                             <span>Group Member</span>
-                            <a data-bs-toggle="modal" href="#exampleModalToggle{{ $chat->id }}" role="button"><img
-                                    src="{{ asset('/storage/trainer_message_media/' . $chat->media) }}" alt=""></a>
+                            <a data-bs-toggle="modal" href="#exampleModalToggle{{ $chat->id }}" role="button">
+                                <img src="{{ asset('/storage/trainer_message_media/' . $chat->media) }}" alt="">
+                            </a>
                         </div>
                         <img src="{{ asset('image/default.jpg') }}" />
                     </div>
@@ -100,87 +101,25 @@
                 @endforelse
             </div>
         </div>
-
         {{-- member container end  --}}
-        {{-- media container --}}
-        <div id="media">
-            <div class="group-chat-media-header">
-                <a class="back-btn">
-                    <iconify-icon icon="bi:arrow-left" class="back-btn-icon"></iconify-icon>
-                </a>
-            </div>
-
-            <div class="group-chat-media-container customer-trainingcenter-media-container">
-                @foreach ($medias as $media)
-                    <div class="modal fade" id="exampleModalToggle{{ $media->id }}" aria-hidden="true"
-                        aria-labelledby="exampleModalToggleLabel" tabindex="-1">
-                        <div class="modal-dialog modal-dialog-centered">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                        aria-label="Close"></button>
-                                </div>
-                                <div class="modal-body">
-
-                                    @if (pathinfo($media->media, PATHINFO_EXTENSION) == 'mp4')
-                                        <video class="w-100" controls>
-                                            <source src="{{ asset('/storage/trainer_message_media/' . $media->media) }}"
-                                                type="video/mp4">
-                                            Your browser does not support the video tag.
-                                        </video>
-                                    @else
-                                        <img src="{{ asset('/storage/trainer_message_media/' . $media->media) }}"
-                                            alt="test" class="w-100">
-                                    @endif
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    @if (pathinfo($media->media, PATHINFO_EXTENSION) == 'mp4')
-                        <div class="group-chat-media">
-                            <a data-bs-toggle="modal" href="#exampleModalToggle{{ $media->id }}" role="button">
-                                <video style="z-index: -1;">
-                                    <source src="{{ asset('/storage/trainer_message_media/' . $media->media) }}"
-                                        type="video/mp4">
-                                </video>
-                            </a>
-                        </div>
-                    @else
-                        <div class="group-chat-media">
-                            <a data-bs-toggle="modal" href="#exampleModalToggle{{ $media->id }}" role="button">
-                                <img src="{{ asset('/storage/trainer_message_media/' . $media->media) }}" alt="test">
-                            </a>
-                        </div>
-                    @endif
-                @endforeach
-            </div>
-        </div>
-
-        {{-- media container end --}}
     </div>
 @endsection
 @push('scripts')
     <script>
         $(document).ready(function() {
             $('#members').hide();
-            $('#media').hide();
+          
             $(document).on('click', '#view_group_member', function(e) {
                 e.preventDefault();
                 $('#members').show();
                 $('#chat').hide();
-                $('#media').hide();
+
             });
-            $(document).on('click', '#view_media', function(e) {
-                e.preventDefault();
-                $('#members').hide();
-                $('#chat').hide();
-                $('#media').show();
-            });
+
             $(document).on('click', '.back-btn', function(e) {
                 e.preventDefault();
                 $('#members').hide();
-                $('#media').hide();
+
                 $('#chat').show();
             });
         });
@@ -204,7 +143,7 @@
             } else {
                 if (data.message.media.split('.').pop() === 'png' || data.message.media.split('.').pop() ===
                     'jpg' || data.message.media.split('.').pop() === 'jpeg') {
-                    groupchatcontainer.innerHTML += `<div class="modal fade" id="exampleModalToggle${data.message.id}" aria-hidden="true"
+                    groupchatcontainer.innerHTML += `<div class="modal fade" id="exampleModalToggle3${data.message.id}" aria-hidden="true"
                     aria-labelledby="exampleModalToggleLabel" tabindex="-1">
                     <div class="modal-dialog modal-dialog-centered">
                         <div class="modal-content">
@@ -213,8 +152,7 @@
                                     aria-label="Close"></button>
                             </div>
                             <div class="modal-body">
-                                    <img src="{{ asset('/storage/trainer_message_media/${data.message.media}') }}" alt="test"
-                                        class="w-100">
+                <img src="{{ asset('/storage/trainer_message_media/${data.message.media}') }}" alt="test" class="w-100">
                             </div>
                         </div>
                     </div>
@@ -222,8 +160,8 @@
                 <div class="group-chat-sender-container">
                         <div class="group-chat-sender-text-container">
                             <span>Group Member</span>
-                            <a data-bs-toggle="modal" href="#exampleModalToggle${data.message.id}" role="button">
-                                <img src="{{ asset('storage/trainer_message_media/${data.message.media}') }}">
+                            <a data-bs-toggle="modal" href="#exampleModalToggle3${data.message.id}" role="button">
+                                <img src="{{ asset('/storage/trainer_message_media/${data.message.media}') }}">
                             </a>
                         </div>
                         <img src="{{ asset('image/default.jpg') }}" />
@@ -234,7 +172,7 @@
                         <div class="group-chat-sender-text-container">
                             <span>Group Member</span>
                             <video width="100%" height="100%" controls>
-                                <source src="{{ asset('storage/trainer_message_media/${data.message.media}') }}" type="video/mp4">
+                        <source src="{{ asset('/storage/trainer_message_media/${data.message.media}') }}" type="video/mp4">
                             </video>
                         </div>
                         <img src="{{ asset('image/default.jpg') }}" />
