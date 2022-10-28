@@ -248,8 +248,21 @@
         // console.log(foodList.length)
 
         if(foodList.length === 0){
-            alert("Please Add At least one food")
-            return
+            Swal.fire({
+                                    icon: 'info',
+                                    title: 'Opps!',
+                                    text: 'Please Add at least one food!',
+                                    timer: 3000,
+                                    timerProgressBar: true,
+                                    showClass: {
+                                        popup: 'animate__animated animate__fadeInDown'
+                                    },
+                                    hideClass: {
+                                        popup: 'animate__animated animate__fadeOutUp'
+                                    }
+                                    })
+            // alert("Please Add At least one food")
+            // return
         }
 
         var today = new Date();
@@ -277,8 +290,25 @@
             }
 
             if(timeMismatch){
-                alert("It is now breakfast time")
-                return
+                            Swal.fire({
+                                    icon: 'info',
+                                    title: 'Opps!',
+                                    text: 'It it now breakfast time!',
+                                    timer: 3000,
+                                    timerProgressBar: true,
+                                    showClass: {
+                                        popup: 'animate__animated animate__fadeInDown'
+                                    },
+                                    hideClass: {
+                                        popup: 'animate__animated animate__fadeOutUp'
+                                    }
+                                    }).then(okay => {
+                                    if (okay) {
+                                        window.location.reload();
+                                    }
+                                })
+                // alert("It is now breakfast time page refresh")
+                // return
             }
         }
 
@@ -290,8 +320,25 @@
                 }
             }
             if(timeMismatch){
-                alert("It is now lunch time")
-                return
+                Swal.fire({
+                                    icon: 'info',
+                                    title: 'Opps!',
+                                    text: 'It it now lunch time!',
+                                    timer: 3000,
+                                    timerProgressBar: true,
+                                    showClass: {
+                                        popup: 'animate__animated animate__fadeInDown'
+                                    },
+                                    hideClass: {
+                                        popup: 'animate__animated animate__fadeOutUp'
+                                    }
+                                    }).then(okay => {
+                                    if (okay) {
+                                        window.location.reload();
+                                    }
+                                })
+                // alert("It is now lunch time")
+                // return
             }
         }
 
@@ -303,8 +350,25 @@
                 }
             }
             if(timeMismatch){
-                alert("It is now snack time")
-                return
+                Swal.fire({
+                                    icon: 'info',
+                                    title: 'Opps!',
+                                    text: 'It it now snack time!',
+                                    timer: 3000,
+                                    timerProgressBar: true,
+                                    showClass: {
+                                        popup: 'animate__animated animate__fadeInDown'
+                                    },
+                                    hideClass: {
+                                        popup: 'animate__animated animate__fadeOutUp'
+                                    }
+                                    }).then(okay => {
+                                    if (okay) {
+                                        window.location.reload();
+                                    }
+                                })
+                // alert("It is now snack time")
+                // return
             }
         }
         if(time >= '17:00:00' && time <= '20:00:00'){
@@ -315,8 +379,25 @@
                 }
             }
             if(timeMismatch){
-                alert("It is now dinner time")
-                return
+                Swal.fire({
+                                    icon: 'info',
+                                    title: 'Opps!',
+                                    text: 'It it now dinner time!',
+                                    timer: 3000,
+                                    timerProgressBar: true,
+                                    showClass: {
+                                        popup: 'animate__animated animate__fadeInDown'
+                                    },
+                                    hideClass: {
+                                        popup: 'animate__animated animate__fadeOutUp'
+                                    }
+                                    }).then(okay => {
+                                    if (okay) {
+                                        window.location.reload();
+                                    }
+                                })
+                // alert("It is now dinner time")
+                // return
             }
         }
 
