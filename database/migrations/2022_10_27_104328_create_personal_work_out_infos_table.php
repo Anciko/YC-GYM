@@ -17,7 +17,6 @@ class CreatePersonalWorkOutInfosTable extends Migration
             $table->id();
             $table->integer('workout_id');
             $table->integer('user_id');
-            $table->boolean('complete_status');
             $table->timestamps();
         });
     }

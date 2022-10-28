@@ -59,21 +59,24 @@ class Customer_TrainingCenterController extends Controller
                         ->where('day',$current_day)
                         ->get();
         $time_sum=0;
+        $t_sum=0;
+        $duration=0;
+        $sec=0;
         foreach($tc_workouts as $s){
             $time_sum+=$s->time;
             if($time_sum < 60){
-                $t_sum=$time_sum;
-            }else{
-                $duration=round($time_sum/60);
+                $sec=$time_sum;
+            }elseif($time_sum >= 60){
+                $duration=floor($time_sum/60);
                 $t_sum=$time_sum%60;
             }
         }
+
         $c_sum=0;
         foreach($tc_workouts as $s){
             $c_sum+=$s->calories;
         }
-
-        return view('customer.training_center.workout_plan',compact('tc_workouts','t_sum','c_sum'));
+        return view('customer.training_center.workout_plan',compact('tc_workouts','time_sum','t_sum','c_sum','duration','sec'));
     }
 
     public function workout_complete_store(Request $request)
@@ -87,7 +90,6 @@ class Customer_TrainingCenterController extends Controller
                 $personal_workout_info = new PersonalWorkOutInfo();
                 $personal_workout_info->user_id = $user;
                 $personal_workout_info->workout_id = $gp;
-                $personal_workout_info->complete_status = 1;
                 $personal_workout_info->save();
             }
 
@@ -254,6 +256,24 @@ class Customer_TrainingCenterController extends Controller
                         ->where('day',$current_day)
                         ->get();
 
-        return view('customer.training_center.workout',compact('tc_workouts'));
+        $time_sum=0;
+        $t_sum=0;
+        $duration=0;
+        $sec=0;
+        foreach($tc_workouts as $s){
+            $time_sum+=$s->time;
+            if($time_sum < 60){
+                $sec=$time_sum;
+            }else{
+                $duration=floor($time_sum/60);
+                $t_sum=$time_sum%60;
+            }
+        }
+        $c_sum=0;
+        foreach($tc_workouts as $s){
+            $c_sum+=$s->calories;
+        }
+
+        return view('customer.training_center.workout',compact('time_sum','tc_workouts','c_sum','t_sum','sec','duration'));
     }
 }
