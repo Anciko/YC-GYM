@@ -239,7 +239,6 @@
                 var id = url.searchParams.get("id");
                 var group_id = $(this).attr("id");
 
-                console.log(group_id);
                 $.ajax({
                     type: "GET",
                     url: "trainer/group/member/kick/" + group_id,

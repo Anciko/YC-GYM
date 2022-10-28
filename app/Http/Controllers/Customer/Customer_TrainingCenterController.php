@@ -90,7 +90,6 @@ class Customer_TrainingCenterController extends Controller
                 $personal_workout_info = new PersonalWorkOutInfo();
                 $personal_workout_info->user_id = $user;
                 $personal_workout_info->workout_id = $gp;
-                $personal_workout_info->complete_status = 1;
                 $personal_workout_info->save();
             }
 
