@@ -18,7 +18,7 @@ class TrainingManagementController extends Controller
         $file_name='';
         $message = new Message();
         $message->training_group_id = $id;
-        $message->text = $request->text == null ?  '👍' : $request->text;
+        $message->text = $request->text == null ? null : $request->text;
 
         // Store Image
         if($request->file != null){

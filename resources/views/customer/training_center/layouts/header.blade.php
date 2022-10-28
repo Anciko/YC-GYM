@@ -29,8 +29,13 @@
             <a href="/">Home</a>
             <a href="#">Shop</a>
             <a href="#">Search</a>
+            @hasanyrole('Diamond|Platinum|Gym Member')
             <a href="{{route('training_center.index')}}">Training Center</a>
-            <a href="{{route('group')}}">Group</a>
+            @endhasanyrole
+
+            @hasanyrole('Gold|Ruby|Ruby Premium')
+            <a href="{{route('group')}}">Training Center</a>
+            @endhasanyrole
 
             {{-- <div style="float:right;margin-left:30px">
                 <form id="logout-form" action="{{ route('logout') }}" method="POST">

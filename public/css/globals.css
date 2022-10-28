@@ -121,6 +121,7 @@ input[type=number] {
     border-radius: 5px;
     background-color: transparent;
     color: var(--customer-navlink-color);
+    margin-left: 10px;
 }
 
 .theme-contaier select option{

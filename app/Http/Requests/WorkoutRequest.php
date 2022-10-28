@@ -24,8 +24,12 @@ class WorkoutRequest extends FormRequest
     public function rules()
     {
         return [
+            'plantype' => 'required',
             'workoutname' => 'required',
+            'memberType' => 'required',
             'calories' => 'required',
+            'workoutday' => 'required',
+            'workoutplace' => 'required',
             'workoutlevel' => 'required',
             'gendertype' => 'required',
             'image' => 'required',
