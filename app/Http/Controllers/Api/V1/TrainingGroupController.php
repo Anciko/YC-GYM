@@ -124,15 +124,14 @@ class TrainingGroupController extends Controller
 
     public function eatMeals(Request $request)
     {
-
         $meal_infos = $request->all();
         $meal_infos = json_decode(json_encode($meal_infos));
 
         foreach ($meal_infos->eat_meal as $meal_info) {
             $personal_meal_info = new PersonalMealInfo();
             $personal_meal_info->meal_id = $meal_info->meal_id;
-            $personal_meal_info->user_id = auth()->user()->id;
-            $personal_meal_info->meal_count = $meal_info->meal_count;
+            $personal_meal_info->client_id = auth()->user()->id;
+            $personal_meal_info->serving = $meal_info->meal_count;
             $personal_meal_info->save();
         }
 
