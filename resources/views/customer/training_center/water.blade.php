@@ -105,7 +105,7 @@
 
         }
         else if(taken == 3000){
-            html = `<p>You left 2000 ml of today's mission.</p>
+            html = `<p>You complete today’s mission.</p>
             <h1>Yay! You are hydrated.</h1>`
             $('.customer-water-track-text-container').html(html);
             $(".customer-water-add-btn").hide()
