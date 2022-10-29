@@ -15,7 +15,8 @@
     <script src="https://code.iconify.design/iconify-icon/1.0.0/iconify-icon.min.js"></script>
 
     <!--global css-->
-    <link href="{{ asset('css/trainer/globals.css')}}" rel="stylesheet"/>
+    {{-- <link href="{{ asset('css/trainer/globals.css')}}" rel="stylesheet"/> --}}
+    <link href={{ asset('css/globals.css')}} rel="stylesheet"/>
     <link href="{{asset('css/trainer/trainerTrainingCenter.css')}}" rel="stylesheet" />
 
     <title>YC-Trainer</title>
