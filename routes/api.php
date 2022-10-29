@@ -60,6 +60,8 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::get('meals', [TrainingGroupController::class, 'getMeals']);
     Route::post('complete-workouts', [TrainingGroupController::class, 'completeWorkouts']);
     Route::post('eat-meals', [TrainingGroupController::class, 'eatMeals']);
+    Route::post('track-water', [TrainingGroupController::class, 'trackWater']);
+    Route::get('user-water-level', [TrainerGroupController::class,'currentUserWaterLevel']);
 
 });
 
