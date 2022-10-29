@@ -63,13 +63,15 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::post('track-water', [TrainingGroupController::class, 'trackWater']);
     Route::get('user-water-level', [TrainingGroupController::class,'currentUserWaterLevel']);
 
+    //Group chat
+    Route::post('sendmessage/{id}',[TrainerManagementConntroller::class,'send']);
+
+    //Group chat for mobile
+    Route::post('chat/sendmessage/{id}',[TrainingManagementController::class,'sendmessage']);
+    Route::get('chat/showmessage/{id}',[TrainingManagementController::class,'chatshow']);
+
 });
 
 Route::get('article/{id}', [TrainingGroupController::class, 'test']);
 
-//Group chat
-Route::post('sendmessage/{id}',[TrainerManagementConntroller::class,'send']);
 
-//Group chat for mobile
-Route::post('chat/sendmessage/{id}',[TrainingManagementController::class,'sendmessage']);
-Route::get('chat/showmessage/{id}',[TrainingManagementController::class,'chatshow']);
