@@ -117,16 +117,19 @@
             $('.trainer-group-chat-members-container').hide();
             $('.trainer-group-chat-media-container').hide();
             $('.chat-message-form').hide();
+            // $(".group-chat-messages-container").attr('class','');
             $(window).on("load", function() {
                 $('.group-chat-messages-container').scrollTop($('.group-chat-messages-container')[0]
                     .scrollHeight);
             });
             $(document).on('click', '#group-chat', function(e) {
                 e.preventDefault();
+
                 $("#send_message").empty();
                 $('#trainer_message_form').show();
                 $(".trainer-group-chat-media-container").empty();
                 $('#p').hide();
+
                 $('.trainer-group-chat-members-container').hide();
                 $('.trainer-group-chat-media-container').hide();
                 $('.trainer-group-chat-view-members-header').hide();

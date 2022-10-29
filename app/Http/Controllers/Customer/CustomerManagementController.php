@@ -40,4 +40,16 @@ class CustomerManagementController extends Controller
         }
 
     }
+    public function showgroup(){
+        $id = auth()->user()->id;
+        $group = TrainingUser::where('user_id',$id)->first();
+        if($group){
+            return view('customer.training_center.groups',compact('group'));
+        }
+        else{
+            Alert::warning('Warning', 'No Group Yet');
+            return redirect()->back();
+        }
+
+    }
 }

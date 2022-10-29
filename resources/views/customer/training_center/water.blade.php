@@ -119,8 +119,11 @@
 
         var fill = (taken / total) * 100
         if(fill > 100){
-            alert("cant drink anymore")
-            return
+            html = `<p>You complete today’s mission.</p>
+            <h1>Yay! You are hydrated.</h1>`
+            $('.customer-water-track-text-container').html(html);
+            $(".customer-water-add-btn").hide()
+            // return
         }
         $('.water').animate({height:`${fill}%`}, 300)
 
