@@ -87,7 +87,7 @@ class RegisterPaymentController extends Controller
         }
         $payment = new Payment();
         $payment->user_id = $user->id;
-        $payment->payment_type = 'bank';
+        $payment->payment_type = 'banking';
         $payment->bank_account_number = $request->bank_account_number;
         $payment->bank_account_holder = $request->bank_account_holder;
         $payment->payment_name = $request->payment_name;
