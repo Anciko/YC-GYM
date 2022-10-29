@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use App\Models\Meal;
 use App\Models\PersonalMealInfo;
+use App\Models\WaterTracked;
 use App\Models\Workout;
 use App\Models\WorkoutPlan;
 use Carbon\Carbon;
@@ -140,8 +141,34 @@ class TrainingGroupController extends Controller
         ]);
     }
 
-    public function trackWater() {
-        
+    public function trackWater(Request $request) {
+        $current_date = Carbon::now()->toDateString();
+        $water = WaterTracked::where('date', $current_date)->first();
+
+        $user = auth()->user();
+
+        if(!$water) {
+            $water = new WaterTracked();
+            $water->user_id = $user->id;
+            $water->update_water = 250;
+            $water->date = $current_date;
+
+            $water->save();
+
+            return response()->json([
+                'water' => $water
+            ]);
+        }else{
+            $water = WaterTracked::findOrFail($water->id);
+            $water->user_id = $user->id;
+            $water->update_water += 250;
+            $water->date = $current_date;
+            $water->save();
+
+            return response()->json([
+                'water' => $water
+            ]);
+        }
     }
 
     //For Gold, Ruby, RubyPremium
