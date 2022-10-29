@@ -33,7 +33,7 @@
             <a href="{{route('training_center.index')}}">Training Center</a>
             @endhasanyrole
             @hasanyrole('Gold|Ruby|Ruby Premium')
-            <a href="{{route('group')}}">Training Center</a>
+            <a href="{{route('groups')}}">Training Center</a>
             @endhasanyrole
             @hasanyrole('Trainer')
             <a href="{{route('trainer')}}">Training Center</a>
