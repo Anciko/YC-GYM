@@ -2,19 +2,20 @@
 
 namespace App\Http\Controllers\Api\V1;
 
+use Carbon\Carbon;
+use App\Models\Meal;
 use App\Models\User;
 use App\Models\Message;
-use App\Models\TrainingUser;
-use Illuminate\Http\Request;
-use App\Models\TrainingGroup;
-use Illuminate\Support\Facades\DB;
-use App\Http\Controllers\Controller;
-use App\Models\Meal;
-use App\Models\PersonalMealInfo;
-use App\Models\WaterTracked;
 use App\Models\Workout;
 use App\Models\WorkoutPlan;
-use Carbon\Carbon;
+use App\Models\TrainingUser;
+use App\Models\WaterTracked;
+use Illuminate\Http\Request;
+use App\Models\TrainingGroup;
+use App\Models\PersonalMealInfo;
+use Illuminate\Support\Facades\DB;
+use App\Models\PersonalWorkOutInfo;
+use App\Http\Controllers\Controller;
 
 class TrainingGroupController extends Controller
 {
@@ -112,7 +113,7 @@ class TrainingGroupController extends Controller
         $workouts = json_decode(json_encode($workouts));
 
         foreach ($workouts->workout_id_list as $workout) {
-            $personal_workout_info = new PersonalWorkoutInfo();
+            $personal_workout_info = new PersonalWorkOutInfo();
             $personal_workout_info->workout_id = $workout->id;
             $personal_workout_info->user_id = auth()->user()->id;
 
@@ -178,7 +179,7 @@ class TrainingGroupController extends Controller
         $user = auth()->user();
 
         $current_date = Carbon::now()->toDateString();
-        
+
         $water = WaterTracked::where('user_id', $user->id)->where('date', $current_date)->first();
 
         return response()->json([
