@@ -43,8 +43,10 @@
                         @foreach ($member as $members)
                         @if ($members->member_type == "Platinum")
                             <option value="{{$members->member_type}}" id="platinum">{{$members->member_type}}</option>
-                        @elseif($members->member_type == "Gold"){
-                            <option value="{{$members->member_type}}" id="gold">{{$members->member_type}}</option>
+                        @elseif($members->member_type == "Diamond"){
+                            <option value="{{$members->member_type}}" id="diamond">{{$members->member_type}}</option>
+                        } @elseif($members->member_type == "Gym Member"){
+                            <option value="{{$members->member_type}}" id="gymmember">{{$members->member_type}}</option>
                         }
                         @endif
 
@@ -64,7 +66,7 @@
                         <select class="form-select" aria-label="Default select example" placeholder="Workout level select" name="workoutlevel">
 
                             <option value="beginner" id="beginner">Beginner</option>
-                            <option value="advance" id="advance">Advance</option>
+                            <option value="advanced" id="advance">Advance</option>
                             <option value="professional" id="professional">Professional</option>
                         </select>
                         <label for="floatingInput">Workout level select</label>
@@ -166,8 +168,10 @@
 
         if (user.member_type == 'Platinum') {
             $("#platinum").attr('selected',true);
-        } else {
-            $("#gold").attr('selected',true);
+        } else if(user.member_type == 'Diamond'){
+            $("#diamond").attr('selected',true);
+        }else{
+            $('#gymmember').attr('selected',ture);
         }
 
         if(user.workout_level == 'beginner'){
