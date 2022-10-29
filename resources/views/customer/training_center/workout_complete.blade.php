@@ -30,22 +30,13 @@
             <span>Exercises</span>
         </div>
     </div>
-    <?php
-         $workout_id = array();
-         $length=count($tc_workouts);
-
-        for($a=0;$a <$length ;$a++){
-
-        }
-
-    ?>
-
     <button class="customer-primary-btn customer-workout-completed-save-btn" id="save">Save And Continue</button>
    </div>
 
 @endsection
 @push('scripts')
 <script>
+    console.log( @json($tc_workouts));
      $(document).on('click', '#save', function(e) {
 
         let videoSource = new Array();
@@ -59,7 +50,9 @@
             workout_id.push(@json($tc_workouts)[a].id);
 
         }
-        console.log(workout_id);
+
+
+
         var add_url = "{{ route('workout_complete.store') }}";
        // add_url = add_url.replace(':workout_id', workout_id);
         $.ajax({

@@ -27,17 +27,6 @@ use App\Http\Controllers\Admin\RequestAcceptDeclineController;
 use App\Http\Controllers\Customer\CustomerManagementController;
 use App\Http\Controllers\Trainer\TrainerManagementConntroller;
 
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| contains the "web" middleware group. Now create something great!
-|
-*/
-
 Route::group(['middleware' => 'prevent-back-history'], function () {
     Route::get('/customerlogin', [CustomerLoginController::class, 'login'])->name('customerlogin');
     Route::get('customer/checkPhone', [CustomerRegisterController::class, 'checkPhone'])->name('checkPhone');
@@ -175,73 +164,54 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
         });
     }); //admin prefix
 
-    Route::middleware(['role:Free'])->group(function () {
-        Route::get('/free', [TrainerManagementConntroller::class, 'free'])->name('free');
-    });
-    Route::middleware(['role:Platinum|Diamond|Gym Member'])->group(function () {
-
-        Route::get('/platinum', [TrainerManagementConntroller::class, 'platinum'])->name('platinum');
-        Route::get('/diamond', [TrainerManagementConntroller::class, 'diamond'])->name('diamond');
-
-        Route::get('customer/training_center', [Customer_TrainingCenterController::class, 'index'])->name('training_center.index');
-        Route::get('customer/training_center/meal', [Customer_TrainingCenterController::class, 'meal'])->name('training_center.meal');
-        Route::get('customer/training_center/workout_plan', [Customer_TrainingCenterController::class, 'workout_plan'])->name('training_center.workout_plan');
-        Route::get('customer/training_center/water', [Customer_TrainingCenterController::class, 'water'])->name('training_center.water');
-        Route::get('customer/training_center/workout', [Customer_TrainingCenterController::class, 'workout'])->name('training_center.workout');
-
-        Route::post('customer/training_center/breakfast', [Customer_TrainingCenterController::class, 'showbreakfast'])->name('customer/training_center/breakfast');
-        Route::post('customer/training_center/lunch', [Customer_TrainingCenterController::class, 'showlunch'])->name('customer/training_center/lunch');
-        Route::post('customer/training_center/snack', [Customer_TrainingCenterController::class, 'showsnack'])->name('customer/training_center/snack');
-        Route::post('customer/training_center/dinner', [Customer_TrainingCenterController::class, 'showdinner'])->name('customer/training_center/dinner');
-        Route::post('customer/training_center/foodList', [Customer_TrainingCenterController::class, 'foodList'])->name('customer/training_center/foodList');
-    });
-    Route::middleware(['role:Platinum'])->group(function () {
-        Route::get('/platinum', [TrainerManagementConntroller::class, 'platinum'])->name('platinum');
-    });
-    Route::middleware(['role:Gold'])->group(function () {
-        Route::get('/gold', [TrainerManagementConntroller::class, 'gold'])->name('gold');
-    });
-    Route::middleware(['role:Diamond'])->group(function () {
-        Route::get('/diamond', [TrainerManagementConntroller::class, 'diamond'])->name('diamond');
-    });
-    Route::middleware(['role:Ruby'])->group(function () {
-        Route::get('/ruby', [TrainerManagementConntroller::class, 'ruby'])->name('ruby');
-    });
-    Route::middleware(['role:Ruby Premium'])->group(function () {
-        Route::get('/ruby_premium', [TrainerManagementConntroller::class, 'ruby_premium'])->name('ruby_premium');
-    });
-    Route::middleware(['role:Gold'])->group(function () {
-        Route::get('/gold', [TrainerManagementConntroller::class, 'gold'])->name('gold');
-    });
-    Route::middleware(['role:Gym Member'])->group(function () {
-        Route::get('/gym_member', [TrainerManagementConntroller::class, 'gym_member'])->name('gym_member');
-    });
-
-
-         Route::middleware(['role:Free'])->group(function () {
-            Route::get('/free',[TrainerManagementConntroller::class,'free'])->name('free');
+        Route::middleware(['role:Free'])->group(function () {
+            Route::get('/free', [TrainerManagementConntroller::class, 'free'])->name('free');
         });
         Route::middleware(['role:Platinum|Diamond|Gym Member'])->group(function () {
 
-            Route::get('/platinum',[TrainerManagementConntroller::class,'platinum'])->name('platinum');
-            Route::get('/diamond',[TrainerManagementConntroller::class,'diamond'])->name('diamond');
+            Route::get('customer/training_center/workout/workout_complete/{t_sum}/{cal_sum?}/{count_video?}/{group_id?}',[Customer_TrainingCenterController::class,'workout_complete'])->name('workout_complete');
+            Route::get('customer/training_center/workout/workout_complete_gym/{t_sum}/{cal_sum?}/{count_video?}/{group_id?}',[Customer_TrainingCenterController::class,'workout_complete_gym'])->name('workout_complete.gym');
+            Route::post('customer/training_center/workout/workout_complete/store/',[Customer_TrainingCenterController::class,'workout_complete_store'])->name('workout_complete.store');
 
-            Route::get('customer/training_center/workout_complete/{t_sum}/{cal_sum?}/{count_video?}/{group_id?}',[Customer_TrainingCenterController::class,'workout_complete'])->name('workout_complete');
-            Route::get('customer/training_center',[Customer_TrainingCenterController::class,'index'])->name('training_center.index');
-            Route::post('customer/training_center/workout_complete/store/',[Customer_TrainingCenterController::class,'workout_complete_store'])->name('workout_complete.store');
+            Route::get('customer/training_center', [Customer_TrainingCenterController::class, 'index'])->name('training_center.index');
+            Route::get('customer/training_center/meal', [Customer_TrainingCenterController::class, 'meal'])->name('training_center.meal');
+            Route::get('customer/training_center/workout_plan', [Customer_TrainingCenterController::class, 'workout_plan'])->name('training_center.workout_plan');
+            Route::get('customer/training_center/water', [Customer_TrainingCenterController::class, 'water'])->name('training_center.water');
+            Route::post('customer/training_center/water', [Customer_TrainingCenterController::class, 'water_track'])->name('training_center.water.store');
+            Route::get('customer/training_center/workout/home', [Customer_TrainingCenterController::class, 'workout_home'])->name('training_center.workout.home');
+            Route::get('customer/training_center/workout/gym', [Customer_TrainingCenterController::class, 'workout_gym'])->name('training_center.workout.gym');
 
-            Route::get('customer/training_center/meal',[Customer_TrainingCenterController::class,'meal'])->name('training_center.meal');
-            Route::get('customer/training_center/workout_plan',[Customer_TrainingCenterController::class,'workout_plan'])->name('training_center.workout_plan');
-            Route::get('customer/training_center/water',[Customer_TrainingCenterController::class,'water'])->name('training_center.water');
-            Route::get('customer/training_center/workout',[Customer_TrainingCenterController::class,'workout'])->name('training_center.workout');
-
-            Route::post('customer/training_center/breakfast',[Customer_TrainingCenterController::class,'showbreakfast'])->name('customer/training_center/breakfast');
-            Route::post('customer/training_center/lunch',[Customer_TrainingCenterController::class,'showlunch'])->name('customer/training_center/lunch');
-            Route::post('customer/training_center/snack',[Customer_TrainingCenterController::class,'showsnack'])->name('customer/training_center/snack');
-            Route::post('customer/training_center/dinner',[Customer_TrainingCenterController::class,'showdinner'])->name('customer/training_center/dinner');
-            Route::post('customer/training_center/foodList',[Customer_TrainingCenterController::class,'foodList'])->name('customer/training_center/foodList');
-
+            Route::post('customer/training_center/breakfast', [Customer_TrainingCenterController::class, 'showbreakfast'])->name('customer/training_center/breakfast');
+            Route::post('customer/training_center/lunch', [Customer_TrainingCenterController::class, 'showlunch'])->name('customer/training_center/lunch');
+            Route::post('customer/training_center/snack', [Customer_TrainingCenterController::class, 'showsnack'])->name('customer/training_center/snack');
+            Route::post('customer/training_center/dinner', [Customer_TrainingCenterController::class, 'showdinner'])->name('customer/training_center/dinner');
+            Route::post('customer/training_center/foodList', [Customer_TrainingCenterController::class, 'foodList'])->name('customer/training_center/foodList');
         });
+
+        // Route::middleware(['role:Platinum|Diamond|Gym Member'])->group(function () {
+
+
+        //     Route::get('customer/training_center/workout_complete/{t_sum}/{cal_sum?}/{count_video?}/{group_id?}',[Customer_TrainingCenterController::class,'workout_complete'])->name('workout_complete');
+        //     Route::get('customer/training_center',[Customer_TrainingCenterController::class,'index'])->name('training_center.index');
+        //     Route::post('customer/training_center/workout_complete/store/',[Customer_TrainingCenterController::class,'workout_complete_store'])->name('workout_complete.store');
+
+        //     Route::get('customer/training_center/meal',[Customer_TrainingCenterController::class,'meal'])->name('training_center.meal');
+        //     Route::get('customer/training_center/workout_plan',[Customer_TrainingCenterController::class,'workout_plan'])->name('training_center.workout_plan');
+        //     Route::get('customer/training_center/water',[Customer_TrainingCenterController::class,'water'])->name('training_center.water');
+
+
+        //     Route::post('customer/training_center/breakfast',[Customer_TrainingCenterController::class,'showbreakfast'])->name('customer/training_center/breakfast');
+        //     Route::post('customer/training_center/lunch',[Customer_TrainingCenterController::class,'showlunch'])->name('customer/training_center/lunch');
+        //     Route::post('customer/training_center/snack',[Customer_TrainingCenterController::class,'showsnack'])->name('customer/training_center/snack');
+        //     Route::post('customer/training_center/dinner',[Customer_TrainingCenterController::class,'showdinner'])->name('customer/training_center/dinner');
+        //     Route::post('customer/training_center/foodList',[Customer_TrainingCenterController::class,'foodList'])->name('customer/training_center/foodList');
+
+        // });
+
+        Route::middleware(['role:Free'])->group(function () {
+            Route::get('/free',[TrainerManagementConntroller::class,'free'])->name('free');
+        });
+
         Route::middleware(['role:Platinum'])->group(function () {
             Route::get('/platinum', [TrainerManagementConntroller::class, 'platinum'])->name('platinum');
         });
@@ -269,4 +239,4 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
         Route::get('customer/view_media',[CustomerManagementController::class,'view_media'])->name('view_media');
         });
 
-    });
+});
