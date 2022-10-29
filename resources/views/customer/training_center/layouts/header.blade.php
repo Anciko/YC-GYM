@@ -26,8 +26,13 @@
             <a href="/">Home</a>
             <a href="#">Shop</a>
             <a href="#">Search</a>
+            @hasanyrole('Diamond|Platinum|Gym Member')
             <a href="{{route('training_center.index')}}">Training Center</a>
-            <a href="{{route('group')}}">Group</a>
+            @endhasanyrole
+
+            @hasanyrole('Gold|Ruby|Ruby Premium')
+            <a href="{{route('group')}}">Training Center</a>
+            @endhasanyrole
 
             <div class="customer-dropdown-container">
                 <ul>

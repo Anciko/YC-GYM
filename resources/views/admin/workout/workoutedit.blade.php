@@ -180,19 +180,19 @@
             var select = $("#professional");
             select.attr('selected',true);
         }
-        if (user.day == 'monday') {
+        if (user.day == 'Monday') {
             $("#Monday").attr('selected',true);
-        } else if(user.day == 'tuesday'){
+        } else if(user.day == 'Tuesday'){
             $("#Tuesday").attr('selected',true);
-        }else if(user.day == 'wednesday'){
+        }else if(user.day == 'Wednesday'){
             $("#Wednesday").attr('selected',true);
-        }else if(user.day == 'thursday'){
+        }else if(user.day == 'Thursday'){
             $("#Thursday").attr('selected',true);
-        }else if(user.day == 'friday'){
+        }else if(user.day == 'Friday'){
             $("#Friday").attr('selected',true);
-        }else if(user.day == 'saturday'){
+        }else if(user.day == 'Saturday'){
             $("#Saturday").attr('selected',true);
-        }else if(user.day == 'sunday'){
+        }else if(user.day == 'Sunday'){
             $("#Sunday").attr('selected',true);
         }
 

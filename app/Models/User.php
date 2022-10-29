@@ -51,6 +51,19 @@ class User extends Authenticatable
         return $this->hasOne(Payment::class);
     }
 
+    public function watertracks(){
+        return $this->hasMany(WaterTracked::class,'user_id');
+    }
+
+    public function personalmealinfos()
+    {
+        return $this->hasMany(PersonalMealInfo::class, 'client_id', 'id');
+    }
+
+    public function personalworkoutinfos()
+    {
+        return $this->hasMany(PersonalWorkOutInfo::class, 'user_id', 'id');
+    }
 
 //   public function member()
 //   {

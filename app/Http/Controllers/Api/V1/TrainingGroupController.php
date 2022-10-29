@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use App\Models\Meal;
 use App\Models\PersonalMealInfo;
+use App\Models\WaterTracked;
 use App\Models\Workout;
 use App\Models\WorkoutPlan;
 use Carbon\Carbon;
@@ -67,7 +68,7 @@ class TrainingGroupController extends Controller
         $current_day = Carbon::now('Asia/Yangon')->isoFormat('dddd');
         $current_time = Carbon::now('Asia/Yangon')->toTimeString();
 
-        if ($current_time < 11 ) { // Breakfast
+        if ($current_time < 10 ) { // Breakfast
 
             $meals = Meal::where('meal_plan_type', 'Breakfast')->get();
             return response()->json([
@@ -138,6 +139,36 @@ class TrainingGroupController extends Controller
         return response()->json([
             'messaage' => 'success'
         ]);
+    }
+
+    public function trackWater(Request $request) {
+        $current_date = Carbon::now()->toDateString();
+        $water = WaterTracked::where('date', $current_date)->first();
+
+        $user = auth()->user();
+
+        if(!$water) {
+            $water = new WaterTracked();
+            $water->user_id = $user->id;
+            $water->update_water = 250;
+            $water->date = $current_date;
+
+            $water->save();
+
+            return response()->json([
+                'water' => $water
+            ]);
+        }else{
+            $water = WaterTracked::findOrFail($water->id);
+            $water->user_id = $user->id;
+            $water->update_water += 250;
+            $water->date = $current_date;
+            $water->save();
+
+            return response()->json([
+                'water' => $water
+            ]);
+        }
     }
 
     //For Gold, Ruby, RubyPremium
