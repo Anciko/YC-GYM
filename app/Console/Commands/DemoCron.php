@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use App\Models\User;
 use Illuminate\Support\Carbon;
 use Illuminate\Console\Command;
+use Spatie\Permission\Contracts\Role;
 
 class DemoCron extends Command
 {
@@ -39,6 +40,7 @@ class DemoCron extends Command
      */
     public function handle()
     {
-        info(User::whereDate('to_date','<=',Carbon::now())->update(['active_status'=>'0','to_date'=>null,'from_date'=>null]));
+        info($user=User::whereDate('to_date','<=',Carbon::now())->update(['active_status'=>'0','member_type'=>'Free','membertype_level'=>null,'to_date'=>null,'from_date'=>null]),
+            $user->roles()->detach());
     }
 }
