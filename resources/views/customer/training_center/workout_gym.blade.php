@@ -6,7 +6,7 @@
 </a>
 
     <div class="customer-workout-plan-header-container">
-        <h1>Get Lean At Home</h1>
+        <h1>Get Lean At Gym</h1>
         <div class="customer-workout-plan-header-details-container">
 
 
@@ -168,7 +168,7 @@
                                     }
                                     }).then(okay => {
                                     if (okay) {
-                                        window.location.href = 'workout_complete/'+t_sum+'/'+cal_sum+'/'+videoSource.length;
+                                        window.location.href = 'workout_complete_gym/'+t_sum+'/'+cal_sum+'/'+videoSource.length;
                                     }
                                 })
                     //window.location.href = "{{ route('workout_complete',"sum")}}";
@@ -184,23 +184,6 @@
             // console.log(element)
             $(".customer-workout-video-progress div")[i].classList.add("completed-workout")
         }
-
-            // function ensureVideoPlays() {
-            //     const video = document.getElementById('workoutVideo');
-
-            //     if(!video) return;
-
-            //     const promise = video.play();
-            //     if(promise !== undefined){
-            //         promise.then(() => {
-            //             // Autoplay started
-            //         }).catch(error => {
-            //             // Autoplay was prevented.
-            //             video.muted = true;
-            //             video.play();
-            //         });
-            //     }
-            // }
     </script>
 @endpush
 
