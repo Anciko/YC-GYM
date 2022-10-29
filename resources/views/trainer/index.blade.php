@@ -231,7 +231,6 @@
 
             });
 
-
             $(document).on('click', '.kick_member', function(e) {
                 e.preventDefault();
                 var url = new URL(this.href);
@@ -389,10 +388,7 @@
                 });
                 group_id = localStorage.getItem('group_id');
                 $('.trainer-group-chat-view-members-header').append(
-                    '<a class="back-btn">\
-                                        <iconify-icon icon="bi:arrow-left" class="back-btn-icon"></iconify-icon>\
-                                    </a>\
-                                    <div class="trainer-view-members-add-delete-btn-contaier">\
+                    '<div class="trainer-view-members-add-delete-btn-contaier">\
                                         <button id="addMember"  class="trainer-view-members-add-btn" value=' + group_id + '>\
                                             <iconify-icon icon="akar-icons:circle-plus" class="trainer-view-members-add-icon"></iconify-icon>\
                                             <p>Add Member</p>\
