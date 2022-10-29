@@ -5,9 +5,6 @@
                 {{-- LOGO --}}
             </div>
             <div class="customer-language-container">
-                <div class="customer-language-flag-container">
-                    <img src="../imgs/ukflag.png">
-                </div>
 
                 <select>
                     <option value="">Myanmar</option>
@@ -31,12 +28,23 @@
             <a href="#">Shop</a>
             <a href="#">Search</a>
             <a href="#">Training Center</a>
-            {{-- <div style="float:right;margin-left:30px">
-                <form id="logout-form" action="{{ route('logout') }}" method="POST">
-                    @csrf
-                    <button class="customer-primary-btn customer-login-btn" type="submit">Logout</button>
-                </form>
-            </div> --}}
+            <div class="customer-dropdown-container">
+                <ul>
+                    <li class="customer-dropdown">
+                    <a href="#" data-toggle="dropdown">
+                        <img class="nav-profile-img" src="{{asset('img/avatar.jpg')}}"/>
+                        <i class="icon-arrow"></i></a>
+                    <ul class="customer-dropdown-menu">
+                        <li><a href="#">Profile</a></li>
+                        <li><form class="dropdown-item" id="logout-form" action="{{ route('logout') }}" method="POST">
+                            @csrf
+                            <button class="customer-primary-btn customer-login-btn" type="submit">Logout</button>
+                        </form></li>
+
+                    </ul>
+                    </li>
+                </ul>
+            </div>
         </div>
 
         {{-- <div class="customer-navlinks-notiprofile-container">
@@ -59,28 +67,9 @@
 
         <div class="customer-navlinks-notiprofile-container">
             <a href="#"><iconify-icon icon="akar-icons:bell" class="nav-icon"></iconify-icon></a>
-            <div class="customer-dropdown-container">
-                <ul>
-                    <li class="customer-dropdown">
-                    <a href="#" data-toggle="dropdown">
-                        <img class="nav-profile-img" src="{{asset('img/avatar.jpg')}}"/>
-                        <i class="icon-arrow"></i></a>
-                    <ul class="customer-dropdown-menu">
-                        <li><a href="#">Profile</a></li>
-                        <li><form class="dropdown-item" id="logout-form" action="{{ route('logout') }}" method="POST">
-                            @csrf
-                            <button class="customer-primary-btn customer-login-btn" type="submit">Logout</button>
-                        </form></li>
-
-                    </ul>
-                    </li>
-                </ul>
-            </div>
+            <iconify-icon icon="pajamas:hamburger" class="burger-icon"></iconify-icon>
+            <iconify-icon icon="akar-icons:cross" class="close-nav-icon"></iconify-icon>
         </div>
-
-
-        <iconify-icon icon="pajamas:hamburger" class="burger-icon"></iconify-icon>
-        <iconify-icon icon="akar-icons:cross" class="close-nav-icon"></iconify-icon>
     </div>
 </div>
 

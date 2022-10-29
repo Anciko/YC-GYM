@@ -133,6 +133,22 @@
     color: var(--customer-light-text-color);
 }
 
+.customer-workout-plan-place-container{
+    /* text-align: center; */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0 40px;
+    margin-bottom: 40px;
+    margin-top: 20px;
+    cursor: pointer;
+}
+
+.customer-workout-plan-place-btn{
+    font-size: 16px;
+    margin-bottom: 0;
+}
+
 .customer-workout-plan-header-container{
     text-align: center;
 }
@@ -179,7 +195,7 @@
 }
 
 .customer-workout-plan-details-parent-container{
-    width: 1000px;
+    max-width: 1000px;
     border-radius: 10px;
     box-shadow: 1px 1px 10px 0px rgba(0,0,0,0.25);
     -webkit-box-shadow: 1px 1px 10px 0px rgba(0,0,0,0.25);
@@ -224,9 +240,13 @@
 }
 
 .customer-workout-plan-workouts-container{
-    display: grid;
-    grid-template-columns: repeat(4,1fr);
-    grid-gap: 30px 0;
+    display: flex;
+    /* grid-template-columns: repeat(4,1fr); */
+    /* grid-gap: 30px 0; */
+    align-items: center;
+    /* justify-content: space-evenly; */
+    flex-wrap: wrap;
+    gap: 20px;
 }
 
 .customer-workout-plan-workout-container{
@@ -262,7 +282,7 @@
 }
 
 .customer-workout-video-parent-container{
-    width: 600px;
+    max-width: 600px;
     margin: auto;
     margin-top: 40px;
 }
@@ -724,6 +744,7 @@ video::-webkit-media-controls-fullscreen-button {
     margin: auto;
     padding: 50px 0;
     margin-top: 40px;
+    margin-bottom: 40px;
 }
 
 .customer-water-tracker-total-container{

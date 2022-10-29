@@ -1237,14 +1237,26 @@
                 // $(".small-card-charts-container .card-donut canvas").attr('height','400')
                 console.log($(".small-card-charts-container .card-donut canvas").attr('height'))
 
-            }else if($(window).width() <= 1000){
+            }else if($(window).width() <= 1000 && $(window).width() > 600){
                 $(".totalCalTracker .card-donut").attr('data-size','200')
-                $(".totalCalTracker .card-donut").attr('data-thickness','18')
+                $(".totalCalTracker .card-donut").attr('data-thickness','15')
+                $(".totalCalTracker canvas").css('width',"200")
+                $(".totalCalTracker canvas").css('height',"200")
+
+                $(".small-card-charts-container .card-donut").attr('data-size','150')
+                $(".small-card-charts-container .card-donut").attr('data-thickness','12')
+                $(".small-card-charts-container .card-donut canvas").css('width',"150")
+                $(".small-card-charts-container .card-donut canvas").css('height',"150")
+            }
+
+            else if($(window).width() <= 600){
+                $(".totalCalTracker .card-donut").attr('data-size','200')
+                $(".totalCalTracker .card-donut").attr('data-thickness','15')
                 $(".totalCalTracker canvas").css('width',"200")
                 $(".totalCalTracker canvas").css('height',"200")
 
                 $(".small-card-charts-container .card-donut").attr('data-size','100')
-                $(".small-card-charts-container .card-donut").attr('data-thickness','12')
+                $(".small-card-charts-container .card-donut").attr('data-thickness','10')
                 $(".small-card-charts-container .card-donut canvas").css('width',"100")
                 $(".small-card-charts-container .card-donut canvas").css('height',"100")
                 // $(".small-card-charts-container .card-donut canvas").attr('width',400)
