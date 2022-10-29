@@ -30,14 +30,14 @@ class Customer_TrainingCenterController extends Controller
             $workout_plan="weight loss";
         }
 
-        $tc_workoutplans=DB::table('workouts')
+        $tc_workouts=DB::table('workouts')
                             ->where('workout_plan_type',$workout_plan)
                             ->where('member_type',$user->member_type)
                             ->where('gender_type',$user->gender)
                             ->get();
 
 
-        return view('customer.training_center.index',compact('workout_plan','tc_workoutplans'));
+        return view('customer.training_center.index',compact('workout_plan','tc_workouts'));
     }
     public function workout_plan()
     {
@@ -52,18 +52,30 @@ class Customer_TrainingCenterController extends Controller
         }
 
         $current_day=Carbon::now()->format('l');
-        $tc_workouts=DB::table('workouts')
+
+        $tc_gym_workoutplans=DB::table('workouts')
                         ->where('workout_plan_type',$workout_plan)
+                        ->where('place','gym')
                         ->where('member_type',$user->member_type)
                         ->where('gender_type',$user->gender)
                         ->where('workout_level',$user->membertype_level)
                         ->where('day',$current_day)
                         ->get();
+
+        $tc_home_workoutplans=DB::table('workouts')
+                        ->where('workout_plan_type',$workout_plan)
+                        ->where('place','home')
+                        ->where('member_type',$user->member_type)
+                        ->where('gender_type',$user->gender)
+                        ->where('workout_level',$user->membertype_level)
+                        ->where('day',$current_day)
+                        ->get();
+
         $time_sum=0;
         $t_sum=0;
         $duration=0;
         $sec=0;
-        foreach($tc_workouts as $s){
+        foreach($tc_gym_workoutplans as $s){
             $time_sum+=$s->time;
             if($time_sum < 60){
                 $sec=$time_sum;
@@ -74,10 +86,29 @@ class Customer_TrainingCenterController extends Controller
         }
 
         $c_sum=0;
-        foreach($tc_workouts as $s){
+        foreach($tc_gym_workoutplans as $s){
             $c_sum+=$s->calories;
         }
-        return view('customer.training_center.workout_plan',compact('tc_workouts','time_sum','t_sum','c_sum','duration','sec'));
+        // home
+        $time_sum_home=0;
+        $t_sum_home=0;
+        $duration_home=0;
+        $sec_home=0;
+        foreach($tc_home_workoutplans as $s){
+            $time_sum_home+=$s->time;
+            if($time_sum_home < 60){
+                $sec_home=$time_sum_home;
+            }elseif($time_sum_home >= 60){
+                $duration_home=floor($time_sum_home/60);
+                $t_sum_home=$time_sum_home%60;
+            }
+        }
+
+        $c_sum_home=0;
+        foreach($tc_home_workoutplans as $s){
+            $c_sum_home+=$s->calories;
+        }
+        return view('customer.training_center.workout_plan',compact('tc_gym_workoutplans','tc_home_workoutplans','time_sum','t_sum','c_sum','duration','sec','time_sum_home','t_sum_home','c_sum_home','duration_home','sec_home'));
     }
 
     public function workout_complete_store(Request $request)
@@ -111,6 +142,41 @@ class Customer_TrainingCenterController extends Controller
         if($total_time < 60){
             $sec=$t_sum;
         }else{
+            $duration=floor($t_sum/60);
+            $sec=$t_sum%60;
+        }
+        $total_calories=$cal_sum;
+        $total_video=$count_video;
+
+        $user=auth()->user();
+        $bmi=$user->bmi;
+        if($bmi< 18.5){
+            $workout_plan="weight gain";
+        }elseif($bmi>=18.5 && $bmi<=24.9){
+            $workout_plan="body beauty";
+        }elseif($bmi>=25){
+            $workout_plan="weight loss";
+        }
+
+        $current_day=Carbon::now()->format('l');
+        $tc_workouts=DB::table('workouts')
+                        ->where('workout_plan_type',$workout_plan)
+                        ->where('place','home')
+                        ->where('member_type',$user->member_type)
+                        ->where('gender_type',$user->gender)
+                        ->where('workout_level',$user->membertype_level)
+                        ->where('day',$current_day)
+                        ->get();
+        return view('customer.training_center.workout_complete',compact('t_sum','sec','duration','total_calories','total_video','tc_workouts'));
+    }
+    public function workout_complete_gym(Request $request,$t_sum,$cal_sum=null,$count_video)
+    {
+        $total_time=$t_sum;
+        $sec=0;
+        $duration=0;
+        if($total_time < 60){
+            $sec=$t_sum;
+        }else{
             $duration=round($t_sum/60);
             $sec=$t_sum%60;
         }
@@ -130,6 +196,7 @@ class Customer_TrainingCenterController extends Controller
         $current_day=Carbon::now()->format('l');
         $tc_workouts=DB::table('workouts')
                         ->where('workout_plan_type',$workout_plan)
+                        ->where('place','gym')
                         ->where('member_type',$user->member_type)
                         ->where('gender_type',$user->gender)
                         ->where('workout_level',$user->membertype_level)
@@ -137,7 +204,6 @@ class Customer_TrainingCenterController extends Controller
                         ->get();
         return view('customer.training_center.workout_complete',compact('t_sum','sec','duration','total_calories','total_video','tc_workouts'));
     }
-
 
     public function meal()
     {
@@ -164,7 +230,6 @@ class Customer_TrainingCenterController extends Controller
         }
         public function showlunch(Request $request)
         {
-
 
             $meals = Meal::where('meal_plan_type','Lunch')->get();
 
@@ -273,7 +338,7 @@ class Customer_TrainingCenterController extends Controller
         }
     }
 
-    public function workout()
+    public function workout_home()
     {
         $user=auth()->user();
         $bmi=$user->bmi;
@@ -287,6 +352,7 @@ class Customer_TrainingCenterController extends Controller
 
         $current_day=Carbon::now()->format('l');
         $tc_workouts=DB::table('workouts')
+                        ->where('place','home')
                         ->where('workout_plan_type',$workout_plan)
                         ->where('member_type',$user->member_type)
                         ->where('gender_type',$user->gender)
@@ -313,5 +379,48 @@ class Customer_TrainingCenterController extends Controller
         }
 
         return view('customer.training_center.workout',compact('time_sum','tc_workouts','c_sum','t_sum','sec','duration'));
+    }
+
+    public function workout_gym()
+    {
+        $user=auth()->user();
+        $bmi=$user->bmi;
+        if($bmi< 18.5){
+            $workout_plan="weight gain";
+        }elseif($bmi>=18.5 && $bmi<=24.9){
+            $workout_plan="body beauty";
+        }elseif($bmi>=25){
+            $workout_plan="weight loss";
+        }
+
+        $current_day=Carbon::now()->format('l');
+        $tc_workouts=DB::table('workouts')
+                        ->where('place','gym')
+                        ->where('workout_plan_type',$workout_plan)
+                        ->where('member_type',$user->member_type)
+                        ->where('gender_type',$user->gender)
+                        ->where('workout_level',$user->membertype_level)
+                        ->where('day',$current_day)
+                        ->get();
+
+        $time_sum=0;
+        $t_sum=0;
+        $duration=0;
+        $sec=0;
+        foreach($tc_workouts as $s){
+            $time_sum+=$s->time;
+            if($time_sum < 60){
+                $sec=$time_sum;
+            }else{
+                $duration=floor($time_sum/60);
+                $t_sum=$time_sum%60;
+            }
+        }
+        $c_sum=0;
+        foreach($tc_workouts as $s){
+            $c_sum+=$s->calories;
+        }
+
+        return view('customer.training_center.workout_gym',compact('time_sum','tc_workouts','c_sum','t_sum','sec','duration'));
     }
 }
