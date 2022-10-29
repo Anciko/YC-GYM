@@ -124,6 +124,7 @@
             $(document).on('click', '#group-chat', function(e) {
                 e.preventDefault();
                 $("#send_message").empty();
+                $('#trainer_message_form').show();
                 $(".trainer-group-chat-media-container").empty();
                 $('#p').hide();
                 $('.trainer-group-chat-members-container').hide();
@@ -257,6 +258,7 @@
             $(document).on('click', '.view_member', function(e) {
 
                 e.preventDefault();
+                $('#trainer_message_form').hide();
                 view_member();
 
             })
@@ -265,6 +267,8 @@
                 e.preventDefault();
                 $(".trainer-group-chat-media-container").empty();
                 $('.trainer-group-chat-media-container').show();
+                $('#trainer_message_form').hide();
+
                 group_id = localStorage.getItem('group_id');
                 console.log("view_media", group_id);
                 $.ajax({
