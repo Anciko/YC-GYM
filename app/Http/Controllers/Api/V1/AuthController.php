@@ -150,7 +150,7 @@ class AuthController extends Controller
         $user = auth()->user();
         $payment = new Payment();
         $payment->user_id = $user->id;
-        $payment->payment_type = 'bank';
+        $payment->payment_type = 'bank transfer';
         $payment->payment_name = $request->payment_name;
         $payment->bank_account_number = $request->bank_account_number;
         $payment->bank_account_holder = $request->bank_account_holder;
