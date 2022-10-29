@@ -25,7 +25,7 @@ class PaymentController extends Controller
         if(request()->ajax())
         {
             if(!empty($request->start_date)){
-                $banktransction = Payment::where('payment_type','bank')->with('user')->whereBetween('created_at', array($request->start_date, $request->end_date))->whereHas('user', function($query){
+                $banktransction = Payment::where('payment_type','banking')->with('user')->whereBetween('created_at', array($request->start_date, $request->end_date))->whereHas('user', function($query){
                     $query->where('active_status',2);
                 });
 
@@ -44,7 +44,7 @@ class PaymentController extends Controller
             ->make(true);
             }
             else{
-                $banktransction = Payment::where('payment_type','bank')->with('user')->whereHas('user', function($query){
+                $banktransction = Payment::where('payment_type','banking')->with('user')->whereHas('user', function($query){
                     $query->where('active_status',2);
                 });
 
@@ -70,7 +70,7 @@ class PaymentController extends Controller
 
     public function transactionBankDetail($id){
 
-        $banktransctiondetail = Payment::where('payment_type','bank')->where('id',$id)->with('user')->first();
+        $banktransctiondetail = Payment::where('payment_type','banking')->where('id',$id)->with('user')->first();
         //dd($banktransctiondetail->toArray());
         return view('admin.payment.transactionBankDetail', compact('banktransctiondetail'));
     }
