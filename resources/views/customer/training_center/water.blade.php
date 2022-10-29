@@ -29,7 +29,12 @@
 <button class="customer-primary-btn customer-water-track-btn">Drink 5 oz</button> --}}
 <div class="customer-water-tracker-container">
     <div class="customer-water-tracker-total-container">
-        <h1>0</h1>
+        @if(empty($water))
+            <h1 class="drinked_water">0</h1>
+            @else
+            <h1 class="drinked_water">{{$water->update_water}}</h1>
+        @endif
+
         <p>of 3000 ml</p>
     </div>
 
@@ -43,40 +48,84 @@
     </div>
 
     <div class="customer-water-track-text-container">
-        <p>You didn't drink water today</p>
-        <h1>Let's drink</h1>
-    </div>
 
-    <button class="customer-water-add-btn">
-        {{-- <iconify-icon icon="akar-icons:plus" class="customer-water-add-icon"></iconify-icon> --}}
-        +
-    </button>
+
+    </div>
+    {{-- <form action="{{route('training_center.water.store')}}"> --}}
+        <button class="customer-water-add-btn">
+            {{-- <iconify-icon icon="akar-icons:plus" class="customer-water-add-icon"></iconify-icon> --}}
+            +
+        </button>
+    {{-- </form> --}}
+
 
     <div class="customer-water-add-text">
-        <p>250ml</p>
-        <span>(1000ml = 1 litre)</span>
+
     </div>
 </div>
 
 <script>
     $(document).ready(function(){
         var total = 3000
-            var taken = 0
+        var taken =  parseInt($(".drinked_water").text());
+        console.log(typeof(taken))
+        var left  = total - taken
+        fillWater(taken,left,total)
+
+
+
         $(".customer-water-add-btn").click(function(){
-            // console.log("water add")
 
-            taken = taken + 250
-            var fill = (taken / total) * 100
-            console.log(fill)
+            $.ajax({
+                        url : 'water',
+                        method: 'post',
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        },
+                        success   : function(data) {
+                            var taken =  data.water.update_water;
+                            var left  = 3000 - taken
+                            fillWater(taken,left,total)
+                            $(".drinked_water").text(data.water.update_water);
 
-            if(fill > 100){
-                alert("cant drink anymore")
-                return
-            }
-            $('.water').animate({height:`${fill}%`}, 300)
+                        },
+
+                    });
+
+
 
         })
+
     })
+
+    function fillWater(taken,left,total){
+        if(taken == 0){
+            html = `<p>You didn't drink water today</p>
+            <h1>Let's drink</h1>`
+            $('.customer-water-track-text-container').html(html);
+
+        }
+        else if(taken == 3000){
+            html = `<p>You left 2000 ml of today's mission.</p>
+            <h1>Yay! You are hydrated.</h1>`
+            $('.customer-water-track-text-container').html(html);
+            $(".customer-water-add-btn").hide()
+        }
+        else{
+            html = `<p>You left <span style="color:aqua">  ${left} </span> of today's mission.</p>
+            <h1>Let's drink</h1>`
+            $('.customer-water-track-text-container').html(html);
+
+        }
+
+        var fill = (taken / total) * 100
+        if(fill > 100){
+            alert("cant drink anymore")
+            return
+        }
+        $('.water').animate({height:`${fill}%`}, 300)
+
+    }
 </script>
 
 @endsection
