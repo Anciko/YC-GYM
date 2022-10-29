@@ -12,7 +12,7 @@
             {{-- <iconify-icon icon="fluent-emoji:man-lifting-weights" class="customer-training-center-plan-name-icon"></iconify-icon>
              --}}
              {{-- <img src="{{ asset('image/default.jpg') }}" class="img w-25" /> --}}
-             <i class="fa-solid fa-users-line fa-4x"></i>
+             <iconify-icon icon="fa:group" class="customer-training-center-plan-name-icon"></iconify-icon>
             <div class="customer-training-center-plan-name-text">
                 <p>Groups</p>
                 <span>{{ $group->group->group_name }}</span>

@@ -45,15 +45,15 @@
             <h1>Equipment</h1>
             <div class="customer-workout-plan-equipments-container">
                 <div class="customer-workout-plan-equipment-container">
-                    <img src="../icons/icons8-yoga-mat-96.png">
+                    <img src="{{asset('image/icons8-yoga-mat-96 (1).png')}}">
                     <p>yoga mat</p>
                 </div>
                 <div class="customer-workout-plan-equipment-container">
-                    <img src="../icons/icons8-bench-press-96.png">
+                    <img src="{{asset('image/icons8-bench-press-96.png')}}">
                     <p>Bench Press</p>
                 </div>
                 <div class="customer-workout-plan-equipment-container">
-                    <img src="../icons/icons8-dumbbell-64.png">
+                    <img src="{{asset('image/icons8-dumbbell-64.png')}}">
                     <p>Dumbbells</p>
                 </div>
             </div>
@@ -126,15 +126,15 @@
             <h1>Equipment</h1>
             <div class="customer-workout-plan-equipments-container">
                 <div class="customer-workout-plan-equipment-container">
-                    <img src="../icons/icons8-yoga-mat-96.png">
+                    <img src="{{asset('image/icons8-yoga-mat-96 (1).png')}}">
                     <p>yoga mat</p>
                 </div>
                 <div class="customer-workout-plan-equipment-container">
-                    <img src="../icons/icons8-bench-press-96.png">
+                    <img src="{{asset('image/icons8-bench-press-96.png')}}">
                     <p>Bench Press</p>
                 </div>
                 <div class="customer-workout-plan-equipment-container">
-                    <img src="../icons/icons8-dumbbell-64.png">
+                    <img src="{{asset('image/icons8-dumbbell-64.png')}}">
                     <p>Dumbbells</p>
                 </div>
             </div>

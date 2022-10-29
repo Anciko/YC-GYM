@@ -67,7 +67,7 @@
     $(document).ready(function(){
         var total = 3000
         var taken =  parseInt($(".drinked_water").text());
-        console.log(typeof(taken))
+        console.log(taken)
         var left  = total - taken
         fillWater(taken,left,total)
 
@@ -118,6 +118,7 @@
         }
 
         var fill = (taken / total) * 100
+        console.log(fill)
         if(fill > 100){
             html = `<p>You complete today’s mission.</p>
             <h1>Yay! You are hydrated.</h1>`
