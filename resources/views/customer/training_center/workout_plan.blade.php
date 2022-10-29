@@ -6,12 +6,12 @@
     <iconify-icon icon="bi:arrow-left" class="back-btn-icon"></iconify-icon>
 </a>
 <div class="customer-workout-plan-place-container">
-    <div class="customer-workout-plan-place-btn customer-workout-plan-home-btn" >
+    <p class="customer-workout-plan-place-btn customer-workout-plan-home-btn" >
         Home
-    </div>
-    <div class="customer-workout-plan-place-btn customer-workout-plan-gym-btn">
+    </p>
+    <p class="customer-workout-plan-place-btn customer-workout-plan-gym-btn">
         Gym
-    </div>
+    </p>
 </div>
 <div class="customer-workout-plan-home">
     <div class="customer-workout-plan-header-container">

@@ -79,7 +79,7 @@
 }
 
 .customer-training-center-plans-container{
-    width: 400px;
+    max-width: 400px;
     margin: auto;
     margin-top: 40px;
 }
@@ -133,6 +133,22 @@
     color: var(--customer-light-text-color);
 }
 
+.customer-workout-plan-place-container{
+    /* text-align: center; */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0 40px;
+    margin-bottom: 40px;
+    margin-top: 20px;
+    cursor: pointer;
+}
+
+.customer-workout-plan-place-btn{
+    font-size: 16px;
+    margin-bottom: 0;
+}
+
 .customer-workout-plan-header-container{
     text-align: center;
 }
@@ -179,7 +195,7 @@
 }
 
 .customer-workout-plan-details-parent-container{
-    width: 1000px;
+    max-width: 1000px;
     border-radius: 10px;
     box-shadow: 1px 1px 10px 0px rgba(0,0,0,0.25);
     -webkit-box-shadow: 1px 1px 10px 0px rgba(0,0,0,0.25);
@@ -224,9 +240,13 @@
 }
 
 .customer-workout-plan-workouts-container{
-    display: grid;
-    grid-template-columns: repeat(4,1fr);
-    grid-gap: 30px 0;
+    display: flex;
+    /* grid-template-columns: repeat(4,1fr); */
+    /* grid-gap: 30px 0; */
+    align-items: center;
+    /* justify-content: space-evenly; */
+    flex-wrap: wrap;
+    gap: 20px;
 }
 
 .customer-workout-plan-workout-container{
@@ -262,7 +282,7 @@
 }
 
 .customer-workout-video-parent-container{
-    width: 600px;
+    max-width: 600px;
     margin: auto;
     margin-top: 40px;
 }
@@ -547,6 +567,7 @@ video::-webkit-media-controls-fullscreen-button {
     text-align: center;
 }
 
+
 .small-card-charts-container{
     display: flex;
     align-items: center;
@@ -639,9 +660,16 @@ video::-webkit-media-controls-fullscreen-button {
     color: #ffffff;
   }
 
+  .table-wrapper{
+    overflow-x: auto;
+  }
+
 .customer-added-food-list-container{
     width: 100%;
+    min-width: 900px;
+    /* display: block; */
 
+    /* white-space: nowrap; */
 }
 
 .customer-added-food-list-container thead tr{
@@ -710,11 +738,13 @@ video::-webkit-media-controls-fullscreen-button {
 }
 
 .customer-water-tracker-container{
-    width: 900px;
+    max-width: 900px;
     background-color: var(--customer-card-bg-color);
     border-radius: 10px;
     margin: auto;
     padding: 50px 0;
+    margin-top: 40px;
+    margin-bottom: 40px;
 }
 
 .customer-water-tracker-total-container{
@@ -800,6 +830,7 @@ video::-webkit-media-controls-fullscreen-button {
 .glass .water{
     /* margin: 10px 0; */
     height: 0;
+    /* padding: 10px; */
     background-color: #3CADDD;
     width: 100%;
     position: absolute;
@@ -807,6 +838,7 @@ video::-webkit-media-controls-fullscreen-button {
     transform: scaleY(-1);
     z-index: 2;
     border-radius: 5px;
+
 }
 
 .glass .handle{
@@ -868,5 +900,44 @@ video::-webkit-media-controls-fullscreen-button {
 .customer-water-add-text span{
     font-size: 10px;
     color: var(--customer-text-color);
+}
+
+@media screen and (max-width:1000px){
+    .customer-food-tracker-parent-container{
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: 1fr 1fr;
+        grid-gap: 20px 20px;
+    }
+
+    .small-card-charts-container{
+        gap: 0 10px;
+    }
+
+    .small-card-charts-container .card-value{
+        font-size: 20px;
+    }
+
+    .small-card-charts-container .card-label{
+        font-size: 10px;
+    }
+
+    /* .card-chart canvas{
+        width: 200px;
+        height: 200px;
+    } */
+}
+
+@media screen and (max-width:600px){
+    .customer-food-tracker-parent-container{
+        grid-template-columns: 1fr;
+        grid-template-rows: 1fr 1fr 1fr 1fr;
+        grid-gap: 20px 20px;
+    }
+
+    .small-card-charts-container{
+        gap: 0 3px;
+    }
+
+
 }
 
