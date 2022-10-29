@@ -139,7 +139,7 @@ class AuthController extends Controller
 
     public function getBankingInfos()
     {
-        $banking_infos = BankingInfo::where('payment_type', 'bank')->get();
+        $banking_infos = BankingInfo::where('payment_type', 'banking')->get();
         return response()->json([
             'banking_infos' => $banking_infos
         ]);
