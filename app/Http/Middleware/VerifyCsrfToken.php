@@ -17,6 +17,12 @@ class VerifyCsrfToken extends Middleware
         'ewallet_store/*',
 
         'bank_payment_store',
-        'bank_payment_store/*'
+        'bank_payment_store/*',
+
+        '/data/save',
+        'customer/customerCreate',
+        '/trainer/group/create',
+        'customer/training_center/workout/workout_complete/store/',
+   
     ];
 }

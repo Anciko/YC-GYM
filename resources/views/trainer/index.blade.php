@@ -82,7 +82,7 @@
         </div>
 
         {{-- pop up for video and image  --}}
-        @foreach ($messages as $sms)
+        {{-- @foreach ($messages as $sms)
             <div class="modal fade" id="exampleModalToggle1{{ $sms->id }}" aria-hidden="true"
                 aria-labelledby="exampleModalToggleLabel" tabindex="-1">
                 <div class="modal-dialog modal-dialog-centered">
@@ -106,7 +106,7 @@
                     </div>
                 </div>
             </div>
-        @endforeach
+        @endforeach --}}
     </div>
 @endsection
 @push('scripts')
@@ -231,7 +231,6 @@
 
             });
 
-
             $(document).on('click', '.kick_member', function(e) {
                 e.preventDefault();
                 var url = new URL(this.href);
@@ -278,7 +277,26 @@
                             fileExtension = value.media.split('.').pop();
                             console.log("Type: " + fileExtension);
                             if (fileExtension === "mp4") {
-                                $('.trainer-group-chat-media-container').append(`<div class="trainer-group-chat-media" title="video">\
+                                $('.trainer-group-chat-media-container').append(`
+                                <div class="modal fade" id="exampleModalToggle1` + value.id + `" aria-hidden="true"
+                aria-labelledby="exampleModalToggleLabel" tabindex="-1">\
+                <div class="modal-dialog modal-dialog-centered">\
+                    <div class="modal-content">\
+                        <div class="modal-header">\
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">\</button>\
+                        </div>\
+
+                        <div class="modal-body">\
+
+                            <video class="w-100" controls>\
+                                        <source src="{{ asset('storage/trainer_message_media/`+value.media+`') }}" type="video/mp4">\
+                                     </video>\
+
+                        </div>\
+                    </div>\
+                </div>\
+            </div>\
+                                <div class="trainer-group-chat-media" title="video">\
                                 <a  data-bs-toggle="modal" href="#exampleModalToggle1` + value.id + `" role="button">\
                                      <video class="w-100">\
                                         <source src="{{ asset('storage/trainer_message_media/`+value.media+`') }}" type="video/mp4">\
@@ -286,8 +304,23 @@
                                 </a>\
                                 </div>`);
                             } else {
-                                $('.trainer-group-chat-media-container').append(`<div class="trainer-group-chat-media" title="Photo">\
-                                <a  data-bs-toggle="modal" href="#exampleModalToggle1` + value.id + `" role="button">\
+                                $('.trainer-group-chat-media-container').append(`
+                                <div class="modal fade" id="exampleModalToggle2` + value.id + `" aria-hidden="true"
+                aria-labelledby="exampleModalToggleLabel" tabindex="-1">\
+                <div class="modal-dialog modal-dialog-centered">\
+                    <div class="modal-content">\
+                        <div class="modal-header">\
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">\</button>\
+                        </div>\
+
+                        <div class="modal-body">\
+                            <img src="{{ asset('storage/trainer_message_media/`+value.media+`') }}" alt="test" class = "w-100">\
+                        </div>\
+                    </div>\
+                </div>\
+            </div>\
+                                <div class="trainer-group-chat-media" title="Photo">\
+                                <a  data-bs-toggle="modal" href="#exampleModalToggle2` + value.id + `" role="button">\
                                     <img src="{{ asset('storage/trainer_message_media/`+value.media+`') }}" alt="test">\
                                 </a>\
                                 </div>`);
@@ -355,10 +388,7 @@
                 });
                 group_id = localStorage.getItem('group_id');
                 $('.trainer-group-chat-view-members-header').append(
-                    '<a class="back-btn">\
-                                        <iconify-icon icon="bi:arrow-left" class="back-btn-icon"></iconify-icon>\
-                                    </a>\
-                                    <div class="trainer-view-members-add-delete-btn-contaier">\
+                    '<div class="trainer-view-members-add-delete-btn-contaier">\
                                         <button id="addMember"  class="trainer-view-members-add-btn" value=' + group_id + '>\
                                             <iconify-icon icon="akar-icons:circle-plus" class="trainer-view-members-add-icon"></iconify-icon>\
                                             <p>Add Member</p>\
