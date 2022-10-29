@@ -418,7 +418,7 @@ z-index: 20;
 }
 
 .group-chat-receiver-text-container img{
-    width: 200px;
+    max-width: 200px;
     height: auto;
 }
 
@@ -430,6 +430,12 @@ z-index: 20;
     justify-content: right;
 }
 
+.group-chat-sender-text-container span{
+    /* width: 100%; */
+    font-size: 10px;
+    color: var(--customer-text-color);
+}
+
 .group-chat-sender-container > img{
     width: 35px;
     height: 35px;
@@ -439,7 +445,7 @@ z-index: 20;
 
 .group-chat-sender-text-container{
     margin-right: 5px;
-    width: 200px;
+    max-width: 200px;
 }
 
 .group-chat-sender-text-container p{
@@ -668,7 +674,7 @@ z-index: 20;
     /* margin: 10px auto; */
     position: relative;
     padding: 0;
-    margin-left: 20px;
+    margin-left: 40px;
 }
 
 .customer-dropdown-container > ul {
