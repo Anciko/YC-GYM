@@ -140,7 +140,7 @@ input[type=number] {
 .customer-language-container{
     display: flex;
     align-items: center;
-    margin-left: 30px;
+    margin-left: 5px;
 }
 
 .customer-language-flag-container{
@@ -232,6 +232,7 @@ input[type=number] {
     cursor: pointer;
     transition: all 0.2s ease-in-out;
     text-decoration: none;
+    white-space: nowrap;
 }
 
 .customer-primary-btn:hover{
@@ -249,6 +250,7 @@ input[type=number] {
     background-color: transparent;
     transition: all 0.2s ease-in-out;
     display: inline-block;
+    white-space: nowrap;
 }
 
 .customer-secondary-btn:hover{
@@ -298,6 +300,7 @@ z-index: 20;
     color: white;
     transition: all 0.2s ease-in-out;
     display: inline-block;
+    white-space: nowrap;
 }
 
 .customer-red-btn:hover{
@@ -713,7 +716,7 @@ background: var(--customer-primary-color);
 position: absolute;
 display: block;
 font-size: 0.6em;
-color: var(--customer-navlink-color);
+color: black;
 top: 14px;
 right: 10px;
 }
@@ -740,7 +743,7 @@ transform: rotate(0deg);
 -moz-transition: -moz-transform 0.6s;
 -o-transition: -o-transform 0.6s;
 transition: transform 0.6s;
-color: var(--customer-navlink-color);
+
 }
 
 .customer-dropdown .icon-arrow:before {
@@ -754,10 +757,17 @@ list-style: none;
 padding: 0;
 margin: 0;
 border-radius: 5px;
+box-shadow: 1px 1px 10px 0px rgba(0,0,0,0.25);
+-webkit-box-shadow: 1px 1px 10px 0px rgba(0,0,0,0.25);
+-moz-box-shadow: 1px 1px 10px 0px rgba(0,0,0,0.25);
 }
 
 .customer-dropdown .customer-dropdown-menu li {
 padding: 0;
+/* -webkit-box-shadow: 0 1px 0 white inset, 0 -1px 0 #d4d4d4 inset;
+-moz-box-shadow: 0 1px 0 white inset, 0 -1px 0 #d4d4d4 inset;
+box-shadow: 0 1px 0 white inset, 0 -1px 0 #d4d4d4 inset;
+text-shadow: 0 -1px 0 rgba(255, 255, 255, 0.3); */
 }
 
 .customer-dropdown .customer-dropdown-menu li a {
@@ -834,6 +844,10 @@ transition: max-height 0.6s ease-out;
 
 @media screen and (max-width:1000px){
 
+    .nav-icon{
+        margin-right: 20px;
+    }
+
     .nav-overlay{
         position: fixed;
         top: 0;
@@ -884,6 +898,11 @@ transition: max-height 0.6s ease-out;
         transform: translateX(-50%);
         z-index: 20;
 
+    }
+
+    .customer-dropdown-container{
+        margin-left: 0px;
+        margin-top: 20px;
     }
 
     /* .customer-nav-show-flex{
@@ -1017,4 +1036,14 @@ transition: max-height 0.6s ease-out;
             display: none;
           }
     } */
+}
+
+@media screen and (max-width:600px){
+    .customer-language-container select{
+        font-size: 14px;
+    }
+
+    .theme-contaier select{
+        font-size: 14px;
+    }
 }

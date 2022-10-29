@@ -56,7 +56,7 @@ class WorkoutController extends Controller
 
     public function workoutindex(){
         // $workoutplanId = $request->id;
-        $member = Member::groupBy('member_type')->orWhere('member_type','Platinum')->orWhere('member_type','Diamond')->get();
+        $member = Member::groupBy('member_type')->orWhere('member_type','Platinum')->orWhere('member_type','Diamond')->orWhere('member_type','Gym Member')->get();
         //dd($workoutplanId);
         return view('admin.workout.workoutcreate', compact('member'));
     }
