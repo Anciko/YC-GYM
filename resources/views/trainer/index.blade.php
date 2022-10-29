@@ -82,7 +82,7 @@
         </div>
 
         {{-- pop up for video and image  --}}
-        @foreach ($messages as $sms)
+        {{-- @foreach ($messages as $sms)
             <div class="modal fade" id="exampleModalToggle1{{ $sms->id }}" aria-hidden="true"
                 aria-labelledby="exampleModalToggleLabel" tabindex="-1">
                 <div class="modal-dialog modal-dialog-centered">
@@ -106,7 +106,7 @@
                     </div>
                 </div>
             </div>
-        @endforeach
+        @endforeach --}}
     </div>
 @endsection
 @push('scripts')
@@ -231,116 +231,6 @@
 
             });
 
-            $(document).on('click','.back-btn',function(e){
-                e.preventDefault();
-
-                e.preventDefault();
-                $("#send_message").empty();
-                $(".trainer-group-chat-media-container").empty();
-                $('#p').hide();
-                $('.trainer-group-chat-members-container').hide();
-                $('.trainer-group-chat-media-container').hide();
-                $('.trainer-group-chat-view-members-header').hide();
-                $('.group-chat-messages-container').show();
-                $('#send_form').show();
-                $('.chat-message-form').show();
-                // var id=$(this).val();
-                var id = $(this).data('id');
-                localStorage.setItem('group_id', id);
-                $.ajax({
-                    type: "GET",
-                    url: "trainer/group/show/" + id,
-                    datatype: "json",
-                    success: function(data) {
-                        var view_member_url = '{{ route('trainer/view_member', ':id') }}';
-                        view_member_url = view_member_url.replace(':id', data.group_chat.id);
-                        var htmlView =
-                            `<a href="JavaScript:Void(0);" class="group-chat-header-name-container view_member" id="` +
-                            data.group_chat.id +
-                            `">
-                            <img src="{{ asset('image/default.jpg') }}" /><div class="group-chat-header-name-text-container">` +
-                            data
-                            .group_chat.group_name + `<p id="group_name">
-                                        </p>
-                                        </div></a>
-                                        <a href="" class="group-chat-view-midea-link" id="view_media">
-                                        <p>View Media</p>
-                                        <iconify-icon icon="akar-icons:arrow-right" class="group-chat-view-midea-link-icon"></iconify-icon>
-                                        </a>`;
-
-                        $('.group-chat-header').html(htmlView);
-                        //$('#send_form').append(sender);
-                        $.each(data.chat_messages, function(key, value) {
-                            console.log(value.media);
-
-                            if(value.media == null && value.text ==null){
-                                $('#send_message').append();
-                            }else{
-                                if (value.media == null) {
-                                        $('#send_message').append(`
-                                    <div class="group-chat-sender-container">
-                                        <div class="group-chat-sender-text-container">
-                                            <p>${value.text}</p>
-                                        </div>
-                                        <img src="{{ asset('image/default.jpg') }}" >
-                                    </div>`);
-                                } else if (value.media.split('.').pop() === 'png' || value
-                                    .media.split('.').pop() === 'jpg' || value.media.split(
-                                        '.').pop() === 'jpeg') {
-
-                                    $('#send_message').append(`
-                                    <div class="modal fade" id="exampleModalToggle${value.id}" aria-hidden="true"
-                                        aria-labelledby="exampleModalToggleLabel" tabindex="-1">
-                                        <div class="modal-dialog modal-dialog-centered">
-                                            <div class="modal-content">
-                                                <div class="modal-header">
-                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                        aria-label="Close"></button>
-                                                </div>
-                                                <div class="modal-body">
-                                                    <img src="{{ asset('/storage/trainer_message_media/${value.media}') }}" alt="test"
-                                                        class="w-100">
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="group-chat-sender-container" id="trainer_message_el">
-                                            <div class="group-chat-sender-text-container">
-                                                <a data-bs-toggle="modal" href="#exampleModalToggle${value.id}" role="button">
-                                                <img src="{{ asset('storage/trainer_message_media/${value.media}') }}">
-                                                </a>
-                                            </div>
-                                            <img src="{{ asset('image/default.jpg') }}" />
-                                        </div>`);
-                                } else {
-                                    $('#send_message').append(
-                                        `<div class="group-chat-sender-container" id="trainer_message_el">
-                                            <div class="group-chat-sender-text-container">
-                                                <video width="100%" height="100%" controls>
-                                                    <source src="{{ asset('storage/trainer_message_media/${value.media}') }}" type="video/mp4">
-                                                </video>
-                                            </div>
-                                            <img src="{{ asset('image/default.jpg') }}" />
-                                        </div>`);
-                                }
-                            }
-
-                        });
-
-                        //render image preview function
-                        function clearCreateGroupInputs() {
-                            const inputs = document.querySelectorAll(
-                                ".create-group-form input" + ",.create-group-form select")
-                            // console.log(inputs)
-                            for (var i = 0; i < inputs.length; i++) {
-                                // console.log("hi")
-                                // console.log(inputs[i])
-                                inputs[i].value = ""
-                            }
-                        }
-                    }
-                })
-            });
 
             $(document).on('click', '.kick_member', function(e) {
                 e.preventDefault();
@@ -388,7 +278,26 @@
                             fileExtension = value.media.split('.').pop();
                             console.log("Type: " + fileExtension);
                             if (fileExtension === "mp4") {
-                                $('.trainer-group-chat-media-container').append(`<div class="trainer-group-chat-media" title="video">\
+                                $('.trainer-group-chat-media-container').append(`
+                                <div class="modal fade" id="exampleModalToggle1` + value.id + `" aria-hidden="true"
+                aria-labelledby="exampleModalToggleLabel" tabindex="-1">\
+                <div class="modal-dialog modal-dialog-centered">\
+                    <div class="modal-content">\
+                        <div class="modal-header">\
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">\</button>\
+                        </div>\
+
+                        <div class="modal-body">\
+
+                            <video class="w-100" controls>\
+                                        <source src="{{ asset('storage/trainer_message_media/`+value.media+`') }}" type="video/mp4">\
+                                     </video>\
+
+                        </div>\
+                    </div>\
+                </div>\
+            </div>\
+                                <div class="trainer-group-chat-media" title="video">\
                                 <a  data-bs-toggle="modal" href="#exampleModalToggle1` + value.id + `" role="button">\
                                      <video class="w-100">\
                                         <source src="{{ asset('storage/trainer_message_media/`+value.media+`') }}" type="video/mp4">\
@@ -396,8 +305,23 @@
                                 </a>\
                                 </div>`);
                             } else {
-                                $('.trainer-group-chat-media-container').append(`<div class="trainer-group-chat-media" title="Photo">\
-                                <a  data-bs-toggle="modal" href="#exampleModalToggle1` + value.id + `" role="button">\
+                                $('.trainer-group-chat-media-container').append(`
+                                <div class="modal fade" id="exampleModalToggle2` + value.id + `" aria-hidden="true"
+                aria-labelledby="exampleModalToggleLabel" tabindex="-1">\
+                <div class="modal-dialog modal-dialog-centered">\
+                    <div class="modal-content">\
+                        <div class="modal-header">\
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">\</button>\
+                        </div>\
+
+                        <div class="modal-body">\
+                            <img src="{{ asset('storage/trainer_message_media/`+value.media+`') }}" alt="test" class = "w-100">\
+                        </div>\
+                    </div>\
+                </div>\
+            </div>\
+                                <div class="trainer-group-chat-media" title="Photo">\
+                                <a  data-bs-toggle="modal" href="#exampleModalToggle2` + value.id + `" role="button">\
                                     <img src="{{ asset('storage/trainer_message_media/`+value.media+`') }}" alt="test">\
                                 </a>\
                                 </div>`);

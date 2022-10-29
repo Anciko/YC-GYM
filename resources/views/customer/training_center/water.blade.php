@@ -34,7 +34,6 @@
             @else
             <h1 class="drinked_water">{{$water->update_water}}</h1>
         @endif
-
         <p>of 3000 ml</p>
     </div>
 
@@ -51,12 +50,12 @@
 
 
     </div>
-    {{-- <form action="{{route('training_center.water.store')}}"> --}}
+
         <button class="customer-water-add-btn">
             {{-- <iconify-icon icon="akar-icons:plus" class="customer-water-add-icon"></iconify-icon> --}}
             +
         </button>
-    {{-- </form> --}}
+
 
 
     <div class="customer-water-add-text">
