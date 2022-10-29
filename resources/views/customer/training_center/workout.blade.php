@@ -1,7 +1,7 @@
 @extends('customer.training_center.layouts.app')
 
 @section('content')
-<a class="back-btn margin-top" href="{{ url()->previous() }}">
+<a class="back-btn margin-top" href="{{ route('training_center.workout_plan') }}">
     <iconify-icon icon="bi:arrow-left" class="back-btn-icon"></iconify-icon>
 </a>
 

@@ -2,7 +2,7 @@
 
 @section('content')
 
-<a class="back-btn margin-top" href="{{ url()->previous() }}">
+<a class="back-btn margin-top" href="{{route('training_center.index')}}">
     <iconify-icon icon="bi:arrow-left" class="back-btn-icon"></iconify-icon>
 </a>
 <div class="customer-workout-plan-place-container">

@@ -107,7 +107,6 @@ class Customer_TrainingCenterController extends Controller
         foreach($tc_home_workoutplans as $s){
             $c_sum_home+=$s->calories;
         }
-
         return view('customer.training_center.workout_plan',compact('tc_gym_workoutplans','tc_home_workoutplans','time_sum','t_sum','c_sum','duration','sec','time_sum_home','t_sum_home','c_sum_home','duration_home','sec_home'));
     }
 
