@@ -3,7 +3,7 @@
 @section('content')
 @hasanyrole('Diamond')
 @include('sweetalert::alert')
-<a class="back-btn margin-top">
+<a class="back-btn margin-top" href="{{route('training_center.index')}}">
     <iconify-icon icon="bi:arrow-left" class="back-btn-icon"></iconify-icon>
 </a>
 
@@ -96,6 +96,7 @@
     </div>
 
 </div>
+<div class="table-wrapper">
 
 <table class="customer-added-food-list-container">
     <thead>
@@ -115,6 +116,7 @@
 
     </tbody>
 </table>
+</div>
 
 <button class="customer-addfood-confirm-btn customer-primary-btn save">
     Save And Continue
@@ -126,6 +128,15 @@
   {{-- <script src="{{asset('js/customer/js/meal.js')}}"></script> --}}
   <script>
   $(document).ready(function() {
+    console.log($(this).width())
+        changeCircularProgressSize()
+
+        $( window ).resize(function() {
+            // console.log($(this).width())
+            changeCircularProgressSize()
+
+        });
+
       var foodList = []
 
         //   var localFoodList = JSON.parse(localStorage.getItem("foodList"));
@@ -1208,6 +1219,49 @@
 
       $(".totalFatTracker .card-value").text(`${takenFat}`)
       $(".totalFatTracker .card-label").text(`of ${totalFat} fat`)
+  }
+
+  function changeCircularProgressSize(){
+    if($(window).width() > 1000){
+                // console.log($(".totalCalTracker .card-donut").data('size'))
+                $(".totalCalTracker .card-donut").attr('data-size','300')
+                $(".totalCalTracker .card-donut").attr('data-thickness','18')
+                $(".totalCalTracker canvas").css('width',"300")
+                $(".totalCalTracker canvas").css('height',"300")
+
+                $(".small-card-charts-container .card-donut").attr('data-size','200')
+                $(".small-card-charts-container .card-donut").attr('data-thickness','18')
+                $(".small-card-charts-container .card-donut canvas").css('width',"200")
+                $(".small-card-charts-container .card-donut canvas").css('height',"200")
+                // $(".small-card-charts-container .card-donut canvas").attr('width','400')
+                // $(".small-card-charts-container .card-donut canvas").attr('height','400')
+                console.log($(".small-card-charts-container .card-donut canvas").attr('height'))
+
+            }else if($(window).width() <= 1000 && $(window).width() > 600){
+                $(".totalCalTracker .card-donut").attr('data-size','200')
+                $(".totalCalTracker .card-donut").attr('data-thickness','15')
+                $(".totalCalTracker canvas").css('width',"200")
+                $(".totalCalTracker canvas").css('height',"200")
+
+                $(".small-card-charts-container .card-donut").attr('data-size','150')
+                $(".small-card-charts-container .card-donut").attr('data-thickness','12')
+                $(".small-card-charts-container .card-donut canvas").css('width',"150")
+                $(".small-card-charts-container .card-donut canvas").css('height',"150")
+            }
+
+            else if($(window).width() <= 600){
+                $(".totalCalTracker .card-donut").attr('data-size','200')
+                $(".totalCalTracker .card-donut").attr('data-thickness','15')
+                $(".totalCalTracker canvas").css('width',"200")
+                $(".totalCalTracker canvas").css('height',"200")
+
+                $(".small-card-charts-container .card-donut").attr('data-size','100')
+                $(".small-card-charts-container .card-donut").attr('data-thickness','10')
+                $(".small-card-charts-container .card-donut canvas").css('width',"100")
+                $(".small-card-charts-container .card-donut canvas").css('height',"100")
+                // $(".small-card-charts-container .card-donut canvas").attr('width',400)
+                // $(".small-card-charts-container .card-donut canvas").attr('height',400)
+            }
   }
 </script>
 @endhasanyrole

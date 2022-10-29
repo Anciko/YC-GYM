@@ -7,11 +7,12 @@ use App\Models\Meal;
 use App\Models\User;
 use App\Models\Workout;
 use App\Models\MealPlan;
+use App\Models\WaterTracked;
 use Illuminate\Http\Request;
 use App\Models\PersonalMealInfo;
 use Illuminate\Support\Facades\DB;
-use App\Http\Controllers\Controller;
 use App\Models\PersonalWorkOutInfo;
+use App\Http\Controllers\Controller;
 use RealRashid\SweetAlert\Facades\Alert;
 
 class Customer_TrainingCenterController extends Controller
@@ -107,7 +108,6 @@ class Customer_TrainingCenterController extends Controller
         foreach($tc_home_workoutplans as $s){
             $c_sum_home+=$s->calories;
         }
-
         return view('customer.training_center.workout_plan',compact('tc_gym_workoutplans','tc_home_workoutplans','time_sum','t_sum','c_sum','duration','sec','time_sum_home','t_sum_home','c_sum_home','duration_home','sec_home'));
     }
 
@@ -298,7 +298,44 @@ class Customer_TrainingCenterController extends Controller
 
     public function water()
     {
-        return view('customer.training_center.water');
+        $user = auth()->user();
+        $current_date = Carbon::now()->toDateString();
+        $water = WaterTracked::where('date', $current_date)->where('user_id',$user->id)->first();
+        // dd($water);
+        return view('customer.training_center.water',compact('water'));
+    }
+
+
+    public function water_track()
+    {
+        $current_date = Carbon::now()->toDateString();
+        $water = WaterTracked::where('date', $current_date)->first();
+
+        $user = auth()->user();
+
+        if(!$water) {
+            $water = new WaterTracked();
+            $water->user_id = $user->id;
+            $water->update_water = 250;
+            $water->date = $current_date;
+            $water->save();
+
+            return response()->json([
+                'success' => 200,
+                'water' => $water
+            ]);
+        }else{
+            $water = WaterTracked::findOrFail($water->id);
+            $water->user_id = $user->id;
+            $water->update_water += 250;
+            $water->date = $current_date;
+            $water->save();
+
+            return response()->json([
+                'success' => 200,
+                'water' => $water
+            ]);
+        }
     }
 
     public function workout_home()
