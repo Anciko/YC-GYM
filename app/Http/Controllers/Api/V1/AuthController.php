@@ -54,6 +54,10 @@ class AuthController extends Controller
         $user->shoulders = $request->shoulders;
         $user->member_code = 'yc-' . Str::uuid();
 
+        // bmi , bmr
+        $user->bmi = $request->bmi;
+        $user->bmr = $request->bmr;
+
         // $physical_limitations = $request->physical_limitation;
 
         $user->physical_limitation = json_encode($request->physical_limitation); //
@@ -79,6 +83,7 @@ class AuthController extends Controller
 
         $user->save();
         $user->members()->attach($request->member_id, ['member_type_level' => $user_member_type_level]);
+        $user->assignRole('Free');
         // Thandar style end
 
         $token = $user->createToken('gym');
@@ -86,7 +91,7 @@ class AuthController extends Controller
         return response()->json([
             'message' => 'Register successfully!',
             'user' => $user,
-
+            'user_role' => $user->roles->pluck('name')[0],
             'token' => $token->plainTextToken
         ]);
     }
