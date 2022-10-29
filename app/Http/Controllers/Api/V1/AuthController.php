@@ -57,6 +57,7 @@ class AuthController extends Controller
         // bmi , bmr
         $user->bmi = $request->bmi;
         $user->bmr = $request->bmr;
+        $user->bfp = $request->bfp;
 
         // $physical_limitations = $request->physical_limitation;
 
