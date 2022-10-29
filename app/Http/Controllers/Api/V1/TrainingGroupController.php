@@ -176,8 +176,9 @@ class TrainingGroupController extends Controller
     public function currentUserWaterLevel()
     {
         $user = auth()->user();
-        $current_date = Carbon::now()->toDateString();
 
+        $current_date = Carbon::now()->toDateString();
+        
         $water = WaterTracked::where('user_id', $user->id)->where('date', $current_date)->first();
 
         return response()->json([
