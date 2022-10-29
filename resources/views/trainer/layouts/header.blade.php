@@ -15,14 +15,16 @@
                 </select>
             </div>
 
+            <div class="theme-contaier">
+                <select class="theme">
+                    <option value="light">Light</option>
+                    <option value="dark">Dark</option>
+                    <option value="pink">Pink</option>
+                </select>
+            </div>
+
         </div>
-        <div class="theme-contaier">
-            <select class="theme">
-                <option value="light">Light</option>
-                <option value="dark">Dark</option>
-                <option value="pink">Pink</option>
-            </select>
-        </div>
+
 
         <div class="customer-navlinks-container">
             <a href="#">Home</a>

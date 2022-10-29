@@ -79,7 +79,7 @@
 }
 
 .customer-training-center-plans-container{
-    width: 400px;
+    max-width: 400px;
     margin: auto;
     margin-top: 40px;
 }
@@ -547,6 +547,7 @@ video::-webkit-media-controls-fullscreen-button {
     text-align: center;
 }
 
+
 .small-card-charts-container{
     display: flex;
     align-items: center;
@@ -639,9 +640,16 @@ video::-webkit-media-controls-fullscreen-button {
     color: #ffffff;
   }
 
+  .table-wrapper{
+    overflow-x: auto;
+  }
+
 .customer-added-food-list-container{
     width: 100%;
+    min-width: 900px;
+    /* display: block; */
 
+    /* white-space: nowrap; */
 }
 
 .customer-added-food-list-container thead tr{
@@ -710,11 +718,12 @@ video::-webkit-media-controls-fullscreen-button {
 }
 
 .customer-water-tracker-container{
-    width: 900px;
+    max-width: 900px;
     background-color: var(--customer-card-bg-color);
     border-radius: 10px;
     margin: auto;
     padding: 50px 0;
+    margin-top: 40px;
 }
 
 .customer-water-tracker-total-container{
@@ -800,6 +809,7 @@ video::-webkit-media-controls-fullscreen-button {
 .glass .water{
     /* margin: 10px 0; */
     height: 0;
+    /* padding: 10px; */
     background-color: #3CADDD;
     width: 100%;
     position: absolute;
@@ -807,6 +817,7 @@ video::-webkit-media-controls-fullscreen-button {
     transform: scaleY(-1);
     z-index: 2;
     border-radius: 5px;
+
 }
 
 .glass .handle{
@@ -868,5 +879,44 @@ video::-webkit-media-controls-fullscreen-button {
 .customer-water-add-text span{
     font-size: 10px;
     color: var(--customer-text-color);
+}
+
+@media screen and (max-width:1000px){
+    .customer-food-tracker-parent-container{
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: 1fr 1fr;
+        grid-gap: 20px 20px;
+    }
+
+    .small-card-charts-container{
+        gap: 0 10px;
+    }
+
+    .small-card-charts-container .card-value{
+        font-size: 20px;
+    }
+
+    .small-card-charts-container .card-label{
+        font-size: 10px;
+    }
+
+    /* .card-chart canvas{
+        width: 200px;
+        height: 200px;
+    } */
+}
+
+@media screen and (max-width:600px){
+    .customer-food-tracker-parent-container{
+        grid-template-columns: 1fr;
+        grid-template-rows: 1fr 1fr 1fr 1fr;
+        grid-gap: 20px 20px;
+    }
+
+    .small-card-charts-container{
+        gap: 0 3px;
+    }
+
+
 }
 
