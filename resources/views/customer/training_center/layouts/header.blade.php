@@ -31,7 +31,7 @@
             @endhasanyrole
 
             @hasanyrole('Gold|Ruby|Ruby Premium')
-            <a href="{{route('group')}}">Training Center</a>
+            <a href="{{route('groups')}}">Training Center</a>
             @endhasanyrole
 
             <div class="customer-dropdown-container">
