@@ -182,14 +182,25 @@
     $(".customer-workout-plan-home").show()
     $(".customer-workout-plan-gym").hide()
 
+    $(".customer-workout-plan-home-btn").addClass("active-place")
+    $(".customer-workout-plan-gym-btn").removeClass("active-place")
+
     $(".customer-workout-plan-home-btn").click(function(){
         $(".customer-workout-plan-home").show()
         $(".customer-workout-plan-gym").hide()
+
+        $(".customer-workout-plan-home-btn").addClass("active-place")
+        $(".customer-workout-plan-gym-btn").removeClass("active-place")
+
     })
 
     $(".customer-workout-plan-gym-btn").click(function(){
         $(".customer-workout-plan-gym").show()
         $(".customer-workout-plan-home").hide()
+
+        $(".customer-workout-plan-home-btn").removeClass("active-place")
+        $(".customer-workout-plan-gym-btn").addClass("active-place")
+
     })
 
 </script>

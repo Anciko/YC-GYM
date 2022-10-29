@@ -147,6 +147,15 @@
 .customer-workout-plan-place-btn{
     font-size: 16px;
     margin-bottom: 0;
+    padding: 10px 15px;
+    color: var(--customer-text-color);
+}
+
+.active-place{
+    background-color: var(--customer-primary-color);
+
+    border-radius: 5px;
+    color: white;
 }
 
 .customer-workout-plan-header-container{
@@ -157,6 +166,7 @@
     font-size: 19px;
     font-weight: 600;
     margin-bottom: 15px;
+    color: var(--customer-text-color);
 }
 
 .customer-workout-plan-header-details-container{
@@ -176,6 +186,7 @@
 
 .customer-workout-plan-header-detail-container p{
     margin-bottom: 0;
+    color: var(--customer-text-color);
 }
 
 .customer-workout-plan-header-detail-container span{
@@ -202,7 +213,7 @@
     -moz-box-shadow: 1px 1px 10px 0px rgba(0,0,0,0.25);
     padding: 20px;
     margin: auto;
-    background-color: white;
+    background-color: var(--customer-card-bg-color);
     margin-bottom: 40px;
 }
 
@@ -210,6 +221,7 @@
     font-size: 18px;
     font-weight: 600;
     margin-bottom: 20px;
+    color: var(--customer-text-color);
 }
 
 .customer-workout-plan-equipments-container {
@@ -231,12 +243,14 @@
 .customer-workout-plan-equipment-container p{
     margin-bottom: 0;
     margin-left: 10px;
+    color: var(--customer-text-color);
 }
 
 .customer-workout-plan-details-workouts-container > h1{
     font-size: 18px;
     font-weight: 600;
     margin-bottom: 20px;
+    color: var(--customer-text-color);
 }
 
 .customer-workout-plan-workouts-container{
@@ -274,6 +288,7 @@
 .customer-workout-plan-name p{
     margin-bottom: 0;
     font-size: 14px;
+    color: var(--customer-text-color);
 }
 
 .customer-workout-plan-name span{
