@@ -45,15 +45,15 @@
             <h1>Equipment</h1>
             <div class="customer-workout-plan-equipments-container">
                 <div class="customer-workout-plan-equipment-container">
-                    <img src="../icons/icons8-yoga-mat-96.png">
+                    <img src="{{asset('image/icons8-yoga-mat-96 (1).png')}}">
                     <p>yoga mat</p>
                 </div>
                 <div class="customer-workout-plan-equipment-container">
-                    <img src="../icons/icons8-bench-press-96.png">
+                    <img src="{{asset('image/icons8-bench-press-96.png')}}">
                     <p>Bench Press</p>
                 </div>
                 <div class="customer-workout-plan-equipment-container">
-                    <img src="../icons/icons8-dumbbell-64.png">
+                    <img src="{{asset('image/icons8-dumbbell-64.png')}}">
                     <p>Dumbbells</p>
                 </div>
             </div>
@@ -126,15 +126,15 @@
             <h1>Equipment</h1>
             <div class="customer-workout-plan-equipments-container">
                 <div class="customer-workout-plan-equipment-container">
-                    <img src="../icons/icons8-yoga-mat-96.png">
+                    <img src="{{asset('image/icons8-yoga-mat-96 (1).png')}}">
                     <p>yoga mat</p>
                 </div>
                 <div class="customer-workout-plan-equipment-container">
-                    <img src="../icons/icons8-bench-press-96.png">
+                    <img src="{{asset('image/icons8-bench-press-96.png')}}">
                     <p>Bench Press</p>
                 </div>
                 <div class="customer-workout-plan-equipment-container">
-                    <img src="../icons/icons8-dumbbell-64.png">
+                    <img src="{{asset('image/icons8-dumbbell-64.png')}}">
                     <p>Dumbbells</p>
                 </div>
             </div>
@@ -182,14 +182,25 @@
     $(".customer-workout-plan-home").show()
     $(".customer-workout-plan-gym").hide()
 
+    $(".customer-workout-plan-home-btn").addClass("active-place")
+    $(".customer-workout-plan-gym-btn").removeClass("active-place")
+
     $(".customer-workout-plan-home-btn").click(function(){
         $(".customer-workout-plan-home").show()
         $(".customer-workout-plan-gym").hide()
+
+        $(".customer-workout-plan-home-btn").addClass("active-place")
+        $(".customer-workout-plan-gym-btn").removeClass("active-place")
+
     })
 
     $(".customer-workout-plan-gym-btn").click(function(){
         $(".customer-workout-plan-gym").show()
         $(".customer-workout-plan-home").hide()
+
+        $(".customer-workout-plan-home-btn").removeClass("active-place")
+        $(".customer-workout-plan-gym-btn").addClass("active-place")
+
     })
 
 </script>

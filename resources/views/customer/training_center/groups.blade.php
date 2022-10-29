@@ -9,7 +9,10 @@
 <div class="customer-training-center-plans-container">
     <a href="{{route('group')}}" class="customer-training-center-plan-container">
         <div class="customer-training-center-plan-name-container">
-            <iconify-icon icon="fluent-emoji:man-lifting-weights" class="customer-training-center-plan-name-icon"></iconify-icon>
+            {{-- <iconify-icon icon="fluent-emoji:man-lifting-weights" class="customer-training-center-plan-name-icon"></iconify-icon>
+             --}}
+             {{-- <img src="{{ asset('image/default.jpg') }}" class="img w-25" /> --}}
+             <iconify-icon icon="fa:group" class="customer-training-center-plan-name-icon"></iconify-icon>
             <div class="customer-training-center-plan-name-text">
                 <p>Groups</p>
                 <span>{{ $group->group->group_name }}</span>
