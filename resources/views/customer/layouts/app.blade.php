@@ -22,6 +22,8 @@
     {{-- <link href={{ asset('css/customer/css/globals.css')}} rel="stylesheet"/> --}}
     <link href={{ asset('css/globals.css')}} rel="stylesheet"/>
 
+    <link href={{ asset('css/indexStyles.css')}} rel="stylesheet"/>
+    <link href={{ asset('css/home.css')}} rel="stylesheet"/>
      <!--customer registeration-->
     <link href={{ asset('css/customer/css/customerRegisteration.css')}} rel="stylesheet"/>
 
@@ -63,13 +65,33 @@
      <!-- Sweet Alert -->
      <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
      <script src="https://js.pusher.com/7.2.0/pusher.min.js"></script>
-
     <script src={{ asset('js/customer/js/customerRegisteration.js')}}></script>
 
     <!--nav bar-->
     <script src={{asset('js/navBar.js')}}></script>
 
     @stack('scripts')
+    @push('scripts')
+        <script>
+             $(document).ready(function(){
+            $(window).scroll(function(){
+                var scroll = $(window).scrollTop()
+                if(scroll>50){
+                    $('.index-page-header').addClass("sticky-state")
+                    // $(".index-page-header .customer-logo").css("color","#ffffff")
+                    // $(".index-page-header .customer-navlinks-container a").css("color","#ffffff")
+                    // $(".index-page-header select").css("color","#ffffff")
+                    // $(".index-page-header select option").css("color","#000000")
+                }else{
+                    $('.index-page-header').removeClass("sticky-state")
+                    // $(".index-page-header .customer-logo").css("color","#000000")
+                    // $(".index-page-header .customer-navlinks-container a").css("color","#000000")
+                    // $(".index-page-header select").css("color","#000000")
+                }
+            })
+        })
+        </script>
+    @endpush
 
   </body>
 </html>
