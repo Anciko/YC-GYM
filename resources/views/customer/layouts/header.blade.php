@@ -5,9 +5,6 @@
                 {{-- LOGO --}}
             </div>
             <div class="customer-language-container">
-                <div class="customer-language-flag-container">
-                    <img src={{ asset('img/customer/imgs/ukflag.png')}}>
-                </div>
 
                 <select>
                     <option value="">Myanmar</option>

@@ -354,7 +354,7 @@ z-index: 20;
 
 .group-chat-header-name-text-container{
     margin-left: 10px;
-    width: 300px;
+    max-width: 300px;
     white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;
@@ -490,6 +490,7 @@ z-index: 20;
 .group-chat-send-form-img-contaier{
     position: relative;
     cursor: pointer;
+    margin-left: 15px;
 }
 
 .group-chat-send-form-img-contaier input{
@@ -507,22 +508,24 @@ z-index: 20;
     /* flex-shrink: 1; */
    /* width: fit-content; */
    text-align: center;
+   margin-left: 15px;
 }
 
 .group-chat-send-form-img-icon, .group-chat-send-form-emoji-icon{
-    margin-left: 30px;
+    /* margin-left: 30px; */
     font-size: 20px;
     color: var(--customer-text-color);
+    pointer-events: none;
 }
 
 .group-chat-send-form-input{
     border: none;
     /* border-left: 1px solid black; */
-    margin-left: 15px;
+    /* margin-left: 15px; */
     padding-left: 15px;
-    width: 320px;
+    max-width: 320px;
     height: 40px;
-    resize: none;
+    resize: horizontal;
     background-color: transparent;
     color: var(--customer-text-color);
 }
@@ -1051,5 +1054,27 @@ transition: max-height 0.6s ease-out;
 
     .theme-contaier select{
         font-size: 14px;
+    }
+
+    .group-chat-header-name-container img{
+        width: 25px;
+        height: 25px;
+    }
+
+    .group-chat-sender-container > img{
+        width: 25px;
+        height: 25px;
+    }
+    .group-chat-receiver-container > img{
+        width: 25px;
+        height: 25px;
+    }
+
+    .group-chat-send-form-img-icon, .group-chat-send-form-emoji-icon{
+        /* margin-left: 15px; */
+    }
+
+    .group-chat-send-form-submit-btn{
+        padding: 12px 15px;
     }
 }
