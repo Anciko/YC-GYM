@@ -22,8 +22,7 @@
     {{-- <link href={{ asset('css/customer/css/globals.css')}} rel="stylesheet"/> --}}
     <link href={{ asset('css/globals.css')}} rel="stylesheet"/>
 
-    <link href={{ asset('css/indexStyles.css')}} rel="stylesheet"/>
-
+    <link href={{ asset('css/home.css')}} rel="stylesheet"/>
      <!--customer registeration-->
     <link href={{ asset('css/customer/css/customerRegisteration.css')}} rel="stylesheet"/>
 
@@ -34,13 +33,22 @@
 
     <title>YC-fitness</title>
   </head>
-  <body>
+  <body class="customer-registeration-bgimg">
+    <!-- <div class="customer-registeration-bgimg"> -->
+        <script>
+            const theme = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-theme', theme);
+        </script>
 
-        @include('customer.layouts.home_header')
+        @include('customer.training_center.layouts.header')
         <!--theme-->
         <script src="{{asset('js/theme.js')}}"></script>
 
-        @yield('content')
+    <!-- </div> -->
+        <div class="customer-main-content-container">
+            @yield('content')
+        </div>
+
 
     <!-- Optional JavaScript; choose one of the two! -->
 
@@ -57,5 +65,27 @@
     <script src={{asset('js/navBar.js')}}></script>
 
     @stack('scripts')
+    @push('scripts')
+        <script>
+             $(document).ready(function(){
+            $(window).scroll(function(){
+                var scroll = $(window).scrollTop()
+                if(scroll>50){
+                    $('.index-page-header').addClass("sticky-state")
+                    // $(".index-page-header .customer-logo").css("color","#ffffff")
+                    // $(".index-page-header .customer-navlinks-container a").css("color","#ffffff")
+                    // $(".index-page-header select").css("color","#ffffff")
+                    // $(".index-page-header select option").css("color","#000000")
+                }else{
+                    $('.index-page-header').removeClass("sticky-state")
+                    // $(".index-page-header .customer-logo").css("color","#000000")
+                    // $(".index-page-header .customer-navlinks-container a").css("color","#000000")
+                    // $(".index-page-header select").css("color","#000000")
+                }
+            })
+        })
+        </script>
+    @endpush
+
   </body>
 </html>
