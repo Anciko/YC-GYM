@@ -33,7 +33,7 @@ class TrainerManagementConntroller extends Controller
                         ->where('member_type','!=','Gym Member')
                         ->get();
          $groups=TrainingGroup::where('trainer_id',auth()->user()->id)->get();
-         return view('Trainer.index',compact('messages','members','groups'));
+         return view('trainer.index',compact('messages','members','groups'));
     }
 
     public function send(Request $request,$id)
@@ -84,7 +84,7 @@ class TrainerManagementConntroller extends Controller
 
     public function free()
     {
-        return view('Trainer.free_user');
+        return view('trainer.free_user');
     }
 
     public function view_member($id)
@@ -251,26 +251,26 @@ class TrainerManagementConntroller extends Controller
     }
     public function platinum()
     {
-        return view('Trainer.platinum_user');
+        return view('trainer.platinum_user');
     }
     public function diamond()
     {
-        return view('Trainer.diamond_user');
+        return view('trainer.diamond_user');
     }
     public function gold()
     {
-        return view('Trainer.gold_user');
+        return view('trainer.gold_user');
     }
     public function ruby()
     {
-        return view('Trainer.ruby_user');
+        return view('trainer.ruby_user');
     }
     public function ruby_premium()
     {
-        return view('Trainer.ruby_premium_user');
+        return view('trainer.ruby_premium_user');
     }
     public function gym_member()
     {
-        return view('Trainer.gym_member_user');
+        return view('trainer.gym_member_user');
     }
 }
