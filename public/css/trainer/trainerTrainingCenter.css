@@ -199,7 +199,8 @@
     height: 420px;
     overflow-y: scroll;
     display: grid;
-    grid-template-columns: repeat(5,1fr);
+    /* grid-template-columns: repeat(5,1fr); */
+    grid-template-columns: repeat( auto-fill, minmax(95px, 1fr) );
     grid-gap: 10px 0;
 }
 
@@ -312,7 +313,7 @@
 .groups-toggle{
     display: none;
     position: relative;
-    z-index: 40;
+    z-index: 4;
     color: var(--customer-text-color);
 }
 
@@ -348,5 +349,13 @@
     .group-chat-container{
         max-width: 550px;
         margin: auto;
+    }
+
+
+}
+
+@media screen and (max-width:600px){
+    .trainer-group-chat-media-container{
+        /* grid-template-columns: repeat(4,1fr); */
     }
 }
