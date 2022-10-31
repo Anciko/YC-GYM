@@ -1,19 +1,8 @@
-@extends('customer.layouts.app_home')
+@extends('customer.layouts.app')
 
 @section('content')
 @include('sweetalert::alert')
-@guest
-<section class="index-hero-section ">
-    <div class="customer-main-content-container index-hero-text">
-        <h1>Lorem ipsum dolor sit amet consectetur <span>adipiscing elit Ut et.</span></h1>
-        <p>Lorem ipsum dolor sit amet consectetur adipiscing elit Ut et massa mi. Aliquam in hendrerit urna. Pellentesque sit amet sapien.</p>
-        <div class="index-hero-btns-container">
-            <a href="{{route('login')}}" class="customer-primary-btn">Log In</a>
-            <a href="{{route('customer_register')}}" class="customer-secondary-btn">Sign Up</a>
-        </div>
-    </div>
-</section>
-@endguest
+
 <section class="index-aboutus-section">
     <div class="customer-main-content-container">
         <div class="section-header">
@@ -25,7 +14,8 @@
 
         <div class="index-about-us-content-container">
             <div class="index-about-us-img-container">
-                <img src="{{ asset('image/about-us.jpg') }}">
+                <img src="../imgs/about-us.jpg">
+            </div>
 
             <div class="index-about-us-text-container">
                 <p>Lorem ipsum dolor sit amet consectetur adipiscing elit Ut et massa mi. Aliquam in hendrerit urna. Pellentesque sit amet sapien fringilla, mattis ligula consectetur, ultrices mauris. Maecenas vitae mattis tellus. Nullam quis imperdiet augue. Vestibulum auctor ornare leo, non suscipit magna interdum eu. Curabitur pellentesque nibh nibh, at maximus ante.</p>
@@ -182,7 +172,7 @@
         </div>
         <div class="index-trainer-container">
             <div class="index-trainer-img-container left-img">
-                <img src="{{ asset('image/trainer1.jpg') }}">
+                <img src="../imgs/trainer1.jpg">
             </div>
 
             <div class="index-trainer-text-container">
@@ -194,7 +184,7 @@
         </div>
         <div class="index-trainer-container">
             <div class="index-trainer-img-container right-img">
-                <img src="{{ asset('image/trainer2.jpg') }}">
+                <img src="../imgs/trainer2.jpg">
             </div>
 
             <div class="index-trainer-text-container">
@@ -206,7 +196,7 @@
         </div>
         <div class="index-trainer-container">
             <div class="index-trainer-img-container left-img">
-                <img src="{{ asset('image/trainer3.jpg') }}">
+                <img src="../imgs/trainer3.jpg">
             </div>
 
             <div class="index-trainer-text-container">
@@ -276,7 +266,7 @@
     <div class="customer-main-content-container">
         <div class="index-appad-content-container">
             <div class="index-appad-img-container">
-                <img src="{{ asset('image/appad.png') }}">
+                <img src="../imgs/appad.png">
             </div>
             <div class="index-appad-text-container">
                 <h1>Lorem ipsum dolor sit amet consectetur adipiscing elit.</h1>
@@ -350,7 +340,7 @@
                 </div>
                 <div class="customer-language-container">
                     <div class="customer-language-flag-container">
-                        <img src="{{ asset('image/ukflag.png') }}">
+                        <img src="../imgs/ukflag.png">
                     </div>
 
                     <select>
@@ -391,7 +381,7 @@
 
                 <div class="home-about-us-content-container">
                     <div class="home-about-us-img-container">
-                        <img src="{{ asset('image/about-us.jpg') }}">
+                        <img src="../imgs/about-us.jpg">
                     </div>
 
                     <div class="home-about-us-text-container">
@@ -548,7 +538,7 @@
                 </div>
                 <div class="home-trainer-container">
                     <div class="home-trainer-img-container left-img">
-                        <img src="{{ asset('image/trainer1.jpg') }}">
+                        <img src="../imgs/trainer1.jpg">
                     </div>
 
                     <div class="home-trainer-text-container">
@@ -560,7 +550,7 @@
                 </div>
                 <div class="home-trainer-container">
                     <div class="home-trainer-img-container right-img">
-                        <img src="{{ asset('image/trainer2.jpg') }}">
+                        <img src="../imgs/trainer2.jpg">
                     </div>
 
                     <div class="home-trainer-text-container">
@@ -572,7 +562,7 @@
                 </div>
                 <div class="home-trainer-container">
                     <div class="home-trainer-img-container left-img">
-                        <img src="{{ asset('image/trainer3.jpg') }}">
+                        <img src="../imgs/trainer3.jpg">
                     </div>
 
                     <div class="home-trainer-text-container">
@@ -641,7 +631,7 @@
 
                 <div class="home-appad-content-container">
                     <div class="home-appad-img-container">
-                        <img src="{{ asset('image/appad.png') }}">
+                        <img src="../imgs/appad.png">
                     </div>
                     <div class="home-appad-text-container">
                         <h1>Lorem ipsum dolor sit amet consectetur adipiscing elit.</h1>
@@ -710,24 +700,4 @@
     </div>
 
 @endsection
-@push('scripts')
-        <script>
-             $(document).ready(function(){
-            $(window).scroll(function(){
-                var scroll = $(window).scrollTop()
-                if(scroll>50){
-                    $('.index-page-header').addClass("sticky-state")
-                    // $(".index-page-header .customer-logo").css("color","#ffffff")
-                    // $(".index-page-header .customer-navlinks-container a").css("color","#ffffff")
-                    // $(".index-page-header select").css("color","#ffffff")
-                    // $(".index-page-header select option").css("color","#000000")
-                }else{
-                    $('.index-page-header').removeClass("sticky-state")
-                    // $(".index-page-header .customer-logo").css("color","#000000")
-                    // $(".index-page-header .customer-navlinks-container a").css("color","#000000")
-                    // $(".index-page-header select").css("color","#000000")
-                }
-            })
-        })
-        </script>
-    @endpush
+
