@@ -643,7 +643,7 @@
         console.log("testing", id);
         var channel = pusher.subscribe('trainer-message.'+id);
         channel.bind('training_message_event', function(data) {
-
+            console.log(data);
             if(data.message.media == null && data.message.text ==null){
 
             }else{
