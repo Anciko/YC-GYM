@@ -2,7 +2,11 @@
 
 @section('content')
     @include('sweetalert::alert')
-
+    <div class="groups-toggle-overlay"></div>
+    <p class="groups-toggle">
+        Groups
+        <iconify-icon icon="akar-icons:arrow-right" class="groups-toggle-icon"></iconify-icon>
+    </p>
     <div class="trainer-two-columns-container">
         <div class="trainer-group-chats-parent-container">
             <p>Groups</p>
@@ -112,6 +116,23 @@
 @push('scripts')
     <script>
         $(document).ready(function() {
+
+            $(".groups-toggle").click(function(){
+               $(".trainer-group-chats-parent-container").toggleClass("toggle-groups")
+               $(".groups-toggle-icon").toggleClass("toggle-arrow")
+                // $(".trainer-group-chats-parent-container").animate({"left":"0px"}, "slow");
+                $('.groups-toggle-overlay').show()
+            })
+
+            $(".tainer-group-chat-name-container").click(function(){
+                $(".trainer-group-chats-parent-container").toggleClass("toggle-groups")
+               $(".groups-toggle-icon").toggleClass("toggle-arrow")
+                // $(".trainer-group-chats-parent-container").animate({"left":"0px"}, "slow");
+                $('.groups-toggle-overlay').hide()
+            })
+
+
+
             $('#search_bar').hide();
             $('.trainer-group-chat-view-members-header').hide();
             $('.trainer-group-chat-members-container').hide();
