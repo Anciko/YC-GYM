@@ -24,7 +24,7 @@
 
 
         <div class="customer-navlinks-container">
-            <a href="{{route('home')}}">Home</a>
+            <a href="{{route('social_media')}}">Home</a>
             <a href="#">Shop</a>
             <a href="#">Search</a>
             <a href="{{route('trainer')}}">Training Center</a>
