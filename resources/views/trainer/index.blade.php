@@ -117,19 +117,31 @@
     <script>
         $(document).ready(function() {
 
+            $( window ).resize(function() {
+                // console.log($(this).width())
+                if($(this).width() > 1000){
+                    $('.groups-toggle-overlay').hide()
+                }else if($(this).width() <= 1000){
+                    if( $(".trainer-group-chats-parent-container").hasClass("toggle-groups") ){
+                        $('.groups-toggle-overlay').show()
+                    }
+
+                }
+            });
+
             $(".groups-toggle").click(function(){
                $(".trainer-group-chats-parent-container").toggleClass("toggle-groups")
                $(".groups-toggle-icon").toggleClass("toggle-arrow")
                 // $(".trainer-group-chats-parent-container").animate({"left":"0px"}, "slow");
-                $('.groups-toggle-overlay').show()
+                $('.groups-toggle-overlay').toggle()
             })
 
-            $(".tainer-group-chat-name-container").click(function(){
-                $(".trainer-group-chats-parent-container").toggleClass("toggle-groups")
-               $(".groups-toggle-icon").toggleClass("toggle-arrow")
-                // $(".trainer-group-chats-parent-container").animate({"left":"0px"}, "slow");
-                $('.groups-toggle-overlay').hide()
-            })
+            // $(".tainer-group-chat-name-container").click(function(){
+            //     $(".trainer-group-chats-parent-container").hide()
+            //    $(".groups-toggle-icon").toggleClass("toggle-arrow")
+            //     // $(".trainer-group-chats-parent-container").animate({"left":"0px"}, "slow");
+            //     $('.groups-toggle-overlay').hide()
+            // })
 
 
 

@@ -50,6 +50,11 @@ class HomeController extends Controller
         return view('customer.index');
     }
 
+    public function home()
+    {
+        return view('customer.home');
+    }
+
     public function customerregister()
     {
         $user = User::find(1);
