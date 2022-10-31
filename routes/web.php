@@ -62,16 +62,11 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
 
     Route::post('password_reset', [PassResetController::class, 'password_reset'])->name('password_reset');
 
+
+
     Route::middleware(['role:Trainer'])->group(function () {
+        Route::get('/trainer', [TrainerManagementConntroller::class, 'index'])->name('trainer');
         Route::post('/trainer/group/create', [TrainerGroupController::class, 'store'])->name('trainer.group.create');
-        Route::get('trainer/group/show/{id}', [TrainerGroupController::class, 'chat_show']);
-        Route::get('/trainer', [TrainerManagementConntroller::class, 'index'])->name('trainer');
-        //Route::post('trainer/member/search',[TrainerManagementConntroller::class,'showMember'])->name('trainer/member/search');
-
-    });
-
-    Route::middleware(['role:Trainer'])->group(function () {
-        Route::get('/trainer', [TrainerManagementConntroller::class, 'index'])->name('trainer');
         Route::post('trainer/view_member/search/{id}', [TrainerManagementConntroller::class, 'showMember'])->name('trainer/member/search');
         Route::get('/trainer/view_member/{id}', [TrainerManagementConntroller::class, 'view_member'])->name('trainer/view_member');
         Route::get('/trainer/add_member/{id}', [TrainerManagementConntroller::class, 'add_member'])->name('trainer/add_member');
