@@ -20,8 +20,6 @@
 
         </div>
 
-
-
         <div class="customer-navlinks-container">
             <a href="{{route('social_media')}}">Home</a>
             <a href="#">Shop</a>
