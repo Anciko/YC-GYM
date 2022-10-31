@@ -243,6 +243,7 @@ class MemberController extends Controller
         $user->body_type=$request->body_type;
         $user->bmi=$request->bmi;
         $user->bfp=$request->bfp;
+        $user->bmr=$request->bmr;
         $user->from_date=$request->from_date;
         $user->to_date=$request->to_date;
 
