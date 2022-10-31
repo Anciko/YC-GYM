@@ -45,9 +45,12 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
     Route::post('ewallet_store', [RegisterPaymentController::class, 'ewallet_store'])->name('ewallet_store');
     Route::post('bank_payment_store', [RegisterPaymentController::class, 'bank_payment_store'])->name('bank_payment_store');
 
-    Auth::routes();
-    Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
+    Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+    Auth::routes();
+ Route::middleware('auth')->group(function () {
+    Route::get('/home', [App\Http\Controllers\HomeController::class, 'home'])->name('social_media');
+});
     Route::get('customer/register', [App\Http\Controllers\HomeController::class, 'customerregister'])->name('customer_register');
     Route::post('customer/register', [App\Http\Controllers\Auth\RegisterController::class, 'register'])->name('customer_register');
 
