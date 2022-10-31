@@ -5,16 +5,21 @@
     <div class="customer-main-content-container customer-navbar-container">
         <div class="customer-logo-language-container">
             <div class="customer-logo">
-                LOGO
+
             </div>
             <div class="customer-language-container">
-                <div class="customer-language-flag-container">
-                    <img src="../imgs/ukflag.png">
-                </div>
 
                 <select>
                     <option value="">Myanmar</option>
                     <option value="">English</option>
+                </select>
+            </div>
+
+            <div class="theme-contaier">
+                <select class="theme">
+                    <option selected value="light">Light</option>
+                    <option value="dark">Dark</option>
+                    <option value="pink">Pink</option>
                 </select>
             </div>
 

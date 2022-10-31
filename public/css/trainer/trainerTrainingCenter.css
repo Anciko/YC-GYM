@@ -196,7 +196,7 @@
 }
 
 .trainer-group-chat-media-container{
-    height: 420px;
+    height: 500px;
     overflow-y: scroll;
     display: grid;
     /* grid-template-columns: repeat(5,1fr); */

@@ -40,7 +40,7 @@
         <!--theme-->
         <script src="{{asset('js/theme.js')}}"></script>
 
-            @yield('content')
+         @yield('content')
 
     <!-- Optional JavaScript; choose one of the two! -->
 

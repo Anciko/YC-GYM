@@ -33,7 +33,7 @@
 
     <title>YC-fitness</title>
   </head>
-  <body class="customer-registeration-bgimg">
+  <body class="customer-loggedin-bg">
     <!-- <div class="customer-registeration-bgimg"> -->
         <script>
             const theme = localStorage.getItem('theme') || 'light';
