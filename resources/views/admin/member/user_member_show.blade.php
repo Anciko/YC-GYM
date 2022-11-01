@@ -113,7 +113,7 @@
                 </div>
                 <div class="col-md-2 d-flex justify-content-center">
                     <div>
-                        <button id="filter" class="btn btn-outline-info btn-sm">Filter</button>
+                        <button id="filterwallet" class="btn btn-outline-info btn-sm">Filter</button>
                         <button id="refresh" class="btn btn-outline-warning btn-sm">Reset</button>
                     </div>
                 </div>
