@@ -310,9 +310,11 @@ class Customer_TrainingCenterController extends Controller
     public function water_track()
     {
         $current_date = Carbon::now()->toDateString();
-        $water = WaterTracked::where('date', $current_date)->first();
 
         $user = auth()->user();
+
+        $water = WaterTracked::where('user_id', $user->id)->where('date', $current_date)->first();
+
 
         if(!$water) {
             $water = new WaterTracked();
@@ -327,10 +329,13 @@ class Customer_TrainingCenterController extends Controller
             ]);
         }else{
             $water = WaterTracked::findOrFail($water->id);
-            $water->user_id = $user->id;
+            if($water->update_water == 3000) {
+                return response()->json([
+                    "message" => "You cant drink anymore!"
+                ]);
+            }
             $water->update_water += 250;
-            $water->date = $current_date;
-            $water->save();
+            $water->update();
 
             return response()->json([
                 'success' => 200,
