@@ -27,7 +27,10 @@ use App\Http\Controllers\Admin\RequestAcceptDeclineController;
 use App\Http\Controllers\Customer\CustomerManagementController;
 use App\Http\Controllers\Trainer\TrainerManagementConntroller;
 
+
+
 Route::group(['middleware' => 'prevent-back-history'], function () {
+    Route::get('/locale/{lange}',[HomeController::class, 'lang'])->name('locale');
     Route::get('/customerlogin', [CustomerLoginController::class, 'login'])->name('customerlogin');
     Route::get('customer/checkPhone', [CustomerRegisterController::class, 'checkPhone'])->name('checkPhone');
     Route::get('customer/checkemail', [CustomerRegisterController::class, 'checkemail'])->name('checkEmail');

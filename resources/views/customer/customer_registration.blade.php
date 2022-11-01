@@ -12,7 +12,7 @@
 
 
         <input  type="text" required class="customer-registeration-input" placeholder="Name" name="name">
-        <input  type="number" required class="customer-registeration-input" placeholder="Phone" name="phone" id="phone">
+        <input  type="phone" required class="customer-registeration-input" placeholder="Phone" name="phone" id="phone">
         <input  type="email" required class="customer-registeration-input" placeholder="Email" name="email" id="email">
         <input  type="text" required class="customer-registeration-input" placeholder="Address" name="address">
         <input  type="password" required class="customer-registeration-input" placeholder="Password" name="password">
