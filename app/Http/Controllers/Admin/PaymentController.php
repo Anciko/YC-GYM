@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers\Admin;
 
+use Carbon\Carbon;
 use App\Models\Payment;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
 use Yajra\Datatables\Datatables;
+use App\Http\Controllers\Controller;
 
 class PaymentController extends Controller
 {
@@ -41,6 +42,9 @@ class PaymentController extends Controller
 
                 return '<div class="d-flex justify-content-center">' .$detail_icon. '</div>';
             })
+            ->editColumn('created_at', function ($each) {
+                return Carbon::parse($each->created_at)->format('m-d-Y');
+            })
             ->make(true);
             }
             else{
@@ -59,6 +63,9 @@ class PaymentController extends Controller
                               </a>';
 
                 return '<div class="d-flex justify-content-center">' .$detail_icon. '</div>';
+            })
+            ->editColumn('created_at', function ($each) {
+                return Carbon::parse($each->created_at)->format('m-d-Y');
             })
             ->make(true);
             }
@@ -89,11 +96,14 @@ class PaymentController extends Controller
 
                         $detail_icon = '';
 
-                        $detail_icon = '<a href=" ' . route('transactionwallet.detail', $each->id) . ' " class="text-warning mx-1 mt-1" title="payment">
+                        $detail_icon = '<a href=" ' . route('transactionwallet.detail', $each->id) . ' " class="text-warning mx-1 mt-1" title="paymentfhkgldh">
                                             <i class="fa-solid fa-circle-info fa-xl"></i>
                                       </a>';
 
                         return '<div class="d-flex justify-content-center">' .$detail_icon. '</div>';
+                    })
+                    ->editColumn('created_at', function ($each) {
+                        return Carbon::parse($each->created_at)->format('m-d-Y');
                     })
                     ->make(true);
 
@@ -112,6 +122,9 @@ class PaymentController extends Controller
                                       </a>';
 
                         return '<div class="d-flex justify-content-center">' .$detail_icon. '</div>';
+                    })
+                    ->editColumn('created_at', function ($each) {
+                        return Carbon::parse($each->created_at)->format('m-d-Y');
                     })
                     ->make(true);
             }

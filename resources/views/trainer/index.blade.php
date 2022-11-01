@@ -2,7 +2,11 @@
 
 @section('content')
     @include('sweetalert::alert')
-
+    <div class="groups-toggle-overlay"></div>
+    <p class="groups-toggle">
+        Groups
+        <iconify-icon icon="akar-icons:arrow-right" class="groups-toggle-icon"></iconify-icon>
+    </p>
     <div class="trainer-two-columns-container">
         <div class="trainer-group-chats-parent-container">
             <p>Groups</p>
@@ -112,6 +116,35 @@
 @push('scripts')
     <script>
         $(document).ready(function() {
+
+            $( window ).resize(function() {
+                // console.log($(this).width())
+                if($(this).width() > 1000){
+                    $('.groups-toggle-overlay').hide()
+                }else if($(this).width() <= 1000){
+                    if( $(".trainer-group-chats-parent-container").hasClass("toggle-groups") ){
+                        $('.groups-toggle-overlay').show()
+                    }
+
+                }
+            });
+
+            $(".groups-toggle").click(function(){
+               $(".trainer-group-chats-parent-container").toggleClass("toggle-groups")
+               $(".groups-toggle-icon").toggleClass("toggle-arrow")
+                // $(".trainer-group-chats-parent-container").animate({"left":"0px"}, "slow");
+                $('.groups-toggle-overlay').toggle()
+            })
+
+            // $(".tainer-group-chat-name-container").click(function(){
+            //     $(".trainer-group-chats-parent-container").hide()
+            //    $(".groups-toggle-icon").toggleClass("toggle-arrow")
+            //     // $(".trainer-group-chats-parent-container").animate({"left":"0px"}, "slow");
+            //     $('.groups-toggle-overlay').hide()
+            // })
+
+
+
             $('#search_bar').hide();
             $('.trainer-group-chat-view-members-header').hide();
             $('.trainer-group-chat-members-container').hide();
@@ -550,7 +583,7 @@
             fileExtension = e.target.value.replace(/^.*\./, '');
             console.log(fileExtension)
             if (fileExtension === "jpg" || fileExtension === "jpeg" || fileExtension === "png" || fileExtension ===
-                "jfif") {
+                "gif") {
                 const reader = new FileReader();
                 reader.onloadend = e => groupChatImgPreview.setAttribute('src', e.target.result);
                 reader.readAsDataURL(groupChatImgInput.files[0]);
@@ -632,7 +665,7 @@
                     console.log('file extension is', Extension);
 
                     if (data.message.media.split('.').pop() === 'png' || data.message.media.split('.').pop() ===
-                        'jpg' || data.message.media.split('.').pop() === 'jpeg') {
+                        'jpg' || data.message.media.split('.').pop() === 'jpeg' || data.message.media.split('.').pop() === 'gif') {
                         group_chat_messages_container.innerHTML += `<div class="modal fade" id="exampleModalToggle${data.message.id}" aria-hidden="true"
                         aria-labelledby="exampleModalToggleLabel" tabindex="-1">
                         <div class="modal-dialog modal-dialog-centered">

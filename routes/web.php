@@ -45,9 +45,12 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
     Route::post('ewallet_store', [RegisterPaymentController::class, 'ewallet_store'])->name('ewallet_store');
     Route::post('bank_payment_store', [RegisterPaymentController::class, 'bank_payment_store'])->name('bank_payment_store');
 
-    Auth::routes();
-    Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
+    Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+    Auth::routes();
+ Route::middleware('auth')->group(function () {
+    Route::get('/home', [App\Http\Controllers\HomeController::class, 'home'])->name('social_media');
+});
     Route::get('customer/register', [App\Http\Controllers\HomeController::class, 'customerregister'])->name('customer_register');
     Route::post('customer/register', [App\Http\Controllers\Auth\RegisterController::class, 'register'])->name('customer_register');
 
@@ -59,16 +62,11 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
 
     Route::post('password_reset', [PassResetController::class, 'password_reset'])->name('password_reset');
 
+
+
     Route::middleware(['role:Trainer'])->group(function () {
+        Route::get('/trainer', [TrainerManagementConntroller::class, 'index'])->name('trainer');
         Route::post('/trainer/group/create', [TrainerGroupController::class, 'store'])->name('trainer.group.create');
-        Route::get('trainer/group/show/{id}', [TrainerGroupController::class, 'chat_show']);
-        Route::get('/trainer', [TrainerManagementConntroller::class, 'index'])->name('trainer');
-        //Route::post('trainer/member/search',[TrainerManagementConntroller::class,'showMember'])->name('trainer/member/search');
-
-    });
-
-    Route::middleware(['role:Trainer'])->group(function () {
-        Route::get('/trainer', [TrainerManagementConntroller::class, 'index'])->name('trainer');
         Route::post('trainer/view_member/search/{id}', [TrainerManagementConntroller::class, 'showMember'])->name('trainer/member/search');
         Route::get('/trainer/view_member/{id}', [TrainerManagementConntroller::class, 'view_member'])->name('trainer/view_member');
         Route::get('/trainer/add_member/{id}', [TrainerManagementConntroller::class, 'add_member'])->name('trainer/add_member');

@@ -20,10 +20,8 @@
 
         </div>
 
-
-
         <div class="customer-navlinks-container">
-            <a href="/">Home</a>
+            <a href="{{route('social_media')}}">Home</a>
             <a href="#">Shop</a>
             <a href="#">Search</a>
             @hasanyrole('Diamond|Platinum|Gym Member')
@@ -34,6 +32,9 @@
             <a href="{{route('groups')}}">Training Center</a>
             @endhasanyrole
 
+            @hasanyrole('Trainer')
+            <a href="{{route('trainer')}}">Training Center</a>
+            @endhasanyrole
             <div class="customer-dropdown-container">
                 <ul>
                     <li class="customer-dropdown">

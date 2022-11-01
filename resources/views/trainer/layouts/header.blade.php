@@ -24,10 +24,10 @@
 
 
         <div class="customer-navlinks-container">
-            <a href="#">Home</a>
+            <a href="{{route('social_media')}}">Home</a>
             <a href="#">Shop</a>
             <a href="#">Search</a>
-            <a href="#">Training Center</a>
+            <a href="{{route('trainer')}}">Training Center</a>
             <div class="customer-dropdown-container">
                 <ul>
                     <li class="customer-dropdown">
@@ -46,24 +46,6 @@
                 </ul>
             </div>
         </div>
-
-        {{-- <div class="customer-navlinks-notiprofile-container">
-            <a href="#"><iconify-icon icon="akar-icons:bell" class="nav-icon"></iconify-icon></a>
-            <div class="dropdown customer-navlinks-profile-dropdown">
-                <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-                    <img class="nav-profile-img" src="{{asset('img/avatar.jpg')}}"/>
-                </button>
-                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                  <li><a class="dropdown-item" href="#">Profile</a></li>
-                  <li><form class="dropdown-item" id="logout-form" action="{{ route('logout') }}" method="POST">
-                    @csrf
-                    <button class="customer-primary-btn customer-login-btn" type="submit">Logout</button>
-                </form></li>
-
-                </ul>
-            </div>
-
-        </div> --}}
 
         <div class="customer-navlinks-notiprofile-container">
             <a href="#"><iconify-icon icon="akar-icons:bell" class="nav-icon"></iconify-icon></a>

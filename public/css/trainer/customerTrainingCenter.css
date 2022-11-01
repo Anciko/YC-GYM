@@ -370,6 +370,7 @@ video::-webkit-media-controls-fullscreen-button {
 
 .customer-workout-completed-details-container{
     display: flex;
+    gap:0 50px;
     align-items: center;
     justify-content: center;
 }
@@ -436,6 +437,7 @@ video::-webkit-media-controls-fullscreen-button {
 .customer-food-tracker-header > h1{
     font-size: 18px;
     font-weight: 600;
+    color: var(--customer-text-color);
 }
 
 .customer-food-tracker-header > p span{
@@ -507,7 +509,7 @@ video::-webkit-media-controls-fullscreen-button {
 .customer-diamond-food-track-header h1{
     font-size: 30px;
     font-weight: 600;
-
+    color: var(--customer-text-color);
 }
 
 .customer-diamond-food-track-header span{

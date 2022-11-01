@@ -1,5 +1,5 @@
 .customer-trainingcenter-group-chat-container{
-    width: 550px;
+    max-width: 550px;
     margin: auto;
     margin-top: 40px;
     margin-bottom: 40px;
@@ -394,7 +394,7 @@ video::-webkit-media-controls-fullscreen-button {
 .customer-workout-completed-header > h1{
     font-size: 35px;
     font-weight: 600;
-
+    color: var(--customer-text-color);
 }
 
 .customer-workout-completed-header > span{
@@ -405,17 +405,19 @@ video::-webkit-media-controls-fullscreen-button {
 
 .customer-workout-completed-details-container{
     display: flex;
+    gap:0 50px;
     align-items: center;
     justify-content: center;
 }
 
 .customer-workout-completed-detail:not(:first-child){
-    margin-left: 100px;
+    /* margin-left: 100px; */
 }
 
 .customer-workout-completed-detail h1{
     font-weight: 600;
     font-size: 35px;
+    color: var(--customer-text-color);
 }
 
 .customer-workout-completed-detail span{
@@ -951,6 +953,18 @@ video::-webkit-media-controls-fullscreen-button {
 
     .small-card-charts-container{
         gap: 0 3px;
+    }
+
+    .customer-workout-completed-details-container{
+        gap: 0 30px;
+    }
+
+    .customer-workout-completed-detail h1{
+        font-size: 28px;
+    }
+
+    .customer-workout-completed-detail span{
+        font-size: 18px;
     }
 
 
