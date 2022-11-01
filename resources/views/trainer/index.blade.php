@@ -117,15 +117,19 @@
             $('.trainer-group-chat-members-container').hide();
             $('.trainer-group-chat-media-container').hide();
             $('.chat-message-form').hide();
+            // $(".group-chat-messages-container").attr('class','');
             $(window).on("load", function() {
                 $('.group-chat-messages-container').scrollTop($('.group-chat-messages-container')[0]
                     .scrollHeight);
             });
             $(document).on('click', '#group-chat', function(e) {
                 e.preventDefault();
+
                 $("#send_message").empty();
+                $('#trainer_message_form').show();
                 $(".trainer-group-chat-media-container").empty();
                 $('#p').hide();
+
                 $('.trainer-group-chat-members-container').hide();
                 $('.trainer-group-chat-media-container').hide();
                 $('.trainer-group-chat-view-members-header').hide();
@@ -257,6 +261,7 @@
             $(document).on('click', '.view_member', function(e) {
 
                 e.preventDefault();
+                $('#trainer_message_form').hide();
                 view_member();
 
             })
@@ -265,6 +270,8 @@
                 e.preventDefault();
                 $(".trainer-group-chat-media-container").empty();
                 $('.trainer-group-chat-media-container').show();
+                $('#trainer_message_form').hide();
+
                 group_id = localStorage.getItem('group_id');
                 console.log("view_media", group_id);
                 $.ajax({
@@ -615,7 +622,7 @@
         console.log("testing", id);
         var channel = pusher.subscribe('trainer-message.'+id);
         channel.bind('training_message_event', function(data) {
-
+            console.log(data);
             if(data.message.media == null && data.message.text ==null){
 
             }else{

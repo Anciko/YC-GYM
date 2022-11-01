@@ -67,7 +67,7 @@
     $(document).ready(function(){
         var total = 3000
         var taken =  parseInt($(".drinked_water").text());
-        console.log(typeof(taken))
+        console.log(taken)
         var left  = total - taken
         fillWater(taken,left,total)
 
@@ -105,7 +105,7 @@
 
         }
         else if(taken == 3000){
-            html = `<p>You left 2000 ml of today's mission.</p>
+            html = `<p>You complete today’s mission.</p>
             <h1>Yay! You are hydrated.</h1>`
             $('.customer-water-track-text-container').html(html);
             $(".customer-water-add-btn").hide()
@@ -118,9 +118,13 @@
         }
 
         var fill = (taken / total) * 100
+        console.log(fill)
         if(fill > 100){
-            alert("cant drink anymore")
-            return
+            html = `<p>You complete today’s mission.</p>
+            <h1>Yay! You are hydrated.</h1>`
+            $('.customer-water-track-text-container').html(html);
+            $(".customer-water-add-btn").hide()
+            // return
         }
         $('.water').animate({height:`${fill}%`}, 300)
 

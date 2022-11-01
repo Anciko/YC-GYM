@@ -35,28 +35,29 @@ html{
   .overlay{
     width: 100%;
     height: 100%;
-    background: linear-gradient(0deg, rgba(63 63 63 / 50%), rgba(63 63 63 / 50%));
+    background: linear-gradient(0deg, rgba(63 63 63 / 50%), rgba(63 63 63 / 50%)),url("../../../img/customer/imgs/pexels-andrea-piacquadio-3768916.jpg");
     position: fixed;
     top: 0;
     right: 0;
     left: 0;
     bottom: 0;
+    background-position:center;
+    background-size: cover;
+    background-repeat: no-repeat;
     z-index: -1;
   }
 .customer-registeration-bgimg{
-    background: url("../../../img/customer/imgs/pexels-andrea-piacquadio-3768916.jpg");
+    /* background: url("../../../img/customer/imgs/pexels-andrea-piacquadio-3768916.jpg"); */
     width: 100%;
     height: 100%;
-    /* background-position: 80% 20%; */
-    background-size: cover;
-    background-repeat: no-repeat;
+
 }
 
 
 
 .cutomer-registeration-form{
-    width: 500px;
-    padding: 40px;
+    max-width: 500px;
+    padding: 40px 40px;
     border-radius: 10px;
     border: 5px solid var(--customer-primary-color);
     margin: auto;
@@ -79,8 +80,9 @@ html{
 
 .member-plan-duration-parent-container{
     display: flex;
+    flex-direction: column;
     align-items: center;
-    justify-content: space-between;
+    justify-content: center;
 }
 
 .member-plan-duration-parent-container > p{
@@ -94,7 +96,9 @@ html{
 .member-plan-duretions-container{
     display: flex;
     align-items: center;
-
+    justify-content: space-around;
+    flex-wrap: wrap;
+    gap: 10px;
 }
 
 .member-plan-duration-container{
@@ -107,9 +111,9 @@ html{
     cursor: pointer;
 }
 
-.member-plan-duration-container:not(:first-child){
+/* .member-plan-duration-container:not(:first-child){
     margin-left: 10px;
-}
+} */
 
 .customer-member-plan-duration-checkbox-input{
     position: absolute;
@@ -532,6 +536,67 @@ input.invalid, select.invalid {
 }
 
 
-@media screen and (max-width:1000px){
+@media screen and (max-width:600px){
+    .cutomer-registeration-form{
+        padding: 20px 20px;
+    }
 
+    .checkbox-flex-container{
+        flex-direction: column;
+    }
+
+    .typical-day-img{
+        width: 120px;
+    }
+
+    .checkbox-label{
+        font-size: 12px;
+    }
+
+    .checkbox-label-small{
+        font-size: 10px;
+    }
+
+
+
+    .floating-checkbox {
+        width: 45px;
+    }
+
+    .floating-checkbox .checkbox-tile{
+        width: 45px;
+        padding: 10px 5px;
+    }
+
+    .floating-checkbox .checkbox-label{
+        margin-left: 0;
+    }
+
+    .floating-checkbox:nth-child(2n):before{
+        /* right: 0; */
+    }
+
+    .floating-checkbox:nth-child(3), .floating-checkbox:nth-child(5), .floating-checkbox:nth-child(7){
+        /* right: -60px; */
+    }
+
+    .customer-member-plan-checkbox .checkbox-label{
+        margin-left: 45px;
+    }
+
+    .customer-member-plan-checkbox .customer-member-plan-checkbox-input{
+        height: 30px;
+        width: 30px;
+        left: 10px;
+    }
+
+    .checkbox-price-label{
+        font-size: 12px;
+    }
+}
+
+@media screen and (max-width:400px){
+    .body-area-img{
+        width: 150px;
+    }
 }

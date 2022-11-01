@@ -120,6 +120,11 @@
 
                             </div>
                             <div class="col-auto">
+                                <label for="bmr" class="col-form-label">BMR</label>
+                                <input type="integer @error('bmr') is-invalid @enderror" id="bmr" class="form-control" name="bmr"  value="{{$user->bmr}}" style="width: auto" readonly>
+
+                                </div>
+                            <div class="col-auto">
                                 <label for="goal" class="form-label">Goal</label>
                                 <input type="text" class="form-control @error('goal') is-invalid @enderror" id="goal" name="goal" value="{{$user->goal}}" readonly>
 
@@ -398,9 +403,13 @@
         if(gender==="male"){
             console.log("male");
             document.getElementById('bfp').value= Math.round((86.010*(Math.log(waist*1-neck*1)/Math.log(10))-70.041*(Math.log(height)/Math.log(10))+36.76*1)*100)/100;
+
+            document.getElementById('bmr').value = Math.round((parseInt(weight)*4.536) + (parseInt(height)*15.88) + - (parseInt(age)*5) + 5);
+
         }else{
             console.log("female");
             document.getElementById('bfp').value= Math.round((163.205*(Math.log(waist*1.0+hip*1.0-neck*1.0)/Math.log(10))- 97.684*(Math.log(height)/Math.log(10))-78.387*1.0)*100)/100;
+            document.getElementById('bmr').value =Math.round((parseInt(weight)*4.536) + (parseInt(height)*15.88) + - (parseInt(age)*5) - 161);
         }
 
         })

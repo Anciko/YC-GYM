@@ -15,15 +15,17 @@
                 </select>
             </div>
 
+            <div class="theme-contaier">
+                <select class="theme">
+                    <option value="light">Light</option>
+                    <option value="dark">Dark</option>
+                    <option value="pink">Pink</option>
+                </select>
+            </div>
+
         </div>
 
-        <div class="theme-contaier">
-            <select class="theme">
-                <option value="light">Light</option>
-                <option value="dark">Dark</option>
-                <option value="pink">Pink</option>
-            </select>
-        </div>
+
         <div class="customer-navlinks-container">
             <a href="/">Home</a>
             <a href="#">Shop</a>
@@ -31,7 +33,7 @@
             <a href="{{route('training_center.index')}}">Training Center</a>
             @endhasanyrole
             @hasanyrole('Gold|Ruby|Ruby Premium')
-            <a href="{{route('group')}}">Training Center</a>
+            <a href="{{route('groups')}}">Training Center</a>
             @endhasanyrole
             @hasanyrole('Trainer')
             <a href="{{route('trainer')}}">Training Center</a>

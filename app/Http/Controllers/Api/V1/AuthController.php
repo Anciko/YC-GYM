@@ -54,6 +54,11 @@ class AuthController extends Controller
         $user->shoulders = $request->shoulders;
         $user->member_code = 'yc-' . Str::uuid();
 
+        // bmi , bmr
+        $user->bmi = $request->bmi;
+        $user->bmr = $request->bmr;
+        $user->bfp = $request->bfp;
+
         // $physical_limitations = $request->physical_limitation;
 
         $user->physical_limitation = json_encode($request->physical_limitation); //
@@ -79,6 +84,7 @@ class AuthController extends Controller
 
         $user->save();
         $user->members()->attach($request->member_id, ['member_type_level' => $user_member_type_level]);
+        $user->assignRole('Free');
         // Thandar style end
 
         $token = $user->createToken('gym');
@@ -86,7 +92,7 @@ class AuthController extends Controller
         return response()->json([
             'message' => 'Register successfully!',
             'user' => $user,
-
+            'user_role' => $user->roles->pluck('name')[0],
             'token' => $token->plainTextToken
         ]);
     }
@@ -133,7 +139,7 @@ class AuthController extends Controller
 
     public function getBankingInfos()
     {
-        $banking_infos = BankingInfo::where('payment_type', 'bank')->get();
+        $banking_infos = BankingInfo::where('payment_type', 'bank transfer')->get();
         return response()->json([
             'banking_infos' => $banking_infos
         ]);
@@ -144,7 +150,7 @@ class AuthController extends Controller
         $user = auth()->user();
         $payment = new Payment();
         $payment->user_id = $user->id;
-        $payment->payment_type = 'bank';
+        $payment->payment_type = 'banking';
         $payment->payment_name = $request->payment_name;
         $payment->bank_account_number = $request->bank_account_number;
         $payment->bank_account_holder = $request->bank_account_holder;
