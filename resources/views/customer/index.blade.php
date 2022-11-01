@@ -350,6 +350,12 @@
             var scroll = $(window).scrollTop()
             if(scroll>50){
                 $('.index-page-header').addClass("sticky-state")
+                // if($('.burger-icon').css('display') == 'block' || $('.close-nav-icon').css('display') == 'block'){
+                //     $(".customer-navlinks-container a").css('color',"black")
+                // }else{
+                //     $(".customer-navlinks-container a").css('color',"")
+                // }
+
                 // $(".index-page-header .customer-logo").css("color","#ffffff")
                 // $(".index-page-header .customer-navlinks-container a").css("color","#ffffff")
                 // $(".index-page-header select").css("color","#ffffff")
@@ -359,6 +365,14 @@
                 // $(".index-page-header .customer-logo").css("color","#000000")
                 // $(".index-page-header .customer-navlinks-container a").css("color","#000000")
                 // $(".index-page-header select").css("color","#000000")
+            }
+        })
+
+        $( window ).resize(function() {
+            if($(window).width() > 1000){
+                $(".customer-navlinks-container a").css('color',"")
+            }else if($(window).width() <= 1000){
+                $(".customer-navlinks-container a").css('color',"black")
             }
         })
     })

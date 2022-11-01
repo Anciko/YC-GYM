@@ -57,8 +57,8 @@ class LoginController extends Controller
         if( $user->hasAnyRole(['Trainer'])){
             Auth::login($user);
             return redirect('/home');
-        }
 
+        }
         else{
             return redirect('/home');
         }
