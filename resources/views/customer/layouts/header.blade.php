@@ -10,9 +10,12 @@
             <div class="customer-language-container">
 
                 <select>
-                    <option value="">Myanmar</option>
-                    <option value="">English</option>
+                    <option value=""><a href={{route('locale','en')}}>English</a></option>
+                    <option value=""><a href={{route('locale','mm')}}>Myanmar</a></option>
+
                 </select>
+                {{-- <a href={{route('locale','en')}}>English</a>
+                <a href={{route('locale','mm')}}>Myanmar</a> --}}
             </div>
 
             <div class="theme-contaier">
@@ -25,7 +28,12 @@
 
         </div>
         <div class="customer-navlinks-container">
-            <a href="{{route('home')}}">Home</a>
+            @guest
+            <a href="{{route('home')}}">{{__('msg.home')}}</a>
+            @endguest
+            @auth
+            <a href="{{route('social_media')}}">{{__('msg.home')}}</a>
+            @endauth
             <a href="#">Shop</a>
             {{-- <a href="#">Training Center</a> --}}
         </div>

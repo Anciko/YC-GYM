@@ -26,7 +26,7 @@ class TrainerGroupController extends Controller
             'gender'=>'required'
         ]);
         $training_group=New TrainingGroup();
-        $training_group->trainer_id=$request->trainer_id;
+        $training_group->trainer_id=auth()->user()->id;
         $training_group->member_type=$request->member_type;
         $training_group->group_name=$request->group_name;
         $training_group->group_type=$request->group_type;

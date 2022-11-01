@@ -76,6 +76,7 @@
                             <th>Bank Account</th>
                             <th>Account Holder</th>
                             <th>Amount</th>
+                            <th>Date</th>
                             <th>View Detail</th>
                         </tr>
                     </thead>
@@ -135,6 +136,7 @@
                             <th>Account Name</th>
                             <th>Phone No.</th>
                             <th>Amount</th>
+                            <th>Date</th>
                             <th>View Detail</th>
                         </tr>
                     </thead>
@@ -214,6 +216,10 @@
                             name: 'amount'
                         },
                         {
+                            data: 'created_at',
+                            name: 'created_at'
+                        },
+                        {
                             data: 'action',
                             name: 'action'
                         }
@@ -275,6 +281,10 @@
                         {
                             data: 'amount',
                             name: 'amount'
+                        },
+                        {
+                            data: 'created_at',
+                            name: 'created_at'
                         },
                         {
                             data: 'action',

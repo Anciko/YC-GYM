@@ -392,7 +392,13 @@
 
                       <li><a class="dropdown-item" href="{{ route('admin-profile') }}">Profile</a></li>
 
-                      <li><a class="dropdown-item logout-btn" href="">Logout</a></li>
+                      {{-- <li><a class="dropdown-item logout-btn">Logout</a></li> --}}
+                    <li>
+                        <form id="logout-form" action="{{ route('logout') }}" method="POST">
+                            @csrf
+                            <button class="dropdown-item" type="submit">Logout</button>
+                        </form>
+                    </li>
 
                     </ul>
 
@@ -503,27 +509,16 @@
     <script>
 
         $(document).ready(function() {
-
             let token = document.head.querySelector('meta[name="csrf-token"]');
-
             if (token) {
-
                 $.ajaxSetup({
-
                     headers: {
-
                         'X-CSRF-TOKEN': token.content
-
                     }
-
                 });
-
             } else {
-
                 console.error('CSRF TOKEN not found!');
-
             }
-
             $(document).on('click', '.previousLink', function(e) {
 
                 e.preventDefault();
@@ -532,58 +527,32 @@
 
             })
 
-
-
-
-
             $(document).on('click', '.logout-btn', function(e) {
 
                 e.preventDefault();
-
-
-
                 swal({
-
                         text: "Are you sure you want to Logout?",
-
                         buttons: true,
-
                         dangerMode: true,
 
                     })
-
                     .then((willDelete) => {
-
                         if (willDelete) {
-
                             $.ajax({
-
                                 method: "POST",
-
                                 url: `/logout`
-
                             })
-
                             location.reload();
-
                         } else {
-
-                            swal("Your imaginary file is safe!");
-
+                            swal("You still Login");
                         }
 
                     });
-
-
-
             })
 
             $(document).on('submit', 'form', function() {
-
                 $('button').attr('disabled', 'disabled');
-
             });
-
             $(".ninja-select").select2();
 
         })
