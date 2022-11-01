@@ -76,11 +76,18 @@ class AuthController extends Controller
 
         $user->hydration = $request->hydration;
         // Thandar style start
+
         $user_member_type_id = $request->member_id;
         $member = Member::findOrFail($user_member_type_id);
         $user_member_type_level = $request->member_type_level;
         $user->membertype_level = $request->member_type_level;
         $user->member_type = $member->member_type;
+
+        if ($member->member_type == 'Free') {
+            $user->active_status = 0;
+        } else {
+            $user->active_status = 1;
+        }
 
         $user->save();
         $user->members()->attach($request->member_id, ['member_type_level' => $user_member_type_level]);
