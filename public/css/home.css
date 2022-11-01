@@ -42,12 +42,13 @@
 }
 
 .home-about-us-text-container{
-    width: 570px;
+    max-width: 570px;
     /* text-align: center; */
     margin-left: 40px;
     display: flex;
     flex-direction: column;
     justify-content: center;
+    padding: 0 10px;
 }
 
 .home-about-us-text-container p{
@@ -62,6 +63,7 @@
     align-items: center;
    /* justify-content: center; */
    margin: auto;
+   margin-bottom: 20px;
 }
 
 /* .home-about-us-text-container .customer-secondary-btn p{
@@ -207,7 +209,7 @@
 }
 
 .home-trainer-text-container{
-    width: 570px;
+    max-width: 570px;
 }
 
 .home-trainer-text-container > h1{
@@ -234,7 +236,7 @@
 }
 
 .customer-milestone-parent-container{
-    width: 700px;
+    max-width: 700px;
     margin: auto;
 }
 
@@ -320,7 +322,7 @@
 }
 
 .home-appad-text-container{
-    width: 600px;
+    max-width: 600px;
     /* margin-left: 100px; */
 }
 
@@ -399,7 +401,7 @@
 }
 
 .home-contact-us-form-parent-container{
-    width: 800px;
+    max-width: 800px;
     /* border: 5px solid var(--customer-primary-color); */
     background-color: var(--customer-card-bg-color);
     box-shadow: 1px 1px 10px 0px rgba(0,0,0,0.25);
@@ -442,11 +444,11 @@
     color: #a0a0a0;
     opacity: 1; /* Firefox */
 }
-  
+
 .home-contact-us-inputs-container input:-ms-input-placeholder { /* Internet Explorer 10-11 */
     color: #a0a0a0;
 }
-  
+
 .home-contact-us-inputs-container input::-ms-input-placeholder { /* Microsoft Edge */
     color: #a0a0a0;
 }
@@ -455,11 +457,11 @@
     color: #a0a0a0;
     opacity: 1; /* Firefox */
 }
-  
+
 .home-contact-us-inputs-container textarea:-ms-input-placeholder { /* Internet Explorer 10-11 */
     color: #a0a0a0;
 }
-  
+
 .home-contact-us-inputs-container textarea::-ms-input-placeholder { /* Microsoft Edge */
     color: #a0a0a0;
 }
@@ -504,4 +506,158 @@
 
 .home-contact-us-btns-container .customer-secondary-btn{
     margin-left: 20px;
+}
+
+@media screen and (max-width:1000px){
+    .home-about-us-content-container{
+        flex-direction: column;
+    }
+
+    .home-about-us-img-container{
+        width: 100%;
+        height: 400px;
+    }
+
+    .home-about-us-img-container img{
+        border-top-left-radius: 10px;
+        border-top-right-radius: 10px;
+        border-bottom-left-radius: 0px;
+    }
+
+    .home-about-us-text-container{
+        margin-left: 0;
+        margin-top: 20px;
+    }
+
+    .home-trainer-container{
+        flex-direction: column;
+    }
+
+    .left-img{
+        margin-right: 0;
+
+    }
+
+    .right-img{
+        margin-left: 0;
+    }
+
+    .home-trainer-img-container{
+        flex-direction: column;
+        width: 100%;
+        height: 400px;
+    }
+
+    .home-trainer-container:nth-child(2n-1){
+        flex-direction: column;
+        /* width: 100%;
+        height: 400px; */
+    }
+
+    .home-trainer-img-container img{
+        border-top-left-radius: 10px;
+        border-top-right-radius: 10px;
+        border-bottom-left-radius: 0px;
+        border-bottom-right-radius: 0px;
+    }
+
+    .home-trainer-text-container{
+        margin-top: 20px;
+        padding: 0 10px;
+    }
+
+
+
+    .customer-milestone-text{
+        width: 100px;
+    }
+
+    .customer-milestone-text-line{
+        width: 20px;
+    }
+
+    .customer-milestone-text p{
+        font-size: 18px;
+    }
+    .customer-milestone-text span{
+        font-size: 12px;
+    }
+
+    .customer-milestone-text-container{
+        left: -120px;
+
+    }
+
+
+    .customer-milestone-stone{
+        width: 75px;
+        height: 75px;
+    }
+
+    .customer-milestone-stone:nth-child(4) .customer-milestone-text-container, .customer-milestone-stone:nth-child(8) .customer-milestone-text-container{
+        left: 70px;
+    }
+
+    .home-appad-content-container{
+        flex-direction: column;
+    }
+
+    .home-contact-us-form-container{
+        grid-template-columns: 1fr;
+        grid-template-areas: 'a'
+                             'c'
+                             "b";
+    }
+
+    .home-contact-us-inputs-container{
+        width: 100%;
+    }
+    .home-appad-btn{
+        padding: 8px;
+        width: 180px;
+    }
+
+    .home-appad-icon{
+        font-size: 40px;
+    }
+
+    .home-appad-img-container{
+        width: 242px;
+        height: 292px;
+    }
+}
+
+@media screen and (max-width:600px){
+    .home-trainer-img-container{
+        /* width: 300px; */
+        height: 220px;
+    }
+
+    .home-appad-btn:nth-child(2){
+        margin-left: 10px;
+    }
+
+    .home-appad-text-container > h1{
+        font-size: 25px;
+    }
+
+    .home-appad-text-container > p{
+        font-size: 16px;
+    }
+
+    .home-appad-btn{
+        width: 150px;
+    }
+
+    .home-appad-text p{
+        font-size: 14px;
+    }
+
+    .home-appad-text{
+        margin-left: 5px;
+    }
+
+    .home-contact-us-form-parent-container{
+        padding: 40px 10px;
+    }
 }

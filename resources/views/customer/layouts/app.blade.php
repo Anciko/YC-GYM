@@ -39,8 +39,10 @@
         @include('customer.layouts.header')
         <!--theme-->
         <script src="{{asset('js/theme.js')}}"></script>
+        <div class="nav-overlay">
+        </div>
 
-            @yield('content')
+         @yield('content')
 
     <!-- Optional JavaScript; choose one of the two! -->
 

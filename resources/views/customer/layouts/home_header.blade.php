@@ -5,7 +5,6 @@
     <div class="customer-main-content-container customer-navbar-container">
         <div class="customer-logo-language-container">
             <div class="customer-logo">
-                LOGO
             </div>
             <div class="customer-language-container">
                 <div class="customer-language-flag-container">
