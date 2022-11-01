@@ -948,7 +948,7 @@
                 success   : function(data) {
 
                     if(allData.memberPlan==1){
-                        window.location.href = "/";
+                        window.location.href = "/home";
                     }else{
                         window.location.href = "/customer_payment";
                     }
