@@ -209,6 +209,7 @@ class Customer_TrainingCenterController extends Controller
     {
         $user = auth()->user();
         $bmr  = User::select('bmr')->where('id',$user->id)->first();
+
         // $meal_plan = MealPlan::where('member_type',$user->member_type)->where('plan_name','Breakfast')->first();
         // $meals = Meal::where('meal_plan_id',$meal_plan->id)->get();
         // dd($bmr);
