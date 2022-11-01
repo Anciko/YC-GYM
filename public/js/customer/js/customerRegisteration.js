@@ -298,7 +298,13 @@
               });
 
               //alert("Phone number should have 7 to 11 numbers")
-            }else{
+            }if(phone.value == "")
+            {
+                Swal.fire({
+                    text: "Required fields are empty.",
+                    confirmButtonColor: '#3CDD57',
+                    timer: 3000
+                  });}else{
                 var cus_phone = $("#phone").val();
                 $.ajax({
                         url : 'checkPhone',
@@ -339,8 +345,14 @@
                 timer: 3000
               });
               //alert("Email is not valid.")
-            }
-            else{
+            }if(email.value == "")
+            {
+                Swal.fire({
+                    text: "Required fields are empty.",
+                    confirmButtonColor: '#3CDD57',
+                    timer: 3000
+                  });
+            }else{
                 var cus_email = $("#email").val();
                 $.ajax({
                         url : 'checkemail',

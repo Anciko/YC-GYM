@@ -20,7 +20,12 @@
 
         </div>
         <div class="customer-navlinks-container">
+            @guest
             <a href="{{route('home')}}">Home</a>
+            @endguest
+            @auth
+            <a href="{{route('social_media')}}">Home</a>
+            @endauth
             <a href="#">Shop</a>
             {{-- <a href="#">Training Center</a> --}}
         </div>
