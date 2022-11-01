@@ -48,7 +48,7 @@
          <form class="create-group-form" action="{{route('trainer.group.create')}}" method="POST">
             @method('POST')
             @csrf
-            <input type="hidden" name="trainer_id" value="{{auth()->user()->id}}">
+            {{-- <input type="hidden" name="trainer_id" value="{{auth()->user()->id}}"> --}}
             <div class="create-group-name create-group-input">
                 <p>Group Name</p>
                 <input type="text" name="group_name" required>
