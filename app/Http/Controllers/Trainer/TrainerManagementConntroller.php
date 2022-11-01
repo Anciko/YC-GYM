@@ -43,6 +43,12 @@ class TrainerManagementConntroller extends Controller
         }else{
             $path='';
             if($request->file('fileInput') !=null){
+                $request->validate([
+                    'fileInput' => 'required|mimes:png,jpg,jpeg,gif,mp4,mov,webm'
+                    ],[
+                        'fileInput.required' => 'You can send png,jpg,jpeg,gif,mp4,mov and webm extension'
+                    ]);
+
                 $file = $request->file('fileInput');
                 $path =uniqid().'_'. $file->getClientOriginalName();
                 $disk = Storage::disk('public');

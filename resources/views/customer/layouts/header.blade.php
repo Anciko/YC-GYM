@@ -5,24 +5,43 @@
     <div class="customer-main-content-container customer-navbar-container">
         <div class="customer-logo-language-container">
             <div class="customer-logo">
-                LOGO
+
             </div>
             <div class="customer-language-container">
-                <div class="customer-language-flag-container">
-                    <img src="../imgs/ukflag.png">
-                </div>
 
                 <select>
-                    <option value="">Myanmar</option>
-                    <option value="">English</option>
+                    <option value=""><a href={{route('locale','en')}}>English</a></option>
+                    <option value=""><a href={{route('locale','mm')}}>Myanmar</a></option>
+
+                </select>
+                {{-- <a href={{route('locale','en')}}>English</a>
+                <a href={{route('locale','mm')}}>Myanmar</a> --}}
+            </div>
+
+            <div class="theme-contaier">
+                <select class="theme">
+                    <option selected value="light">Light</option>
+                    <option value="dark">Dark</option>
+                    <option value="pink">Pink</option>
                 </select>
             </div>
 
         </div>
         <div class="customer-navlinks-container">
-            <a href="{{route('home')}}">Home</a>
+            @guest
+            <a href="{{route('home')}}">{{__('msg.home')}}</a>
+            @endguest
+            @auth
+            <a href="{{route('social_media')}}">{{__('msg.home')}}</a>
+            @endauth
             <a href="#">Shop</a>
             {{-- <a href="#">Training Center</a> --}}
+        </div>
+
+        <div class="customer-navlinks-notiprofile-container">
+            {{-- <a href="#"><iconify-icon icon="akar-icons:bell" class="nav-icon"></iconify-icon></a> --}}
+            <iconify-icon icon="pajamas:hamburger" class="burger-icon"></iconify-icon>
+            <iconify-icon icon="akar-icons:cross" class="close-nav-icon"></iconify-icon>
         </div>
 
         <div class="customer-nav-btns-container">
@@ -37,5 +56,7 @@
         </form>
         @endauth
         </div>
+
+
     </div>
 </div>

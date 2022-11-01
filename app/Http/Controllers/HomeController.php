@@ -8,6 +8,8 @@ use App\Models\BankingInfo;
 use Illuminate\Http\Request;
 use App\Models\MemberHistory;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Session;
 
 class HomeController extends Controller
 {
@@ -37,6 +39,12 @@ class HomeController extends Controller
         $user->member_type = $user_member_type->member_type;
         $user->save();
         $user->members()->attach($request->member_id, ['member_type_level' => $user_member_type_level]);
+    }
+
+    public function lang($locale){
+        App::setLocale($locale);
+        Session::put("locale",$locale);
+        return redirect()->back();
     }
 
     public function requestlist(Request $request)

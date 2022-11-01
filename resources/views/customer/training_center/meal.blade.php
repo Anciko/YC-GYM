@@ -1,8 +1,8 @@
 @extends('customer.training_center.layouts.app')
 
 @section('content')
-@hasanyrole('Diamond')
 @include('sweetalert::alert')
+@hasanyrole('Diamond|Platinum|Gym Member')
 <a class="back-btn margin-top" href="{{route('training_center.index')}}">
     <iconify-icon icon="bi:arrow-left" class="back-btn-icon"></iconify-icon>
 </a>
@@ -194,13 +194,13 @@
         var totalCal = {{$bmr->bmr}}
         var takenCal
 
-        var totalCarb = (totalCal/100) * 50
+        var totalCarb = ((totalCal/100) * 50).toFixed(2)
         var takenCarb
 
-        var totalProtein = (totalCal/100) * 30
+        var totalProtein = ((totalCal/100) * 30).toFixed(2)
         var takenProtein
 
-        var totalFat = (totalCal/100) * 20
+        var totalFat = ((totalCal/100) * 20).toFixed(2)
         var takenFat
 
         console.log(localFoodListDate, currentDate)

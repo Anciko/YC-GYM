@@ -20,9 +20,10 @@ class VerifyCsrfToken extends Middleware
         'bank_payment_store/*',
 
         '/data/save',
+        '/logout',
         'customer/customerCreate',
         '/trainer/group/create',
         'customer/training_center/workout/workout_complete/store/',
-   
+
     ];
 }

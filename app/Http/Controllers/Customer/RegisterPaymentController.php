@@ -56,7 +56,7 @@ class RegisterPaymentController extends Controller
         $payment->save();
         if ($payment) {
             Alert::success('Success', 'Payment Successfull!');
-            return redirect()->route('home');
+            return redirect()->route('social_media');
         }
         else {
             Alert::error('Failed', 'Payment failed!');
@@ -96,7 +96,7 @@ class RegisterPaymentController extends Controller
         $payment->save();
         if ($payment) {
             Alert::success('Success', 'Payment Successfull!');
-            return redirect('/');
+            return redirect('/home');
         }
         else {
             Alert::error('Failed', 'Payment failed! Please Try Again!');

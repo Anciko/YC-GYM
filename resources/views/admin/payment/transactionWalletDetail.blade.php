@@ -9,7 +9,7 @@
     <a href="javascript:history.back()" class="btn btn-primary mb-2"><i class="fa-solid fa-arrow-left-long"></i> &nbsp; Back</a>
     <div class="card mb-3 shadow" >
         <div class="card-header">
-           <h3>Bank Transaction Detail</h3>
+           <h3>E-wallet Transaction Detail</h3>
           </div>
 
         <div class="row g-0">

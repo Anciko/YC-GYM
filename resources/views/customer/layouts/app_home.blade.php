@@ -44,6 +44,9 @@
         <!--theme-->
         <script src="{{asset('js/theme.js')}}"></script>
 
+        <div class="nav-overlay">
+        </div>
+
     <!-- </div> -->
         <div class="customer-main-content-container">
             @yield('content')
