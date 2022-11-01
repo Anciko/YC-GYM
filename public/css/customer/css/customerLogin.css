@@ -44,12 +44,10 @@
     margin-top: 40px;
     display: block;
 }
-
 .cannot-reset-password-container{
     text-align: center;
     color: white;
 }
-
 .cannot-reset-password-container span{
     display: block;
     margin-bottom: 40px;

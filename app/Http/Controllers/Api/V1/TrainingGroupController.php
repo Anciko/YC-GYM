@@ -2,20 +2,20 @@
 
 namespace App\Http\Controllers\Api\V1;
 
+use Carbon\Carbon;
+use App\Models\Meal;
 use App\Models\User;
 use App\Models\Message;
-use App\Models\TrainingUser;
-use Illuminate\Http\Request;
-use App\Models\TrainingGroup;
-use Illuminate\Support\Facades\DB;
-use App\Http\Controllers\Controller;
-use App\Models\Meal;
-use App\Models\PersonalMealInfo;
-use App\Models\PersonalWorkOutInfo;
-use App\Models\WaterTracked;
 use App\Models\Workout;
 use App\Models\WorkoutPlan;
-use Carbon\Carbon;
+use App\Models\TrainingUser;
+use App\Models\WaterTracked;
+use Illuminate\Http\Request;
+use App\Models\TrainingGroup;
+use App\Models\PersonalMealInfo;
+use Illuminate\Support\Facades\DB;
+use App\Models\PersonalWorkOutInfo;
+use App\Http\Controllers\Controller;
 
 class TrainingGroupController extends Controller
 {

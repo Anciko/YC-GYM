@@ -144,8 +144,6 @@
                                 table.ajax.reload();
                                 console.log("deleted");
                             })
-                        } else {
-                            swal("Your imaginary file is safe!");
                         }
                     });
             })

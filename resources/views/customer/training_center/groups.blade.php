@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="customer-training-center-header-container">
-    <h1>{{ $group->group->group_name }}</h1>
+    {{-- <h1>{{ $group->group->group_name }}</h1> --}}
     <p>Thursday Sep 22, 2022</p>
 </div>
 
@@ -15,7 +15,7 @@
              <iconify-icon icon="fa:group" class="customer-training-center-plan-name-icon"></iconify-icon>
             <div class="customer-training-center-plan-name-text">
                 <p>Groups</p>
-                <span>{{ $group->group->group_name }}</span>
+                {{-- <span>{{ $group->group->group_name }}</span> --}}
             </div>
         </div>
 

@@ -583,7 +583,7 @@
             fileExtension = e.target.value.replace(/^.*\./, '');
             console.log(fileExtension)
             if (fileExtension === "jpg" || fileExtension === "jpeg" || fileExtension === "png" || fileExtension ===
-                "jfif") {
+                "gif") {
                 const reader = new FileReader();
                 reader.onloadend = e => groupChatImgPreview.setAttribute('src', e.target.result);
                 reader.readAsDataURL(groupChatImgInput.files[0]);
@@ -665,7 +665,7 @@
                     console.log('file extension is', Extension);
 
                     if (data.message.media.split('.').pop() === 'png' || data.message.media.split('.').pop() ===
-                        'jpg' || data.message.media.split('.').pop() === 'jpeg') {
+                        'jpg' || data.message.media.split('.').pop() === 'jpeg' || data.message.media.split('.').pop() === 'gif') {
                         group_chat_messages_container.innerHTML += `<div class="modal fade" id="exampleModalToggle${data.message.id}" aria-hidden="true"
                         aria-labelledby="exampleModalToggleLabel" tabindex="-1">
                         <div class="modal-dialog modal-dialog-centered">

@@ -106,15 +106,15 @@
                   </div>
 
                   <div class="input-group mb-3">
-                    <label class="input-group-text" for="inputGroupFile01">Upload photo</label>
-                    <input type="file" class="form-control" id="inputGroupFile01" name="image">
+                    <label class="input-group-text"> Upload photo</label>
+                    <input type="file" class="form-control" name="image">
                   </div>
+
 
                   <div class="input-group mb-3">
                     <label class="input-group-text"> Upload video</label>
                     <input type="file" class="form-control" name="video" id="videoUpload">
                     <input type="hidden" name="videoTime" value="" class="video-duration">
-
                   </div>
 
 
