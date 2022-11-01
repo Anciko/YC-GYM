@@ -29,7 +29,8 @@ class LoginController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = RouteServiceProvider::HOME;
+    // protected $redirectTo = RouteServiceProvider::HOME;
+    protected $redirectTo = '/home';
 
     /**
      * Create a new controller instance.
@@ -57,10 +58,16 @@ class LoginController extends Controller
         if( $user->hasAnyRole(['Trainer'])){
             Auth::login($user);
             return redirect('/home');
-
         }
         else{
             return redirect('/home');
         }
+    }
+
+    public function logout(Request $request) {
+        session()->flush();
+        // $request->session()->regenerate();
+        Auth::logout();
+        return redirect('/login');
     }
 }

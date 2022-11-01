@@ -48,14 +48,14 @@
          <form class="create-group-form" action="{{route('trainer.group.create')}}" method="POST">
             @method('POST')
             @csrf
-            <input type="hidden" name="trainer_id" value="{{auth()->user()->id}}">
+            {{-- <input type="hidden" name="trainer_id" value="{{auth()->user()->id}}"> --}}
             <div class="create-group-name create-group-input">
                 <p>Group Name</p>
                 <input type="text" name="group_name" required>
             </div>
             <div class="create-group-member-type create-group-input">
                 <p>Member Type</p>
-                <select name="member_type" class="@error('member_type') is-invalid @enderror">
+                <select name="member_type" class="@error('member_type') is-invalid @enderror" required>
                     <option value="">Choose Member Type</option>
                     @foreach ($members as $member)
                     <option value="{{$member->member_type}}">{{$member->member_type}}</option>
@@ -64,16 +64,19 @@
             </div>
             <div class="create-group-member-type create-group-input">
                 <p>Level</p>
-                <select name="member_type_level" class="@error('member_type_level') is-invalid @enderror">
+                <select name="member_type_level" class="@error('member_type_level') is-invalid @enderror" required>
                     <option value="">Choose Level</option>
                     <option value="beginner">Beginner</option>
                     <option value="advanced">Advanced</option>
                     <option value="professional">Professional</option>
                 </select>
+                @error('member_type_level')
+                        <span class="text-danger">{{ $message }}</span>
+                @enderror
             </div>
             <div class="create-group-gender create-group-input">
                 <p>Gender</p>
-                <select name="gender" class="@error('gender') is-invalid @enderror">
+                <select name="gender" class="@error('gender') is-invalid @enderror" required>
                     <option value="">Choose Gender</option>
                     <option value="male">Male</option>
                     <option value="female">Female</option>
@@ -81,7 +84,7 @@
             </div>
             <div class="create-group-group-type create-group-input">
                 <p>Group Type</p>
-                <select name="group_type" class="@error('gender') is-invalid @enderror" id="group_type">
+                <select name="group_type" class="@error('gender') is-invalid @enderror" id="group_type" required>
                     <option value="">Choose Group Type</option>
                     <option value="weight gain">Weight Gain</option>
                     <option value="body beauty">Body Beauty</option>

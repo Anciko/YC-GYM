@@ -2,16 +2,27 @@
 
 @section('content')
 @include('sweetalert::alert')
+
+
 <section class="index-hero-section ">
     <div class="customer-main-content-container index-hero-text">
         <h1>Lorem ipsum dolor sit amet consectetur <span>adipiscing elit Ut et.</span></h1>
         <p>Lorem ipsum dolor sit amet consectetur adipiscing elit Ut et massa mi. Aliquam in hendrerit urna. Pellentesque sit amet sapien.</p>
         <div class="index-hero-btns-container">
+            @guest
             <a href="{{route('login')}}" class="customer-primary-btn">Log In</a>
             <a href="{{route('customer_register')}}" class="customer-secondary-btn">Sign Up</a>
+            @endguest
+            @auth
+            <form id="logout-form" action="{{ route('logout') }}" method="POST">
+                @csrf
+                <button class="customer-primary-btn customer-login-btn" type="submit">Logout</button>
+            </form>
+            @endauth
         </div>
     </div>
 </section>
+
 
 <section class="index-aboutus-section">
     <div class="customer-main-content-container">

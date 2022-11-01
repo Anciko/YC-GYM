@@ -146,9 +146,11 @@ class TrainingGroupController extends Controller
     public function trackWater(Request $request)
     {
         $current_date = Carbon::now()->toDateString();
-        $water = WaterTracked::where('date', $current_date)->first();
 
         $user = auth()->user();
+
+        $water = WaterTracked::where('user_id', $user->id)->where('date', $current_date)->first();
+
 
         if (!$water) {
             $water = new WaterTracked();
