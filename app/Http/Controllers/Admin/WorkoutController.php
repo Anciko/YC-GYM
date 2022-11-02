@@ -162,7 +162,7 @@ class WorkoutController extends Controller
         return view('admin.workout.workoutedit')->with(['data'=>$data, 'member'=>$member]);
     }
 
-    public function workoutupdate($id, WorkoutRequest $request){
+    public function workoutupdate($id,Request $request){
 
         $check = Workout::findOrFail($id);
 
