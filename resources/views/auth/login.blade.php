@@ -9,11 +9,21 @@
             </p>
             <div class="customer-login-phone-container">
                 <iconify-icon icon="akar-icons:phone" class="customer-login-phone-icon"></iconify-icon>
-                <input  type="number" required class="customer-registeration-input" placeholder="Phone" name="phone">
+                <input  type="number" required class="customer-registeration-input @error('phone') is-invalid @enderror" placeholder="Phone" name="phone">
+                @error('phone')
+                    <span class="invalid-feedback" role="alert">
+                        <strong>{{ $message }}</strong>
+                    </span>
+                @enderror
             </div>
             <div class="customer-login-pw-container">
                 <iconify-icon icon="akar-icons:lock-on" class="customer-login-pw-icon"></iconify-icon>
-                <input  type="password" required class="customer-registeration-input" placeholder="Password" name="password">
+                <input  type="password" required class="customer-registeration-input @error('password') is-invalid @enderror" placeholder="Password" name="password">
+                @error('password')
+                    <span class="invalid-feedback" role="alert">
+                        <strong>{{ $message }}</strong>
+                    </span>
+                @enderror
             </div>
 
 
