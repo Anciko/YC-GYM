@@ -173,12 +173,6 @@
             }
           }
 
-
-
-
-
-
-
           if(el.checked){
             el.checked = false;
           }else{
@@ -300,11 +294,14 @@
               //alert("Phone number should have 7 to 11 numbers")
             }if(phone.value == "")
             {
+                valid = false
+                phone.classList.add("invalid")
                 Swal.fire({
                     text: "Required fields are empty.",
                     confirmButtonColor: '#3CDD57',
                     timer: 3000
-                  });}else{
+                  });
+                }else{
                 var cus_phone = $("#phone").val();
                 $.ajax({
                         url : 'checkPhone',
@@ -347,6 +344,8 @@
               //alert("Email is not valid.")
             }if(email.value == "")
             {
+                valid = false
+                email.classList.add("invalid")
                 Swal.fire({
                     text: "Required fields are empty.",
                     confirmButtonColor: '#3CDD57',

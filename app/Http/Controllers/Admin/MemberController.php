@@ -49,7 +49,7 @@ class MemberController extends Controller
     }
 
     public function user_member_ssd(Request $request ) {
-        // dd($request->from);
+
         $startDate = $request->start_date;
         $endDate = $request->end_date;
         $members = User::query()
@@ -76,14 +76,17 @@ class MemberController extends Controller
     }
 
     public function user_member_decline_ssd(Request $request) {
-        $startDate = $request->start_date;
-        $endDate = $request->end_date;
+
+        $startDate = $request->start_date_declined;
+        $endDate = $request->end_date_declined;
+
         $users = User::query()
                     ->where('member_type','=','Free')
                     ->where('active_status',0);
         if($startDate && $endDate) {
-            $users->whereBetween('from_date', array($request->start_date, $request->end_date));
+            $users->whereBetween('from_date', array($request->start_date_declined, $request->end_date_declined));
         }
+
         return Datatables::of($users)
         ->addIndexColumn()
         ->addColumn('action', function ($each) {

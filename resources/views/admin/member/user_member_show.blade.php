@@ -99,7 +99,7 @@
                             <span class="input-group-text bg-info text-white" id="basic-addon1"><i
                                     class="fas fa-calendar-alt"></i></span>
                         </div>
-                        <input type="date" class="form-control" name="start_date" id="start_date_declined" placeholder="Start Date" >
+                        <input type="date" class="form-control" name="start_date_declined" id="start_date_declined" placeholder="Start Date" >
                     </div>
                 </div>
                 <div class="col-md-5">
@@ -108,13 +108,13 @@
                             <span class="input-group-text bg-info text-white" id="basic-addon1"><i
                                     class="fas fa-calendar-alt"></i></span>
                         </div>
-                        <input type="date" class="form-control" name="end_date" id="end_date_declined" placeholder="End Date" >
+                        <input type="date" class="form-control" name="end_date_declined" id="end_date_declined" placeholder="End Date" >
                     </div>
                 </div>
                 <div class="col-md-2 d-flex justify-content-center">
                     <div>
-                        <button id="filter" class="btn btn-outline-info btn-sm">Filter</button>
-                        <button id="refresh" class="btn btn-outline-warning btn-sm">Reset</button>
+                        <button id="filterwallet" class="btn btn-outline-info btn-sm">Filter</button>
+                        <button id="refreshwallet" class="btn btn-outline-warning btn-sm">Reset</button>
                     </div>
                 </div>
             </div>
@@ -197,12 +197,16 @@
         }
 
         load_declined_member_data();
-        function load_declined_member_data(start_date = '', end_date = ''){
+        function load_declined_member_data(start_date_declined = '', end_date_declined = ''){
             var declined = $('.datatabledecline').DataTable({
                 processing: true,
                 serverSide: true,
                 responsive: true,
-                ajax: 'admin/user_member/datatable_decline/ssd',
+                ajax: {
+                        url:'admin/user_member/datatable_decline/ssd',
+                        data:{start_date_declined:start_date_declined, end_date_declined:end_date_declined}
+                    },
+               
                 columns: [
                     {
                         data: 'DT_RowIndex',
@@ -292,15 +296,15 @@
 
             //wallet
             $('#filterwallet').click(function(){
-                var start_date = $('#start_date_declined').val();
-                console.log(start_date);
-                var end_date = $('#end_date_declined').val();
-                console.log(end_date);
+                var start_date_declined = $('#start_date_declined').val();
+                console.log(start_date_declined);
+                var end_date_declined = $('#end_date_declined').val();
+                console.log(end_date_declined);
 
-                if(start_date != '' &&  end_date != '')
+                if(start_date_declined != '' &&  end_date_declined != '')
                 {
                 $('.datatabledecline').DataTable().destroy();
-                load_declined_member_data(start_date, end_date);
+                load_declined_member_data(start_date_declined, end_date_declined);
                 }
                 else
                 {

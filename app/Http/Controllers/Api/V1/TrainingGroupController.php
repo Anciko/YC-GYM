@@ -129,11 +129,13 @@ class TrainingGroupController extends Controller
     {
         $meal_infos = $request->all();
         $meal_infos = json_decode(json_encode($meal_infos));
+        $current_date = Carbon::now()->toDateString();
 
         foreach ($meal_infos->eat_meal as $meal_info) {
             $personal_meal_info = new PersonalMealInfo();
             $personal_meal_info->meal_id = $meal_info->meal_id;
             $personal_meal_info->client_id = auth()->user()->id;
+            $personal_meal_info->date = $current_date;
             $personal_meal_info->serving = $meal_info->meal_count;
             $personal_meal_info->save();
         }
@@ -141,6 +143,46 @@ class TrainingGroupController extends Controller
         return response()->json([
             'messaage' => 'success'
         ]);
+    }
+
+    public function currentUserEatMeals() {
+        $user = auth()->user();
+        $date = Carbon::now()->toDateString();
+        $bmr  = User::select('bmr')->where('id',$user->id)->first();
+        $meal_personal_info = PersonalMealInfo::leftJoin('meals','meals.id','personal_meal_infos.meal_id')
+                              ->select('meals.id',
+                              DB::raw('( personal_meal_infos.serving * meals.calories) As calories'),
+                              DB::raw('( personal_meal_infos.serving * meals.protein) As protein'),
+                              DB::raw('( personal_meal_infos.serving * meals.carbohydrates) As carbohydrates'),
+                              DB::raw('( personal_meal_infos.serving * meals.fat) As fat'),
+                              )
+                              ->where('personal_meal_infos.client_id',$user->id)
+                              ->where('personal_meal_infos.date',$date)
+                              ->get()
+                              ->toArray();
+        // dd($meal_personal_info);
+        $total_calories=0;
+        $total_protein=0;
+        $total_carbohydrates=0;
+        $total_fat=0;
+        if($meal_personal_info){
+            foreach($meal_personal_info as $meal_personal){
+                // $meal = Meal::where('id',$meal_personal->meal_id)->get()->toArray();
+                        $total_calories+=$meal_personal['calories'];
+                        $total_protein+=$meal_personal['protein'];
+                        $total_carbohydrates+=$meal_personal['carbohydrates'];
+                        $total_fat+=$meal_personal['fat'];
+            }
+        }
+
+        return response()->json([
+            'total_calories' => $total_calories,
+            'total_protein' => $total_protein,
+            'total_carbohydrates' => $total_carbohydrates,
+            'total_fat' => $total_fat
+            
+        ]);
+
     }
 
     public function trackWater(Request $request)

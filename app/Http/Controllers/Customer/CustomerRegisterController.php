@@ -53,7 +53,7 @@ class CustomerRegisterController extends Controller
         $user->daily_life = $all_info->typicalDay[0];
         $user->diet_type = $all_info->diet[0];
 
-        if ($user_member_type == 'free') {
+        if ($user_member_type == 'Free') {
             $user->active_status = 0;
         } else {
             $user->active_status = 1;
