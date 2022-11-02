@@ -62,6 +62,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::post('eat-meals', [TrainingGroupController::class, 'eatMeals']);
     Route::post('track-water', [TrainingGroupController::class, 'trackWater']);
     Route::get('user-water-level', [TrainingGroupController::class,'currentUserWaterLevel']);
+    Route::get('user-eat-meal', [TrainingGroupController::class, 'currentUserEatMeals']);
 
     //Group chat
     Route::post('sendmessage/{id}',[TrainerManagementConntroller::class,'send']);
