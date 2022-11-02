@@ -7,6 +7,9 @@
     <iconify-icon icon="bi:arrow-left" class="back-btn-icon"></iconify-icon>
 </a>
 
+{{-- @foreach ($meal as $me)
+{{$me->name}}
+@endforeach --}}
 <div class="card-chart totalCalTracker">
     <div class="card-donut card-calChart" data-size="300" data-thickness="18"></div>
     <div class="card-center">
@@ -141,8 +144,8 @@
 
         //   var localFoodList = JSON.parse(localStorage.getItem("foodList"));
 
-        var localFoodList = JSON.parse(localStorage.getItem("foodList"));
-       var localFoodListDate = localStorage.getItem("foodListDate")
+    //     var localFoodList = JSON.parse(localStorage.getItem("foodList"));
+    //    var localFoodListDate = localStorage.getItem("foodListDate")
 
         const date = new Date();
 
@@ -192,60 +195,61 @@
         }
 
         var totalCal = {{$bmr->bmr}}
-        var takenCal
+        var takenCal = {{$total_calories}}
+        console.log(takenCal);
 
         var totalCarb = ((totalCal/100) * 50).toFixed(2)
-        var takenCarb
+        var takenCarb = {{$total_carbohydrates}}
 
         var totalProtein = ((totalCal/100) * 30).toFixed(2)
-        var takenProtein
+        var takenProtein = {{$total_protein}}
 
         var totalFat = ((totalCal/100) * 20).toFixed(2)
-        var takenFat
+        var takenFat = {{$total_fat}}
 
-        console.log(localFoodListDate, currentDate)
+        // console.log(localFoodListDate, currentDate)
 
-        if(!localFoodList ||  !localFoodListDate ){
-            takenCal = 0
-            takenCarb = 0
-            takenProtein = 0
-            takenFat = 0
-        }else{
-            if(localFoodListDate !== currentDate){
-                takenCal = 0
-                takenCarb = 0
-                takenProtein = 0
-                takenFat = 0
-                localStorage.removeItem("foodList");
-                localStorage.removeItem("foodListDate");
-            }else{
-                var calSum = 0
-                var carbSum = 0
-                var proteinSum = 0
-                var fatSum = 0
-                for(var i =0;i < localFoodList.length;i++){
-                    // console.log(localFoodList[i])
-                    calSum = calSum + (localFoodList[i].cal * localFoodList[i].servings)
-                }
-                for(var i =0;i < localFoodList.length;i++){
-                    // console.log(localFoodList[i])
-                    carbSum = carbSum + (localFoodList[i].carb * localFoodList[i].servings)
-                }
-                for(var i =0;i < localFoodList.length;i++){
-                    // console.log(localFoodList[i])
-                    proteinSum = proteinSum + (localFoodList[i].protein * localFoodList[i].servings)
-                }
-                for(var i =0;i < localFoodList.length;i++){
-                    // console.log(localFoodList[i])
-                    fatSum = fatSum + (localFoodList[i].fat * localFoodList[i].servings)
-                }
-                takenCal = calSum
-                takenCarb = carbSum
-                takenProtein = proteinSum
-                takenFat = fatSum
-                }
+        // if(!localFoodList ||  !localFoodListDate ){
+        //     takenCal = 0
+        //     takenCarb = 0
+        //     takenProtein = 0
+        //     takenFat = 0
+        // }else{
+        //     if(localFoodListDate !== currentDate){
+        //         takenCal = 0
+        //         takenCarb = 0
+        //         takenProtein = 0
+        //         takenFat = 0
+        //         localStorage.removeItem("foodList");
+        //         localStorage.removeItem("foodListDate");
+        //     }else{
+        //         var calSum = 0
+        //         var carbSum = 0
+        //         var proteinSum = 0
+        //         var fatSum = 0
+        //         for(var i =0;i < localFoodList.length;i++){
+        //             // console.log(localFoodList[i])
+        //             calSum = calSum + (localFoodList[i].cal * localFoodList[i].servings)
+        //         }
+        //         for(var i =0;i < localFoodList.length;i++){
+        //             // console.log(localFoodList[i])
+        //             carbSum = carbSum + (localFoodList[i].carb * localFoodList[i].servings)
+        //         }
+        //         for(var i =0;i < localFoodList.length;i++){
+        //             // console.log(localFoodList[i])
+        //             proteinSum = proteinSum + (localFoodList[i].protein * localFoodList[i].servings)
+        //         }
+        //         for(var i =0;i < localFoodList.length;i++){
+        //             // console.log(localFoodList[i])
+        //             fatSum = fatSum + (localFoodList[i].fat * localFoodList[i].servings)
+        //         }
+        //         takenCal = calSum
+        //         takenCarb = carbSum
+        //         takenProtein = proteinSum
+        //         takenFat = fatSum
+        //         }
 
-        }
+        // }
 
 
       var resultCal = takenCal / totalCal;
@@ -441,14 +445,14 @@
                                         window.location.reload();
                                     }
                                 })
-                            if(!localFoodList || !localFoodListDate){
-                                localStorage.setItem('foodList', JSON.stringify(foodList))
-                                localStorage.setItem('foodListDate', foodListDate)
-                            }else{
-                                const merged = [...foodList, ...localFoodList]
-                                localStorage.setItem('foodList', JSON.stringify(merged))
-                                localStorage.setItem('foodListDate', foodListDate)
-                            }
+                            // if(!localFoodList || !localFoodListDate){
+                            //     localStorage.setItem('foodList', JSON.stringify(foodList))
+                            //     localStorage.setItem('foodListDate', foodListDate)
+                            // }else{
+                            //     const merged = [...foodList, ...localFoodList]
+                            //     localStorage.setItem('foodList', JSON.stringify(merged))
+                            //     localStorage.setItem('foodListDate', foodListDate)
+                            // }
 
                         },
                         // error : function(err){

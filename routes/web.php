@@ -13,6 +13,7 @@ use App\Http\Controllers\Admin\PaymentController;
 use App\Http\Controllers\Admin\RequestController;
 use App\Http\Controllers\Admin\TrainerController;
 use App\Http\Controllers\Admin\WorkoutController;
+use App\Http\Controllers\Admin\BanWordsController;
 use App\Http\Controllers\Admin\MealPlanController;
 use App\Http\Controllers\Auth\PassResetController;
 use App\Http\Controllers\Admin\PermissionController;
@@ -21,11 +22,11 @@ use App\Http\Controllers\Admin\BankinginfoController;
 use App\Http\Controllers\Trainer\TrainerGroupController;
 use App\Http\Controllers\Customer\CustomerLoginController;
 use App\Http\Controllers\Customer\RegisterPaymentController;
-use App\Http\Controllers\Customer\Customer_TrainingCenterController;
 use App\Http\Controllers\Customer\CustomerRegisterController;
 use App\Http\Controllers\Admin\RequestAcceptDeclineController;
-use App\Http\Controllers\Customer\CustomerManagementController;
 use App\Http\Controllers\Trainer\TrainerManagementConntroller;
+use App\Http\Controllers\Customer\CustomerManagementController;
+use App\Http\Controllers\Customer\Customer_TrainingCenterController;
 
 
 
@@ -92,6 +93,15 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
             Route::get('/profile/edit', [AdminController::class, 'editAdminProfile'])->name('admin-edit');
             Route::put('/profile/{id}/update', [AdminController::class, 'updateAdminProfile'])->name('admin-update');
 
+            // Ban Words
+
+            Route::get('/banwords', [BanWordsController::class, 'index'])->name('banwords.index');
+            Route::get('/banwords/edit/{id}', [BanWordsController::class, 'edit'])->name('banwords.edit');
+            Route::post('/banwords/update/{id}', [BanWordsController::class, 'update'])->name('banwords.update');
+            Route::get('/banwords/destroy/{id}', [BanWordsController::class, 'destroy'])->name('banwords.destroy');
+            Route::get('/banwords/create/', [BanWordsController::class, 'create'])->name('banwords.create');
+            Route::post('/banwords/store',[BanWordsController::class, 'store'])->name('banwords.store');
+            Route::get('admin/banword/datatable/ssd',[BanWordsController::class, 'ssd']);
             // all users
             Route::resource('user', UserController::class);
             Route::get('admin/user/datatable/ssd', [UserController::class, 'ssd']);

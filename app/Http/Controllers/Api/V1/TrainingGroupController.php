@@ -143,6 +143,45 @@ class TrainingGroupController extends Controller
         ]);
     }
 
+    public function currentUserEatMeals() {
+        $user = auth()->user();
+        $date = Carbon::now()->toDateString();
+        $meal_personal_info = PersonalMealInfo::leftJoin('meals','meals.id','personal_meal_infos.meal_id')
+                              ->select('meals.id',
+                              DB::raw('( personal_meal_infos.serving * meals.calories) As calories'),
+                              DB::raw('( personal_meal_infos.serving * meals.protein) As protein'),
+                              DB::raw('( personal_meal_infos.serving * meals.carbohydrates) As carbohydrates'),
+                              DB::raw('( personal_meal_infos.serving * meals.fat) As fat'),
+                              )
+                              ->where('personal_meal_infos.client_id',$user->id)
+                              ->where('personal_meal_infos.date',$date)
+                              ->get()
+                              ->toArray();
+        // dd($meal_personal_info);
+        $total_calories=0;
+        $total_protein=0;
+        $total_carbohydrates=0;
+        $total_fat=0;
+        if($meal_personal_info){
+            foreach($meal_personal_info as $meal_personal){
+                // $meal = Meal::where('id',$meal_personal->meal_id)->get()->toArray();
+                        $total_calories+=$meal_personal['calories'];
+                        $total_protein+=$meal_personal['protein'];
+                        $total_carbohydrates+=$meal_personal['carbohydrates'];
+                        $total_fat+=$meal_personal['fat'];
+            }
+        }
+
+        return response()->json([
+            'total_calories' => $total_calories,
+            'total_protein' => $total_protein,
+            'total_carbohydrates' => $total_carbohydrates,
+            'total_fat' => $total_fat
+            
+        ]);
+
+    }
+
     public function trackWater(Request $request)
     {
         $current_date = Carbon::now()->toDateString();
