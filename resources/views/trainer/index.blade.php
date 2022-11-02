@@ -2,7 +2,6 @@
 
 @section('content')
     @include('sweetalert::alert')
-    <input type="text" id = "gp_id" hidden>
     <div class="groups-toggle-overlay"></div>
     <p class="groups-toggle">
         Groups
@@ -80,10 +79,6 @@
                             <iconify-icon icon="akar-icons:send" class="group-chat-send-form-submit-btn-icon">
                             </iconify-icon>
                         </button>
-                        {{-- <a href="" class="group-chat-send-form-submit-btn">
-                             <iconify-icon icon="akar-icons:send" class="group-chat-send-form-submit-btn-icon">
-                             </iconify-icon>
-                        </a> --}}
                     </form>
                 </div>
 
@@ -133,9 +128,6 @@
 
                 }
             });
-            // var id_test  = $('#gp_id').val(window.localStorage.getItem('group_id'));
-
-            // console.log("dddddddddddddddddddddddddddddddddddddd",id_test);
 
             $(".groups-toggle").click(function(){
                $(".trainer-group-chats-parent-container").toggleClass("toggle-groups")
@@ -179,9 +171,7 @@
                 $('.chat-message-form').show();
                 // var id=$(this).val();
                 var id = $(this).data('id');
-                $('#gp_id').val(id);
                 localStorage.setItem('group_id', id);
-                // location.reload();
                 $.ajax({
                     type: "GET",
                     url: "trainer/group/show/" + id,
@@ -646,9 +636,9 @@
             let trainer_file_message_input = document.querySelector(
                 "#groupChatImg");
 
-            var id = $('#gp_id').val();
-            id_test = id
-            console.log('grouptestIdd', id_test);
+            var id = localStorage.getItem('group_id');
+            console.log('group id', id);
+
             //formdata
             let formData = new FormData(messageform);
             formData.append('fileInput', fileName);
@@ -660,185 +650,85 @@
                 axios.post('/api/sendmessage/' + id, {
                     text: trainer_message_input.value,
                     formData
-                }).then( test() );
+                }).then();
                 trainer_message_input.value = "";
             }
             clearGroupChatImg();
 
         });
-
-        function test(){
-            // alert("okk")
+        var groupid = localStorage.getItem('group_id');
         Pusher.logToConsole = true;
         var pusher = new Pusher('576dc7f4f561e15a42ef', {
             cluster: 'eu',
             encrypted: true
         });
-        var id = $('#gp_id').val();
-        console.log("gp_id",id);
-        // $(selector).val(value)
-        //console.log("testing", id);
+        var id = localStorage.getItem('group_id');
+        console.log("testing", id);
         var channel = pusher.subscribe('trainer-message.'+id);
         channel.bind('training_message_event', function(data) {
             console.log(data);
-            $.ajax({
-                    type: "GET",
-                    url: "trainer/group/show/" + id,
-                    datatype: "json",
-                    success: function(data) {
-                        var view_member_url = '{{ route('trainer/view_member', ':id') }}';
-                        view_member_url = view_member_url.replace(':id', data.group_chat.id);
-                        var htmlView =
-                            `<a href="JavaScript:Void(0);" class="group-chat-header-name-container view_member" id="` +
-                            data.group_chat.id +
-                            `">
-                            <img src="{{ asset('image/default.jpg') }}" /><div class="group-chat-header-name-text-container">` +
-                            data
-                            .group_chat.group_name + `<p id="group_name">
-                                        </p>
-                                        </div></a>
-                                        <a href="" class="group-chat-view-midea-link" id="view_media">
-                                        <p>View Media</p>
-                                        <iconify-icon icon="akar-icons:arrow-right" class="group-chat-view-midea-link-icon"></iconify-icon>
-                                        </a>`;
+            if(data.message.media == null && data.message.text ==null){
 
-                        $('.group-chat-header').html(htmlView);
-                        //$('#send_form').append(sender);
-                        $.each(data.chat_messages, function(key, value) {
-                            console.log(value.media);
+            }else{
+                if (data.message.media != null) {
+                    var Extension;
+                    Extension = data.message.media.split('.').pop();
+                    console.log('file extension is', Extension);
 
-                            if(value.media == null && value.text ==null){
-                                $('#send_message').append();
-                            }else{
-                                if (value.media == null) {
-                                        $('#send_message').append(`
-                                    <div class="group-chat-sender-container">
-                                        <div class="group-chat-sender-text-container">
-                                            <p>${value.text}</p>
-                                        </div>
-                                        <img src="{{ asset('image/default.jpg') }}" >
-                                    </div>`);
-                                } else if (value.media.split('.').pop() === 'png' || value
-                                    .media.split('.').pop() === 'jpg' || value.media.split(
-                                        '.').pop() === 'jpeg') {
+                    if (data.message.media.split('.').pop() === 'png' || data.message.media.split('.').pop() ===
+                        'jpg' || data.message.media.split('.').pop() === 'jpeg' || data.message.media.split('.').pop() === 'gif') {
+                        group_chat_messages_container.innerHTML += `<div class="modal fade" id="exampleModalToggle${data.message.id}" aria-hidden="true"
+                        aria-labelledby="exampleModalToggleLabel" tabindex="-1">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                        <img src="{{ asset('/storage/trainer_message_media/${data.message.media}') }}" alt="test"
+                                            class="w-100">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
-                                    $('#send_message').append(`
-                                    <div class="modal fade" id="exampleModalToggle${value.id}" aria-hidden="true"
-                                        aria-labelledby="exampleModalToggleLabel" tabindex="-1">
-                                        <div class="modal-dialog modal-dialog-centered">
-                                            <div class="modal-content">
-                                                <div class="modal-header">
-                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                        aria-label="Close"></button>
-                                                </div>
-                                                <div class="modal-body">
-                                                    <img src="{{ asset('/storage/trainer_message_media/${value.media}') }}" alt="test"
-                                                        class="w-100">
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="group-chat-sender-container" id="trainer_message_el">
+                                        <div class="group-chat-sender-container" id="trainer_message_el">
                                             <div class="group-chat-sender-text-container">
-                                                <a data-bs-toggle="modal" href="#exampleModalToggle${value.id}" role="button">
-                                                <img src="{{ asset('storage/trainer_message_media/${value.media}') }}">
-                                                </a>
+                                                <a data-bs-toggle="modal" href="#exampleModalToggle${data.message.id}" role="button">
+                                    <img src="{{ asset('storage/trainer_message_media/${data.message.media}') }}">
+                                </a>
                                             </div>
                                             <img src="{{ asset('image/default.jpg') }}" />
-                                        </div>`);
-                                } else {
-                                    $('#send_message').append(
-                                        `<div class="group-chat-sender-container" id="trainer_message_el">
+                                        </div>`;
+                    } else if (data.message.media.split('.').pop() === 'mp4' || data.message.media.split('.')
+                        .pop() ===
+                        'mov' || data.message.media.split('.').pop() === 'webm') {
+                        group_chat_messages_container.innerHTML += `
+                                        <div class="group-chat-sender-container" id="trainer_message_el">
                                             <div class="group-chat-sender-text-container">
                                                 <video width="100%" height="100%" controls>
-                                                    <source src="{{ asset('storage/trainer_message_media/${value.media}') }}" type="video/mp4">
+                                                    <source src="{{ asset('storage/trainer_message_media/${data.message.media}') }}" type="video/mp4">
                                                 </video>
                                             </div>
                                             <img src="{{ asset('image/default.jpg') }}" />
-                                        </div>`);
-                                }
-                            }
-
-                        });
-
-                        //render image preview function
-                        function clearCreateGroupInputs() {
-                            const inputs = document.querySelectorAll(
-                                ".create-group-form input" + ",.create-group-form select")
-                            // console.log(inputs)
-                            for (var i = 0; i < inputs.length; i++) {
-                                // console.log("hi")
-                                // console.log(inputs[i])
-                                inputs[i].value = ""
-                            }
-                        }
+                                        </div>`;
                     }
-                })
-            // if(data.message.media == null && data.message.text ==null){
 
-            // }else{
-            //     if (data.message.media != null) {
-            //         var Extension;
-            //         Extension = data.message.media.split('.').pop();
-            //         console.log('file extension is', Extension);
-
-            //         if (data.message.media.split('.').pop() === 'png' || data.message.media.split('.').pop() ===
-            //             'jpg' || data.message.media.split('.').pop() === 'jpeg' || data.message.media.split('.').pop() === 'gif') {
-            //             group_chat_messages_container.innerHTML += `<div class="modal fade" id="exampleModalToggle${data.message.id}" aria-hidden="true"
-            //             aria-labelledby="exampleModalToggleLabel" tabindex="-1">
-            //             <div class="modal-dialog modal-dialog-centered">
-            //                 <div class="modal-content">
-            //                     <div class="modal-header">
-            //                         <button type="button" class="btn-close" data-bs-dismiss="modal"
-            //                             aria-label="Close"></button>
-            //                     </div>
-            //                     <div class="modal-body">
-            //                             <img src="{{ asset('/storage/trainer_message_media/${data.message.media}') }}" alt="test"
-            //                                 class="w-100">
-            //                     </div>
-            //                 </div>
-            //             </div>
-            //         </div>
-
-            //                             <div class="group-chat-sender-container" id="trainer_message_el">
-            //                                 <div class="group-chat-sender-text-container">
-            //                                     <a data-bs-toggle="modal" href="#exampleModalToggle${data.message.id}" role="button">
-            //                         <img src="{{ asset('storage/trainer_message_media/${data.message.media}') }}">
-            //                     </a>
-            //                                 </div>
-            //                                 <img src="{{ asset('image/default.jpg') }}" />
-            //                             </div>`;
-            //         } else if (data.message.media.split('.').pop() === 'mp4' || data.message.media.split('.')
-            //             .pop() ===
-            //             'mov' || data.message.media.split('.').pop() === 'webm') {
-            //             group_chat_messages_container.innerHTML += `
-            //                             <div class="group-chat-sender-container" id="trainer_message_el">
-            //                                 <div class="group-chat-sender-text-container">
-            //                                     <video width="100%" height="100%" controls>
-            //                                         <source src="{{ asset('storage/trainer_message_media/${data.message.media}') }}" type="video/mp4">
-            //                                     </video>
-            //                                 </div>
-            //                                 <img src="{{ asset('image/default.jpg') }}" />
-            //                             </div>`;
-            //         }
-
-            //     } else {
-            //         group_chat_messages_container.innerHTML += `
-            //                             <div class="group-chat-sender-container" id="trainer_message_el">
-            //                                 <div class="group-chat-sender-text-container">
-            //                                     <p>${data.message.text}</p>
-            //                                 </div>
-            //                                 <img src="{{ asset('image/default.jpg') }}" />
-            //                             </div>`;
-            //     }
-            // }
+                } else {
+                    group_chat_messages_container.innerHTML += `
+                                        <div class="group-chat-sender-container" id="trainer_message_el">
+                                            <div class="group-chat-sender-text-container">
+                                                <p>${data.message.text}</p>
+                                            </div>
+                                            <img src="{{ asset('image/default.jpg') }}" />
+                                        </div>`;
+                }
+            }
 
 
         });
         //end
-        }
-
-
 
         function clearGroupChatImg() {
             groupChatImgPreview.removeAttribute("src")
