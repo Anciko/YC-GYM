@@ -521,7 +521,7 @@
             });
             $(".ninja-select").select2();
 
-        })
+        });
 
     </script>
 
