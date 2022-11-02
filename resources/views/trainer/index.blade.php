@@ -612,11 +612,14 @@
         }); // //
 
 
+
         const messageform = document.getElementById("trainer_message_form");
         var group_chat_messages_container = document.querySelector(
             ".group-chat-messages-container");
         messageform.addEventListener('submit', function(e) {
             e.preventDefault();
+            var id = localStorage.getItem('group_id');
+            pusher.subscribe('trainer-message.'+id);
             let groupChatImgInputimg = document.querySelector(
                 '#groupChatImg');
 

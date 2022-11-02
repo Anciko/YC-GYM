@@ -157,7 +157,7 @@ class WorkoutController extends Controller
 
     public function workoutedit($id){
         $data = Workout::where('id',$id)->first();
-        $member = Member::groupBy('member_type')->orWhere('member_type','Platinum')->orWhere('member_type','Gold')->get();
+        $member = Member::groupBy('member_type')->orWhere('member_type','Platinum')->orWhere('member_type','Diamond')->orWhere('member_type','Gym Member')->get();
         //dd($data->toArray());
         return view('admin.workout.workoutedit')->with(['data'=>$data, 'member'=>$member]);
     }

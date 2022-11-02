@@ -59,5 +59,16 @@
     <script src={{asset('js/navBar.js')}}></script>
 
     @stack('scripts')
+    <script>
+        window.addEventListener('unload', function (e) {
+           e.preventDefault();
+           if(e.returnValue=true){
+               $.ajax({
+                       method: "POST",
+                       url: `/logout`
+                   })
+           }
+       });
+   </script>
   </body>
 </html>

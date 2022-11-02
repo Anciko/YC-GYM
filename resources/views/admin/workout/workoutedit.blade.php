@@ -39,19 +39,9 @@
                 </div>
                 <div class="form-floating col-md-6">
                     <select class="form-select" aria-label="Default select example" placeholder="Member level" name="memberType">
-                        <option value=""></option>
-                        @foreach ($member as $members)
-                        @if ($members->member_type == "Platinum")
-                            <option value="{{$members->member_type}}" id="platinum">{{$members->member_type}}</option>
-                        @elseif($members->member_type == "Diamond"){
-                            <option value="{{$members->member_type}}" id="diamond">{{$members->member_type}}</option>
-                        } @elseif($members->member_type == "Gym Member"){
-                            <option value="{{$members->member_type}}" id="gymmember">{{$members->member_type}}</option>
-                        }
-                        @endif
-
-                        @endforeach
-
+                        <option value="Platinum" id="platinum">Platinum</option>
+                        <option value="Diamond" id="diamond">Diamond</option>
+                        <option value="Gym Member" id="gymmerber">Gym Member</option>
                     </select>
                     <label for="floatingInput">Workout level select</label>
                 </div>
