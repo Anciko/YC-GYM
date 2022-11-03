@@ -12,7 +12,7 @@
             <iconify-icon icon="fluent-emoji:man-lifting-weights" class="customer-training-center-plan-name-icon"></iconify-icon>
             <div class="customer-training-center-plan-name-text">
                 <p>Work Out</p>
-                <span>Core + Arms Workout</span>
+                {{-- <span>Core + Arms Workout</span> --}}
             </div>
         </div>
 
@@ -23,7 +23,7 @@
             <iconify-icon icon="emojione:pot-of-food" class="customer-training-center-plan-name-icon"></iconify-icon>
             <div class="customer-training-center-plan-name-text">
                 <p>Add Food</p>
-                <span>0 of 2,104cal</span>
+                {{-- <span>0 of 2,104cal</span> --}}
             </div>
         </div>
 
@@ -34,7 +34,7 @@
             <iconify-icon icon="fluent-emoji-flat:glass-of-milk" class="customer-training-center-plan-name-icon"></iconify-icon>
             <div class="customer-training-center-plan-name-text">
                 <p>Water Tracker</p>
-                <span>0 of 92oz</span>
+                {{-- <span>0 of 92oz</span> --}}
             </div>
         </div>
 

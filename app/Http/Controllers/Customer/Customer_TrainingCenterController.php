@@ -208,12 +208,36 @@ class Customer_TrainingCenterController extends Controller
     public function meal()
     {
         $user = auth()->user();
+        $date = Carbon::now()->toDateString();
         $bmr  = User::select('bmr')->where('id',$user->id)->first();
+        $meal_personal_info = PersonalMealInfo::leftJoin('meals','meals.id','personal_meal_infos.meal_id')
+                              ->select('meals.id',
+                              DB::raw('( personal_meal_infos.serving * meals.calories) As calories'),
+                              DB::raw('( personal_meal_infos.serving * meals.protein) As protein'),
+                              DB::raw('( personal_meal_infos.serving * meals.carbohydrates) As carbohydrates'),
+                              DB::raw('( personal_meal_infos.serving * meals.fat) As fat'),
+                              )
+                              ->where('personal_meal_infos.client_id',$user->id)
+                              ->where('personal_meal_infos.date',$date)
+                              ->get()
+                              ->toArray();
+        // dd($meal_personal_info);
+        $total_calories=0;
+        $total_protein=0;
+        $total_carbohydrates=0;
+        $total_fat=0;
+        if($meal_personal_info){
+            foreach($meal_personal_info as $meal_personal){
+                // $meal = Meal::where('id',$meal_personal->meal_id)->get()->toArray();
+                        $total_calories+=$meal_personal['calories'];
+                        $total_protein+=$meal_personal['protein'];
+                        $total_carbohydrates+=$meal_personal['carbohydrates'];
+                        $total_fat+=$meal_personal['fat'];
+            }
+        }
 
-        // $meal_plan = MealPlan::where('member_type',$user->member_type)->where('plan_name','Breakfast')->first();
-        // $meals = Meal::where('meal_plan_id',$meal_plan->id)->get();
-        // dd($bmr);
-        return view('customer.training_center.meal',compact('bmr'));
+        // dd($total_carbohydrates);
+        return view('customer.training_center.meal',compact('bmr','total_calories','total_protein','total_carbohydrates','total_fat'));
     }
 
         public function showbreakfast(Request $request)
@@ -275,7 +299,7 @@ class Customer_TrainingCenterController extends Controller
     {
         $food_lists = $request->foodList; // json string
         $food_lists =  json_decode(json_encode($food_lists));
-        $date = Carbon::Now();
+        $date = Carbon::now()->toDateString();
         $user = auth()->user()->id;
         if($user){
             foreach ($food_lists as $food) {
