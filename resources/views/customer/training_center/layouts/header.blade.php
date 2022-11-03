@@ -44,9 +44,10 @@
                     <li class="customer-dropdown">
                     <a href="#" data-toggle="dropdown">
                         <img class="nav-profile-img" src="{{asset('img/avatar.jpg')}}"/>
+
                         <i class="icon-arrow"></i></a>
                     <ul class="customer-dropdown-menu">
-                        <li><a href="#">Profile</a></li>
+                        <li><a href="{{route('customer-profile')}}">Profile</a></li>
                         <li><form class="dropdown-item" id="logout-form" action="{{ route('logout') }}" method="POST">
                             @csrf
                             <button class="customer-primary-btn customer-login-btn" type="submit">Logout</button>

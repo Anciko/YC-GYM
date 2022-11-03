@@ -111,6 +111,14 @@ class Customer_TrainingCenterController extends Controller
         return view('customer.training_center.workout_plan',compact('tc_gym_workoutplans','tc_home_workoutplans','time_sum','t_sum','c_sum','duration','sec','time_sum_home','t_sum_home','c_sum_home','duration_home','sec_home'));
     }
 
+    public function profile()
+    {
+        $user_id=auth()->user()->id;
+        $personal_meal_infos=PersonalMealInfo::where('client_id',$user_id)->get();
+        
+        return view('customer.training_center.profile',compact('personal_meal_infos'));
+    }
+
     public function workout_complete_store(Request $request)
     {
         $groups_id=$request->workout_id;
