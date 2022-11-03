@@ -23,12 +23,15 @@ class RequestAcceptDeclineController extends Controller
         $u=User::findOrFail($id);
         //$user = Auth::user()->id;
 
-        $member_history = MemberHistory::where('user_id',$u->id)->first();
+        // $member_history = MemberHistory::where('user_id',$u->id)->first();
+        $member = Member::findOrFail($u->request_type);
+
         //dd($member_history);
-        $member_role = Member::where('id',$member_history->member_id)->first();
+        $member_role = Member::where('id',$member->id)->first();
         $role=Role::findOrFail($member_role->role_id);
         DB::table('model_has_roles')->where('model_id',$id)->delete();
         $u->assignRole($role->name);
+        $u->member_type = $member->member_type;
         $u->active_status=2;
         $u->update();
         return back()->with('success','Accepted');
