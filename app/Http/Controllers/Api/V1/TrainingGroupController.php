@@ -129,11 +129,13 @@ class TrainingGroupController extends Controller
     {
         $meal_infos = $request->all();
         $meal_infos = json_decode(json_encode($meal_infos));
+        $current_date = Carbon::now()->toDateString();
 
         foreach ($meal_infos->eat_meal as $meal_info) {
             $personal_meal_info = new PersonalMealInfo();
             $personal_meal_info->meal_id = $meal_info->meal_id;
             $personal_meal_info->client_id = auth()->user()->id;
+            $personal_meal_info->date = $current_date;
             $personal_meal_info->serving = $meal_info->meal_count;
             $personal_meal_info->save();
         }
@@ -146,6 +148,7 @@ class TrainingGroupController extends Controller
     public function currentUserEatMeals() {
         $user = auth()->user();
         $date = Carbon::now()->toDateString();
+        $bmr  = User::select('bmr')->where('id',$user->id)->first();
         $meal_personal_info = PersonalMealInfo::leftJoin('meals','meals.id','personal_meal_infos.meal_id')
                               ->select('meals.id',
                               DB::raw('( personal_meal_infos.serving * meals.calories) As calories'),

@@ -15,9 +15,9 @@ class CreateBanWordsTable extends Migration
     {
         Schema::create('ban_words', function (Blueprint $table) {
             $table->id();
-            $table->string('ban_word_english')->nullable();
-            $table->string('ban_word_myanmar')->nullable();
-            $table->string('ban_word_myanglish')->nullable();
+            $table->string('ban_word_english');
+            $table->string('ban_word_myanmar');
+            $table->string('ban_word_myanglish');
             $table->timestamps();
         });
     }

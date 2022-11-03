@@ -64,8 +64,9 @@ class TrainerManagementConntroller extends Controller
             $message->media = $request->fileInput == null ? null : $path;
 
             $message->save();
-            // $groupid = TrainingGroup::select('training_groups.id')->where('training_groups.id',$message->training_group_id)->first();
             event(new TrainingMessageEvent($message,$path,$id));
+            // $groupid = TrainingGroup::select('training_groups.id')->where('training_groups.id',$message->training_group_id)->first();
+
         }
     }
 

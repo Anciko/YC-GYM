@@ -4,7 +4,7 @@
     margin: auto;
     margin-top: 140px;
     margin-bottom: 40px;
-    overflow-x: hidden;
+    /* overflow-x: hidden; */
 }
 
 .trainer-create-gp-modal-btn{

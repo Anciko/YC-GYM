@@ -34,6 +34,9 @@
             @auth
             <a href="{{route('social_media')}}">{{__('msg.home')}}</a>
             @endauth
+            @hasanyrole('System_Admin')
+            <a href="{{route('home')}}">Dashboard</a>
+            @endhasanyrole
             <a href="#">Shop</a>
             {{-- <a href="#">Training Center</a> --}}
         </div>

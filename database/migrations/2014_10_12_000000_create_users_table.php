@@ -20,6 +20,7 @@ class CreateUsersTable extends Migration
             $table->string('address')->nullable();
             $table->string('email')->nullable();
             $table->string('member_type');
+            $table->integer('member_type_id');
             $table->string('membertype_level');
             $table->string('member_code')->nullable();
             $table->boolean('ingroup')->default(0);
@@ -46,7 +47,6 @@ class CreateUsersTable extends Migration
             $table->date('to_date')->nullable();
             $table->boolean('active_status')->nullable();
             // $table->string('current_member_type')->nullable();
-            // $table->string('member_type_level')->nullable();
             $table->float('neck')->default(0.0);
             $table->float('waist')->default(0.0);
             $table->float('hip')->default(0.0);

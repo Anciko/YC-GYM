@@ -122,7 +122,7 @@
 
                     <li class="sidebar-item @yield('dashboard-active')">
 
-                        <a class="sidebar-link" href="{{ route('admin-home') }}">
+                        <a class="sidebar-link" href="{{ route('home') }}">
 
                             <i class="fa-solid fa-layer-group align-middle "></i>
 
