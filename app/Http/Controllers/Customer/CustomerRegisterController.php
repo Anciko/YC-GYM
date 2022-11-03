@@ -17,6 +17,7 @@ class CustomerRegisterController extends Controller
 
     public function CustomerData(Request $request)
     {
+        // dd($request);
         $user = new User();
 
         $all_info = $request->allData; // json string
@@ -41,7 +42,7 @@ class CustomerRegisterController extends Controller
         $user_bad_habits = json_encode($all_info->badHabits);
         $user_bodyArea = json_encode($all_info->bodyArea);
         $user->member_type = 'Free'; ///
-        $user->member_type_id=$user_member_type;///
+        $user->request_type=$user_member_type;///
 
         $user->name = $all_info->personalInfo[0];
         $user->phone = $all_info->personalInfo[1];

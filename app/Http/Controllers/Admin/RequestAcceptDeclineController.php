@@ -34,6 +34,7 @@ class RequestAcceptDeclineController extends Controller
         $u->member_type = $member->member_type;
         $u->active_status=2;
         $u->update();
+        $u->members()->attach($u->request_type, ['member_type_level' => $u->membertype_level]);
         return back()->with('success','Accepted');
     }
 
