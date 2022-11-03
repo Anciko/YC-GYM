@@ -24,6 +24,7 @@ use App\Http\Controllers\Customer\CustomerLoginController;
 use App\Http\Controllers\Customer\RegisterPaymentController;
 use App\Http\Controllers\Customer\CustomerRegisterController;
 use App\Http\Controllers\Admin\RequestAcceptDeclineController;
+use App\Http\Controllers\Admin\TrainingCenterController;
 use App\Http\Controllers\Trainer\TrainerManagementConntroller;
 use App\Http\Controllers\Customer\CustomerManagementController;
 use App\Http\Controllers\Customer\Customer_TrainingCenterController;
@@ -172,6 +173,14 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
             Route::get('request/member/datatable/ssd', [RequestController::class, 'ssd']);
             Route::get('request/member/accept/{id}', [RequestAcceptDeclineController::class, 'accept'])->name('requestaccept');
             Route::get('request/member/decline/{id}', [RequestAcceptDeclineController::class, 'decline'])->name('requestdecline');
+
+            //training center
+            Route::middleware(['role:King|Queen'])->group(function () {
+                Route::get('/trainingcenter/index', [TrainingCenterController::class,'index'])->name('trainingcenter.index');
+            });
+
+            // Route::get('/trainingcenter/chatshow/{id}', [TrainingCenterController::class,'chat_show'])->name('trainingcenter.chatshow');
+            // Route::get('/trainingcenter/viewmember/{id}', [TrainingCenterController::class,'view_member'])->name('trainingcenter.viewmember');
         });
     }); //admin prefix
 
