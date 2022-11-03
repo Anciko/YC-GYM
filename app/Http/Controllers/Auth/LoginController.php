@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Models\Member;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Models\Member;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Route;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 
@@ -30,7 +31,7 @@ class LoginController extends Controller
      * @var string
      */
     // protected $redirectTo = RouteServiceProvider::HOME;
-    protected $redirectTo = '/home';
+    protected $redirectTo = '/';
 
     /**
      * Create a new controller instance.
@@ -47,22 +48,26 @@ class LoginController extends Controller
         return 'phone';
     }
 
-    protected function authenticated(Request $request, $user)
-    {
-        $role_name=$user->getRoleNames()->toArray();
+    // protected function authenticated(Request $request, $user)
+    // {
+    //     $role_name=$user->getRoleNames()->toArray();
 
-        if( $user->hasAnyRole(['System_Admin'])){
-            Auth::login($user);
-            return redirect('admin');
-        }
-        if( $user->hasAnyRole(['Trainer'])){
-            Auth::login($user);
-            return redirect('/home');
-        }
-        else{
-            return redirect('/home');
-        }
-    }
+    //     if( $user->hasAnyRole(['System_Admin'])){
+    //         Auth::login($user);
+    //         // return
+
+    //         return redirect('/'); '<script>
+    //         localStorage.setItem("admin",/admin)
+    //         </script>';
+    //     }
+    //     if( $user->hasAnyRole(['Trainer'])){
+    //         Auth::login($user);
+    //         return redirect('/home');
+    //     }
+    //     else{
+    //         return redirect('/home');
+    //     }
+    // }
 
     public function logout(Request $request) {
         session()->flush();

@@ -4,6 +4,7 @@ use App\Models\TrainingCenter;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
+use Illuminate\Support\Facades\Redirect;
 use App\Http\Controllers\Admin\MealController;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\UserController;
@@ -83,12 +84,13 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
     });
 
     // Admin Site
+
     Route::prefix('admin')->group(function () {
 
         Route::middleware(['role:System_Admin|King|Queen'])->group(function () {
             // Route::middleware('auth')->group(function () {
 
-            Route::get('/', [AdminController::class, 'index'])->name('admin-home');
+            //Route::get('/', [AdminController::class, 'index'])->name('admin-home');
             Route::get('/profile', [AdminController::class, 'adminProfile'])->name('admin-profile');
             Route::get('/profile/edit', [AdminController::class, 'editAdminProfile'])->name('admin-edit');
             Route::put('/profile/{id}/update', [AdminController::class, 'updateAdminProfile'])->name('admin-update');

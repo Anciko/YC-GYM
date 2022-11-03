@@ -22,6 +22,9 @@
 
         <div class="customer-navlinks-container">
             <a href="{{route('social_media')}}">Home</a>
+            @hasanyrole('System_Admin')
+            <a href="{{route('home')}}">Dashboard</a>
+            @endhasanyrole
             <a href="#">Shop</a>
             <a href="#">Search</a>
             @hasanyrole('Diamond|Platinum|Gym Member')
@@ -35,6 +38,7 @@
             @hasanyrole('Trainer')
             <a href="{{route('trainer')}}">Training Center</a>
             @endhasanyrole
+
             <div class="customer-dropdown-container">
                 <ul>
                     <li class="customer-dropdown">

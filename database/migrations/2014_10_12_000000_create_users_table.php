@@ -46,7 +46,6 @@ class CreateUsersTable extends Migration
             $table->date('to_date')->nullable();
             $table->boolean('active_status')->nullable();
             // $table->string('current_member_type')->nullable();
-            // $table->string('member_type_level')->nullable();
             $table->float('neck')->default(0.0);
             $table->float('waist')->default(0.0);
             $table->float('hip')->default(0.0);
