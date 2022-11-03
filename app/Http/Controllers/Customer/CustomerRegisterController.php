@@ -40,8 +40,8 @@ class CustomerRegisterController extends Controller
 
         $user_bad_habits = json_encode($all_info->badHabits);
         $user_bodyArea = json_encode($all_info->bodyArea);
-        $user->member_type = 'Free';
-        $user->member_type_id=$user_member_type;
+        $user->member_type = 'Free'; ///
+        $user->member_type_id=$user_member_type;///
 
         $user->name = $all_info->personalInfo[0];
         $user->phone = $all_info->personalInfo[1];
@@ -90,10 +90,10 @@ class CustomerRegisterController extends Controller
 
         $user->most_attention_areas = $user_bodyArea;
 
-        //$member_id = $member->id;
+        $member_id = 1;
         $user->save();
 
-        $user->members()->attach($user_member_type, ['member_type_level' => $user_member_type_level]);
+        $user->members()->attach($member_id, ['member_type_level' => $user_member_type_level]);
         $user->assignRole('Free');
         Auth::login($user);
     }
