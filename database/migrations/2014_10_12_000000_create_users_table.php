@@ -20,6 +20,7 @@ class CreateUsersTable extends Migration
             $table->string('address')->nullable();
             $table->string('email')->nullable();
             $table->string('member_type');
+            $table->integer('member_type_id');
             $table->string('membertype_level');
             $table->string('member_code')->nullable();
             $table->boolean('ingroup')->default(0);
