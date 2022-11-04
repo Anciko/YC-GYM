@@ -17,6 +17,7 @@ class CustomerRegisterController extends Controller
 
     public function CustomerData(Request $request)
     {
+        // dd($request);
         $user = new User();
 
         $all_info = $request->allData; // json string

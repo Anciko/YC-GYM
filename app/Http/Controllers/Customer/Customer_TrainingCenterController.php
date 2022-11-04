@@ -119,6 +119,7 @@ class Customer_TrainingCenterController extends Controller
     public function meal_sevendays($date)
     {
         $user_id=auth()->user()->id;
+<<<<<<< HEAD
         //$formateddate = Carbon::parse($date)->format('M d');
 
         $daymeal_breafast=DB::table('personal_meal_infos')
@@ -156,6 +157,11 @@ class Customer_TrainingCenterController extends Controller
             'meal_snack'=>$daymeal_snack,
             'meal_dinner'=>$daymeal_dinner
         ]);
+=======
+        $personal_meal_infos=PersonalMealInfo::where('client_id',$user_id)->get();
+
+        return view('customer.training_center.profile',compact('personal_meal_infos'));
+>>>>>>> 46ab04eeff630ee7353f15cf88f21eee97a0119c
     }
 
     public function workout_complete_store(Request $request)
@@ -375,6 +381,33 @@ class Customer_TrainingCenterController extends Controller
         $water = WaterTracked::where('date', $current_date)->where('user_id',$user->id)->first();
         // dd($water);
         return view('customer.training_center.water',compact('water'));
+    }
+
+    public function todaywater()
+    {
+        $user = auth()->user();
+        $current_date = Carbon::now()->toDateString();
+        $water = WaterTracked::where('date', $current_date)->where('user_id',$user->id)->first();
+        // dd($water);
+        return response()
+        ->json([
+            'status'=>200,
+            'water'=>$water
+        ]);
+    }
+
+    public function lastsevenDay($date)
+    {
+        // dd($date);
+        $user = auth()->user();
+        // $current_date = $date;
+        $water = WaterTracked::where('date', $date)->where('user_id',$user->id)->first();
+        // dd($water);
+        return response()
+        ->json([
+            'status'=>200,
+            'water'=>$water
+        ]);
     }
 
 

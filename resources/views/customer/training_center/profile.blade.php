@@ -272,7 +272,7 @@
         });
 
         const sevenDays = Last7Days()
-        console.log(sevenDays)
+        // console.log(Last7DaysWithoutformat)
 
         //adding last 7days buttons
         $.each(sevenDays,function(index,value){
@@ -291,9 +291,24 @@
             $(this).addClass("customer-7days-day-btn-active")
             event.stopPropagation();
             event.stopImmediatePropagation();
-
             console.log($(this).text())
-            renderCircle(3000,600)
+            date = $(this).text();
+            $.ajax({
+                    type: "GET",
+                    url: "/customer/lastsevenDay/"+ date,
+                    datatype: "json",
+                    success: function(data) {
+                        console.log(data);
+                        if(data.water == null){
+                            renderTodayCircle(3000,0)
+                        }
+                        else{
+                            renderTodayCircle(3000,data.water.update_water)
+                        }
+
+                    }
+                });
+            // renderCircle(3000,600)
         });
 
         //on clicking one of the butttons of last 7 days (meal)
@@ -338,7 +353,25 @@
 
         //show today's water by default
         $("#water-today").addClass("customer-profile-days-btn-active")
-        renderTodayCircle(3000,3000)
+        todaywater()
+
+        function todaywater(){
+            $.ajax({
+                    type: "GET",
+                    url: "/customer/today",
+                    datatype: "json",
+                    success: function(data) {
+                        console.log(data);
+                        if(data.water == null){
+                            renderTodayCircle(3000,0)
+                        }
+                        else{
+                            renderTodayCircle(3000,data.water.update_water)
+                        }
+
+                    }
+                });
+        }
 
         //show today's workout by default
         $("#workout-today").addClass("customer-profile-days-btn-active")
@@ -588,7 +621,8 @@
             $("#water-today").addClass("customer-profile-days-btn-active")
             $("#water-7days").removeClass("customer-profile-days-btn-active")
             $(".customer-7days-filter-water-container").hide()
-            renderTodayCircle(3000,3000)
+            // alert("okk");
+            todaywater();
         })
 
         //on clicking last 7 days (water)
@@ -599,7 +633,7 @@
             $(".customer-7days-day-water-btn").removeClass("customer-7days-day-btn-active")
             $(".customer-7days-day-water-btn").last().addClass("customer-7days-day-btn-active")
             console.log($(".customer-7days-day-water-btn").last().text())
-            renderCircle(3000,3000)
+            todaywater();
         })
 
          //on clicking today (workout)
@@ -631,8 +665,6 @@
 
         return(result);
     }
-
-
     //formatting the date of last 7 days
     function formatDate(date){
         const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
