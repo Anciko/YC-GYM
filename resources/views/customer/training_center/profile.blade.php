@@ -298,14 +298,18 @@
 
         //on clicking one of the butttons of last 7 days (meal)
         $(".customer-7days-day-meal-btn").on('click', function(event){
+
             $(".customer-7days-day-meal-btn").removeClass("customer-7days-day-btn-active")
             $(this).addClass("customer-7days-day-btn-active")
+            $(".customer-7days-meal-tables-container").empty();
             event.stopPropagation();
             event.stopImmediatePropagation();
 
             console.log($(this).text())
+            meal_sevendays($(this).text())
+
             // renderCircle(3000,600)
-            renderMealTable()
+
         });
 
 
@@ -320,9 +324,17 @@
         $('.customer-profile-tracker-water-container').hide()
 
 
+        var today = new Date();
+        var dd = String(today.getDate()).padStart(2, '0');
+        var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+        var yyyy = today.getFullYear();
+
+        today =  yyyy+'-'+mm+'-'+dd;
+
+
         //show today's meal by default
         $("#meal-today").addClass("customer-profile-days-btn-active")
-        renderMealTable()
+        meal_sevendays(today)
 
         //show today's water by default
         $("#water-today").addClass("customer-profile-days-btn-active")
@@ -369,11 +381,195 @@
 
         //on clicking today (meal)
         $("#meal-today").click(function(){
+
             $("#meal-today").addClass("customer-profile-days-btn-active")
             $("#meal-7days").removeClass("customer-profile-days-btn-active")
             $(".customer-7days-filter-meal-container").hide()
-            renderMealTable()
+            $(".customer-7days-meal-tables-container").empty();
+
+            meal_sevendays(today)
         })
+
+        function meal_sevendays(date){
+            var add_url = "{{ route('meal_sevendays',[':date']) }}";
+            add_url = add_url.replace(':date', date);
+
+            $.ajax({
+                    type: "GET",
+                    url: add_url,
+                    datatype: "json",
+                    success: function(data) {
+                        var breakFast =data.meal_breafast;
+                        var lunch =data.meal_lunch;
+                        var snack =data.meal_snack;
+                        var dinner =data.meal_dinner;
+                        $(".customer-7days-meal-tables-container").append(`
+        <div class="customer-profile-meal-table-container">
+                    <h1>Breakfast</h1>
+                    <table class="customer-profile-meal-table">
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th>No</th>
+                                <th>Name</th>
+                                <th>Cal</th>
+                                <th>Carb</th>
+                                <th>Protein</th>
+                                <th>Fat</th>
+                                <th>Servings</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            ${breakFast.map((item,index) => (
+                                `<tr class="meal-table-total">
+                                <td></td>
+                                <td>${index+1}</td>
+                                <td>${item.name}</td>
+                                <td>${item.calories}</td>
+                                <td>${item.carbohydrates}</td>
+                                <td>${item.protein}</td>
+                                <td>${item.fat}</td>
+                                <td>${item.serving}</td>
+                            </tr>`
+                            ))}
+                        </tbody>
+                        <tr class="meal-table-total">
+                            <td>Total</td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                    </table>
+                    <h1>Lunch</h1>
+                    <table class="customer-profile-meal-table">
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th>No</th>
+                                <th>Name</th>
+                                <th>Cal</th>
+                                <th>Carb</th>
+                                <th>Protein</th>
+                                <th>Fat</th>
+                                <th>Servings</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            ${lunch.map((item,index) => (
+                                `<tr class="meal-table-total">
+                                <td></td>
+                                <td>${index+1}</td>
+                                <td>${item.name}</td>
+                                <td>${item.calories}</td>
+                                <td>${item.carbohydrates}</td>
+                                <td>${item.protein}</td>
+                                <td>${item.fat}</td>
+                                <td>${item.serving}</td>
+                            </tr>`
+                            ))}
+                        </tbody>
+                        <tr class="meal-table-total">
+                            <td>Total</td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                    </table>
+                    <h1>Snack</h1>
+                    <table class="customer-profile-meal-table">
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th>No</th>
+                                <th>Name</th>
+                                <th>Cal</th>
+                                <th>Carb</th>
+                                <th>Protein</th>
+                                <th>Fat</th>
+                                <th>Servings</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            ${snack.map((item,index) => (
+                                `<tr class="meal-table-total">
+                                <td></td>
+                                <td>${index+1}</td>
+                                <td>${item.name}</td>
+                                <td>${item.calories}</td>
+                                <td>${item.carbohydrates}</td>
+                                <td>${item.protein}</td>
+                                <td>${item.fat}</td>
+                                <td>${item.serving}</td>
+                            </tr>
+                            ` ))}
+                        </tbody>
+                        <tr class="meal-table-total">
+                            <td>Total</td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                    </table>
+                    <h1>Dinner</h1>
+                    <table class="customer-profile-meal-table">
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th>No</th>
+                                <th>Name</th>
+                                <th>Cal</th>
+                                <th>Carb</th>
+                                <th>Protein</th>
+                                <th>Fat</th>
+                                <th>Servings</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            ${dinner.map((item,index) => (
+                                `<tr class="meal-table-total">
+                                <td></td>
+                                <td>${index+1}</td>
+                                <td>${item.name}</td>
+                                <td>${item.calories}</td>
+                                <td>${item.carbohydrates}</td>
+                                <td>${item.protein}</td>
+                                <td>${item.fat}</td>
+                                <td>${item.serving}</td>
+                            </tr>`
+                            ))}
+                        </tbody>
+                        <tr class="meal-table-total">
+                            <td>Total</td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                    </table>
+                </div>
+        `);
+                    }
+                })
+        }
 
         //on clicking last 7 days (meal)
         $("#meal-7days").click(function(){
@@ -381,9 +577,10 @@
             $("#meal-7days").addClass("customer-profile-days-btn-active")
             $(".customer-7days-filter-meal-container").show()
             $(".customer-7days-day-meal-btn").removeClass("customer-7days-day-btn-active")
-            $(".customer-7days-day-meal-btn").last().addClass("customer-7days-day-btn-active")
+            $(".customer-7days-day-meal-btn").last().addClass("customer-7days-day-btn-active");
+            $(".customer-7days-meal-tables-container").empty();
             console.log($(".customer-7days-day-meal-btn").last().text())
-            renderMealTable()
+             meal_sevendays(today)
         })
 
         //on clicking today (water)
@@ -442,11 +639,12 @@
         "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
         ];
         var dd = date.getDate();
-        var mm = monthNames[date.getMonth()+1];
-        // var yyyy = date.getFullYear();
+        // var mm = monthNames[date.getMonth()];
+        var mm = date.getMonth()+1;
+        var yyyy = date.getFullYear();
         if(dd<10) {dd='0'+dd}
         if(mm<10) {mm='0'+mm}
-        date = dd+' '+mm;
+        date = yyyy+'-'+mm+'-'+dd;
         return date
     }
 
@@ -531,54 +729,8 @@
         var snack = []
         var dinner = []
 
-        var personal_meal_infos = @json($personal_meal_infos);
-        console.log(personal_meal_infos);
 
-        $(".customer-7days-meal-tables-container").append(`
-        <div class="customer-profile-meal-table-container">
-                    <h1>Breakfast</h1>
-                    <table class="customer-profile-meal-table">
-                        <thead>
-                            <tr>
-                                <th></th>
-                                <th>No</th>
-                                <th>Name</th>
-                                <th>Cal</th>
-                                <th>Carb</th>
-                                <th>Protein</th>
-                                <th>Fat</th>
-                                <th>Servings</th>
-                            </tr>
-                        </thead>
 
-                        <tbody>
-                            ${breakFast.map((item,index) => (
-                                ` <tr>
-                                <td></td>
-                                <td>${index+1}</td>
-                                <td>${item.name}</td>
-                                <td>${item.cal}</td>
-                                <td>${item.carb}</td>
-                                <td>${item.protein}</td>
-                                <td>${item.fat}</td>
-                                <td>${item.servings}</td>
-                            </tr>`
-                            ))}
-                        </tbody>
-
-                        <tr class="meal-table-total">
-                            <td>Total</td>
-                            <td>5</td>
-                            <td></td>
-                            <td>500</td>
-                            <td>1250</td>
-                            <td>750</td>
-                            <td>750</td>
-                            <td>15</td>
-                        </tr>
-                    </table>
-                </div>
-        `)
     }
 
     //rendering workoutList

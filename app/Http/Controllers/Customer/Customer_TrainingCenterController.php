@@ -113,10 +113,49 @@ class Customer_TrainingCenterController extends Controller
 
     public function profile()
     {
+        return view('customer.training_center.profile');
+    }
+
+    public function meal_sevendays($date)
+    {
         $user_id=auth()->user()->id;
-        $personal_meal_infos=PersonalMealInfo::where('client_id',$user_id)->get();
-        
-        return view('customer.training_center.profile',compact('personal_meal_infos'));
+        //$formateddate = Carbon::parse($date)->format('M d');
+
+        $daymeal_breafast=DB::table('personal_meal_infos')
+                    ->where('personal_meal_infos.client_id',$user_id)
+                    ->join('meals','meals.id','personal_meal_infos.meal_id')
+                    ->where('meals.meal_plan_type','Breakfast')
+                    ->where('personal_meal_infos.date',$date)
+                    ->get();
+
+        $daymeal_lunch=DB::table('personal_meal_infos')
+                    ->where('personal_meal_infos.client_id',$user_id)
+                    ->join('meals','meals.id','personal_meal_infos.meal_id')
+                    ->where('meals.meal_plan_type','Lunch')
+                    ->where('personal_meal_infos.date',$date)
+                    ->get();
+
+        $daymeal_snack=DB::table('personal_meal_infos')
+                    ->where('personal_meal_infos.client_id',$user_id)
+                    ->join('meals','meals.id','personal_meal_infos.meal_id')
+                    ->where('meals.meal_plan_type','Snack')
+                    ->where('personal_meal_infos.date',$date)
+                    ->get();
+
+        $daymeal_dinner=DB::table('personal_meal_infos')
+                    ->where('personal_meal_infos.client_id',$user_id)
+                    ->join('meals','meals.id','personal_meal_infos.meal_id')
+                    ->where('meals.meal_plan_type','Dinner')
+                    ->where('personal_meal_infos.date',$date)
+                    ->get();
+
+        return response()
+        ->json([
+            'meal_breafast'=>$daymeal_breafast,
+            'meal_lunch'=>$daymeal_lunch,
+            'meal_snack'=>$daymeal_snack,
+            'meal_dinner'=>$daymeal_dinner
+        ]);
     }
 
     public function workout_complete_store(Request $request)

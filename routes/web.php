@@ -187,6 +187,8 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
             Route::get('customer/training_center/workout/workout_complete_gym/{t_sum}/{cal_sum?}/{count_video?}/{group_id?}',[Customer_TrainingCenterController::class,'workout_complete_gym'])->name('workout_complete.gym');
             Route::post('customer/training_center/workout/workout_complete/store/',[Customer_TrainingCenterController::class,'workout_complete_store'])->name('workout_complete.store');
 
+            Route::get('customer/meal/sevendays/{date}', [Customer_TrainingCenterController::class, 'meal_sevendays'])->name('meal_sevendays');
+
             Route::get('customer/training_center', [Customer_TrainingCenterController::class, 'index'])->name('training_center.index');
             Route::get('customer/training_center/meal', [Customer_TrainingCenterController::class, 'meal'])->name('training_center.meal');
             Route::get('customer/training_center/workout_plan', [Customer_TrainingCenterController::class, 'workout_plan'])->name('training_center.workout_plan');
