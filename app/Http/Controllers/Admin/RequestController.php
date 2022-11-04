@@ -4,8 +4,9 @@ namespace App\Http\Controllers\Admin;
 
 use App\Models\User;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
 use Yajra\Datatables\Datatables;
+use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\Controller;
 
 class RequestController extends Controller
 {
@@ -21,7 +22,11 @@ class RequestController extends Controller
 
     public function ssd()
     {
-        $memberRequest = User::where('active_status',1)->where('member_type','!=','Free')->get();
+        $memberRequest =  DB::table('users')->select('users.id','users.name','users.gender','users.membertype_level','members.member_type','users.phone')
+                        ->leftJoin('members','members.id','users.request_type')
+                        ->where('users.active_status',1)
+                        ->get();
+        // dd($memberRequest)->toArray();
 
         return Datatables::of($memberRequest)
             ->addIndexColumn()

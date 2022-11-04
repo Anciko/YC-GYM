@@ -4,6 +4,7 @@ use App\Models\TrainingCenter;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
+use Illuminate\Support\Facades\Redirect;
 use App\Http\Controllers\Admin\MealController;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\UserController;
@@ -83,12 +84,13 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
     });
 
     // Admin Site
+
     Route::prefix('admin')->group(function () {
 
         Route::middleware(['role:System_Admin|King|Queen'])->group(function () {
             // Route::middleware('auth')->group(function () {
 
-            Route::get('/', [AdminController::class, 'index'])->name('admin-home');
+            //Route::get('/', [AdminController::class, 'index'])->name('admin-home');
             Route::get('/profile', [AdminController::class, 'adminProfile'])->name('admin-profile');
             Route::get('/profile/edit', [AdminController::class, 'editAdminProfile'])->name('admin-edit');
             Route::put('/profile/{id}/update', [AdminController::class, 'updateAdminProfile'])->name('admin-update');
@@ -180,9 +182,16 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
         });
         Route::middleware(['role:Platinum|Diamond|Gym Member'])->group(function () {
 
+            Route::get('customer/profile', [Customer_TrainingCenterController::class, 'profile'])->name('customer-profile');
+
+            Route::get('customer/today', [Customer_TrainingCenterController::class, 'todaywater'])->name('today');
+            Route::get('customer/lastsevenDay/{date}', [Customer_TrainingCenterController::class, 'lastsevenDay'])->name('last7day');
+
             Route::get('customer/training_center/workout/workout_complete/{t_sum}/{cal_sum?}/{count_video?}/{group_id?}',[Customer_TrainingCenterController::class,'workout_complete'])->name('workout_complete');
             Route::get('customer/training_center/workout/workout_complete_gym/{t_sum}/{cal_sum?}/{count_video?}/{group_id?}',[Customer_TrainingCenterController::class,'workout_complete_gym'])->name('workout_complete.gym');
             Route::post('customer/training_center/workout/workout_complete/store/',[Customer_TrainingCenterController::class,'workout_complete_store'])->name('workout_complete.store');
+
+            Route::get('customer/meal/sevendays/{date}', [Customer_TrainingCenterController::class, 'meal_sevendays'])->name('meal_sevendays');
 
             Route::get('customer/training_center', [Customer_TrainingCenterController::class, 'index'])->name('training_center.index');
             Route::get('customer/training_center/meal', [Customer_TrainingCenterController::class, 'meal'])->name('training_center.meal');

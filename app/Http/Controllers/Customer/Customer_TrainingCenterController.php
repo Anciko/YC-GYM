@@ -111,6 +111,53 @@ class Customer_TrainingCenterController extends Controller
         return view('customer.training_center.workout_plan',compact('tc_gym_workoutplans','tc_home_workoutplans','time_sum','t_sum','c_sum','duration','sec','time_sum_home','t_sum_home','c_sum_home','duration_home','sec_home'));
     }
 
+    public function profile()
+    {
+        return view('customer.training_center.profile');
+    }
+
+    public function meal_sevendays($date)
+    {
+        $user_id=auth()->user()->id;
+        //$formateddate = Carbon::parse($date)->format('M d');
+
+        $daymeal_breafast=DB::table('personal_meal_infos')
+                    ->where('personal_meal_infos.client_id',$user_id)
+                    ->join('meals','meals.id','personal_meal_infos.meal_id')
+                    ->where('meals.meal_plan_type','Breakfast')
+                    ->where('personal_meal_infos.date',$date)
+                    ->get();
+
+        $daymeal_lunch=DB::table('personal_meal_infos')
+                    ->where('personal_meal_infos.client_id',$user_id)
+                    ->join('meals','meals.id','personal_meal_infos.meal_id')
+                    ->where('meals.meal_plan_type','Lunch')
+                    ->where('personal_meal_infos.date',$date)
+                    ->get();
+
+        $daymeal_snack=DB::table('personal_meal_infos')
+                    ->where('personal_meal_infos.client_id',$user_id)
+                    ->join('meals','meals.id','personal_meal_infos.meal_id')
+                    ->where('meals.meal_plan_type','Snack')
+                    ->where('personal_meal_infos.date',$date)
+                    ->get();
+
+        $daymeal_dinner=DB::table('personal_meal_infos')
+                    ->where('personal_meal_infos.client_id',$user_id)
+                    ->join('meals','meals.id','personal_meal_infos.meal_id')
+                    ->where('meals.meal_plan_type','Dinner')
+                    ->where('personal_meal_infos.date',$date)
+                    ->get();
+
+        return response()
+        ->json([
+            'meal_breafast'=>$daymeal_breafast,
+            'meal_lunch'=>$daymeal_lunch,
+            'meal_snack'=>$daymeal_snack,
+            'meal_dinner'=>$daymeal_dinner
+        ]);
+    }
+
     public function workout_complete_store(Request $request)
     {
         $groups_id=$request->workout_id;
@@ -328,6 +375,33 @@ class Customer_TrainingCenterController extends Controller
         $water = WaterTracked::where('date', $current_date)->where('user_id',$user->id)->first();
         // dd($water);
         return view('customer.training_center.water',compact('water'));
+    }
+
+    public function todaywater()
+    {
+        $user = auth()->user();
+        $current_date = Carbon::now()->toDateString();
+        $water = WaterTracked::where('date', $current_date)->where('user_id',$user->id)->first();
+        // dd($water);
+        return response()
+        ->json([
+            'status'=>200,
+            'water'=>$water
+        ]);
+    }
+
+    public function lastsevenDay($date)
+    {
+        // dd($date);
+        $user = auth()->user();
+        // $current_date = $date;
+        $water = WaterTracked::where('date', $date)->where('user_id',$user->id)->first();
+        // dd($water);
+        return response()
+        ->json([
+            'status'=>200,
+            'water'=>$water
+        ]);
     }
 
 

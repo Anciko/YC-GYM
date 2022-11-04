@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use App\Models\MemberHistory;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 
 class HomeController extends Controller
@@ -55,7 +56,18 @@ class HomeController extends Controller
 
     public function index()
     {
-        return view('customer.index');
+        if (Auth::check()) {
+            if( Auth::user()->hasRole('System_Admin')){
+                return view('admin.home');
+            }else{
+                return view('customer.home');
+            }
+        } else {
+
+            // not logged-in
+            return view('customer.index');
+        }
+
     }
 
     public function home()

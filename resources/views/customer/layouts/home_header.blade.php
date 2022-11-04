@@ -42,6 +42,9 @@
             @hasanyrole('Trainer')
             <a href="{{route('trainer')}}">Training Center</a>
             @endhasanyrole
+            @hasanyrole('System_Admin')
+            <a href="{{route('home')}}">Dashboard</a>
+            @endhasanyrole
             @auth
             <a href="#">Notifications</a>
             <a href="#">Account</a>
