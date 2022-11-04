@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreatePersonalWorkOutInfosTable extends Migration
+class CreateWeightHistoriesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,10 @@ class CreatePersonalWorkOutInfosTable extends Migration
      */
     public function up()
     {
-        Schema::create('personal_work_out_infos', function (Blueprint $table) {
+        Schema::create('weight_histories', function (Blueprint $table) {
             $table->id();
-            $table->integer('workout_id');
             $table->integer('user_id');
+            $table->float('weight')->default(0.0);
             $table->date('date');
             $table->timestamps();
         });
@@ -29,6 +29,6 @@ class CreatePersonalWorkOutInfosTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('personal_work_out_infos');
+        Schema::dropIfExists('weight_histories');
     }
 }

@@ -116,6 +116,7 @@ class TrainingGroupController extends Controller
             $personal_workout_info = new PersonalWorkOutInfo();
             $personal_workout_info->workout_id = $workout->id;
             $personal_workout_info->user_id = auth()->user()->id;
+            $personal_workout_info->date = Carbon::now('Asia/Yangon')->toDateString();
 
             $personal_workout_info->save();
         }
@@ -180,7 +181,7 @@ class TrainingGroupController extends Controller
             'total_protein' => $total_protein,
             'total_carbohydrates' => $total_carbohydrates,
             'total_fat' => $total_fat
-            
+
         ]);
 
     }
