@@ -119,7 +119,6 @@ class Customer_TrainingCenterController extends Controller
     public function meal_sevendays($date)
     {
         $user_id=auth()->user()->id;
-<<<<<<< HEAD
         //$formateddate = Carbon::parse($date)->format('M d');
 
         $daymeal_breafast=DB::table('personal_meal_infos')
@@ -157,11 +156,6 @@ class Customer_TrainingCenterController extends Controller
             'meal_snack'=>$daymeal_snack,
             'meal_dinner'=>$daymeal_dinner
         ]);
-=======
-        $personal_meal_infos=PersonalMealInfo::where('client_id',$user_id)->get();
-
-        return view('customer.training_center.profile',compact('personal_meal_infos'));
->>>>>>> 46ab04eeff630ee7353f15cf88f21eee97a0119c
     }
 
     public function workout_complete_store(Request $request)
