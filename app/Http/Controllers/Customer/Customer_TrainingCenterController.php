@@ -111,9 +111,109 @@ class Customer_TrainingCenterController extends Controller
         return view('customer.training_center.workout_plan',compact('tc_gym_workoutplans','tc_home_workoutplans','time_sum','t_sum','c_sum','duration','sec','time_sum_home','t_sum_home','c_sum_home','duration_home','sec_home'));
     }
 
-    public function profile()
+    public function workout_filter($from,$to)
     {
-        return view('customer.training_center.profile');
+        $user_id=auth()->user()->id;
+
+        $from_date=Carbon::createFromFormat('Y-m-d', $from)->format('d,M,Y');
+        $to_date=Carbon::createFromFormat('Y-m-d', $to)->format('d,M,Y');
+        $workouts=DB::table('personal_work_out_infos')
+                        ->where('user_id',$user_id)
+                        ->whereBetween('date', [$from, $to])
+                        ->join('workouts','workouts.id','personal_work_out_infos.workout_id')
+                        ->get();
+        $cal_sum=0;
+        $time_sum=0;
+        foreach($workouts as $s){
+            $cal_sum+=$s->calories;
+            $time_sum+=$s->time;
+            if($time_sum>=60){
+                $time_min=floor($time_sum/60);
+                $time_sec=$time_sum%60;
+            }else{
+                $time_min=0;
+                $time_sec=$time_sum;
+            }
+        }
+        return response()
+                    ->json([
+                        'workouts'=>$workouts,
+                        'from'=>$from_date,
+                        'to'=>$to_date,
+                        'cal_sum'=>$cal_sum,
+                        'time_min'=>$time_min,
+                        'time_sec'=>$time_sec
+                    ]);
+    }
+
+    public function profile()
+    {   $user_id=auth()->user()->id;
+        $current_date = Carbon::now('Asia/Yangon')->toDateString();
+
+        $workouts=DB::table('personal_work_out_infos')
+                        ->where('user_id',$user_id)
+                        ->where('date',$current_date)
+                        ->join('workouts','workouts.id','personal_work_out_infos.workout_id')
+                        ->get();
+
+        $workout_date=DB::table('personal_work_out_infos')
+                        ->select('date')
+                        ->where('user_id',$user_id)
+                        ->get();
+        $cal_sum=0;
+        $time_sum=0;
+        foreach($workouts as $s){
+            $cal_sum+=$s->calories;
+            $time_sum+=$s->time;
+            if($time_sum>=60){
+                $time_min=floor($time_sum/60);
+                $time_sec=$time_sum%60;
+            }else{
+                $time_min=0;
+                $time_sec=$time_sum;
+            }
+        }
+
+        return view('customer.training_center.profile',compact('workouts','workout_date','cal_sum','time_min','time_sec'));
+    }
+
+    public function workout_sevenday()
+    {
+        $user_id=auth()->user()->id;
+        $current_date = Carbon::now('Asia/Yangon')->subDays(1)->toDateString();
+        $sevenday=Carbon::now('Asia/Yangon')->subDays(7)->toDateString();
+
+        $current = Carbon::now('Asia/Yangon')->subDays(1)->format('d,M,Y');
+        $seven=Carbon::now('Asia/Yangon')->subDays(7)->format('d,M,Y');
+
+        $workouts=DB::table('personal_work_out_infos')
+                        ->where('user_id',$user_id)
+                        ->whereBetween('date', [$sevenday, $current_date])
+                        ->join('workouts','workouts.id','personal_work_out_infos.workout_id')
+                        ->get();
+        $cal_sum=0;
+        $time_sum=0;
+        foreach($workouts as $s){
+            $cal_sum+=$s->calories;
+            $time_sum+=$s->time;
+            if($time_sum>=60){
+                $time_min=floor($time_sum/60);
+                $time_sec=$time_sum%60;
+            }else{
+                $time_min=0;
+                $time_sec=$time_sum;
+            }
+        }
+
+        return response()
+        ->json([
+            'workouts'=>$workouts,
+            'current'=>$current,
+            'seven'=>$seven,
+            'cal_sum'=>$cal_sum,
+            'time_min'=>$time_min,
+            'time_sec'=>$time_sec
+        ]);
     }
 
     public function meal_sevendays($date)

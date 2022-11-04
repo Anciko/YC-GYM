@@ -266,4 +266,9 @@ class AuthController extends Controller
             "message" => "User successfully logout!"
         ]);
     }
+
+
+    public function test() {
+        return 'yc-' . Str::uuid();
+    }
 }
