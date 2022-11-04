@@ -124,6 +124,8 @@ class Customer_TrainingCenterController extends Controller
                         ->get();
         $cal_sum=0;
         $time_sum=0;
+        $time_min=0;
+        $time_sec=0;
         foreach($workouts as $s){
             $cal_sum+=$s->calories;
             $time_sum+=$s->time;
@@ -162,6 +164,8 @@ class Customer_TrainingCenterController extends Controller
                         ->get();
         $cal_sum=0;
         $time_sum=0;
+        $time_min=0;
+        $time_sec=0;
         foreach($workouts as $s){
             $cal_sum+=$s->calories;
             $time_sum+=$s->time;
@@ -193,6 +197,8 @@ class Customer_TrainingCenterController extends Controller
                         ->get();
         $cal_sum=0;
         $time_sum=0;
+        $time_min=0;
+        $time_sec=0;
         foreach($workouts as $s){
             $cal_sum+=$s->calories;
             $time_sum+=$s->time;
@@ -262,13 +268,14 @@ class Customer_TrainingCenterController extends Controller
     {
         $groups_id=$request->workout_id;
         $groups =  json_decode(json_encode($groups_id));
-        $date = Carbon::Now();
+        $date = Carbon::Now()->toDateString();
         $user = auth()->user()->id;
         if($user){
             foreach ($groups as $gp) {
                 $personal_workout_info = new PersonalWorkOutInfo();
                 $personal_workout_info->user_id = $user;
                 $personal_workout_info->workout_id = $gp;
+                $personal_workout_info->date=$date;
                 $personal_workout_info->save();
             }
 

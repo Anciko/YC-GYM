@@ -118,11 +118,13 @@
 
                 <?php $bmi=auth()->user()->bmi ?>
                 @if ($bmi <=18.5)
-                <p>Your BMi , {{$bmi}} , is low.</p>
-                @elseif ($bmi >=25)
-                <p>Your BMi , {{$bmi}} , is high.</p>
+                <p>Your BMI , {{$bmi}} , is underweight.</p>
+                @elseif ($bmi >18.5 && $bmi<=24.9)
+                <p>Your BMI , {{$bmi}} , is normal.</p>
+                @elseif ($bmi >25 && $bmi<=29.9)
+                <p>Your BMI , {{$bmi}} , is overweight.</p>
                 @else
-                <p>Your BMi , {{$bmi}} , is normal.</p>
+                <p>Your BMI , {{$bmi}} , is obesity.</p>
                 @endif
             </div>
         </div>
@@ -359,7 +361,7 @@
                             <div class="customer-profile-workoutdetails-container">
                                 <div class="customer-profile-workoutdetail">
                                     <iconify-icon icon="icon-park-outline:time" class="customer-profile-time-icon"></iconify-icon>
-                                    <p>${item.time/60}mins</p>
+                                    <p>${Math.floor(item.time/60)}mins ${item.time%60}sec</p>
                                 </div>
                                 <div class="customer-profile-workoutdetail">
                                     <iconify-icon icon="codicon:flame" class="customer-profile-flame-icon"></iconify-icon>
@@ -783,8 +785,7 @@
                         <div class="customer-profile-workoutdetails-container">
                             <div class="customer-profile-workoutdetail">
                                 <iconify-icon icon="icon-park-outline:time" class="customer-profile-time-icon"></iconify-icon>
-                                <p>`+(item['time'])/60
-                                +`mins</p>
+                                <p>${Math.floor(item.time/60)}mins ${item.time%60}sec</p>
                             </div>
                             <div class="customer-profile-workoutdetail">
                                 <iconify-icon icon="codicon:flame" class="customer-profile-flame-icon"></iconify-icon>
@@ -953,8 +954,7 @@
                         <div class="customer-profile-workoutdetails-container">
                             <div class="customer-profile-workoutdetail">
                                 <iconify-icon icon="icon-park-outline:time" class="customer-profile-time-icon"></iconify-icon>
-                                <p>`+(item['time'])/60
-                                +`mins</p>
+                                <p>${Math.floor(item.time/60)}mins ${item.time%60}sec</p>
                             </div>
                             <div class="customer-profile-workoutdetail">
                                 <iconify-icon icon="codicon:flame" class="customer-profile-flame-icon"></iconify-icon>
