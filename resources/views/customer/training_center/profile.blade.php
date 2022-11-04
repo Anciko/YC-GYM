@@ -160,11 +160,11 @@
                 <div class="customer-profile-fromto-inputs-container">
                     <div class="customer-profile-from">
                         <p>From:</p>
-                        <input type="date">
+                        <input type="date" id="from_date">
                     </div>
                     <div class="customer-profile-to">
                         <p>To:</p>
-                        <input type="date">
+                        <input type="date" id="to_date">
                     </div>
                 </div>
 
@@ -298,17 +298,11 @@
                 document.getElementById('myChart'),
                 config
             );
+
         $("#my-calendar").zabuto_calendar({
-            data: [
-            {
-                'date': '2022-11-4',
 
-            },
-            {
-                'date': '2022-11-13',
+            data:@json($workout_date)
 
-            }
-        ]
         });
 
         const sevenDays = Last7Days()
@@ -324,6 +318,64 @@
             `)
         })
 
+        $(".customer-profile-workout-filter-btn").on('click',function(event){
+            to=$('#to_date').val();
+            from=$('#from_date').val();
+            var url = "{{ route('workout_filter', [':from', ':to']) }}";
+            url = url.replace(':from', from);
+            url = url.replace(':to', to);
+            $.ajax({
+                    type: "GET",
+                    url: url,
+                    datatype: "json",
+                    success: function(data) {
+                        var workouts= data.workouts;
+                        $(".customer-profile-workout-list-parent-container").empty();
+                        $(".customer-profile-workout-list-parent-container").append(`
+                        <div class="customer-profile-workout-list-header">
+                        <p>${data.from} - ${data.to}</p>
+                        <div class="customer-profile-workoutdetails-container">
+                            <div class="customer-profile-workoutdetail">
+                                <iconify-icon icon="icon-park-outline:time" class="customer-profile-time-icon"></iconify-icon>
+                                <p>${data.time_min}mins ${data.time_sec}sec</p>
+                            </div>
+                            <div class="customer-profile-workoutdetail">
+                                <iconify-icon icon="codicon:flame" class="customer-profile-flame-icon"></iconify-icon>
+                                <p>${data.cal_sum}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                        ${workouts.map((item,index) => (
+                            `<div class="customer-profile-workout-row">
+                            <div class="customer-profile-workout-row-namedate-container">
+                                <p>${item.workout_plan_type}</p>
+                                <div class="customer-profile-workout-row-date">
+                                    <iconify-icon icon="bx:calendar" class="customer-profile-date-icon"></iconify-icon>
+                                    <p>${item.date}</p>
+                                </div>
+                            </div>
+
+                            <div class="customer-profile-workoutdetails-container">
+                                <div class="customer-profile-workoutdetail">
+                                    <iconify-icon icon="icon-park-outline:time" class="customer-profile-time-icon"></iconify-icon>
+                                    <p>${item.time/60}mins</p>
+                                </div>
+                                <div class="customer-profile-workoutdetail">
+                                    <iconify-icon icon="codicon:flame" class="customer-profile-flame-icon"></iconify-icon>
+                                    <p>${item.calories}</p>
+                                </div>
+                            </div>
+                        </div>`
+                        ))}
+
+
+                    `)
+
+                    }
+                });
+
+        })
 
         //on clicking one of the butttons of last 7 days (water)
         $(".customer-7days-day-water-btn").on('click', function(event){
@@ -703,17 +755,17 @@
                     success: function(data) {
                         var workouts= data.workouts;
                         $(".customer-profile-workout-list-parent-container").empty()
-        $(".customer-profile-workout-list-parent-container").append(`
-        <div class="customer-profile-workout-list-header">
+                        $(".customer-profile-workout-list-parent-container").append(`
+                        <div class="customer-profile-workout-list-header">
                         <p>${data.seven} - ${data.current}</p>
                         <div class="customer-profile-workoutdetails-container">
                             <div class="customer-profile-workoutdetail">
                                 <iconify-icon icon="icon-park-outline:time" class="customer-profile-time-icon"></iconify-icon>
-                                <p>1hr 40mins</p>
+                                <p>${data.time_min}mins ${data.time_sec}sec</p>
                             </div>
                             <div class="customer-profile-workoutdetail">
                                 <iconify-icon icon="codicon:flame" class="customer-profile-flame-icon"></iconify-icon>
-                                <p>400</p>
+                                <p>${data.cal_sum}</p>
                             </div>
                         </div>
                     </div>
@@ -868,7 +920,10 @@
 
         today =  yyyy+'-'+mm+'-'+dd;
         const workouts = @json($workouts);
-         console.log(workouts);
+        const time_sec=@json($time_sec);
+        const time_min=@json($time_min);
+        const cal_sum=@json($cal_sum);
+
         $(".customer-profile-workout-list-parent-container").empty()
         $(".customer-profile-workout-list-parent-container").append(`
         <div class="customer-profile-workout-list-header">
@@ -876,11 +931,11 @@
                         <div class="customer-profile-workoutdetails-container">
                             <div class="customer-profile-workoutdetail">
                                 <iconify-icon icon="icon-park-outline:time" class="customer-profile-time-icon"></iconify-icon>
-                                <p>1hr 40mins</p>
+                                <p>${time_min}mins ${time_sec}sec</p>
                             </div>
                             <div class="customer-profile-workoutdetail">
                                 <iconify-icon icon="codicon:flame" class="customer-profile-flame-icon"></iconify-icon>
-                                <p>400</p>
+                                <p>${cal_sum}</p>
                             </div>
                         </div>
                     </div>
