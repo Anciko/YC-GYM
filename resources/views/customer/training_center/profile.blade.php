@@ -524,6 +524,7 @@
                     url: add_url,
                     datatype: "json",
                     success: function(data) {
+                        console.log(data);
                         var breakFast =data.meal_breafast;
                         var lunch =data.meal_lunch;
                         var snack =data.meal_snack;
@@ -551,7 +552,7 @@
                                 <td></td>
                                 <td>${index+1}</td>
                                 <td>${item.name}</td>
-                                <td>${item.calories}</td>
+                                <td>${item.calories} </td>
                                 <td>${item.carbohydrates}</td>
                                 <td>${item.protein}</td>
                                 <td>${item.fat}</td>
@@ -563,11 +564,11 @@
                             <td>Total</td>
                             <td></td>
                             <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
+                            <td>${data.total_calories_breakfast}</td>
+                            <td>${data.total_carbohydrates_breakfast}</td>
+                            <td>${data.total_protein_breakfast}</td>
+                            <td>${data.total_fat_breakfast}</td>
+                            <td>${data.total_serving_breakfast}</td>
                         </tr>
                     </table>
                     <h1>Lunch</h1>
@@ -603,11 +604,11 @@
                             <td>Total</td>
                             <td></td>
                             <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
+                            <td>${data.total_calories_lunch}</td>
+                            <td>${data.total_carbohydrates_lunch}</td>
+                            <td>${data.total_protein_lunch}</td>
+                            <td>${data.total_fat_lunch}</td>
+                            <td>${data.total_serving_lunch}</td>
                         </tr>
                     </table>
                     <h1>Snack</h1>
@@ -631,7 +632,7 @@
                                 <td></td>
                                 <td>${index+1}</td>
                                 <td>${item.name}</td>
-                                <td>${item.calories}</td>
+                                <td id = "cal">${item.calories}</td>
                                 <td>${item.carbohydrates}</td>
                                 <td>${item.protein}</td>
                                 <td>${item.fat}</td>
@@ -643,11 +644,11 @@
                             <td>Total</td>
                             <td></td>
                             <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
+                            <td>${data.total_calories_snack}</td>
+                            <td>${data.total_carbohydrates_snack}</td>
+                            <td>${data.total_protein_snack}</td>
+                            <td>${data.total_fat_snack}</td>
+                            <td>${data.total_serving_snack}</td>
                         </tr>
                     </table>
                     <h1>Dinner</h1>
@@ -673,7 +674,7 @@
                                 <td>${item.name}</td>
                                 <td>${item.calories}</td>
                                 <td>${item.carbohydrates}</td>
-                                <td>${item.protein}</td>
+                                <td>${item.protein }</td>
                                 <td>${item.fat}</td>
                                 <td>${item.serving}</td>
                             </tr>`
@@ -683,11 +684,11 @@
                             <td>Total</td>
                             <td></td>
                             <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
+                            <td>${data.total_calories_dinner}</td>
+                            <td>${data.total_carbohydrates_dinner}</td>
+                            <td>${data.total_protein_dinner}</td>
+                            <td>${data.total_fat_dinner}</td>
+                            <td>${data.total_serving_dinner}</td>
                         </tr>
                     </table>
                 </div>
