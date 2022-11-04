@@ -115,7 +115,7 @@ class Customer_TrainingCenterController extends Controller
     {
         $user_id=auth()->user()->id;
         $personal_meal_infos=PersonalMealInfo::where('client_id',$user_id)->get();
-        
+
         return view('customer.training_center.profile',compact('personal_meal_infos'));
     }
 
@@ -336,6 +336,33 @@ class Customer_TrainingCenterController extends Controller
         $water = WaterTracked::where('date', $current_date)->where('user_id',$user->id)->first();
         // dd($water);
         return view('customer.training_center.water',compact('water'));
+    }
+
+    public function todaywater()
+    {
+        $user = auth()->user();
+        $current_date = Carbon::now()->toDateString();
+        $water = WaterTracked::where('date', $current_date)->where('user_id',$user->id)->first();
+        // dd($water);
+        return response()
+        ->json([
+            'status'=>200,
+            'water'=>$water
+        ]);
+    }
+
+    public function lastsevenDay($date)
+    {
+        // dd($date);
+        $user = auth()->user();
+        // $current_date = $date;
+        $water = WaterTracked::where('date', $date)->where('user_id',$user->id)->first();
+        // dd($water);
+        return response()
+        ->json([
+            'status'=>200,
+            'water'=>$water
+        ]);
     }
 
 
