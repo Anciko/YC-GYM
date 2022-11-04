@@ -112,8 +112,43 @@ class Customer_TrainingCenterController extends Controller
     }
 
     public function profile()
+    {   $user_id=auth()->user()->id;
+        $current_date = Carbon::now('Asia/Yangon')->toDateString();
+        $tody_workout=DB::table('personal_work_out_infos')
+                        ->where('user_id',$user_id)
+                        ->where('date',$current_date)
+                        ->get();
+        $workouts=DB::table('personal_work_out_infos')
+                        ->where('user_id',$user_id)
+                        ->where('date',$current_date)
+                        ->join('workouts','workouts.id','personal_work_out_infos.workout_id')
+                        ->get();
+
+
+        return view('customer.training_center.profile',compact('tody_workout','workouts'));
+    }
+
+    public function workout_sevenday()
     {
-        return view('customer.training_center.profile');
+        $user_id=auth()->user()->id;
+        $current_date = Carbon::now('Asia/Yangon')->subDays(1)->toDateString();
+        $sevenday=Carbon::now('Asia/Yangon')->subDays(7)->toDateString();
+
+        $current = Carbon::now('Asia/Yangon')->subDays(1)->format('d,F,Y');
+        $seven=Carbon::now('Asia/Yangon')->subDays(7)->format('d,F,Y');
+
+        $workouts=DB::table('personal_work_out_infos')
+                        ->where('user_id',$user_id)
+                        ->whereBetween('date', [$sevenday, $current_date])
+                        ->join('workouts','workouts.id','personal_work_out_infos.workout_id')
+                        ->get();
+
+        return response()
+        ->json([
+            'workouts'=>$workouts,
+            'current'=>$current,
+            'seven'=>$seven
+        ]);
     }
 
     public function meal_sevendays($date)

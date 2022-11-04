@@ -261,7 +261,7 @@
         $("#my-calendar").zabuto_calendar({
             data: [
             {
-                'date': '2022-11-11',
+                'date': '2022-11-4',
 
             },
             {
@@ -647,13 +647,67 @@
          $("#workout-7days").click(function(){
             $("#workout-today").removeClass("customer-profile-days-btn-active")
             $("#workout-7days").addClass("customer-profile-days-btn-active")
-            renderWorkoutList()
+            workout_7days()
+
         })
 
 
     });
 
+    function workout_7days(){
 
+        $.ajax({
+                    type: "GET",
+                    url: "/customer/workout/lastsevenDay/",
+                    datatype: "json",
+                    success: function(data) {
+                        var workouts= data.workouts;
+                        $(".customer-profile-workout-list-parent-container").empty()
+        $(".customer-profile-workout-list-parent-container").append(`
+        <div class="customer-profile-workout-list-header">
+                        <p>${data.seven} - ${data.current}</p>
+                        <div class="customer-profile-workoutdetails-container">
+                            <div class="customer-profile-workoutdetail">
+                                <iconify-icon icon="icon-park-outline:time" class="customer-profile-time-icon"></iconify-icon>
+                                <p>1hr 40mins</p>
+                            </div>
+                            <div class="customer-profile-workoutdetail">
+                                <iconify-icon icon="codicon:flame" class="customer-profile-flame-icon"></iconify-icon>
+                                <p>400</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    ${workouts.map((item,index) => (
+                        `<div class="customer-profile-workout-row">
+                        <div class="customer-profile-workout-row-namedate-container">
+                            <p>${item.workout_plan_type}</p>
+                            <div class="customer-profile-workout-row-date">
+                                <iconify-icon icon="bx:calendar" class="customer-profile-date-icon"></iconify-icon>
+                                <p>${item.date}</p>
+                            </div>
+                        </div>
+
+                        <div class="customer-profile-workoutdetails-container">
+                            <div class="customer-profile-workoutdetail">
+                                <iconify-icon icon="icon-park-outline:time" class="customer-profile-time-icon"></iconify-icon>
+                                <p>`+(item['time'])/60
+                                +`mins</p>
+                            </div>
+                            <div class="customer-profile-workoutdetail">
+                                <iconify-icon icon="codicon:flame" class="customer-profile-flame-icon"></iconify-icon>
+                                <p>${item.calories}</p>
+                            </div>
+                        </div>
+                    </div>`
+                    ))}
+
+
+        `)
+                    }
+                });
+
+    }
     //getting the last 7 days from today
     function Last7Days () {
         var result = [];
@@ -767,11 +821,18 @@
 
     //rendering workoutList
     function renderWorkoutList(){
-        const workouts = []
+        var today = new Date();
+        var dd = String(today.getDate()).padStart(2, '0');
+        var mm = today.toLocaleString('default', { month: 'short' });
+        var yyyy = today.getFullYear();
+
+        today =  yyyy+'-'+mm+'-'+dd;
+        const workouts = @json($workouts);
+         console.log(workouts);
         $(".customer-profile-workout-list-parent-container").empty()
         $(".customer-profile-workout-list-parent-container").append(`
         <div class="customer-profile-workout-list-header">
-                        <p>11, oct, 2022 - 17, oct, 2022</p>
+                        <p>${dd}, ${mm}, ${yyyy}</p>
                         <div class="customer-profile-workoutdetails-container">
                             <div class="customer-profile-workoutdetail">
                                 <iconify-icon icon="icon-park-outline:time" class="customer-profile-time-icon"></iconify-icon>
@@ -787,21 +848,22 @@
                     ${workouts.map((item,index) => (
                         `<div class="customer-profile-workout-row">
                         <div class="customer-profile-workout-row-namedate-container">
-                            <p>Weight Loss Plan</p>
+                            <p>${item.workout_plan_type}</p>
                             <div class="customer-profile-workout-row-date">
                                 <iconify-icon icon="bx:calendar" class="customer-profile-date-icon"></iconify-icon>
-                                <p>17,oct,2022</p>
+                                <p>${item.date}</p>
                             </div>
                         </div>
 
                         <div class="customer-profile-workoutdetails-container">
                             <div class="customer-profile-workoutdetail">
                                 <iconify-icon icon="icon-park-outline:time" class="customer-profile-time-icon"></iconify-icon>
-                                <p>1hr 40mins</p>
+                                <p>`+(item['time'])/60
+                                +`mins</p>
                             </div>
                             <div class="customer-profile-workoutdetail">
                                 <iconify-icon icon="codicon:flame" class="customer-profile-flame-icon"></iconify-icon>
-                                <p>400</p>
+                                <p>${item.calories}</p>
                             </div>
                         </div>
                     </div>`
