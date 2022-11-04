@@ -58,6 +58,8 @@
     <!--nav bar-->
     <script src={{asset('js/navBar.js')}}></script>
 
+
+
     @stack('scripts')
 
   </body>
