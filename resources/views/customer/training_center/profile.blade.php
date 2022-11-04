@@ -9,9 +9,10 @@
         </div>
         <div class="customer-profile-name-container">
             <p>{{auth()->user()->name}}</p>
-            <iconify-icon icon="cil:pen" class="change-name-icon"></iconify-icon>
+
             <span>(User ID: 1234567890)</span>
         </div>
+        <iconify-icon icon="cil:pen" class="change-name-icon"></iconify-icon>
     </div>
 
     <form class="customer-profile-personaldetails-parent-container">
@@ -125,6 +126,11 @@
                 @endif
             </div>
         </div>
+    </div>
+
+    <div class="weight-chart-container">
+        <p>Your Monthly Weight Loss History</p>
+        <canvas id="myChart"></canvas>
     </div>
 
     <div class="customer-profile-trackers-parent-container">
@@ -258,6 +264,40 @@
 @push('scripts')
 <script>
     $( document ).ready(function() {
+
+        const labels = [
+                'Jan',
+                'Feb',
+                'March',
+                'April',
+                'May',
+                'June',
+            ];
+
+            const data = {
+                labels: labels,
+                datasets: [{
+                label: 'My First dataset',
+                fill: true,
+
+                borderColor: "#4D72E8",
+                backgroundColor:"rgba(77,114,232,0.3)",
+                data: [0, 10, 5, 2, 20, 30, 45],
+                }]
+            };
+
+            const config = {
+                type: 'line',
+                data: data,
+                options: {
+                maintainAspectRatio: false,
+            }
+            };
+
+            const myChart = new Chart(
+                document.getElementById('myChart'),
+                config
+            );
         $("#my-calendar").zabuto_calendar({
             data: [
             {

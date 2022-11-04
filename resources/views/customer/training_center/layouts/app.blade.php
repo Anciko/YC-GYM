@@ -69,6 +69,12 @@
      <!--nav bar-->
      <script src={{asset('js/navBar.js')}}></script>
 
+      <!--calendar-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/zabuto_calendar/1.6.4/zabuto_calendar.min.js" integrity="sha512-HvdZfHEdDyE5r66O4BLg+GE/kCwpviitPcq/H5L2gmr1P+tqDKBUfY9UP7ll6Idle+zeulQDXYYKbTiiUwLF+Q==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+      <!--chart js-->
+      <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
     @stack('scripts')
 
   </body>
