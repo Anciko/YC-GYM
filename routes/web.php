@@ -193,9 +193,18 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
         });
         Route::middleware(['role:Platinum|Diamond|Gym Member'])->group(function () {
 
+            Route::get('customer/profile', [Customer_TrainingCenterController::class, 'profile'])->name('customer-profile');
+
+            Route::get('customer/today', [Customer_TrainingCenterController::class, 'todaywater'])->name('today');
+            Route::get('customer/lastsevenDay/{date}', [Customer_TrainingCenterController::class, 'lastsevenDay'])->name('last7day');
+            Route::get('/customer/workout/lastsevenDay/', [Customer_TrainingCenterController::class, 'workout_sevenday'])->name('workout_sevenday');
+            Route::get('/customer/workout/filter/{from}/{to}', [Customer_TrainingCenterController::class, 'workout_filter'])->name('workout_filter');
+
             Route::get('customer/training_center/workout/workout_complete/{t_sum}/{cal_sum?}/{count_video?}/{group_id?}',[Customer_TrainingCenterController::class,'workout_complete'])->name('workout_complete');
             Route::get('customer/training_center/workout/workout_complete_gym/{t_sum}/{cal_sum?}/{count_video?}/{group_id?}',[Customer_TrainingCenterController::class,'workout_complete_gym'])->name('workout_complete.gym');
             Route::post('customer/training_center/workout/workout_complete/store/',[Customer_TrainingCenterController::class,'workout_complete_store'])->name('workout_complete.store');
+
+            Route::get('customer/meal/sevendays/{date}', [Customer_TrainingCenterController::class, 'meal_sevendays'])->name('meal_sevendays');
 
             Route::get('customer/training_center', [Customer_TrainingCenterController::class, 'index'])->name('training_center.index');
             Route::get('customer/training_center/meal', [Customer_TrainingCenterController::class, 'meal'])->name('training_center.meal');

@@ -41,7 +41,7 @@
                         <th>ID</th>
                         <th>Name</th>
                         <th>Request Type</th>
-                        <th>Request Type Level</th>
+                        <th>Member Type Level</th>
                         <th>Gender</th>
                         <th>Phone</th>
                         <th>Action</th>
