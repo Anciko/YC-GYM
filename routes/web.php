@@ -183,6 +183,7 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
         Route::middleware(['role:Platinum|Diamond|Gym Member'])->group(function () {
 
             Route::get('customer/profile', [Customer_TrainingCenterController::class, 'profile'])->name('customer-profile');
+            Route::post('customer/profile/update', [Customer_TrainingCenterController::class, 'profile_update'])->name('customer-profile.update');
 
             Route::get('customer/today', [Customer_TrainingCenterController::class, 'todaywater'])->name('today');
             Route::get('customer/lastsevenDay/{date}', [Customer_TrainingCenterController::class, 'lastsevenDay'])->name('last7day');

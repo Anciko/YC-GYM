@@ -3,26 +3,30 @@
 @section('content')
 
 <div class="customer-profile-parent-container">
+    <form class="personal_detail" method="POST" action="{{route('customer-profile.update')}}">
+        @csrf
+        @method('POST')
     <div class="customer-profile-img-name-container">
         <div class="customer-profile-img-container">
             <img src="{{asset('img/avatar.jpg')}}">
         </div>
         <div class="customer-profile-name-container">
-            <p>{{auth()->user()->name}}</p>
+            <p id="name">{{auth()->user()->name}}</p>
+            <input type="text" value="{{auth()->user()->name}}" class="name" name="name">
 
-            <span>(User ID: 1234567890)</span>
+            {{-- <span>(User ID: 1234567890)</span> --}}
         </div>
         <iconify-icon icon="cil:pen" class="change-name-icon"></iconify-icon>
     </div>
 
-    <form class="customer-profile-personaldetails-parent-container">
+    <div class="customer-profile-personaldetails-parent-container">
         <h1>Your Profile</h1>
         <div class="customer-profile-personaldetails-grid">
             <div class="customer-profile-personaldetails-left">
                 <div class="customer-profile-personaldetail-container">
                     <p>Age:</p>
                     <div>
-                        <input type="number" value="{{auth()->user()->age}}">
+                        <input type="number" value="{{auth()->user()->age}}" readonly="readonly" class="age" name="age">
                         <span style = "visibility: hidden;">in</span>
                     </div>
                 </div>
@@ -33,14 +37,14 @@
                     ?>
                 <div class="customer-profile-personaldetail-container customer-profile-personaldetail-height-container">
                     <p>Height:</p>
-                    <select>
+                    <select name="height_ft" class="height_ft">
                         <option value="3" {{"3" == $height_ft ? 'selected' : ''}}>3</option>
                         <option value="4" {{"4" == $height_ft ? 'selected' : ''}}>4</option>
                         <option value="5" {{"5" == $height_ft ? 'selected' : ''}}>5</option>
                         <option value="6" {{"6" == $height_ft ? 'selected' : ''}}>6</option>
                     </select>
                     <span>ft</span>
-                    <select>
+                    <select name="height_in" class="height_in">
                         <option value="0" {{"0" == $height_in ? 'selected' : ''}}>0</option>
                         <option value="1" {{"1" == $height_in ? 'selected' : ''}}>1</option>
                         <option value="2" {{"2" == $height_in ? 'selected' : ''}}>2</option>
@@ -60,7 +64,7 @@
                 <div class="customer-profile-personaldetail-container">
                     <p>Weight:</p>
                     <div>
-                        <input type="number" value="{{auth()->user()->weight}}">
+                        <input type="number" value="{{auth()->user()->weight}}" class="weight" name="weight" readonly>
                         <span>lb</span>
                     </div>
 
@@ -68,7 +72,7 @@
                 <div class="customer-profile-personaldetail-container">
                     <p>Neck:</p>
                     <div>
-                        <input type="number" value="{{auth()->user()->neck}}">
+                        <input type="number" value="{{auth()->user()->neck}}" class="neck" name="neck" readonly>
                         <span>in</span>
                     </div>
                 </div>
@@ -77,7 +81,7 @@
                 <div class="customer-profile-personaldetail-container">
                     <p>Waist:</p>
                     <div>
-                        <input type="number" value="{{auth()->user()->waist}}">
+                        <input type="number" value="{{auth()->user()->waist}}" name="waist" class="waist" readonly>
                         <span>in</span>
                     </div>
                 </div>
@@ -85,7 +89,7 @@
                 <div class="customer-profile-personaldetail-container ">
                     <p>Hip:</p>
                     <div>
-                        <input type="number"  value="{{auth()->user()->hip}}">
+                        <input type="number"  value="{{auth()->user()->hip}}" name="hip" class="hip" readonly>
                         <span>in</span>
                     </div>
                 </div>
@@ -93,7 +97,7 @@
                 <div class="customer-profile-personaldetail-container">
                     <p>Shoulders:</p>
                     <div>
-                        <input type="number"  value="{{auth()->user()->shoulders}}">
+                        <input type="number"  value="{{auth()->user()->shoulders}}" name="shoulders" class="shoulders" readonly>
                         <span>lb</span>
                     </div>
 
@@ -101,8 +105,10 @@
 
             </div>
         </div>
+        <button type="cancel" class="customer-secondary-btn customer-bmi-calculate-btn" id="customer_cancel">Cancel</button>
+        <button type="submit" class="customer-primary-btn customer-bmi-calculate-btn">Save and Calculate BMI</button>
 
-        <button type="button" class="customer-primary-btn customer-bmi-calculate-btn">Calculate BMI</button>
+    </div>
     </form>
 
     <div class="customer-profile-bmi-container">
@@ -116,7 +122,15 @@
                     <div class="customer-profile-bmi-indicator-ball"></div>
                 </div>
 
-                <?php $bmi=auth()->user()->bmi ?>
+                <?php $bmi=auth()->user()->bmi;
+                    if ($bmi <=18.5) {
+                         $plan='Weight Gain';
+                    }elseif ($bmi>=25) {
+                         $plan='Weight Loss';
+                    }else {
+                         $plan='Body Beauty';
+                    }
+                ?>
                 @if ($bmi <=18.5)
                 <p>Your BMI , {{$bmi}} , is underweight.</p>
                 @elseif ($bmi >18.5 && $bmi<=24.9)
@@ -130,9 +144,14 @@
         </div>
     </div>
 
-    <div class="weight-chart-container">
-        <p>Your Monthly Weight Loss History</p>
+    <div class="weight-chart-container" id="weightchart">
+        <p>Your Monthly {{$plan}} History</p>
         <canvas id="myChart"></canvas>
+    </div>
+
+    <div class="weight-chart-container" id="weightreview">
+        <p>Currently, you don’t have ‘{{$plan}}’ history  to review.
+            Keep working out and check at {{$newDate}}.</p>
     </div>
 
     <div class="customer-profile-trackers-parent-container">
@@ -267,24 +286,66 @@
 <script>
     $( document ).ready(function() {
 
-        const labels = [
-                'Jan',
-                'Feb',
-                'March',
-                'April',
-                'May',
-                'June',
-            ];
+        $(".name").hide();
+        $(".customer-bmi-calculate-btn").hide();
+        $('select.height_ft').attr('disabled', true);
+        $('select.height_in').attr('disabled', true);
+        //on clicking one of the butttons of last 7 days (water)
+        $(".change-name-icon").on('click', function(event){
+            $(".age").removeAttr("readonly");
+            $(".weight").removeAttr("readonly");
+            $(".neck").removeAttr("readonly");
+            $(".waist").removeAttr("readonly");
+            $(".hip").removeAttr("readonly");
+            $(".shoulders").removeAttr("readonly");
+            $("#name").hide();
+            $(".name").show();
+            $(".customer-bmi-calculate-btn").show();
+            $('select.height_ft').attr('disabled', false);
+            $('select.height_in').attr('disabled', false);
+            $('.change-name-icon').hide();
+        });
 
+
+        var weight_history = @json($weight_history);
+        if(weight_history.length<2){
+            $("#weightreview").show();
+            $("#weightchart").hide();
+        }else{
+            $("#weightreview").hide();
+            $("#weightchart").show();
+
+            let weight = [];
+            let date = [];
+            for(let i = 0; i < weight_history.length; i++){
+
+                weight.push(
+
+                   weight_history[i].weight
+                );
+
+                date.push(
+
+                   weight_history[i].date
+
+                );
+
+                }
+
+            const labels = date;
+
+                console.log(weight);
             const data = {
                 labels: labels,
                 datasets: [{
-                label: 'My First dataset',
+                label: 'Weight(lb)',
                 fill: true,
 
                 borderColor: "#4D72E8",
                 backgroundColor:"rgba(77,114,232,0.3)",
-                data: [0, 10, 5, 2, 20, 30, 45],
+
+                data:weight,
+
                 }]
             };
 
@@ -300,6 +361,21 @@
                 document.getElementById('myChart'),
                 config
             );
+        }
+
+        // $(".personal_detail").submit(function(){
+        //     console.log('Form submit');
+        //     $.ajax({
+        //         type: "POST",
+        //         url: "customer/profile/update",
+        //         // The key needs to match your method's input parameter (case-sensitive).
+        //         data: JSON.stringify({ Markers: markers }),
+        //         dataType: "json",
+        //         success: function(data){
+        //             alert("data");
+        //         },
+        //     });
+        // })
 
         $("#my-calendar").zabuto_calendar({
 
@@ -425,7 +501,6 @@
         //hide 7days buttons (default)
         $(".customer-7days-filter-water-container").hide()
         $(".customer-7days-filter-meal-container").hide()
-
         //workout tab active by default
         $('#workout').addClass('customer-profile-tracker-header-active')
         $('.customer-profile-tracker-workout-container').show()
