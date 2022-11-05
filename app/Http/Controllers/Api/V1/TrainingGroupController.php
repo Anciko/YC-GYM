@@ -51,7 +51,7 @@ class TrainingGroupController extends Controller
             ]);
         }
 
-        if ($user->bmi >= 25 && $user->bmi <= 29.9) { // For weightloss
+        if ($user->bmi >= 25) { // For weightloss
             $workouts = Workout::where('workout_plan_type', 'weight loss')
                 ->where('member_type', $user->member_type)
                 ->where('workout_level', $user->membertype_level)

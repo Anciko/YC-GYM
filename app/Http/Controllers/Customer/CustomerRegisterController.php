@@ -91,7 +91,7 @@ class CustomerRegisterController extends Controller
 
         $user->most_attention_areas = $user_bodyArea;
 
-        $member_id = 1;
+        $member_id = 1; ///
         $user->save();
 
         $user->members()->attach($member_id, ['member_type_level' => $user_member_type_level]);
