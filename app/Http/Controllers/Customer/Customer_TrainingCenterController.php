@@ -757,7 +757,7 @@ class Customer_TrainingCenterController extends Controller
 
         $current_day=Carbon::now()->format('l');
         $tc_workouts=DB::table('workouts')
-                        ->where('place','home')
+                        ->where('place','Home')
                         ->where('workout_plan_type',$workout_plan)
                         ->where('member_type',$user->member_type)
                         ->where('gender_type',$user->gender)
@@ -800,7 +800,7 @@ class Customer_TrainingCenterController extends Controller
 
         $current_day=Carbon::now()->format('l');
         $tc_workouts=DB::table('workouts')
-                        ->where('place','gym')
+                        ->where('place','Gym')
                         ->where('workout_plan_type',$workout_plan)
                         ->where('member_type',$user->member_type)
                         ->where('gender_type',$user->gender)

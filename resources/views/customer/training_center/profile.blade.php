@@ -363,19 +363,9 @@
             );
         }
 
-        // $(".personal_detail").submit(function(){
-        //     console.log('Form submit');
-        //     $.ajax({
-        //         type: "POST",
-        //         url: "customer/profile/update",
-        //         // The key needs to match your method's input parameter (case-sensitive).
-        //         data: JSON.stringify({ Markers: markers }),
-        //         dataType: "json",
-        //         success: function(data){
-        //             alert("data");
-        //         },
-        //     });
-        // })
+        $(".personal_detail").submit(function(){
+            $('.customer-bmi-calculate-btn').attr('disabled', true);
+        })
 
         $("#my-calendar").zabuto_calendar({
 
