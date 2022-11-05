@@ -2,8 +2,9 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\TrainingUser;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class TrainingGroup extends Model
 {
@@ -14,6 +15,9 @@ class TrainingGroup extends Model
         return $this->belongsToMany(User::class,'training_users')
                     //->withPivot(['user_id','training_group_id'])
                     ->withTimestamps();
+    }
+    public function trainingUser(){
+        return $this->hasMany(TrainingUser::class);
     }
 
     public function user() {

@@ -25,6 +25,8 @@ use App\Http\Controllers\Customer\CustomerLoginController;
 use App\Http\Controllers\Customer\RegisterPaymentController;
 use App\Http\Controllers\Customer\CustomerRegisterController;
 use App\Http\Controllers\Admin\RequestAcceptDeclineController;
+use App\Http\Controllers\Admin\TrainingCenterController;
+use App\Http\Controllers\Admin\TrainingGroupController;
 use App\Http\Controllers\Trainer\TrainerManagementConntroller;
 use App\Http\Controllers\Customer\CustomerManagementController;
 use App\Http\Controllers\Customer\Customer_TrainingCenterController;
@@ -174,6 +176,15 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
             Route::get('request/member/datatable/ssd', [RequestController::class, 'ssd']);
             Route::get('request/member/accept/{id}', [RequestAcceptDeclineController::class, 'accept'])->name('requestaccept');
             Route::get('request/member/decline/{id}', [RequestAcceptDeclineController::class, 'decline'])->name('requestdecline');
+
+            //training center
+            Route::resource('traininggroup', TrainingGroupController::class);
+            Route::get('traininggroup/{traininggroup}/ssd', [TrainingGroupController::class,'ssd']);
+            //Route::get('admin/traininggroup/datatable/ssd', [TrainingGroupController::class, 'ssd']);
+            Route::get('/trainingcenter/index', [TrainingCenterController::class,'index'])->name('trainingcenter.index');
+
+            // Route::get('/trainingcenter/chatshow/{id}', [TrainingCenterController::class,'chat_show'])->name('trainingcenter.chatshow');
+            // Route::get('/trainingcenter/viewmember/{id}', [TrainingCenterController::class,'view_member'])->name('trainingcenter.viewmember');
         });
     }); //admin prefix
 
@@ -186,6 +197,8 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
 
             Route::get('customer/today', [Customer_TrainingCenterController::class, 'todaywater'])->name('today');
             Route::get('customer/lastsevenDay/{date}', [Customer_TrainingCenterController::class, 'lastsevenDay'])->name('last7day');
+            Route::get('/customer/workout/lastsevenDay/', [Customer_TrainingCenterController::class, 'workout_sevenday'])->name('workout_sevenday');
+            Route::get('/customer/workout/filter/{from}/{to}', [Customer_TrainingCenterController::class, 'workout_filter'])->name('workout_filter');
 
             Route::get('customer/training_center/workout/workout_complete/{t_sum}/{cal_sum?}/{count_video?}/{group_id?}',[Customer_TrainingCenterController::class,'workout_complete'])->name('workout_complete');
             Route::get('customer/training_center/workout/workout_complete_gym/{t_sum}/{cal_sum?}/{count_video?}/{group_id?}',[Customer_TrainingCenterController::class,'workout_complete_gym'])->name('workout_complete.gym');
