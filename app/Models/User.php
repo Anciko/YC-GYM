@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\Payment;
+use App\Models\TrainingUser;
 use App\Models\TrainingGroup;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
@@ -63,6 +64,10 @@ class User extends Authenticatable
     public function personalworkoutinfos()
     {
         return $this->hasMany(PersonalWorkOutInfo::class, 'user_id', 'id');
+    }
+
+    public function trainingUser(){
+        return $this->hasMany(TrainingUser::class,'user_id','id');
     }
 
 //   public function member()
