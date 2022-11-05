@@ -13,16 +13,16 @@ use RealRashid\SweetAlert\Facades\Alert;
 class TrainingCenterController extends Controller
 {
     public function index(){
-        $messages = Message::whereNotNull('text')->get();
-        $members=Member::groupBy('member_type')
-                        ->where('member_type','!=','Free')
-                        ->where('member_type','!=','Platinum')
-                        ->where('member_type','!=','Diamond')
-                        ->where('member_type','!=','Gym Member')
-                        ->get();
-         $groups=TrainingGroup::all();
+        // $messages = Message::whereNotNull('text')->get();
+        // $members=Member::groupBy('member_type')
+        //                 ->where('member_type','!=','Free')
+        //                 ->where('member_type','!=','Platinum')
+        //                 ->where('member_type','!=','Diamond')
+        //                 ->where('member_type','!=','Gym Member')
+        //                 ->get();
+        //  $groups=TrainingGroup::all();
 
-        return view('admin.trainingcenter.index', compact('messages','members','groups'));
+        return view('admin.trainingcenter.index');
     }
 
     public function storeGroup(Request $request){
