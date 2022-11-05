@@ -149,8 +149,8 @@
         <canvas id="myChart"></canvas>
     </div>
 
-    <div class="weight-chart-container" id="weightreview">
-        <p>Currently, you don’t have ‘{{$plan}}’ history  to review.
+    <div class="" id="weightreview">
+        <p style="margin-top:100px">Currently, you don’t have ‘{{$plan}}’ history  to review.
             Keep working out and check at {{$newDate}}.</p>
     </div>
 
