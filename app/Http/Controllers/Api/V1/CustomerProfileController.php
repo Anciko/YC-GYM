@@ -84,6 +84,60 @@ class CustomerProfileController extends Controller
 
 
     // meal
+
+    public function customerRequestBreakfastMealTrack($date) {
+        $auth_user = auth()->user();
+        $data = PersonalMealInfo::where('client_id', $auth_user->id)->where('date', $date)->with('meal')
+                ->whereHas('meal', function(Builder $query) {
+                    $query->where('meal_plan_type', 'Breakfast');
+                })
+                ->get();
+
+        return response()->json([
+            'data' => $data
+        ]);
+    }
+
+    public function customerRequestLunchMealTrack($date) {
+        $auth_user = auth()->user();
+        $data = PersonalMealInfo::where('client_id', $auth_user->id)->where('date', $date)->with('meal')
+                ->whereHas('meal', function(Builder $query) {
+                    $query->where('meal_plan_type', 'Lunch');
+                })
+                ->get();
+
+        return response()->json([
+            'data' => $data
+        ]);
+    }
+
+    public function customerRequestSnackMealTrack($date) {
+        $auth_user = auth()->user();
+        $data = PersonalMealInfo::where('client_id', $auth_user->id)->where('date', $date)->with('meal')
+                ->whereHas('meal', function(Builder $query) {
+                    $query->where('meal_plan_type', 'Snack');
+                })
+                ->get();
+
+        return response()->json([
+            'data' => $data
+        ]);
+    }
+
+    public function customerRequestDinnerMealTrack($date) {
+        $auth_user = auth()->user();
+        $data = PersonalMealInfo::where('client_id', $auth_user->id)->where('date', $date)->with('meal')
+                ->whereHas('meal', function(Builder $query) {
+                    $query->where('meal_plan_type', 'Dinner');
+                })
+                ->get();
+
+        return response()->json([
+            'data' => $data
+        ]);
+    }
+
+
     public function customerMealTrackForTodayBreakfast()
     {
         $auth_user = auth()->user();
