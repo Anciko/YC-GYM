@@ -123,7 +123,7 @@
     width: 500px;
     height: 18px;
     border-radius: 50px;
-    background: linear-gradient(90deg, #FF0000 0%, #3CDD57 33.4%, #FF7F2B 66.6%, #FF0000 100%);
+    background: linear-gradient(90deg, #FF0000 0%, #3CDD57 23%, #FF7F2B 28%, #FF0000 100%);
     position: relative;
     margin: auto;
 }
@@ -137,15 +137,15 @@
 }
 
 .customer-profile-bmi-gradient .percentage-line:nth-child(1){
-    left: 25%;
+    left: 18.5%;
 
 }
 .customer-profile-bmi-gradient .percentage-line:nth-child(2){
-    left: 50%;
+    left: 24.9%;
 
 }
 .customer-profile-bmi-gradient .percentage-line:nth-child(3){
-    left: 75%;
+    left: 29.9%;
 
 }
 
@@ -500,6 +500,25 @@
 }
 
 .weight-chart-container p{
+    color: var(--customer-text-color);
+}
+
+.weight-chart-filter{
+    font-size: 14px;
+    background-color: transparent;
+    padding: 5px 10px;
+    border: 2px solid var(--customer-primary-color);
+    border-radius: 5px;
+    color: var(--customer-text-color);
+    display: block;
+    margin-left: auto;
+}
+
+.weight-chart-filter option{
+    color: black;
+}
+
+.no-weight-chart p{
     color: var(--customer-text-color);
 }
 

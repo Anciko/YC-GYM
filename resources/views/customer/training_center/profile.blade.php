@@ -155,11 +155,42 @@
     </div>
 
     <div class="weight-chart-container" id="weightchart">
+        <select class="weight-chart-filter">
+            <option value="2022">2022</option>
+            <option value="2023">2023</option>
+            <option value="2024">2024</option>
+            <option value="2025">2025</option>
+            <option value="2026">2026</option>
+            <option value="2027">2027</option>
+            <option value="2028">2028</option>
+            <option value="2029">2029</option>
+            <option value="2030">2030</option>
+            <option value="2031">2031</option>
+            <option value="2032">2032</option>
+            <option value="2033">2033</option>
+            <option value="2034">2034</option>
+            <option value="2035">2035</option>
+            <option value="2036">2036</option>
+            <option value="2037">2037</option>
+            <option value="2038">2038</option>
+            <option value="2039">2039</option>
+            <option value="2040">2040</option>
+            <option value="2041">2041</option>
+            <option value="2042">2042</option>
+            <option value="2043">2043</option>
+            <option value="2044">2044</option>
+            <option value="2045">2045</option>
+            <option value="2046">2046</option>
+            <option value="2047">2047</option>
+            <option value="2048">2048</option>
+            <option value="2049">2049</option>
+            <option value="2050">2050</option>
+        </select>
         <p>Your {{$plan}} History</p>
         <canvas id="myChart"></canvas>
     </div>
 
-    <div class="" id="weightreview">
+    <div class="no-weight-chart" id="weightreview">
         <p style="margin-top:100px">Currently, you don’t have ‘{{$plan}}’ history  to review.
             Keep working out and check at {{$newDate}}.</p>
     </div>
@@ -178,6 +209,7 @@
         </div>
 
         <div class="customer-profile-tracker-workout-container">
+
             <div id="my-calendar"></div>
 
             <form class="customer-profile-days-container customer-profile-workout-days-container">
@@ -296,7 +328,14 @@
 <script>
     $( document ).ready(function() {
         var bmi=@json($bmi);
-        console.log(bmi);
+        // var bmi=17;
+        // var maxBmi = 50
+
+        // var indicator = (bmi/maxBmi)*100
+
+        // console.log(indicator)
+
+        $('.customer-profile-bmi-text').animate({ left: `+=${bmi}%` }, "slow");
         $(".name").hide();
         $('.customer-name-calculate-btn').hide();
         $(".customer-bmi-calculate-btn").hide();
