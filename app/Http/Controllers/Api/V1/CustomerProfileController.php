@@ -238,7 +238,8 @@ class CustomerProfileController extends Controller
         $auth_user = auth()->user();
         $current_date = Carbon::now('Asia/Yangon')->toDateString();
         $workouts = PersonalWorkOutInfo::where('user_id', $auth_user->id )
-                    ->where('date', $current_date)->with('workout')->get();
+                    ->where('date', $current_date)->with('workout')
+                    ->get();
 
         return response()->json([
             'workouts' => $workouts

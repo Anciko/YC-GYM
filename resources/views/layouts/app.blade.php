@@ -175,6 +175,16 @@
                     </li>
 
 
+                        <li class="sidebar-item @yield('training-center-active') ">
+                            <a class="sidebar-link" href="{{ route('traininggroup.index') }}">
+
+                                <i class="fa-solid fa-dumbbell align-middle "></i> <span
+
+                                    class="align-middle">Training Center</span>
+                            </a>
+                        </li>
+
+
                     {{-- <li class="sidebar-item @yield('member-active')">
 
                         <a class="sidebar-link" href="{{ route('member.index') }}">

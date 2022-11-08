@@ -78,19 +78,23 @@ class AuthController extends Controller
         // Thandar style start
 
         $user_member_type_id = $request->member_id;
-        $member = Member::findOrFail($user_member_type_id);
+        // $member = Member::findOrFail($user_member_type_id);
         $user_member_type_level = $request->member_type_level;
         $user->membertype_level = $request->member_type_level;
-        $user->member_type = $member->member_type;
+        // $user->member_type = $member->member_type;
 
-        if ($member->member_type == 'Free') {
+        $user->member_type = 'Free'; ///
+        $user->request_type = $user_member_type_id;  ///
+
+        if ($user_member_type_id == 1) {
             $user->active_status = 0;
         } else {
             $user->active_status = 1;
         }
 
+        $member_id = 1; ///
         $user->save();
-        $user->members()->attach($request->member_id, ['member_type_level' => $user_member_type_level]);
+        $user->members()->attach($member_id, ['member_type_level' => $user_member_type_level]);
         $user->assignRole('Free');
         // Thandar style end
 

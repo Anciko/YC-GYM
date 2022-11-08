@@ -18,6 +18,7 @@ class TrainingUser extends Model
         return $this->belongsTo(TrainingGroup::class,'training_group_id', 'id');
     }
 
+   
     public function user() {
         return $this->belongsTo(User::class);
     }

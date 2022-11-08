@@ -59,7 +59,12 @@ class HomeController extends Controller
         if (Auth::check()) {
             if( Auth::user()->hasRole('System_Admin')){
                 return view('admin.home');
-            }else{
+            }elseif(Auth::user()->hasRole('King')){
+                return view('admin.home');
+            }elseif(Auth::user()->hasRole('Queen')){
+                return view('admin.home');
+            }
+            else{
                 return view('customer.home');
             }
         } else {
