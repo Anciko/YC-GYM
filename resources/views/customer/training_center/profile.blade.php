@@ -19,7 +19,7 @@
         </div>
         <iconify-icon icon="cil:pen" class="change-name-icon" id="name_edit_pen"></iconify-icon>
         <button type="submit" class="customer-primary-btn customer-name-calculate-btn">Save</button>
-        <button type="button" onclick="window.history.go(-1); return false;" class="customer-secondary-btn customer-name-calculate-btn" id="customer_cancel">Cancel</button>
+        <button type="button" class="customer-secondary-btn customer-name-calculate-btn" id="customer_name_cancel">Cancel</button>
     </div>
     </form>
 
@@ -115,7 +115,7 @@
 
             </div>
         </div>
-        <button type="button" onclick="window.history.go(-1); return false;" class="customer-secondary-btn customer-bmi-calculate-btn" id="customer_cancel">Cancel</button>
+        <button type="button" class="customer-secondary-btn customer-bmi-calculate-btn" id="customer_cancel">Cancel</button>
         <button type="submit" class="customer-primary-btn customer-bmi-calculate-btn">Save and Calculate BMI</button>
 
     </div>
@@ -156,6 +156,7 @@
 
     <div class="weight-chart-container" id="weightchart">
         <p>Your {{$plan}} History</p>
+        <form><input type="year" name="year" ><button type="submit" class="btn btn-primary">Filter</button></form>
         <canvas id="myChart"></canvas>
     </div>
 
@@ -336,11 +337,39 @@
             $(".name").hide();
         });
 
+        $("#customer_cancel").on('click', function(event){
+            event.stopPropagation();
+            event.stopImmediatePropagation();
+            $(".age").attr('readonly', true);
+            $(".weight").attr('readonly', true);
+            $(".neck").attr('readonly', true);
+            $(".waist").attr('readonly', true);
+            $(".hip").attr('readonly', true);
+            $(".shoulders").attr('readonly', true);
+            $(".customer-bmi-calculate-btn").hide();
+            $('select.height_ft').attr('disabled', true);
+            $('select.height_in').attr('disabled', true);
+            $('.change-name-icon').show();
+            $('.customer-name-calculate-btn').show();
+            $("#name").show();
+            $(".name").hide();
+            $('.customer-name-calculate-btn').hide();
+            $('#customer_name_cancel').hide();
+
+        });
+
         $('#name_edit_pen').on('click',function(){
             $(".name").show();
             $('.customer-name-calculate-btn').show();
             $('#name_edit_pen').hide();
             $("#name").hide();
+        })
+
+        $("#customer_name_cancel").on('click',function(event){
+            $(".name").hide();
+            $('.customer-name-calculate-btn').hide();
+            $('#name_edit_pen').show();
+            $("#name").show();
         })
 
         // $("#pen2").on('click', function(event){
@@ -543,10 +572,6 @@
         $('.customer-profile-tracker-workout-container').hide()
         $('.customer-profile-tracker-meal-container').hide()
         $('.customer-profile-tracker-water-container').hide()
-
-
-
-
 
         //show today's meal by default
         $("#meal-today").addClass("customer-profile-days-btn-active")

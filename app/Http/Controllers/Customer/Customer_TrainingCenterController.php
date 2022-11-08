@@ -216,6 +216,7 @@ class Customer_TrainingCenterController extends Controller
             ->select('date')
             ->where('user_id', $user_id)
             ->get();
+
         $weight_history = DB::table('weight_histories')
             ->where('user_id', $user_id)
             ->orderBy('date', 'ASC')
