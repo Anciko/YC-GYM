@@ -366,4 +366,14 @@ class CustomerProfileController extends Controller
             'weight_histories' => $weight_histories
         ]);
     }
+
+
+    public function customerWeightHistoryDates() {
+        $auth_user = auth()->user();
+        $weight_histories = WeightHistory::where('user_id', $auth_user->id)->get();
+
+        return response()->json([
+            'weight_histories' => $weight_histories
+        ]);
+    }
 }
