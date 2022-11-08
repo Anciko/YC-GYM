@@ -67,6 +67,8 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
 
     // CustomerProfile
     Route::get('customer-profile', [CustomerProfileController::class, 'customerProfile']);
+
+    Route::put('customer-name-update', [CustomerProfileController::class, 'customerNameUpdate']);
     Route::put('customer-profile-update', [CustomerProfileController::class, 'customerProfileUpdate']);
 
     Route::get('customer-today-water-level', [CustomerProfileController::class, 'customerWaterTrackForToday']);
@@ -97,7 +99,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::get('customer-workout-between/{start_date}/{end_date}', [CustomerProfileController::class, 'customerBetweenDaysWrokout']);
 
     // Monthly weight Loss history
-    Route::get('monthly-weighloss-history', [CustomerProfileController::class, 'monthlyWeightLossHistory']);
+    Route::get('customer-weight-history', [CustomerProfileController::class, 'weightHistory']);
 
 
     //Group chat
