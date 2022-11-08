@@ -13,6 +13,7 @@ use App\Models\PersonalMealInfo;
 use Illuminate\Support\Facades\DB;
 use App\Models\PersonalWorkOutInfo;
 use App\Http\Controllers\Controller;
+use App\Models\WeightHistory;
 use RealRashid\SweetAlert\Facades\Alert;
 
 class Customer_TrainingCenterController extends Controller
@@ -124,6 +125,8 @@ class Customer_TrainingCenterController extends Controller
                         ->get();
         $cal_sum=0;
         $time_sum=0;
+        $time_min=0;
+        $time_sec=0;
         foreach($workouts as $s){
             $cal_sum+=$s->calories;
             $time_sum+=$s->time;
@@ -146,6 +149,50 @@ class Customer_TrainingCenterController extends Controller
                     ]);
     }
 
+    public function profile_update(Request $request)
+    {
+       $user_id=auth()->user()->id;
+       $current_date = Carbon::now('Asia/Yangon')->toDateString();
+       $user=User::findOrFail($user_id);
+        $user->name=$request->name;
+        $user->weight=$request->weight;
+        $user->neck=$request->neck;
+        $user->hip=$request->hip;
+        $user->waist=$request->waist;
+        $user->shoulders=$request->shoulders;
+        $user->age=$request->age;
+
+        $height_ft=$request->height_ft;
+        $height_in=$request->height_in;
+        $height=($height_ft*12)+$height_in;
+
+        $user->height=$height;
+        $bmi=number_format((float)$request->weight/($height*$height)*703,1);
+        $user->bmi=$bmi;
+
+        if(auth()->user()->gender=='male'){
+
+            $bmr = (($request->weight)*4.536) + (($height)*15.88) + - (($request->age)*5) + 5;
+            $bfp=round((86.010*(log($request->waist*1-$request->neck*1)/log(10))-70.041*(log($height)/log(10))+36.76*1)*100)/100;
+
+
+        }else{
+            $bmr=(($request->weight)*4.536) + (($height)*15.88) + - (($request->age)*5) - 161;
+            $bfp = round((163.205*(log($request->waist*1.0+$request->hip*1.0-$request->neck*1.0)/log(10))- 97.684*(log($height)/log(10))-78.387*1.0)*100)/100;
+        }
+        $user->bmr=$bmr;
+        $user->bfp=$bfp;
+
+        $weight_history=New WeightHistory();
+        $weight_history->weight=$request->weight;
+        $weight_history->user_id=$user_id;
+        $weight_history->date=$current_date;
+        $weight_history->save();
+
+        $user->update();
+        return redirect()->back();
+    }
+
     public function profile()
     {   $user_id=auth()->user()->id;
         $current_date = Carbon::now('Asia/Yangon')->toDateString();
@@ -160,6 +207,22 @@ class Customer_TrainingCenterController extends Controller
                         ->select('date')
                         ->where('user_id',$user_id)
                         ->get();
+        $weight_history=DB::table('weight_histories')
+                        ->where('user_id',$user_id)
+                        ->orderBy('date', 'ASC')
+                        ->get();
+
+        if(sizeof($weight_history)==1){
+            $weight_date=DB::table('weight_histories')
+                        ->select('date')
+                        ->where('user_id',$user_id)
+                        ->first();
+
+            $newDate =\Carbon\Carbon::parse($weight_date->date)->addMonth(1)->format("j F, Y");
+        }else{
+            $newDate=null;
+        }
+
         $cal_sum=0;
         $time_sum=0;
         $time_min=0;
@@ -176,7 +239,7 @@ class Customer_TrainingCenterController extends Controller
             }
         }
 
-        return view('customer.training_center.profile',compact('workouts','workout_date','cal_sum','time_min','time_sec'));
+        return view('customer.training_center.profile',compact('workouts','workout_date','cal_sum','time_min','time_sec','weight_history','newDate'));
     }
 
     public function workout_sevenday()
@@ -195,6 +258,8 @@ class Customer_TrainingCenterController extends Controller
                         ->get();
         $cal_sum=0;
         $time_sum=0;
+        $time_min=0;
+        $time_sec=0;
         foreach($workouts as $s){
             $cal_sum+=$s->calories;
             $time_sum+=$s->time;
@@ -397,13 +462,14 @@ class Customer_TrainingCenterController extends Controller
     {
         $groups_id=$request->workout_id;
         $groups =  json_decode(json_encode($groups_id));
-        $date = Carbon::Now();
+        $date = Carbon::Now()->toDateString();
         $user = auth()->user()->id;
         if($user){
             foreach ($groups as $gp) {
                 $personal_workout_info = new PersonalWorkOutInfo();
                 $personal_workout_info->user_id = $user;
                 $personal_workout_info->workout_id = $gp;
+                $personal_workout_info->date=$date;
                 $personal_workout_info->save();
             }
 
@@ -691,7 +757,7 @@ class Customer_TrainingCenterController extends Controller
 
         $current_day=Carbon::now()->format('l');
         $tc_workouts=DB::table('workouts')
-                        ->where('place','home')
+                        ->where('place','Home')
                         ->where('workout_plan_type',$workout_plan)
                         ->where('member_type',$user->member_type)
                         ->where('gender_type',$user->gender)
@@ -734,7 +800,7 @@ class Customer_TrainingCenterController extends Controller
 
         $current_day=Carbon::now()->format('l');
         $tc_workouts=DB::table('workouts')
-                        ->where('place','gym')
+                        ->where('place','Gym')
                         ->where('workout_plan_type',$workout_plan)
                         ->where('member_type',$user->member_type)
                         ->where('gender_type',$user->gender)
