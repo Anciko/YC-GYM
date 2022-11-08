@@ -5,11 +5,12 @@ namespace App\Http\Controllers\Customer;
 use Carbon\Carbon;
 use App\Models\User;
 use App\Models\Member;
+use App\Models\BankingInfo;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use App\Models\WeightHistory;
 use Spatie\Permission\Models\Role;
 use App\Http\Controllers\Controller;
-use App\Models\BankingInfo;
-use App\Models\WeightHistory;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
@@ -91,6 +92,7 @@ class CustomerRegisterController extends Controller
         $user->average_night = $all_info->sleep[0];
 
         $user->most_attention_areas = $user_bodyArea;
+        $user->member_code = 'yc-' . Str::uuid();
 
         $member_id = 1; ///
         $user->save();

@@ -154,7 +154,6 @@ class Customer_TrainingCenterController extends Controller
        $user_id=auth()->user()->id;
        $current_date = Carbon::now('Asia/Yangon')->toDateString();
        $user=User::findOrFail($user_id);
-        $user->name=$request->name;
         $user->weight=$request->weight;
         $user->neck=$request->neck;
         $user->hip=$request->hip;
@@ -190,6 +189,17 @@ class Customer_TrainingCenterController extends Controller
         $weight_history->save();
 
         $user->update();
+        Alert::success('Success', 'Profile Updated Successfully');
+        return redirect()->back();
+    }
+
+    public function profile_update_name(Request $request)
+    {
+        $user_id=auth()->user()->id;
+        $user=User::findOrFail($user_id);
+        $user->name=$request->name;
+        $user->update();
+        Alert::success('Success', 'Name Updated Successfully');
         return redirect()->back();
     }
 
@@ -220,7 +230,12 @@ class Customer_TrainingCenterController extends Controller
 
             $newDate =\Carbon\Carbon::parse($weight_date->date)->addMonth(1)->format("j F, Y");
         }else{
-            $newDate=null;
+            $weight_date=DB::table('weight_histories')
+                            ->where('user_id',$user_id)
+                            ->orderBy('date','DESC')
+                            ->first();
+
+            $newDate =\Carbon\Carbon::parse($weight_date->date)->addMonth(1)->format("j F, Y");
         }
 
         $cal_sum=0;
