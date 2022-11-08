@@ -92,9 +92,9 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     // Route::get('customer-last7days-sanck', [CustomerProfileController::class, 'customerMealTrackForLast7DaysSnack']);
     // Route::get('customer-last7days-dinner', [CustomerProfileController::class, 'customerMealTrackForLast7DaysDinner']);
 
-    // Route::get('customer-today-workout', [CustomerProfileController::class, 'customerTodayWorkout']);
-    // Route::get('customer-last7days-workout', [CustomerProfileController::class, 'customerLast7daysWorkout']);
-    // Route::get('customer-workout-between/{start_date}/{end_date}', [CustomerProfileController::class, 'customerBetweenDaysWrokout']);
+    Route::get('customer-today-workout', [CustomerProfileController::class, 'customerTodayWorkout']);
+    Route::get('customer-last7days-workout', [CustomerProfileController::class, 'customerLast7daysWorkout']);
+    Route::get('customer-workout-between/{start_date}/{end_date}', [CustomerProfileController::class, 'customerBetweenDaysWrokout']);
 
     // Monthly weight Loss history
     Route::get('monthly-weighloss-history', [CustomerProfileController::class, 'monthlyWeightLossHistory']);

@@ -98,6 +98,16 @@ class AuthController extends Controller
         $user->assignRole('Free');
         // Thandar style end
 
+        Auth::login($user);
+
+        $weight_history = new WeightHistory();
+        $weight_date = Carbon::now()->toDateString();
+        $weight_history->weight = $request->weight;
+        $weight_history->user_id = auth()->user()->id;
+        $weight_history->date = $weight_date;
+        $weight_history->save();
+
+
         $token = $user->createToken('gym');
 
         return response()->json([
@@ -272,7 +282,8 @@ class AuthController extends Controller
     }
 
 
-    public function test() {
+    public function test()
+    {
         return 'yc-' . Str::uuid();
     }
 }
