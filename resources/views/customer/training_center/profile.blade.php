@@ -295,6 +295,8 @@
 @push('scripts')
 <script>
     $( document ).ready(function() {
+        var bmi=@json($bmi);
+        console.log(bmi);
         $(".name").hide();
         $('.customer-name-calculate-btn').hide();
         $(".customer-bmi-calculate-btn").hide();
@@ -352,17 +354,6 @@
         //       });
         // });
 
-
-        var newDate = @json($newDate);
-        console.log(tdy);
-        console.log(newDate);
-        if(newDate>=tdy){
-            $('#pen1').show();
-            $('#pen2').show();
-        }else{
-            $('#pen1').show();
-            $('#pen2').show();
-        }
         var weight_history = @json($weight_history);
         if(weight_history.length<2){
             $("#weightreview").show();
@@ -549,7 +540,7 @@
         $(".customer-7days-filter-meal-container").hide()
         //workout tab active by default
         $('#workout').addClass('customer-profile-tracker-header-active')
-        $('.customer-profile-tracker-workout-container').show()
+        $('.customer-profile-tracker-workout-container').hide()
         $('.customer-profile-tracker-meal-container').hide()
         $('.customer-profile-tracker-water-container').hide()
 
