@@ -99,7 +99,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::get('customer-workout-between/{start_date}/{end_date}', [CustomerProfileController::class, 'customerBetweenDaysWrokout']);
 
     // Monthly weight Loss history
-    Route::get('customer-weight-history', [CustomerProfileController::class, 'weightHistory']);
+    Route::get('customer-weight-history/{current_year}', [CustomerProfileController::class, 'weightHistory']);
 
 
     //Group chat
