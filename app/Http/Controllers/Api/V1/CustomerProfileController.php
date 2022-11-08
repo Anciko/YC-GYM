@@ -20,6 +20,21 @@ class CustomerProfileController extends Controller
 
         $user = User::findOrFail($auth_user->id);
 
+        // $weight_history = WeightHistory::where('user_id', $user->id)->latest()->first();
+
+        return response()->json([
+            'message' => 'success',
+            'user' => $user,
+        ]);
+    }
+
+    public function customerNameUpdate(Request $request) {
+        $auth_user = auth()->user();
+        $user = User::findOrFail($auth_user->id);
+
+        $user->name = $request->name;
+        $user->update();
+
         return response()->json([
             'message' => 'success',
             'user' => $user
@@ -32,13 +47,13 @@ class CustomerProfileController extends Controller
         $current_date = Carbon::now('Asia/Yangon')->toDateString();
 
         $user = User::find($auth_user->id);
-        $user->update($request->all());
 
         $weight_history = new WeightHistory();
         $weight_history->user_id = $auth_user->id;
         $weight_history->weight = $request->weight;
         $weight_history->date = $current_date;
 
+        $user->update($request->all());
         $weight_history->save();
 
         return response()->json([
@@ -75,7 +90,7 @@ class CustomerProfileController extends Controller
     public function customerRequestWaterLevel($date)
     {
         $auth_user = auth()->user();
-        $water = WaterTracked::where('user_id', $auth_user->id)->where('date', $date)->get();
+        $water = WaterTracked::where('user_id', $auth_user->id)->where('date', $date)->first();
 
         return response()->json([
             'water' => $water
@@ -320,12 +335,15 @@ class CustomerProfileController extends Controller
     }
 
     public function customerBetweenDaysWrokout($start_date, $end_date) {
-       $workouts = PersonalWorkOutInfo::whereDate('date', '>=' ,$start_date)->whereDate('date', '<=', $end_date)
+        //return $start_date;
+        $auth_user = auth()->user();
+       $workouts = PersonalWorkOutInfo::where('user_id', $auth_user->id )->whereDate('date', '>=' ,$start_date)
+                    ->whereDate('date', '<=', $end_date)
                     ->with('workout')->get();
        return $workouts;
     }
 
-    public function monthlyWeightLossHistory() {
+    public function weightHistory() {
         // return "01" < "9" ? "True" : "fasle";
         $current_year = Carbon::now('Asia/Yangon')->format('Y');
         $auth_user = auth()->user();
