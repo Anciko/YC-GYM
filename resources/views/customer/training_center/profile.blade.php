@@ -1,9 +1,10 @@
 @extends('customer.training_center.layouts.app')
 
 @section('content')
+@include('sweetalert::alert')
 
 <div class="customer-profile-parent-container">
-    <form class="personal_detail" method="POST" action="{{route('customer-profile.update')}}">
+    <form class="personal_detail" method="POST" action="{{route('customer-profile-name.update')}}">
         @csrf
         @method('POST')
     <div class="customer-profile-img-name-container">
@@ -14,13 +15,22 @@
             <p id="name">{{auth()->user()->name}}</p>
             <input type="text" value="{{auth()->user()->name}}" class="name" name="name">
 
-            {{-- <span>(User ID: 1234567890)</span> --}}
+            <span>(User ID: {{auth()->user()->member_code}})</span>
         </div>
-        <iconify-icon icon="cil:pen" class="change-name-icon"></iconify-icon>
+        <iconify-icon icon="cil:pen" class="change-name-icon" id="name_edit_pen"></iconify-icon>
+        <button type="submit" class="customer-primary-btn customer-name-calculate-btn">Save</button>
+        <button type="button" onclick="window.history.go(-1); return false;" class="customer-secondary-btn customer-name-calculate-btn" id="customer_cancel">Cancel</button>
     </div>
+    </form>
 
+    <form class="personal_detail" method="POST" action="{{route('customer-profile.update')}}">
+        @csrf
+        @method('POST')
     <div class="customer-profile-personaldetails-parent-container">
         <h1>Your Profile</h1>
+        <div style="float:right;padding-right:40px">
+            <iconify-icon icon="cil:pen" class="change-name-icon" id="pen1"></iconify-icon>
+        </div>
         <div class="customer-profile-personaldetails-grid">
             <div class="customer-profile-personaldetails-left">
                 <div class="customer-profile-personaldetail-container">
@@ -105,7 +115,7 @@
 
             </div>
         </div>
-        <button type="cancel" class="customer-secondary-btn customer-bmi-calculate-btn" id="customer_cancel">Cancel</button>
+        <button type="button" onclick="window.history.go(-1); return false;" class="customer-secondary-btn customer-bmi-calculate-btn" id="customer_cancel">Cancel</button>
         <button type="submit" class="customer-primary-btn customer-bmi-calculate-btn">Save and Calculate BMI</button>
 
     </div>
@@ -145,7 +155,7 @@
     </div>
 
     <div class="weight-chart-container" id="weightchart">
-        <p>Your Monthly {{$plan}} History</p>
+        <p>Your {{$plan}} History</p>
         <canvas id="myChart"></canvas>
     </div>
 
@@ -285,27 +295,64 @@
 @push('scripts')
 <script>
     $( document ).ready(function() {
-
+        var bmi=@json($bmi);
+        console.log(bmi);
         $(".name").hide();
+        $('.customer-name-calculate-btn').hide();
         $(".customer-bmi-calculate-btn").hide();
+
+        var today = new Date();
+        var dd = String(today.getDate()).padStart(2, '0');
+        var mm = String(today.getMonth() + 1).padStart(2, '0');
+
+        var yyyy = today.getFullYear();
+        var d = String(today.getDate());
+        const monthNames = ["January", "Febuary", "March", "April", "May", "June",
+        "July", "August", "September", "October", "November", "December"
+        ];
+        var m = monthNames[today.getMonth()];
+
+        today =  yyyy+'-'+mm+'-'+dd;
+        tdy =  d+' '+m+', '+yyyy;
+
         $('select.height_ft').attr('disabled', true);
         $('select.height_in').attr('disabled', true);
         //on clicking one of the butttons of last 7 days (water)
-        $(".change-name-icon").on('click', function(event){
+        $("#pen1").on('click', function(event){
+            event.stopPropagation();
+            event.stopImmediatePropagation();
             $(".age").removeAttr("readonly");
             $(".weight").removeAttr("readonly");
             $(".neck").removeAttr("readonly");
             $(".waist").removeAttr("readonly");
             $(".hip").removeAttr("readonly");
             $(".shoulders").removeAttr("readonly");
-            $("#name").hide();
-            $(".name").show();
             $(".customer-bmi-calculate-btn").show();
             $('select.height_ft').attr('disabled', false);
             $('select.height_in').attr('disabled', false);
             $('.change-name-icon').hide();
+            $('.customer-name-calculate-btn').hide();
+            $("#name").show();
+            $(".name").hide();
         });
 
+        $('#name_edit_pen').on('click',function(){
+            $(".name").show();
+            $('.customer-name-calculate-btn').show();
+            $('#name_edit_pen').hide();
+            $("#name").hide();
+        })
+
+        // $("#pen2").on('click', function(event){
+        //     var newDate = @json($newDate);
+        //     Swal.fire({
+        //         icon:'warning',
+        //         title:"Can't Edit Profile",
+        //         text: "Your profile can edit on "+newDate ,
+        //         confirmButtonColor: '#3CDD57',
+        //         timer: 5000
+        //       });
+        // });
 
         var weight_history = @json($weight_history);
         if(weight_history.length<2){
@@ -493,17 +540,12 @@
         $(".customer-7days-filter-meal-container").hide()
         //workout tab active by default
         $('#workout').addClass('customer-profile-tracker-header-active')
-        $('.customer-profile-tracker-workout-container').show()
+        $('.customer-profile-tracker-workout-container').hide()
         $('.customer-profile-tracker-meal-container').hide()
         $('.customer-profile-tracker-water-container').hide()
 
 
-        var today = new Date();
-        var dd = String(today.getDate()).padStart(2, '0');
-        var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
-        var yyyy = today.getFullYear();
 
-        today =  yyyy+'-'+mm+'-'+dd;
 
 
         //show today's meal by default
