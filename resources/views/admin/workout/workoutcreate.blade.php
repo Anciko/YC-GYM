@@ -98,8 +98,8 @@
                         <div class="form-floating col-md-6">
                                 <select class="form-select" aria-label="Default select example" placeholder="Select workout place" name="workoutplace">
                                     <option value=""></option>
-                                    <option value="gym">Gym</option>
-                                    <option value="home">Home</option>
+                                    <option value="Gym">Gym</option>
+                                    <option value="Homel">Home</option>
                                 </select>
                                 <label for="floatingInput">Select Workout Place</label>
                         </div>

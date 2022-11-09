@@ -13,8 +13,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css"
     integrity="sha512-xh6O/CkQoPOWDdYTDqeRdPCVd1SpvCA9XXcUnZS2FmJNp1coAFzvtCN9BmamE+4aHK8yyUHUSCcJHgXloTyT2A=="
     crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <!--iconify-->
-    <script src="https://code.iconify.design/iconify-icon/1.0.0/iconify-icon.min.js"></script>
+
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/boxicons@latest/css/boxicons.min.css">
 
     {{-- //// --}}
@@ -72,6 +71,9 @@
     <link rel ="stylesheet" href="{{ asset('css/custom.css') }}">
 
     <link rel="stylesheet" href="{{asset('css/workout.css')}}">
+
+    <link rel="stylesheet" href="{{asset('css/globals.css')}}">
+    <link rel="stylesheet" href="{{asset('css/adminchat/trainingcenter.css')}}">
 
     <!--chart js-->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -173,6 +175,25 @@
                                 class="align-middle">Trainers</span>
                         </a>
                     </li>
+
+
+                        <li class="sidebar-item @yield('training-center-active') ">
+                            <a class="sidebar-link" href="{{ route('traininggroup.index') }}">
+
+                                <i class="fa-solid fa-dumbbell align-middle "></i> <span
+
+                                    class="align-middle">Training Center</span>
+                            </a>
+                        </li>
+
+                        <li class="sidebar-item">
+                            <a class="sidebar-link" href="{{ route('traininggroup.create') }}">
+
+                                <i class="fa-solid fa-people-group"></i> <span
+
+                                    class="align-middle">Training Group</span>
+                            </a>
+                        </li>
 
 
                     {{-- <li class="sidebar-item @yield('member-active')">
@@ -335,7 +356,7 @@
 
                 <div class="dropdown">
 
-                    <img src="{{ asset('img/avatar.jpg') }}" style="cursor: pointer;" class="rounded-circle me-2" width="35" alt="">
+                    <img src="{{ asset('img/avatar.png') }}" style="cursor: pointer;" class="rounded-circle me-2" width="35" alt="">
 
 
 
@@ -433,7 +454,8 @@
 
 
 
-
+ <!--iconify-->
+ <script src="https://code.iconify.design/iconify-icon/1.0.0/iconify-icon.min.js"></script>
 
 
 
@@ -457,7 +479,14 @@
 
     <script type="text/javascript" src="{{ asset('vendor/jsvalidation/js/jsvalidation.js') }}"></script>
 
+    {{-- axios --}}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.1.3/axios.min.js" integrity="sha512-0qU9M9jfqPw6FKkPafM3gy2CBAvUWnYVOfNPDYKVuRTel1PrciTj+a9P3loJB+j0QmN2Y0JYQmkBBS8W+mbezg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
+    {{-- pusher --}}
+    <script src="https://js.pusher.com/7.2/pusher.min.js"></script>
+
+     {{-- emoji --}}
+     <script src="https://cdn.jsdelivr.net/npm/@joeattardi/emoji-button@3.0.3/dist/index.min.js"></script>
 
     @stack('scripts')
 

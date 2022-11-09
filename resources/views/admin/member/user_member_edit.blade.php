@@ -62,12 +62,12 @@
                     <div class="row g-3 align-items-center">
                         <div class="col-auto">
                         <label for="from_date" class="col-form-label">Register Date</label>
-                        <input type="text @error('from_date') is-invalid @enderror" id="from_date" class="form-control" name="from_date"  value="{{$user->from_date}}">
+                        <input type="date @error('from_date') is-invalid @enderror" id="from_date" class="form-control" name="from_date"  value="{{$user->from_date}}">
 
                         </div>
                         <div class="col-auto">
                             <label for="to_date" class="col-form-label">Expired Date</label>
-                            <input type="text @error('to_date') is-invalid @enderror" id="to_date" class="form-control" name="to_date"  value="{{$user->to_date}}">
+                            <input type="date @error('to_date') is-invalid @enderror" id="to_date" class="form-control" name="to_date"  value="{{$user->to_date}}">
 
                         </div>
                     </div>

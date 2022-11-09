@@ -1,8 +1,28 @@
+.wrapper:last-child{
+    width: auto;
+}
+
+/* width */
+::-webkit-scrollbar {
+    width: 5px;
+    height: 5px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+    background: #ECECEC;
+  }
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background: #3CDD57;
+  }
+
+
 .trainer-main-content-container{
 
     max-width: 900px;
     margin: auto;
-    margin-top: 140px;
+    /* margin-top: 140px; */
     margin-bottom: 40px;
     /* overflow-x: hidden; */
 }
@@ -23,6 +43,7 @@
 .trainer-create-gp--modal-btn-icon{
     font-size: 20px;
 }
+
 
 .trainer-two-columns-container{
     display: grid;
@@ -58,7 +79,20 @@
     display: flex;
     align-items: center;
     text-decoration: none;
-    color: var(--customer-text-color);
+    color: #000000;
+    margin-bottom: 20px;
+}
+.group-chat-header-name-text-container{
+    margin-left: 10px;
+    max-width: 300px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+
+}
+
+.group-chat-header-name-text-container span{
+    font-size: 10px;
 }
 
 .tainer-group-chat-name-container:not(:first-child){
@@ -86,10 +120,22 @@
     margin-bottom: 30px;
 }
 
-.back-btn-icon{
-    font-size: 20px;
-    color: white;
+.customer-secondary-btn{
+    padding: 8px 13px;
+    border-radius: 5px;
+    border: 2px solid #3CDD57;
+    color: #3CDD57;
+    text-decoration: none;
+    cursor: pointer;
+    background-color: transparent;
+    transition: all 0.2s ease-in-out;
+    display: inline-block;
+    white-space: nowrap;
+}
 
+.customer-secondary-btn:hover{
+    color: #53f96f;
+    border: 2px solid #53f96f;
 }
 
 .trainer-view-members-add-delete-btn-contaier{
@@ -103,7 +149,7 @@
     padding: 10px;
     border: none;
     border-radius: 5px;
-    background-color: var(--customer-primary-color);
+    background-color: #3CDD57;
     color: white;
 }
 
@@ -111,16 +157,36 @@
     margin-bottom: 0;
     margin-left: 5px;
 }
+.back-btn-icon{
+    font-size: 20px;
+    color: #3CDD57;
+    margin-top: 0;
+}
 
 .trainer-view-members-delete-btn{
     padding: 10px;
     border: none;
     border-radius: 5px;
-    background-color: var(--customer-red-color);
+    background-color: #D70000;
     color: white;
     margin-left: 10px;
 }
 
+.customer-red-btn{
+    padding: 10px 15px;
+    border-radius: 5px;
+    text-decoration: none;
+    cursor: pointer;
+    background-color: #D70000;
+    color: white;
+    transition: all 0.2s ease-in-out;
+    display: inline-block;
+    white-space: nowrap;
+}
+.customer-red-btn:hover{
+    background-color: #f52b2b;
+    color: white;
+}
 .trainer-group-chat-members-container{
     height: 390px;
     overflow-y: scroll;
@@ -134,12 +200,12 @@
 }
 
 .trainer-group-chat-member-row .customer-secondary-btn{
-    border: 2px solid var(--customer-text-color);
+    border: 2px solid #3CDD57;
     color: var(--customer-text-color);
 }
 
 .trainer-group-chat-member-row .customer-secondary-btn:hover{
-    border: 2px solid var(--customer-primary-color);
+    border: 2px solid #3CDD57;
     color: var(--customer-primary-color);
 }
 
@@ -203,15 +269,10 @@
 .trainer-group-chat-media-container{
     height: 500px;
     overflow-y: scroll;
-    display: flex;
-    flex-wrap: wrap;
-    /* grid-template-columns: repeat(5,1fr); */
+    display: grid;
+    grid-template-columns: repeat(5,1fr);
     /* grid-template-columns: repeat( auto-fill, minmax(95px, 1fr) ); */
-    gap: 8px;
-    /* align-items: center; */
-    width: 100%;
-    align-content: flex-start;
-    /* justify-content: center; */
+    grid-gap: 10px 0;
 }
 
 .trainer-group-chat-media{
@@ -279,7 +340,7 @@
     display: flex;
     align-items: center;
     padding: 8px 13px;
-    border: 2px solid var(--customer-primary-color);
+    border: 2px solid #3CDD57;
     border-radius: 5px;
     cursor: pointer;
 }
@@ -304,7 +365,7 @@
 }
 
 .add-member-checked{
-    background-color: var(--customer-primary-color);
+    background-color: #3CDD57;
 }
 
 .groups-toggle-overlay{
@@ -326,6 +387,113 @@
     z-index: 4;
     color: var(--customer-text-color);
 }
+
+.group-chat-receiver-text-container p{
+    /* width: 100%; */
+    /* white-space: wrap; */
+    padding: 5px;
+    background-color: #3CDD57;
+    border-radius: 5px;
+    color: white;
+}
+
+.group-chat-sender-text-container span{
+    /* width: 100%; */
+    font-size: 10px;
+    color: var(--customer-text-color);
+}
+
+.group-chat-sender-container > img{
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.group-chat-sender-text-container{
+    margin-right: 5px;
+    max-width: 200px;
+}
+
+.group-chat-sender-text-container > p{
+    padding: 5px;
+    border-radius: 5px;
+    background-color: #3CDD57;
+    color: white;
+}
+
+.group-chat-sender-text-container > img{
+    width: 200px;
+    height: auto;
+}
+
+.group-chat-send-form-container{
+    height: 60px;
+    margin-top: auto;
+    position: absolute;
+    bottom: 0;
+    width: calc(100% - 30px);
+    display: flex;
+    align-items: center;
+    /* justify-content: space-between; */
+    border-top: 1px solid #ECECEC;
+}
+
+.group-chat-img-cancel{
+    border: none;
+    background-color: #D70000;
+    border-radius: 5px;
+}
+
+.group-chat-img-cancel-icon{
+    color: white;
+}
+.group-chat-img-preview{
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+    margin-left: 10px;
+}
+
+.video-prev{
+    width: 50px;
+    height: 50px;
+    margin-left: 10px;
+}
+
+.video-prev video{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+
+.group-chat-send-form-submit-btn{
+    border: none;
+    background-color: #3CDD57;
+    border-radius: 5px;
+    padding: 12px 28px;
+}
+
+.group-chat-send-form-submit-btn-icon{
+    font-size: 30px;
+    color: white;
+
+}
+.group-chat-send-form-submit-btn{
+    padding: 12px 15px;
+}
+
+/* .group-chat-send-form-img-contaier{
+    position: relative;
+    cursor: pointer;
+}
+
+.group-chat-send-form-img-contaier input{
+    width: 1px;
+    height: 1px;
+    position: absolute;
+} */
 
 @media screen and (max-width:1000px){
 
@@ -361,12 +529,11 @@
         margin: auto;
     }
 
-
 }
 
 @media screen and (max-width:600px){
     .trainer-group-chat-media-container{
-        /* grid-template-columns: repeat(4,1fr); */
+        grid-template-columns: repeat(4,1fr);
     }
 
     .trainer-view-members-add-btn{
@@ -383,11 +550,11 @@
 }
 @media screen and (max-width:500px){
     .trainer-group-chat-media-container{
-        /* grid-template-columns: repeat(3,1fr); */
+        grid-template-columns: repeat(3,1fr);
     }
 
     .trainer-group-chat-media{
-        width: 80px;
-        height: 80px;
+        width: 85px;
+        height: 85px;
     }
 }

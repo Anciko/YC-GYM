@@ -106,7 +106,9 @@
 @endsection
 @push('scripts')
     <script>
+
         $(document).ready(function() {
+            $('.group-chat-messages-container').scrollTop($('.group-chat-messages-container')[0].scrollHeight);
             $('#members').hide();
 
             $(document).on('click', '#view_group_member', function(e) {
@@ -123,7 +125,8 @@
                 $('#chat').show();
             });
         });
-        var id = localStorage.getItem('group_id');
+        var id = @json($group->training_group_id);
+        console.log(id);
         var groupchatcontainer = document.querySelector('.group-chat-messages-container');
         var pusher = new Pusher('576dc7f4f561e15a42ef', {
             cluster: 'eu'

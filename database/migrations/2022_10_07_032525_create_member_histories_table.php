@@ -16,8 +16,10 @@ class CreateMemberHistoriesTable extends Migration
         Schema::create('member_histories', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->references('id')->on('users')->onDelete('cascade');
-            $table->foreignId('member_id')->references('id')->on('members')->onDelete('cascade');
+            $table->foreignId('from_member_id')->references('id')->on('members')->onDelete('cascade');
+            $table->foreignId('to_member_id')->references('id')->on('members')->onDelete('cascade');
             $table->string('member_type_level');
+            $table->date('date');
             $table->softDeletes();
             $table->timestamps();
         });

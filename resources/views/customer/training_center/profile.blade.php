@@ -1,28 +1,42 @@
 @extends('customer.training_center.layouts.app')
 
 @section('content')
+@include('sweetalert::alert')
 
 <div class="customer-profile-parent-container">
+    <form class="personal_detail" method="POST" action="{{route('customer-profile-name.update')}}">
+        @csrf
+        @method('POST')
     <div class="customer-profile-img-name-container">
         <div class="customer-profile-img-container">
-            <img src="{{asset('img/avatar.jpg')}}">
+            <img src="{{asset('img/user.jpg')}}">
         </div>
         <div class="customer-profile-name-container">
-            <p>{{auth()->user()->name}}</p>
+            <p id="name">{{auth()->user()->name}}</p>
+            <input type="text" value="{{auth()->user()->name}}" class="name" name="name">
 
-            <span>(User ID: 1234567890)</span>
+            <span>(User ID: {{auth()->user()->member_code}})</span>
         </div>
-        <iconify-icon icon="cil:pen" class="change-name-icon"></iconify-icon>
+        <iconify-icon icon="cil:pen" class="change-name-icon" id="name_edit_pen"></iconify-icon>
+        <button type="submit" class="customer-primary-btn customer-name-calculate-btn">Save</button>
+        <button type="button" class="customer-secondary-btn customer-name-calculate-btn" id="customer_name_cancel">Cancel</button>
     </div>
+    </form>
 
-    <form class="customer-profile-personaldetails-parent-container">
+    <form class="personal_detail" method="POST" action="{{route('customer-profile.update')}}">
+        @csrf
+        @method('POST')
+    <div class="customer-profile-personaldetails-parent-container">
         <h1>Your Profile</h1>
+        <div style="float:right;padding-right:40px">
+            <iconify-icon icon="cil:pen" class="change-name-icon" id="pen1"></iconify-icon>
+        </div>
         <div class="customer-profile-personaldetails-grid">
             <div class="customer-profile-personaldetails-left">
                 <div class="customer-profile-personaldetail-container">
                     <p>Age:</p>
                     <div>
-                        <input type="number" value="{{auth()->user()->age}}">
+                        <input type="number" value="{{auth()->user()->age}}" readonly="readonly" class="age" name="age">
                         <span style = "visibility: hidden;">in</span>
                     </div>
                 </div>
@@ -33,14 +47,14 @@
                     ?>
                 <div class="customer-profile-personaldetail-container customer-profile-personaldetail-height-container">
                     <p>Height:</p>
-                    <select>
+                    <select name="height_ft" class="height_ft">
                         <option value="3" {{"3" == $height_ft ? 'selected' : ''}}>3</option>
                         <option value="4" {{"4" == $height_ft ? 'selected' : ''}}>4</option>
                         <option value="5" {{"5" == $height_ft ? 'selected' : ''}}>5</option>
                         <option value="6" {{"6" == $height_ft ? 'selected' : ''}}>6</option>
                     </select>
                     <span>ft</span>
-                    <select>
+                    <select name="height_in" class="height_in">
                         <option value="0" {{"0" == $height_in ? 'selected' : ''}}>0</option>
                         <option value="1" {{"1" == $height_in ? 'selected' : ''}}>1</option>
                         <option value="2" {{"2" == $height_in ? 'selected' : ''}}>2</option>
@@ -60,7 +74,7 @@
                 <div class="customer-profile-personaldetail-container">
                     <p>Weight:</p>
                     <div>
-                        <input type="number" value="{{auth()->user()->weight}}">
+                        <input type="number" value="{{auth()->user()->weight}}" class="weight" name="weight" readonly>
                         <span>lb</span>
                     </div>
 
@@ -68,7 +82,7 @@
                 <div class="customer-profile-personaldetail-container">
                     <p>Neck:</p>
                     <div>
-                        <input type="number" value="{{auth()->user()->neck}}">
+                        <input type="number" value="{{auth()->user()->neck}}" class="neck" name="neck" readonly>
                         <span>in</span>
                     </div>
                 </div>
@@ -77,7 +91,7 @@
                 <div class="customer-profile-personaldetail-container">
                     <p>Waist:</p>
                     <div>
-                        <input type="number" value="{{auth()->user()->waist}}">
+                        <input type="number" value="{{auth()->user()->waist}}" name="waist" class="waist" readonly>
                         <span>in</span>
                     </div>
                 </div>
@@ -85,7 +99,7 @@
                 <div class="customer-profile-personaldetail-container ">
                     <p>Hip:</p>
                     <div>
-                        <input type="number"  value="{{auth()->user()->hip}}">
+                        <input type="number"  value="{{auth()->user()->hip}}" name="hip" class="hip" readonly>
                         <span>in</span>
                     </div>
                 </div>
@@ -93,18 +107,20 @@
                 <div class="customer-profile-personaldetail-container">
                     <p>Shoulders:</p>
                     <div>
-                        <input type="number"  value="{{auth()->user()->shoulders}}">
-                        <span>lb</span>
+                        <input type="number"  value="{{auth()->user()->shoulders}}" name="shoulders" class="shoulders" readonly>
+                        <span>in</span>
                     </div>
 
                 </div>
 
             </div>
         </div>
+        <button type="button" class="customer-secondary-btn customer-bmi-calculate-btn" id="customer_cancel">Cancel</button>
+        <button type="submit" class="customer-primary-btn customer-bmi-calculate-btn">Save and Calculate BMI</button>
 
-        <button type="button" class="customer-primary-btn customer-bmi-calculate-btn">Calculate BMI</button>
+    </div>
     </form>
-
+    @hasanyrole('Platinum|Diamond|Gym Member')
     <div class="customer-profile-bmi-container">
         <div class="customer-profile-bmi-gradient">
             <div class="percentage-line"></div>
@@ -116,21 +132,41 @@
                     <div class="customer-profile-bmi-indicator-ball"></div>
                 </div>
 
-                <?php $bmi=auth()->user()->bmi ?>
+                <?php $bmi=auth()->user()->bmi;
+                    if ($bmi <=18.5) {
+                         $plan='Weight Gain';
+                    }elseif ($bmi>=25) {
+                         $plan='Weight Loss';
+                    }else {
+                         $plan='Body Beauty';
+                    }
+                ?>
                 @if ($bmi <=18.5)
-                <p>Your BMi , {{$bmi}} , is low.</p>
-                @elseif ($bmi >=25)
-                <p>Your BMi , {{$bmi}} , is high.</p>
+                <p>Your BMI , {{$bmi}} , is underweight.</p>
+                @elseif ($bmi >18.5 && $bmi<=24.9)
+                <p>Your BMI , {{$bmi}} , is normal.</p>
+                @elseif ($bmi >25 && $bmi<=29.9)
+                <p>Your BMI , {{$bmi}} , is overweight.</p>
                 @else
-                <p>Your BMi , {{$bmi}} , is normal.</p>
+                <p>Your BMI , {{$bmi}} , is obesity.</p>
                 @endif
             </div>
         </div>
     </div>
-
-    <div class="weight-chart-container">
-        <p>Your Monthly Weight Loss History</p>
+    <div class="weight-chart-container" id="weightchart">
+        <?php $currentyear=\Carbon\Carbon::now()->format("Y"); ?>
+        <select class="weight-chart-filter" onchange="year_filter(this.value)">
+            @for ($i = $currentyear; $i >= $year; $i--)
+            <option value={{$i}} name="year">{{$i}}</option>
+            @endfor
+        </select>
+        <p>Your {{$plan}} History</p>
         <canvas id="myChart"></canvas>
+    </div>
+
+    <div class="no-weight-chart" id="weightreview">
+        <p style="margin-top:100px;margin-left:150px">You don’t have weight history  to review.
+            Keep working out.</p>
     </div>
 
     <div class="customer-profile-trackers-parent-container">
@@ -147,6 +183,7 @@
         </div>
 
         <div class="customer-profile-tracker-workout-container">
+
             <div id="my-calendar"></div>
 
             <form class="customer-profile-days-container customer-profile-workout-days-container">
@@ -257,47 +294,254 @@
             </div>
         </div>
     </div>
+    @endhasanyrole
 
 </div>
 
 @endsection
 @push('scripts')
+@hasanyrole('Platinum|Diamond|Gym Member')
 <script>
-    $( document ).ready(function() {
+            var weight_history= @json($weight_history);
+            if(weight_history.length<2){
+                $("#weightreview").show();
+                $("#weightchart").show();
+            }else{
 
-        const labels = [
-                'Jan',
-                'Feb',
-                'March',
-                'April',
-                'May',
-                'June',
-            ];
+                $("#weightreview").hide();
+                $("#weightchart").show();
 
-            const data = {
-                labels: labels,
-                datasets: [{
-                label: 'My First dataset',
-                fill: true,
+                let weight = [];
+                let date = [];
+                for(let i = 0; i < weight_history.length; i++){
 
-                borderColor: "#4D72E8",
-                backgroundColor:"rgba(77,114,232,0.3)",
-                data: [0, 10, 5, 2, 20, 30, 45],
-                }]
-            };
+                    weight.push(
 
-            const config = {
-                type: 'line',
-                data: data,
-                options: {
-                maintainAspectRatio: false,
+                    weight_history[i].weight
+                    );
+
+                    date.push(
+
+                    weight_history[i].date
+
+                    );
+
+                    }
+
+                const labels = date;
+
+                console.log(weight);
+                const data = {
+                    labels: labels,
+                    datasets: [{
+                    label: 'Weight(lb)',
+                    fill: true,
+
+                    borderColor: "#4D72E8",
+                    backgroundColor:"rgba(77,114,232,0.3)",
+
+                    data:weight,
+
+                    }]
+                };
+
+                const config = {
+                    type: 'line',
+                    data: data,
+                    options: {
+                        maintainAspectRatio: false,
+                    }
+                };
+
+                const myChart = new Chart(
+                    document.getElementById('myChart'),
+                    config
+                );
+
+                function destroyChart() {
+                    console.log("destroy chart");
+                    myChart.destroy();
+                    }
+
             }
-            };
 
-            const myChart = new Chart(
-                document.getElementById('myChart'),
-                config
-            );
+            function linechart(data){
+            var weight_history=data;
+            if(weight_history.length<2){
+                $("#weightreview").show();
+                $("#weightchart").show();
+            }else{
+                $("#weightreview").hide();
+                $("#weightchart").show();
+
+                let weight = [];
+                let date = [];
+                for(let i = 0; i < weight_history.length; i++){
+
+                    weight.push(
+
+                    weight_history[i].weight
+                    );
+
+                    date.push(
+
+                    weight_history[i].date
+
+                    );
+
+                    }
+
+                const labels = date;
+
+                console.log(weight);
+                const data = {
+                    labels: labels,
+                    datasets: [{
+                    label: 'Weight(lb)',
+                    fill: true,
+
+                    borderColor: "#4D72E8",
+                    backgroundColor:"rgba(77,114,232,0.3)",
+
+                    data:weight,
+
+                    }]
+                };
+
+                const config = {
+                    type: 'line',
+                    data: data,
+                    options: {
+                        maintainAspectRatio: false,
+                    }
+                };
+
+                const myChart = new Chart(
+                    document.getElementById('myChart'),
+                    config
+                );
+
+            }
+
+    }
+
+
+    // const ctx =  document.getElementById('myChart').getContext('2d');
+
+    // const myChart=new Chart(ctx,{});
+
+    // function destroyChart() {
+    //     console.log(myChart);
+    //     console.log("myChart");
+    //     myChart.destroy();
+    //     }
+
+    function year_filter(value) {
+
+        console.log(value);
+        var url="profile/year/";
+        $.ajax({
+                    type: "GET",
+                    url: url+value,
+                    datatype: "json",
+                    success: function(data) {
+                        var data=data.weight_history;
+                        destroyChart();
+                        linechart(data);
+                    }
+        })
+    }
+
+    $( document ).ready(function() {
+        // var data = @json($weight_history);
+        // destroyChart();
+        // linechart(data);
+        var bmi=@json($bmi);
+        // var bmi=17;
+        // var maxBmi = 50
+
+        // var indicator = (bmi/maxBmi)*100
+
+        // console.log(indicator)
+
+        $('.customer-profile-bmi-text').animate({ left: `+=${bmi}%` }, "slow");
+        $(".name").hide();
+        $('.customer-name-calculate-btn').hide();
+        $(".customer-bmi-calculate-btn").hide();
+
+        var today = new Date();
+        var dd = String(today.getDate()).padStart(2, '0');
+        var mm = String(today.getMonth() + 1).padStart(2, '0');
+
+        var yyyy = today.getFullYear();
+        var d = String(today.getDate());
+        const monthNames = ["January", "Febuary", "March", "April", "May", "June",
+        "July", "August", "September", "October", "November", "December"
+        ];
+        var m = monthNames[today.getMonth()];
+
+        today =  yyyy+'-'+mm+'-'+dd;
+        tdy =  d+' '+m+', '+yyyy;
+
+        $('select.height_ft').attr('disabled', true);
+        $('select.height_in').attr('disabled', true);
+        //on clicking one of the butttons of last 7 days (water)
+        $("#pen1").on('click', function(event){
+            event.stopPropagation();
+            event.stopImmediatePropagation();
+            $(".age").removeAttr("readonly");
+            $(".weight").removeAttr("readonly");
+            $(".neck").removeAttr("readonly");
+            $(".waist").removeAttr("readonly");
+            $(".hip").removeAttr("readonly");
+            $(".shoulders").removeAttr("readonly");
+            $(".customer-bmi-calculate-btn").show();
+            $('select.height_ft').attr('disabled', false);
+            $('select.height_in').attr('disabled', false);
+            $('.change-name-icon').hide();
+            $('.customer-name-calculate-btn').hide();
+            $("#name").show();
+            $(".name").hide();
+        });
+
+        $("#customer_cancel").on('click', function(event){
+            event.stopPropagation();
+            event.stopImmediatePropagation();
+            $(".age").attr('readonly', true);
+            $(".weight").attr('readonly', true);
+            $(".neck").attr('readonly', true);
+            $(".waist").attr('readonly', true);
+            $(".hip").attr('readonly', true);
+            $(".shoulders").attr('readonly', true);
+            $(".customer-bmi-calculate-btn").hide();
+            $('select.height_ft').attr('disabled', true);
+            $('select.height_in').attr('disabled', true);
+            $('.change-name-icon').show();
+            $('.customer-name-calculate-btn').show();
+            $("#name").show();
+            $(".name").hide();
+            $('.customer-name-calculate-btn').hide();
+            $('#customer_name_cancel').hide();
+
+        });
+
+        $('#name_edit_pen').on('click',function(){
+            $(".name").show();
+            $('.customer-name-calculate-btn').show();
+            $('#name_edit_pen').hide();
+            $("#name").hide();
+        })
+
+        $("#customer_name_cancel").on('click',function(event){
+            $(".name").hide();
+            $('.customer-name-calculate-btn').hide();
+            $('#name_edit_pen').show();
+            $("#name").show();
+        })
+
+        $(".personal_detail").submit(function(){
+            $('.customer-bmi-calculate-btn').attr('disabled', true);
+        })
 
         $("#my-calendar").zabuto_calendar({
 
@@ -359,7 +603,7 @@
                             <div class="customer-profile-workoutdetails-container">
                                 <div class="customer-profile-workoutdetail">
                                     <iconify-icon icon="icon-park-outline:time" class="customer-profile-time-icon"></iconify-icon>
-                                    <p>${item.time/60}mins</p>
+                                    <p>${Math.floor(item.time/60)}mins ${item.time%60}sec</p>
                                 </div>
                                 <div class="customer-profile-workoutdetail">
                                     <iconify-icon icon="codicon:flame" class="customer-profile-flame-icon"></iconify-icon>
@@ -423,21 +667,11 @@
         //hide 7days buttons (default)
         $(".customer-7days-filter-water-container").hide()
         $(".customer-7days-filter-meal-container").hide()
-
         //workout tab active by default
         $('#workout').addClass('customer-profile-tracker-header-active')
-        $('.customer-profile-tracker-workout-container').show()
+        $('.customer-profile-tracker-workout-container').hide()
         $('.customer-profile-tracker-meal-container').hide()
         $('.customer-profile-tracker-water-container').hide()
-
-
-        var today = new Date();
-        var dd = String(today.getDate()).padStart(2, '0');
-        var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
-        var yyyy = today.getFullYear();
-
-        today =  yyyy+'-'+mm+'-'+dd;
-
 
         //show today's meal by default
         $("#meal-today").addClass("customer-profile-days-btn-active")
@@ -784,8 +1018,7 @@
                         <div class="customer-profile-workoutdetails-container">
                             <div class="customer-profile-workoutdetail">
                                 <iconify-icon icon="icon-park-outline:time" class="customer-profile-time-icon"></iconify-icon>
-                                <p>`+(item['time'])/60
-                                +`mins</p>
+                                <p>${Math.floor(item.time/60)}mins ${item.time%60}sec</p>
                             </div>
                             <div class="customer-profile-workoutdetail">
                                 <iconify-icon icon="codicon:flame" class="customer-profile-flame-icon"></iconify-icon>
@@ -954,8 +1187,7 @@
                         <div class="customer-profile-workoutdetails-container">
                             <div class="customer-profile-workoutdetail">
                                 <iconify-icon icon="icon-park-outline:time" class="customer-profile-time-icon"></iconify-icon>
-                                <p>`+(item['time'])/60
-                                +`mins</p>
+                                <p>${Math.floor(item.time/60)}mins ${item.time%60}sec</p>
                             </div>
                             <div class="customer-profile-workoutdetail">
                                 <iconify-icon icon="codicon:flame" class="customer-profile-flame-icon"></iconify-icon>
@@ -969,5 +1201,72 @@
         `)
     }
 </script>
+@endhasanyrole
+@hasanyrole('Free|Gold|Ruby|Ruby Premium')
+<script>
+    $( document ).ready(function() {
+        $(".name").hide();
+        $('.customer-name-calculate-btn').hide();
+        $(".customer-bmi-calculate-btn").hide();
+        $("#pen1").on('click', function(event){
+            event.stopPropagation();
+            event.stopImmediatePropagation();
+            $(".age").removeAttr("readonly");
+            $(".weight").removeAttr("readonly");
+            $(".neck").removeAttr("readonly");
+            $(".waist").removeAttr("readonly");
+            $(".hip").removeAttr("readonly");
+            $(".shoulders").removeAttr("readonly");
+            $(".customer-bmi-calculate-btn").show();
+            $('select.height_ft').attr('disabled', false);
+            $('select.height_in').attr('disabled', false);
+            $('.change-name-icon').hide();
+            $('.customer-name-calculate-btn').hide();
+            $("#name").show();
+            $(".name").hide();
+        });
 
+
+
+        $("#customer_cancel").on('click', function(event){
+            event.stopPropagation();
+            event.stopImmediatePropagation();
+            $(".age").attr('readonly', true);
+            $(".weight").attr('readonly', true);
+            $(".neck").attr('readonly', true);
+            $(".waist").attr('readonly', true);
+            $(".hip").attr('readonly', true);
+            $(".shoulders").attr('readonly', true);
+            $(".customer-bmi-calculate-btn").hide();
+            $('select.height_ft').attr('disabled', true);
+            $('select.height_in').attr('disabled', true);
+            $('.change-name-icon').show();
+            $('.customer-name-calculate-btn').show();
+            $("#name").show();
+            $(".name").hide();
+            $('.customer-name-calculate-btn').hide();
+            $('#customer_name_cancel').hide();
+
+        });
+
+        $('#name_edit_pen').on('click',function(){
+            $(".name").show();
+            $('.customer-name-calculate-btn').show();
+            $('#name_edit_pen').hide();
+            $("#name").hide();
+        })
+
+        $("#customer_name_cancel").on('click',function(event){
+            $(".name").hide();
+            $('.customer-name-calculate-btn').hide();
+            $('#name_edit_pen').show();
+            $("#name").show();
+        })
+
+        $(".personal_detail").submit(function(){
+            $('.customer-bmi-calculate-btn').attr('disabled', true);
+        })
+    })
+</script>
+@endhasanyrole
 @endpush

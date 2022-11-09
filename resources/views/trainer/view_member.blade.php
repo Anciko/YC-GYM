@@ -79,11 +79,11 @@
                         </a>
                         <div class="trainer-view-members-add-delete-btn-contaier">
                             <form class="add-member-form" action="">
-                                <input type="text"  placeholder="Search member" id="search">
+                                <input type="text" placeholder="Search member" id="search">
 
                             </form>
                             <form action="{{route('group.delete')}}">
-                                <input type ="text" name = "group_id" value="{{$selected_group->id}}" hidden>
+                                <input type ="text" name ="group_id" value="{{$selected_group->id}}" hidden>
                                 <button  class="trainer-view-members-delete-btn customer-red-btn">
                                     Delete Group
                                 </button>
