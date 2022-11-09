@@ -392,10 +392,10 @@
                     success: function(data) {
                         console.log(data);
                         if(data.water == null){
-                            renderTodayCircle(3000,0)
+                            renderCircle(3000,0)
                         }
                         else{
-                            renderTodayCircle(3000,data.water.update_water)
+                            renderCircle(3000,data.water.update_water)
                         }
 
                     }
@@ -827,7 +827,7 @@
         return date
     }
 
-    //rendering today water circle progress
+    //rendering last 7 days water circle progress
     function renderCircle(total,taken){
         var result = taken / total
         var color
@@ -863,7 +863,7 @@
     }
 
 
-    //rendering last 7 days water circle progress
+    //rendering today water circle progress
     function renderTodayCircle(total,taken){
         var result = taken / total
         console.log('today',taken)
