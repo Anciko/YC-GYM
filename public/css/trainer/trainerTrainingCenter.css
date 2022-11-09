@@ -86,7 +86,11 @@
     margin-bottom: 30px;
 }
 
+.back-btn-icon{
+    font-size: 20px;
+    color: white;
 
+}
 
 .trainer-view-members-add-delete-btn-contaier{
     display: flex;

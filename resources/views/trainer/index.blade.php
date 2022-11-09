@@ -612,16 +612,16 @@
         }); // //
 
 
-        $('#group-chat').on('click', function(){
+        // $('#group-chat').on('click', function(){
 
-            var id = localStorage.getItem('group_id');
-            Pusher.logToConsole = true;
-        var pusher = new Pusher('576dc7f4f561e15a42ef', {
-            cluster: 'eu',
-            encrypted: true
-        });
-         pusher.subscribe('trainer-message.'+id);
-        })
+        //     var id = localStorage.getItem('group_id');
+        //     Pusher.logToConsole = true;
+        // var pusher = new Pusher('576dc7f4f561e15a42ef', {
+        //     cluster: 'eu',
+        //     encrypted: true
+        // });
+        //  pusher.subscribe('trainer-message.'+id);
+        // })
 
         const messageform = document.getElementById("trainer_message_form");
         var group_chat_messages_container = document.querySelector(
@@ -731,6 +731,7 @@
         //end
 
         function clearGroupChatImg() {
+            console.log("clear img preview")
             groupChatImgPreview.removeAttribute("src")
             groupChatImgPreview.remove()
             cancelBtn.remove()

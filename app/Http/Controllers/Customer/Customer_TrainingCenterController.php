@@ -205,6 +205,8 @@ class Customer_TrainingCenterController extends Controller
     {
         $user_id = auth()->user()->id;
         $current_date = Carbon::now('Asia/Yangon')->toDateString();
+        $year=Carbon::now()->subYear(10)->format("Y");
+        $current_year=Carbon::now()->format("Y");
 
         $workouts = DB::table('personal_work_out_infos')
             ->where('user_id', $user_id)
@@ -216,8 +218,10 @@ class Customer_TrainingCenterController extends Controller
             ->select('date')
             ->where('user_id', $user_id)
             ->get();
+
         $weight_history = DB::table('weight_histories')
             ->where('user_id', $user_id)
+            ->whereYear('date',$current_year)
             ->orderBy('date', 'ASC')
             ->get();
 
@@ -228,13 +232,16 @@ class Customer_TrainingCenterController extends Controller
                 ->first();
 
             $newDate =\Carbon\Carbon::parse($weight_date->date)->addMonth(1)->format("j F, Y");
-        }else{
+        }elseif(sizeof($weight_history) >1){
             $weight_date=DB::table('weight_histories')
                             ->where('user_id',$user_id)
                             ->orderBy('date','DESC')
                             ->first();
 
             $newDate =\Carbon\Carbon::parse($weight_date->date)->addMonth(1)->format("j F, Y");
+        }else{
+            $weight_date=null;
+            $newDate=null;
         }
 
         $cal_sum = 0;
@@ -253,7 +260,23 @@ class Customer_TrainingCenterController extends Controller
             }
         }
 
-        return view('customer.training_center.profile', compact('workouts', 'workout_date', 'cal_sum', 'time_min', 'time_sec', 'weight_history', 'newDate'));
+        return view('customer.training_center.profile', compact('year','workouts', 'workout_date', 'cal_sum', 'time_min', 'time_sec', 'weight_history', 'newDate'));
+    }
+
+    public function year_filter($year)
+    {
+        $user_id = auth()->user()->id;
+
+        $weight_history = DB::table('weight_histories')
+            ->where('user_id', $user_id)
+            ->whereYear('date',$year)
+            ->orderBy('date', 'ASC')
+            ->get();
+
+        return response()
+            ->json([
+                'weight_history' => $weight_history
+            ]);
     }
 
     public function workout_sevenday()

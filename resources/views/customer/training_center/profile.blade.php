@@ -19,7 +19,7 @@
         </div>
         <iconify-icon icon="cil:pen" class="change-name-icon" id="name_edit_pen"></iconify-icon>
         <button type="submit" class="customer-primary-btn customer-name-calculate-btn">Save</button>
-        <button type="button" onclick="window.history.go(-1); return false;" class="customer-secondary-btn customer-name-calculate-btn" id="customer_cancel">Cancel</button>
+        <button type="button" class="customer-secondary-btn customer-name-calculate-btn" id="customer_name_cancel">Cancel</button>
     </div>
     </form>
 
@@ -108,19 +108,19 @@
                     <p>Shoulders:</p>
                     <div>
                         <input type="number"  value="{{auth()->user()->shoulders}}" name="shoulders" class="shoulders" readonly>
-                        <span>lb</span>
+                        <span>in</span>
                     </div>
 
                 </div>
 
             </div>
         </div>
-        <button type="button" onclick="window.history.go(-1); return false;" class="customer-secondary-btn customer-bmi-calculate-btn" id="customer_cancel">Cancel</button>
+        <button type="button" class="customer-secondary-btn customer-bmi-calculate-btn" id="customer_cancel">Cancel</button>
         <button type="submit" class="customer-primary-btn customer-bmi-calculate-btn">Save and Calculate BMI</button>
 
     </div>
     </form>
-
+    @hasanyrole('Platinum|Diamond|Gym Member')
     <div class="customer-profile-bmi-container">
         <div class="customer-profile-bmi-gradient">
             <div class="percentage-line"></div>
@@ -153,46 +153,20 @@
             </div>
         </div>
     </div>
-
     <div class="weight-chart-container" id="weightchart">
-        <select class="weight-chart-filter">
-            <option value="2022">2022</option>
-            <option value="2023">2023</option>
-            <option value="2024">2024</option>
-            <option value="2025">2025</option>
-            <option value="2026">2026</option>
-            <option value="2027">2027</option>
-            <option value="2028">2028</option>
-            <option value="2029">2029</option>
-            <option value="2030">2030</option>
-            <option value="2031">2031</option>
-            <option value="2032">2032</option>
-            <option value="2033">2033</option>
-            <option value="2034">2034</option>
-            <option value="2035">2035</option>
-            <option value="2036">2036</option>
-            <option value="2037">2037</option>
-            <option value="2038">2038</option>
-            <option value="2039">2039</option>
-            <option value="2040">2040</option>
-            <option value="2041">2041</option>
-            <option value="2042">2042</option>
-            <option value="2043">2043</option>
-            <option value="2044">2044</option>
-            <option value="2045">2045</option>
-            <option value="2046">2046</option>
-            <option value="2047">2047</option>
-            <option value="2048">2048</option>
-            <option value="2049">2049</option>
-            <option value="2050">2050</option>
+        <?php $currentyear=\Carbon\Carbon::now()->format("Y"); ?>
+        <select class="weight-chart-filter" onchange="year_filter(this.value)">
+            @for ($i = $currentyear; $i >= $year; $i--)
+            <option value={{$i}} name="year">{{$i}}</option>
+            @endfor
         </select>
         <p>Your {{$plan}} History</p>
         <canvas id="myChart"></canvas>
     </div>
 
     <div class="no-weight-chart" id="weightreview">
-        <p style="margin-top:100px">Currently, you don’t have ‘{{$plan}}’ history  to review.
-            Keep working out and check at {{$newDate}}.</p>
+        <p style="margin-top:100px;margin-left:150px">You don’t have weight history  to review.
+            Keep working out.</p>
     </div>
 
     <div class="customer-profile-trackers-parent-container">
@@ -320,13 +294,106 @@
             </div>
         </div>
     </div>
+    @endhasanyrole
 
 </div>
 
 @endsection
 @push('scripts')
+@hasanyrole('Platinum|Diamond|Gym Member')
 <script>
+    function linechart(data){
+            var weight_history=data;
+            if(weight_history.length<2){
+                $("#weightreview").show();
+                $("#weightchart").show();
+            }else{
+                $("#weightreview").hide();
+                $("#weightchart").show();
+
+                let weight = [];
+                let date = [];
+                for(let i = 0; i < weight_history.length; i++){
+
+                    weight.push(
+
+                    weight_history[i].weight
+                    );
+
+                    date.push(
+
+                    weight_history[i].date
+
+                    );
+
+                    }
+
+                const labels = date;
+
+                console.log(weight);
+                const data = {
+                    labels: labels,
+                    datasets: [{
+                    label: 'Weight(lb)',
+                    fill: true,
+
+                    borderColor: "#4D72E8",
+                    backgroundColor:"rgba(77,114,232,0.3)",
+
+                    data:weight,
+
+                    }]
+                };
+
+                const config = {
+                    type: 'line',
+                    data: data,
+                    options: {
+                        maintainAspectRatio: false,
+                    }
+                };
+
+                const myChart = new Chart(
+                    document.getElementById('myChart'),
+                    config
+                );
+
+            }
+
+
+    }
+
+    const ctx =  document.getElementById('myChart').getContext('2d');
+    const myChart=new Chart(ctx,{});
+    function destroyChart() {
+
+        myChart.destroy();
+
+        }
+
+    function year_filter(value) {
+        destroyChart();
+        console.log(value);
+        var url="profile/year/";
+        $.ajax({
+                    type: "GET",
+                    url: url+value,
+                    datatype: "json",
+                    success: function(data) {
+
+                        var data=data.weight_history;
+
+                        linechart(data);
+                    }
+        })
+    }
+
     $( document ).ready(function() {
+
+        var data = @json($weight_history);
+        destroyChart();
+        linechart(data);
+
         var bmi=@json($bmi);
         // var bmi=17;
         // var maxBmi = 50
@@ -375,6 +442,27 @@
             $(".name").hide();
         });
 
+        $("#customer_cancel").on('click', function(event){
+            event.stopPropagation();
+            event.stopImmediatePropagation();
+            $(".age").attr('readonly', true);
+            $(".weight").attr('readonly', true);
+            $(".neck").attr('readonly', true);
+            $(".waist").attr('readonly', true);
+            $(".hip").attr('readonly', true);
+            $(".shoulders").attr('readonly', true);
+            $(".customer-bmi-calculate-btn").hide();
+            $('select.height_ft').attr('disabled', true);
+            $('select.height_in').attr('disabled', true);
+            $('.change-name-icon').show();
+            $('.customer-name-calculate-btn').show();
+            $("#name").show();
+            $(".name").hide();
+            $('.customer-name-calculate-btn').hide();
+            $('#customer_name_cancel').hide();
+
+        });
+
         $('#name_edit_pen').on('click',function(){
             $(".name").show();
             $('.customer-name-calculate-btn').show();
@@ -382,72 +470,12 @@
             $("#name").hide();
         })
 
-        // $("#pen2").on('click', function(event){
-        //     var newDate = @json($newDate);
-        //     Swal.fire({
-        //         icon:'warning',
-        //         title:"Can't Edit Profile",
-        //         text: "Your profile can edit on "+newDate ,
-        //         confirmButtonColor: '#3CDD57',
-        //         timer: 5000
-        //       });
-        // });
-
-        var weight_history = @json($weight_history);
-        if(weight_history.length<2){
-            $("#weightreview").show();
-            $("#weightchart").hide();
-        }else{
-            $("#weightreview").hide();
-            $("#weightchart").show();
-
-            let weight = [];
-            let date = [];
-            for(let i = 0; i < weight_history.length; i++){
-
-                weight.push(
-
-                   weight_history[i].weight
-                );
-
-                date.push(
-
-                   weight_history[i].date
-
-                );
-
-                }
-
-            const labels = date;
-
-                console.log(weight);
-            const data = {
-                labels: labels,
-                datasets: [{
-                label: 'Weight(lb)',
-                fill: true,
-
-                borderColor: "#4D72E8",
-                backgroundColor:"rgba(77,114,232,0.3)",
-
-                data:weight,
-
-                }]
-            };
-
-            const config = {
-                type: 'line',
-                data: data,
-                options: {
-                maintainAspectRatio: false,
-            }
-            };
-
-            const myChart = new Chart(
-                document.getElementById('myChart'),
-                config
-            );
-        }
+        $("#customer_name_cancel").on('click',function(event){
+            $(".name").hide();
+            $('.customer-name-calculate-btn').hide();
+            $('#name_edit_pen').show();
+            $("#name").show();
+        })
 
         $(".personal_detail").submit(function(){
             $('.customer-bmi-calculate-btn').attr('disabled', true);
@@ -582,10 +610,6 @@
         $('.customer-profile-tracker-workout-container').hide()
         $('.customer-profile-tracker-meal-container').hide()
         $('.customer-profile-tracker-water-container').hide()
-
-
-
-
 
         //show today's meal by default
         $("#meal-today").addClass("customer-profile-days-btn-active")
@@ -1115,5 +1139,72 @@
         `)
     }
 </script>
+@endhasanyrole
+@hasanyrole('Free|Gold|Ruby|Ruby Premium')
+<script>
+    $( document ).ready(function() {
+        $(".name").hide();
+        $('.customer-name-calculate-btn').hide();
+        $(".customer-bmi-calculate-btn").hide();
+        $("#pen1").on('click', function(event){
+            event.stopPropagation();
+            event.stopImmediatePropagation();
+            $(".age").removeAttr("readonly");
+            $(".weight").removeAttr("readonly");
+            $(".neck").removeAttr("readonly");
+            $(".waist").removeAttr("readonly");
+            $(".hip").removeAttr("readonly");
+            $(".shoulders").removeAttr("readonly");
+            $(".customer-bmi-calculate-btn").show();
+            $('select.height_ft').attr('disabled', false);
+            $('select.height_in').attr('disabled', false);
+            $('.change-name-icon').hide();
+            $('.customer-name-calculate-btn').hide();
+            $("#name").show();
+            $(".name").hide();
+        });
 
+
+
+        $("#customer_cancel").on('click', function(event){
+            event.stopPropagation();
+            event.stopImmediatePropagation();
+            $(".age").attr('readonly', true);
+            $(".weight").attr('readonly', true);
+            $(".neck").attr('readonly', true);
+            $(".waist").attr('readonly', true);
+            $(".hip").attr('readonly', true);
+            $(".shoulders").attr('readonly', true);
+            $(".customer-bmi-calculate-btn").hide();
+            $('select.height_ft').attr('disabled', true);
+            $('select.height_in').attr('disabled', true);
+            $('.change-name-icon').show();
+            $('.customer-name-calculate-btn').show();
+            $("#name").show();
+            $(".name").hide();
+            $('.customer-name-calculate-btn').hide();
+            $('#customer_name_cancel').hide();
+
+        });
+
+        $('#name_edit_pen').on('click',function(){
+            $(".name").show();
+            $('.customer-name-calculate-btn').show();
+            $('#name_edit_pen').hide();
+            $("#name").hide();
+        })
+
+        $("#customer_name_cancel").on('click',function(event){
+            $(".name").hide();
+            $('.customer-name-calculate-btn').hide();
+            $('#name_edit_pen').show();
+            $("#name").show();
+        })
+
+        $(".personal_detail").submit(function(){
+            $('.customer-bmi-calculate-btn').attr('disabled', true);
+        })
+    })
+</script>
+@endhasanyrole
 @endpush

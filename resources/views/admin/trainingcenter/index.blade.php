@@ -37,6 +37,7 @@
 
 
 
+
     </style>
 @endsection
 @section('training-center-active', 'active')
@@ -45,16 +46,14 @@
     <div class="col-md-11 mx-auto">
         <div class="d-flex justify-content-between mb-3">
             <h2 class="text-center mb-0">All Training Group</h2>
-            <a href="{{ route('traininggroup.create') }}" class="btn btn-primary align-middle"><i class="fa-solid fa-circle-plus me-2 fa-lg align-middle"></i> <span class="align-middle">Create
-                    Training Group</span> </a>
+            <a href="{{ route('traininggroup.create') }}" class="btn btn-primary align-middle"><i class="fa-solid fa-people-group"></i> <span class="align-middle">Training Group</span> </a>
         </div>
 
 
         @for ($i = 0; $i <= $trainingGroup->count()-1; $i++)
 
-            <div class="col-12 card mb-2">
-                <h5 class="mt-1 ms-1">Trainer Name - <span class="badge badge-pill badge-primary text-capitalize"
-                        style="font-size: 1rem; padding:3px;">{{ $trainingGroup[$i][0]['user']['name'] ?? 'Not Found'}}</span></h5>
+            <div class="col-12 card mb-3">
+                <h5 class="mt-1 ms-1">Trainer Name - <span class="text-capitalize">{{ $trainingGroup[$i][0]['user']['name'] ?? 'Not Found'}}</span></h5>
                 <table>
                     <thead>
                         <tr>

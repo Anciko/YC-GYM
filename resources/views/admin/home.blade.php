@@ -7,37 +7,37 @@
         <div style="width:150px;height:150px;" class="bd-white shadow rounded-circle">
             <img src="{{ asset('image/free.png') }}" style="width: 50px;height:50px;margin-top:16px;" class="d-block mx-auto">
             <p class="fw-bold text-center mb-0">Free</p>
-            <p class="fw-bold text-center fs-3 text-dark">100</p>
+            <p class="fw-bold text-center fs-3 text-dark">{{$free_user}}</p>
         </div>
         <div style="width:150px;height:150px;" class="bd-white shadow rounded-circle">
             <img src="{{ asset('image/platinum.png') }}" style="width: 50px;height:50px;margin-top:16px;"
                 class="d-block mx-auto">
             <p class="fw-bold text-center mb-0">Platinum</p>
-            <p class="fw-bold text-center fs-3 text-dark">100</p>
+            <p class="fw-bold text-center fs-3 text-dark">{{$platinum_user}}</p>
         </div>
         <div style="width:150px;height:150px;" class="bd-white shadow rounded-circle">
             <img src="{{ asset('image/gold.png') }}" style="width: 50px;height:50px;margin-top:16px;"
                 class="d-block mx-auto">
             <p class="fw-bold text-center mb-0">Gold</p>
-            <p class="fw-bold text-center fs-3 text-dark">100</p>
+            <p class="fw-bold text-center fs-3 text-dark">{{$gold_user}}</p>
         </div>
         <div style="width:150px;height:150px;" class="bd-white shadow rounded-circle">
             <img src="{{ asset('image/diamond.png') }}" style="width: 50px;height:50px;margin-top:16px;"
                 class="d-block mx-auto">
             <p class="fw-bold text-center mb-0">Diamond</p>
-            <p class="fw-bold text-center fs-3 text-dark">100</p>
+            <p class="fw-bold text-center fs-3 text-dark">{{$diamond_user}}</p>
         </div>
         <div style="width:150px;height:150px;" class="bd-white shadow rounded-circle">
             <img src="{{ asset('image/ruby.png') }}" style="width: 50px;height:50px;margin-top:16px;"
                 class="d-block mx-auto">
             <p class="fw-bold text-center mb-0">Ruby</p>
-            <p class="fw-bold text-center fs-3 text-dark">100</p>
+            <p class="fw-bold text-center fs-3 text-dark">{{$ruby_user}}</p>
         </div>
         <div style="width:150px;height:150px;" class="bd-white shadow rounded-circle">
             <img src="{{ asset('image/rubyPremium.png') }}" style="width: 50px;height:50px;margin-top:16px;"
                 class="d-block mx-auto">
             <p class="fw-bold text-center mb-0">Ruby Premium</p>
-            <p class="fw-bold text-center fs-3 text-dark">100</p>
+            <p class="fw-bold text-center fs-3 text-dark">{{$rubyp_user}}</p>
         </div>
     </div>
     <div class="my-5">

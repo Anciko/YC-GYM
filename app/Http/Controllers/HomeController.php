@@ -57,17 +57,22 @@ class HomeController extends Controller
 
     public function index()
     {
+        $free_user = DB::table('users')->where('member_type', 'Free')->count();
+        $platinum_user = DB::table('users')->where('member_type', 'Platinum')->count();
+        $gold_user = DB::table('users')->where('member_type', 'Gold')->count();
+        $diamond_user = DB::table('users')->where('member_type', 'Diamond')->count();
+        $ruby_user = DB::table('users')->where('member_type', 'Ruby')->count();
+        $rubyp_user = DB::table('users')->where('member_type', 'Ruby Premium')->count();
         if (Auth::check()) {
             if (Auth::user()->hasRole('System_Admin')) {
                 // $members = MemberHistory::where('member_id', 1)->where('member_id',2)->get();
 
                 $member_plans = Member::where('member_type', '!=', 'Gym Member')->get();
-                return view('admin.home', compact('member_plans'));
+                return view('admin.home', compact('member_plans', 'free_user', 'platinum_user', 'gold_user', 'diamond_user', 'ruby_user', 'rubyp_user'));
             } elseif (Auth::user()->hasRole('King')) {
-                return view('admin.home');
+                return view('admin.home', compact('free_user', 'platinum_user', 'gold_user', 'diamond_user', 'ruby_user', 'rubyp_user'));
             } elseif (Auth::user()->hasRole('Queen')) {
-
-                return view('admin.home');
+                return view('admin.home', compact('free_user', 'platinum_user', 'gold_user', 'diamond_user', 'ruby_user', 'rubyp_user'));
             } else {
                 $member_plans = Member::where('member_type', '!=', 'Free')->where('member_type', '!=', 'Gym Member')->get();
                 return view('customer.home', compact('member_plans'));
