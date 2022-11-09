@@ -47,6 +47,16 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
     Route::post('/data/save', [HomeController::class, 'store'])->name('data.save');
     Route::post('customer/customerCreate', [CustomerRegisterController::class, 'CustomerData'])->name('customerCreate');
 
+    // NCK
+    Route::put('/customer_payment_active_staus/{id}',
+                [RegisterPaymentController::class, 'changeStatusAndType'] )->name('customer_upgrade');
+
+
+    Route::post('/member/upgraded-history/', [HomeController::class, 'memberUpgradedHistory'] )->name('member-upgraded-history');
+
+    // Route::get('');
+    //NCK
+
     Route::get('customer_payment', [RegisterPaymentController::class, 'payment'])->name('customer_payment');
     // Route::get('test_payment', [RegisterPaymentController::class, 'test'])->name('test_payment');
     Route::post('ewallet_store', [RegisterPaymentController::class, 'ewallet_store'])->name('ewallet_store');
@@ -185,11 +195,15 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
             //training center
             Route::resource('traininggroup', TrainingGroupController::class);
             Route::get('traininggroup/{traininggroup}/ssd', [TrainingGroupController::class,'ssd']);
-            //Route::get('admin/traininggroup/datatable/ssd', [TrainingGroupController::class, 'ssd']);
             Route::get('/trainingcenter/index', [TrainingCenterController::class,'index'])->name('trainingcenter.index');
+            Route::get('/trainingcenter/entergroup',[TrainingCenterController::class,'entergroup'])->name('trainingcenter.entergroup');
+            Route::get('/trainingcenter/chat/{id}',[TrainingCenterController::class,'chat_message'])->name('chat_message');
+            Route::get('/trainingcenter/chat/viewmedia/{id}',[TrainingCenterController::class,'view_media'])->name('trainingcenter.view_media');
+            Route::get('/trainingcenter/chat/viewmember/{id}',[TrainingCenterController::class,'view_member'])->name('trainingcenter.view_member');
+            Route::post('trainingcenter/show_member/search/{id}', [TrainingCenterController::class, 'show_member'])->name('show_member');
+            Route::get('/trainingcenter/add_member/{id}/{gp_id}',[TrainingCenterController::class,'add_member'])->name('add_member');
+            Route::get('/trainingcenter/kick_member/{id}', [TrainingCenterController::class,'kick_member'])->name('kick_member');
 
-            // Route::get('/trainingcenter/chatshow/{id}', [TrainingCenterController::class,'chat_show'])->name('trainingcenter.chatshow');
-            // Route::get('/trainingcenter/viewmember/{id}', [TrainingCenterController::class,'view_member'])->name('trainingcenter.viewmember');
         });
     }); //admin prefix
 

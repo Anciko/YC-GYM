@@ -6,6 +6,8 @@ use App\Models\Payment;
 use App\Models\BankingInfo;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\Member;
+use App\Models\User;
 use Illuminate\Support\Facades\Storage;
 use RealRashid\SweetAlert\Facades\Alert;
 
@@ -15,8 +17,27 @@ class RegisterPaymentController extends Controller
     public function payment()
     {
         $banking_info = BankingInfo::all();
+
         return view('customer.payment',compact('banking_info'));
     }
+
+    public function changeStatusAndType($id)
+    {
+        $banking_info = BankingInfo::all();
+
+        $member = Member::findOrFail($id);
+
+        $auth_user = auth()->user();
+        $user = User::findOrFail($auth_user->id);
+        $user->active_status = 1;
+        $user->request_type = $member->id;
+
+        $user->update();
+
+        return view('customer.payment',compact('banking_info'));
+
+    }
+
     // public function test()
     // {
 
