@@ -17,7 +17,9 @@ class RequestAcceptDeclineController extends Controller
     {
         $this->middleware('auth');
     }
-
+    public function group(){
+        dd("dd");
+    }
     public function accept(Request $request, $id){
         //dd($request->all());
         $u=User::findOrFail($id);

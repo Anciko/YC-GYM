@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Models\User;
 use App\Models\Member;
 use App\Models\Message;
+use App\Models\TrainingUser;
 use Illuminate\Http\Request;
 use App\Models\TrainingGroup;
 use Illuminate\Support\Facades\DB;
@@ -24,6 +26,7 @@ class TrainingCenterController extends Controller
 
         return view('admin.trainingcenter.index');
     }
+
 
     public function storeGroup(Request $request){
         $validated = $request->validate([
@@ -52,17 +55,32 @@ class TrainingCenterController extends Controller
         'success','');
     }
 
-    public function chat_show($id)
-    {
-        $chat_messages=DB::table('messages')->where('training_group_id',$id)->get();
-        //$messages=DB::select('select * from messages');
-        $group_chat=TrainingGroup::findOrFail($id);
+    public function entergroup(Request $request){
+        $group_chat=TrainingGroup::where('id',$request->id)->first();
+        $chat_messages = Message::where('training_group_id', $request->id)->get();
+        $members = TrainingUser::where('training_group_id',$request->id)->with('user')->get();
         return response()
             ->json([
                 'group_chat' => $group_chat,
-                'chat_messages'=>$chat_messages
+                'group_members' => $members,
+                'chat_message' => $chat_messages
         ]);
     }
+
+    public function chat_message($id){
+        $group_data=TrainingGroup::where('id',$id)->first();
+        $groups=TrainingGroup::where('trainer_id',auth()->user()->id)->get();
+        $chat_messages = Message::where('training_group_id', $id)->get();
+        return view('admin.trainingcenter.chat_message', compact('chat_messages','groups','group_data'));
+    }
+
+    public function view_media($id){
+        $groups=TrainingGroup::where('trainer_id',auth()->user()->id)->get();
+        $group_data=TrainingGroup::where('id',$id)->first();
+        $medias = Message::select('media')->where('training_group_id', $id)->where('media','!=',null)->get();
+        return view('admin.trainingcenter.view_media', compact('medias','groups','group_data'));
+    }
+
 
     public function view_member($id)
     {
@@ -80,12 +98,121 @@ class TrainingCenterController extends Controller
 
         $group_id = $id;
         $selected_group = TrainingGroup::where('id',$group_id)->first();
+        return view('admin.trainingcenter.view_member', compact('group_members','groups','members','selected_group','group_id'));
+
+    }
+
+    public function show_member(Request $request)
+    {
+        $group_id =  $request->id;
+
+        $group = TrainingGroup::where('id',$group_id)->first();
+
+        if($group->group_type === 'weight loss'){
+            $members = User::where('ingroup' , '!=',1)
+            ->where('active_status',2)
+            ->where('member_type',$group->member_type)
+            ->where('membertype_level',$group->member_type_level)
+            ->where('gender',$group->gender)
+            ->where('bmi','>=',25)
+            ->get();
+           }
+
+           if($group->group_type === 'weight gain'){
+            $members = User::where('ingroup' , '!=',1)
+            ->where('active_status',2)
+            ->where('member_type',$group->member_type)
+            ->where('membertype_level',$group->member_type_level)
+            ->where('gender',$group->gender)
+            ->where('bmi','<=',18.5)
+            ->get();
+           }
+
+           if($group->group_type === 'body beauty'){
+           $members = User::where('ingroup' , '!=',1)
+           ->where('active_status',2)
+            ->where('member_type',$group->member_type)
+            ->where('membertype_level',$group->member_type_level)
+            ->where('gender',$group->gender)
+            ->whereBetween('bmi', [18.5, 24.9])
+            ->get();
+
+           }
+          // dd($members);
+        //    return response()->json([
+        //     'members' => $members
+        //    ]);
+        //dd($request->keyword);
+        if($request->keyword != ''){
+            if($group->group_type === 'weight loss'){
+                            $members = User::where('ingroup' , '!=',1)
+                                    ->where('name','LIKE','%'.$request->keyword.'%')
+                                    ->where('active_status',2)
+                                    ->where('member_type',$group->member_type)
+                                    ->where('membertype_level',$group->member_type_level)
+                                    ->where('gender',$group->gender)
+                                    ->where('bmi','>=',25)
+                                    ->get();
+               }
+
+               if($group->group_type === 'weight gain'){
+
+                            $members = User::where('ingroup' , '!=',1)
+                                    ->where('name','LIKE','%'.$request->keyword.'%')
+                                    ->where('active_status',2)
+                                    ->where('member_type',$group->member_type)
+                                    ->where('membertype_level',$group->member_type_level)
+                                    ->where('gender',$group->gender)
+                                    ->where('bmi','<=',18.5)
+                                    ->get();
+               }
+
+               if($group->group_type === 'body beauty'){
+                $members = User::where('ingroup' , '!=',1)
+                                ->where('name','LIKE','%'.$request->keyword.'%')
+                                ->where('active_status',2)
+                                ->where('member_type',$group->member_type)
+                                ->where('membertype_level',$group->member_type_level)
+                                ->where('gender',$group->gender)
+                                ->whereBetween('bmi', [18.5, 24.9])
+                                ->get();
+
+               }
+
+            //$members = User::where('name','LIKE','%'.$request->keyword.'%')->get();
+        }
+        //dd($members);
+        return response()->json([
+           'members' => $members
+        ]);
+    }
+
+    public function add_member($id, $gp_id)
+    {
+        $id = $id;
+        $group_id = $gp_id;
+        $member = User::findOrFail($id);
+        $member->ingroup = 1;
+        $member->update();
+        $member->tainer_groups()->attach($group_id);
         return response()
             ->json([
-                'members' => $members,
-                'groups'=>$groups,
-                'group_members'=>$group_members,
-                'selected_group'=>$selected_group
+                'status'=>200,
         ]);
+
+    }
+
+    public function kick_member($id)
+    {
+        $member_kick=DB::table('training_users')
+                        ->where('user_id',$id)
+                        ->delete();
+
+        $member_user=User::findOrFail($id);
+
+        $member_user->ingroup=0;
+        $member_user->update();
+       return redirect()->back()->with('success','Kick Member Successfully');
+
     }
 }

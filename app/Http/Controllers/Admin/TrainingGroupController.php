@@ -26,30 +26,6 @@ class TrainingGroupController extends Controller
         return view('admin.trainingcenter.index' ,compact('trainingGroup'));
     }
 
-    // public function ssd(){
-    //     $trainingGroup = TrainingGroup::with('user')->get();
-
-    //     return Datatables::of($trainingGroup)
-    //         ->addIndexColumn()
-    //         ->editColumn('created_at', function ($each) {
-    //             return Carbon::parse($each->created_at)->format('m-d-Y');
-    //         })
-    //         ->addColumn('action', function ($each) {
-    //             $edit_icon = '';
-    //             $delete_icon = '';
-
-    //             $edit_icon = '<a href=" ' . route('bankinginfo.edit', $each->id) . ' " class="text-warning mx-1 " title="edit">
-    //                                 <i class="fa-solid fa-edit fa-xl"></i>
-    //                           </a>';
-
-    //             $delete_icon = '<a href=" ' . route('bankinginfo.destroy', $each->id) . ' " class="text-danger mx-1 delete-btn" title="delete"  data-id="' . $each->id . '" >
-    //                                 <i class="fa-solid fa-trash fa-xl"></i>
-    //                             </a>';
-
-    //             return '<div class="d-flex justify-content-center">'.$edit_icon .$delete_icon . '</div>';
-    //         })
-    //         ->make(true);
-    // }
 
     public function ssd($traininggroup){
         $training_members = TrainingUser::where('training_group_id',$traininggroup)->with('user');
@@ -121,6 +97,7 @@ class TrainingGroupController extends Controller
 
     /**
      * Display the specified resource.
+     * .
      *
      * @param  int  $id
      * @return \Illuminate\Http\Response
@@ -128,22 +105,7 @@ class TrainingGroupController extends Controller
     public function show($id)
     {
         $training_group = TrainingGroup::findOrFail($id);
-        //dd($training_group->toArray());
         return view('admin.trainingcenter.viewdetail', compact('training_group'));
-
-        // $training_members = TrainingUser::where('training_group_id',$id)->with('user');
-
-        // // dd($training_members->toArray());
-        // return Datatables::of($training_members)
-        // ->addIndexColumn()
-        // ->addColumn('member_name', function($each){
-        //     return $each->user->name;
-        // })
-        // ->editColumn('created_at', function ($each) {
-        //     return Carbon::parse($each->created_at)->format('m-d-Y');
-        // })
-        // ->make(true);
-
     }
 
     /**

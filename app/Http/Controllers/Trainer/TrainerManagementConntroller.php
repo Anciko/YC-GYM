@@ -38,6 +38,7 @@ class TrainerManagementConntroller extends Controller
 
     public function send(Request $request,$id)
     {
+
         if($request->text ==null && $request->fileInput == null ){
 
         }else{

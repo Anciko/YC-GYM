@@ -48,11 +48,11 @@
                     </select>
                 </div>
 
-                <div class="mb-3" id="bank-number">
+                <div class="mb-3" id="bank-number" style="display: none;">
                     <label for="name">Bank Account No.</label>
                     <input type="text" class="form-control" name="accountNo">
                 </div>
-                <div class="mb-3" id="bank-holder">
+                <div class="mb-3" id="bank-holder" style="display: none;">
                     <label for="name">Bank Account Holder</label>
                     <input type="text" class="form-control" name="accountHolder">
                 </div>
