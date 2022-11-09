@@ -5,10 +5,12 @@ namespace App\Http\Controllers\Customer;
 use Carbon\Carbon;
 use App\Models\User;
 use App\Models\Member;
+use App\Models\BankingInfo;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use App\Models\WeightHistory;
 use Spatie\Permission\Models\Role;
 use App\Http\Controllers\Controller;
-use App\Models\BankingInfo;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
@@ -17,7 +19,6 @@ class CustomerRegisterController extends Controller
 
     public function CustomerData(Request $request)
     {
-        // dd($request);
         $user = new User();
 
         $all_info = $request->allData; // json string
@@ -72,6 +73,7 @@ class CustomerRegisterController extends Controller
         $user->waist = $bodyMeasurements->waist;
 
         $user->weight = $weight->weight;
+
         $user->ideal_weight = $weight->idealWeight;
         $user->bfp = $weight->bfp;
         $user->bmi = $weight->bmi;
@@ -90,13 +92,21 @@ class CustomerRegisterController extends Controller
         $user->average_night = $all_info->sleep[0];
 
         $user->most_attention_areas = $user_bodyArea;
+        $user->member_code = 'yc-' . Str::uuid();
 
-        $member_id = 1;
+        $member_id = 1; ///
         $user->save();
 
         $user->members()->attach($member_id, ['member_type_level' => $user_member_type_level]);
         $user->assignRole('Free');
         Auth::login($user);
+
+        $weight_history = new WeightHistory();
+        $weight_date = Carbon::now()->toDateString();
+        $weight_history->weight=$weight->weight;
+        $weight_history->user_id=auth()->user()->id;
+        $weight_history->date=$weight_date;
+        $weight_history->save();
     }
 
     public function checkPhone(Request $request)

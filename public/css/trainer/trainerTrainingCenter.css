@@ -203,10 +203,15 @@
 .trainer-group-chat-media-container{
     height: 500px;
     overflow-y: scroll;
-    display: grid;
-    grid-template-columns: repeat(5,1fr);
+    display: flex;
+    flex-wrap: wrap;
+    /* grid-template-columns: repeat(5,1fr); */
     /* grid-template-columns: repeat( auto-fill, minmax(95px, 1fr) ); */
-    grid-gap: 10px 0;
+    gap: 8px;
+    /* align-items: center; */
+    width: 100%;
+    align-content: flex-start;
+    /* justify-content: center; */
 }
 
 .trainer-group-chat-media{
@@ -361,7 +366,7 @@
 
 @media screen and (max-width:600px){
     .trainer-group-chat-media-container{
-        grid-template-columns: repeat(4,1fr);
+        /* grid-template-columns: repeat(4,1fr); */
     }
 
     .trainer-view-members-add-btn{
@@ -378,11 +383,11 @@
 }
 @media screen and (max-width:500px){
     .trainer-group-chat-media-container{
-        grid-template-columns: repeat(3,1fr);
+        /* grid-template-columns: repeat(3,1fr); */
     }
 
     .trainer-group-chat-media{
-        width: 85px;
-        height: 85px;
+        width: 80px;
+        height: 80px;
     }
 }
