@@ -47,6 +47,16 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
     Route::post('/data/save', [HomeController::class, 'store'])->name('data.save');
     Route::post('customer/customerCreate', [CustomerRegisterController::class, 'CustomerData'])->name('customerCreate');
 
+    // NCK
+    Route::put('/customer_payment_active_staus/{id}',
+                [RegisterPaymentController::class, 'changeStatusAndType'] )->name('customer_upgrade');
+
+
+    Route::post('/member/upgraded-history/', [HomeController::class, 'memberUpgradedHistory'] )->name('member-upgraded-history');
+
+    // Route::get('');
+    //NCK
+
     Route::get('customer_payment', [RegisterPaymentController::class, 'payment'])->name('customer_payment');
     // Route::get('test_payment', [RegisterPaymentController::class, 'test'])->name('test_payment');
     Route::post('ewallet_store', [RegisterPaymentController::class, 'ewallet_store'])->name('ewallet_store');

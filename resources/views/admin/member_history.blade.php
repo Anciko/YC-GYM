@@ -95,7 +95,8 @@
 
 @push('scripts')
     <script>
-       
+        let members = @json($members);
+        console.log(members);
 
         // $(document).ready(function() {
         //     let from_member = $('.from_member').val();
