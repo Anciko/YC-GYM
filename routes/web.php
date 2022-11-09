@@ -56,6 +56,11 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
 
     Auth::routes();
  Route::middleware('auth')->group(function () {
+    Route::get('customer/profile', [Customer_TrainingCenterController::class, 'profile'])->name('customer-profile');
+    Route::post('customer/profile/update', [Customer_TrainingCenterController::class, 'profile_update'])->name('customer-profile.update');
+    Route::post('customer/profile/name/update', [Customer_TrainingCenterController::class, 'profile_update_name'])->name('customer-profile-name.update');
+    Route::get('customer/profile/year/{year}', [Customer_TrainingCenterController::class, 'year_filter'])->name('customer-profile.year');
+
     Route::get('/home', [App\Http\Controllers\HomeController::class, 'home'])->name('social_media');
 });
     Route::get('customer/register', [App\Http\Controllers\HomeController::class, 'customerregister'])->name('customer_register');
@@ -192,10 +197,6 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
             Route::get('/free', [TrainerManagementConntroller::class, 'free'])->name('free');
         });
         Route::middleware(['role:Platinum|Diamond|Gym Member'])->group(function () {
-
-            Route::get('customer/profile', [Customer_TrainingCenterController::class, 'profile'])->name('customer-profile');
-            Route::post('customer/profile/update', [Customer_TrainingCenterController::class, 'profile_update'])->name('customer-profile.update');
-            Route::post('customer/profile/name/update', [Customer_TrainingCenterController::class, 'profile_update_name'])->name('customer-profile-name.update');
 
             Route::get('customer/today', [Customer_TrainingCenterController::class, 'todaywater'])->name('today');
             Route::get('customer/lastsevenDay/{date}', [Customer_TrainingCenterController::class, 'lastsevenDay'])->name('last7day');
