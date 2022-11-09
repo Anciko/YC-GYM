@@ -56,13 +56,20 @@ class HomeController extends Controller
 
     public function index()
     {
+        $free_user=DB::table('users')->where('member_type','Free')->count();
+        $platinum_user=DB::table('users')->where('member_type','Platinum')->count();
+        $gold_user=DB::table('users')->where('member_type','Gold')->count();
+        $diamond_user=DB::table('users')->where('member_type','Diamond')->count();
+        $ruby_user=DB::table('users')->where('member_type','Ruby')->count();
+        $rubyp_user=DB::table('users')->where('member_type','Ruby Premium')->count();
         if (Auth::check()) {
             if( Auth::user()->hasRole('System_Admin')){
-                return view('admin.home');
+
+                return view('admin.home',compact('free_user','platinum_user','gold_user','diamond_user','ruby_user','rubyp_user'));
             }elseif(Auth::user()->hasRole('King')){
-                return view('admin.home');
+                return view('admin.home',compact('free_user','platinum_user','gold_user','diamond_user','ruby_user','rubyp_user'));
             }elseif(Auth::user()->hasRole('Queen')){
-                return view('admin.home');
+                return view('admin.home',compact('free_user','platinum_user','gold_user','diamond_user','ruby_user','rubyp_user'));
             }
             else{
                 return view('customer.home');

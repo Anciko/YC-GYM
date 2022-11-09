@@ -162,7 +162,6 @@
         </select>
         <p>Your {{$plan}} History</p>
         <canvas id="myChart"></canvas>
-        <canvas id="FilterChart"></canvas>
     </div>
 
     <div class="no-weight-chart" id="weightreview">
@@ -303,7 +302,7 @@
 @push('scripts')
 @hasanyrole('Platinum|Diamond|Gym Member')
 <script>
-     function linechart(data){
+    function linechart(data){
             var weight_history=data;
             if(weight_history.length<2){
                 $("#weightreview").show();
@@ -359,20 +358,21 @@
                     config
                 );
 
-                // if(myChart!=null){
-                //     myChart.destroy();
-                // }
-                // myChart = new Chart(
-                //     document.getElementById('myChart'),
-                //     config
-                // );
-
             }
+
+
+    }
+
+    const ctx =  document.getElementById('myChart').getContext('2d');
+    const myChart=new Chart(ctx,{});
+    function destroyChart() {
+
+        myChart.destroy();
 
         }
 
     function year_filter(value) {
-
+        destroyChart();
         console.log(value);
         var url="profile/year/";
         $.ajax({
@@ -380,15 +380,18 @@
                     url: url+value,
                     datatype: "json",
                     success: function(data) {
+
                         var data=data.weight_history;
+
                         linechart(data);
                     }
-
         })
     }
+
     $( document ).ready(function() {
 
         var data = @json($weight_history);
+        destroyChart();
         linechart(data);
 
         var bmi=@json($bmi);
@@ -398,7 +401,6 @@
         // var indicator = (bmi/maxBmi)*100
 
         // console.log(indicator)
-
 
         $('.customer-profile-bmi-text').animate({ left: `+=${bmi}%` }, "slow");
         $(".name").hide();
@@ -439,8 +441,6 @@
             $("#name").show();
             $(".name").hide();
         });
-
-
 
         $("#customer_cancel").on('click', function(event){
             event.stopPropagation();
