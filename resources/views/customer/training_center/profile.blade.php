@@ -108,7 +108,7 @@
                     <p>Shoulders:</p>
                     <div>
                         <input type="number"  value="{{auth()->user()->shoulders}}" name="shoulders" class="shoulders" readonly>
-                        <span>lb</span>
+                        <span>in</span>
                     </div>
 
                 </div>

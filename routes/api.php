@@ -101,6 +101,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     // Monthly weight Loss history
     Route::get('customer-weight-history/{current_year}', [CustomerProfileController::class, 'weightHistory']);
 
+    Route::get('customer-weight-histroy', [CustomerProfileController::class, 'customerWeightHistoryDates']);
 
     //Group chat
     Route::post('sendmessage/{id}',[TrainerManagementConntroller::class,'send']);
