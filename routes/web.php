@@ -73,8 +73,9 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
 
     Route::get('/home', [App\Http\Controllers\HomeController::class, 'home'])->name('social_media');
 });
-    Route::get('customer/register', [App\Http\Controllers\HomeController::class, 'customerregister'])->name('customer_register');
-    Route::post('customer/register', [App\Http\Controllers\Auth\RegisterController::class, 'register'])->name('customer_register');
+    Route::get('customer/register', [App\Http\Controllers\HomeController::class, 'customer_register'])->name('customer_register');
+    //Route::post('customer/register', [App\Http\Controllers\Auth\RegisterController::class, 'register'])->name('customer_register');
+    Route::post('customer/register', [App\Http\Controllers\Customer\CustomerRegisterController::class, 'register'])->name('customer_register');
 
     Route::get('/user/workout/start', [UserWorkoutController::class, 'getstart'])->name('userworkout.getstart');
 
