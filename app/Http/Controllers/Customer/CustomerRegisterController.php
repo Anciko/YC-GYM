@@ -155,4 +155,18 @@ class CustomerRegisterController extends Controller
         //                 ?: redirect('$this->redirectPath()');
         //return redirect('/');
     }
+    public function personal_info(){
+        // dd("ok");
+        $id = auth()->user()->id;
+        $user = User::find($id);
+        $banking_info = BankingInfo::all();
+        // $mem = $user->members()->get();
+        $users = User::with('members')->orderBy('created_at', 'DESC')->get();
+
+        $members = Member::orderBy('price', 'ASC')->get();
+
+        $durations = Member::groupBy('duration')->where('duration', '!=', 0)->get();
+        // dd($duration);
+        return view('customer.customer_personal_info', compact('durations', 'members', 'banking_info'));
+    }
 }

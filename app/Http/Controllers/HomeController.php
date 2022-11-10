@@ -107,6 +107,7 @@ class HomeController extends Controller
         $members = Member::orderBy('price', 'ASC')->get();
 
         $durations = Member::groupBy('duration')->where('duration', '!=', 0)->get();
+
         return view('customer.customer_registration', compact('durations', 'members', 'banking_info'));
     }
     public function getRegister()
