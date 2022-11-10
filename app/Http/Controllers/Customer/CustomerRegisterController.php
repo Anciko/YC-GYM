@@ -13,6 +13,8 @@ use Spatie\Permission\Models\Role;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use App\Http\Requests\CustomerRequest;
+use RealRashid\SweetAlert\Facades\Alert;
 
 class CustomerRegisterController extends Controller
 {
@@ -145,15 +147,24 @@ class CustomerRegisterController extends Controller
 
     public function register(Request $request)
     {
-        // $this->validator($request->all())->validate();
-
-        // event(new Registered($user = $this->create($request->all())));
-
-        // $this->guard()->login($user);
-
-        // return $this->registered($request, $user)
-        //                 ?: redirect('$this->redirectPath()');
-        //return redirect('/');
+        $validated = $request->validate([
+            'name' => 'required',
+            'phone' => 'required|min:9|max:11|unique:users',
+            'email' => 'required|unique:users',
+            'address' => 'required',
+            'password' => 'required|min:6|max:11',
+            'password_confirmation' => 'required|same:password'
+        ]);
+        $user = new User();
+        $user->name=$request->name;
+        $user->phone=$request->phone;
+        $user->email=$request->email;
+        $user->address=$request->address;
+        $user->password=Hash::make($request->password);
+        $user->save();
+        Auth::login($user);
+        Alert::success('Success', 'Sign Up Successfully');
+        return redirect()->route('social_media');
     }
     public function personal_info(){
         // dd("ok");
