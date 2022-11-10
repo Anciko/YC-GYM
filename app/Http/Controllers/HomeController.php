@@ -93,7 +93,8 @@ class HomeController extends Controller
 
     public function home()
     {
-        return view('customer.home');
+        $member_plans = Member::where('member_type', '!=', 'Free')->where('member_type', '!=', 'Gym Member')->get();
+        return view('customer.home',compact('member_plans'));
     }
 
     public function customerregister()
@@ -106,8 +107,23 @@ class HomeController extends Controller
         $members = Member::orderBy('price', 'ASC')->get();
 
         $durations = Member::groupBy('duration')->where('duration', '!=', 0)->get();
+
         return view('customer.customer_registration', compact('durations', 'members', 'banking_info'));
     }
+
+    public function customer_register()
+    {
+        $user = User::find(1);
+        $banking_info = BankingInfo::all();
+        // $mem = $user->members()->get();
+        $users = User::with('members')->orderBy('created_at', 'DESC')->get();
+
+        $members = Member::orderBy('price', 'ASC')->get();
+
+        $durations = Member::groupBy('duration')->where('duration', '!=', 0)->get();
+        return view('customer.register', compact('durations', 'members', 'banking_info'));
+    }
+
     public function getRegister()
     {
         $members = Member::orderBy('price', 'ASC')->get();

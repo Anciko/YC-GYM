@@ -13,6 +13,8 @@ use Spatie\Permission\Models\Role;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use App\Http\Requests\CustomerRequest;
+use RealRashid\SweetAlert\Facades\Alert;
 
 class CustomerRegisterController extends Controller
 {
@@ -145,14 +147,37 @@ class CustomerRegisterController extends Controller
 
     public function register(Request $request)
     {
-        // $this->validator($request->all())->validate();
+        $validated = $request->validate([
+            'name' => 'required',
+            'phone' => 'required|min:9|max:11|unique:users',
+            'email' => 'required|unique:users',
+            'address' => 'required',
+            'password' => 'required|min:6|max:11',
+            'password_confirmation' => 'required|same:password'
+        ]);
+        $user = new User();
+        $user->name=$request->name;
+        $user->phone=$request->phone;
+        $user->email=$request->email;
+        $user->address=$request->address;
+        $user->password=Hash::make($request->password);
+        $user->save();
+        Auth::login($user);
+        Alert::success('Success', 'Sign Up Successfully');
+        return redirect()->route('social_media');
+    }
+    public function personal_info(){
+        // dd("ok");
+        $id = auth()->user()->id;
+        $user = User::find($id);
+        $banking_info = BankingInfo::all();
+        // $mem = $user->members()->get();
+        $users = User::with('members')->orderBy('created_at', 'DESC')->get();
 
-        // event(new Registered($user = $this->create($request->all())));
+        $members = Member::orderBy('price', 'ASC')->get();
 
-        // $this->guard()->login($user);
-
-        // return $this->registered($request, $user)
-        //                 ?: redirect('$this->redirectPath()');
-        //return redirect('/');
+        $durations = Member::groupBy('duration')->where('duration', '!=', 0)->get();
+        // dd($duration);
+        return view('customer.customer_personal_info', compact('durations', 'members', 'banking_info'));
     }
 }

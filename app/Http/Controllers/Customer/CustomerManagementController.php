@@ -26,8 +26,9 @@ class CustomerManagementController extends Controller
 
     public function showchat(){
         $id = auth()->user()->id;
-        // dd($id);
+       // dd($id);
         $group = TrainingUser::where('user_id',$id)->first();
+        
         if($group){
             $chats = Message::where('training_group_id',$group->training_group_id)->get();
             $medias = Message::where('training_group_id',$group->training_group_id)->where('media','!=',null)->get();

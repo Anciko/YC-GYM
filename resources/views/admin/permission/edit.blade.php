@@ -2,7 +2,7 @@
 @section('content')
     <div class="col-md-8 mx-auto">
         <div class="card shadow p-4">
-            <h3 class="text-center mb-2">Create Permission</h3>
+            <h3 class="text-center mb-2">Edit Permission</h3>
             <form action="{{ route('permission.update', $permission->id) }}" method="POST" id="update-permission">
                 @csrf
                 @method('PUT')
