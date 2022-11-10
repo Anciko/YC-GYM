@@ -78,7 +78,6 @@ class HomeController extends Controller
                 return view('customer.home', compact('member_plans'));
             }
         } else {
-
             // not logged-in
             return view('customer.index');
         }

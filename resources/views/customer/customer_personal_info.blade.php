@@ -345,7 +345,7 @@
 
         const checkedOnDurationClick = (el,category) => {
             let member = @json($members);
-            $("#customer-member-plan").empty()
+            $(".home-price-details-container").empty()
 
             if(category === 'memberPlanDuration'){
 
@@ -365,40 +365,60 @@
                 $.each(member, function(index, value){
 
                     if( value.duration === "0" &&  el.value === '1'){
-                        $("#customer-member-plan").append(`
-                            <div class="checkbox customer-member-plan-checkbox">
-                                <label class="checkbox-wrapper">
-                                <input type="checkbox" name = "memberPlan"
-                                class=" customer-member-plan-checkbox-input" value=${value.id} onclick="checkedOnClick(this,'memberPlan')" />
-                                <span class="checkbox-tile">
+                        $(".home-price-details-container").append(`
+                        <div class="home-price-detail-container">
+                            <h1>${value.member_type}</h1>
+                            <p class="home-price-detail-price">MMK 5000 / month</p>
 
-                                    <span class="checkbox-label">${value.member_type}
-
-                                    </span>
-                                    <span class="checkbox-price-label">${value.price}mmk/${value.duration}month</span>
-
-                                </span>
-                                </label>
+                            <div class="home-price-detail-benefits">
+                                <div class="home-price-detail-benefit">
+                                    <iconify-icon icon="akar-icons:check" class="home-price-detail-benefit-icon check"></iconify-icon>
+                                    <p>Benefit 1</p>
+                                </div>
+                                <div class="home-price-detail-benefit">
+                                    <iconify-icon icon="akar-icons:check" class="home-price-detail-benefit-icon check"></iconify-icon>
+                                    <p>Benefit 1</p>
+                                </div>
+                                <div class="home-price-detail-benefit">
+                                    <iconify-icon icon="akar-icons:check" class="home-price-detail-benefit-icon check"></iconify-icon>
+                                    <p>Benefit 1</p>
+                                </div>
+                                <div class="home-price-detail-benefit">
+                                    <iconify-icon icon="akar-icons:cross" class="home-price-detail-benefit-icon cross"></iconify-icon>
+                                    <p>Benefit 1</p>
+                                </div>
                             </div>
+                            <a href="#" class="customer-secondary-btn">Get Plan</a>
+                        </div>
                             `)
                     }
                     else if(el.value === value.duration){
                             // console.log(value)
-                            $("#customer-member-plan").append(`
-                            <div class="checkbox customer-member-plan-checkbox">
-                                <label class="checkbox-wrapper">
-                                <input type="checkbox" name = "memberPlan"
-                                class=" customer-member-plan-checkbox-input" value=${value.id} onclick="checkedOnClick(this,'memberPlan')" />
-                                <span class="checkbox-tile">
+                            $(".home-price-details-container").append(`
+                            <div class="home-price-detail-container">
+                            <h1>${value.member_type}</h1>
+                            <p class="home-price-detail-price">MMK ${value.price} / month</p>
 
-                                    <span class="checkbox-label">${value.member_type}
-
-                                    </span>
-                                    <span class="checkbox-price-label">${value.price}mmk/${value.duration}month</span>
-
-                                </span>
-                                </label>
+                            <div class="home-price-detail-benefits">
+                                <div class="home-price-detail-benefit">
+                                    <iconify-icon icon="akar-icons:check" class="home-price-detail-benefit-icon check"></iconify-icon>
+                                    <p>Benefit 1</p>
+                                </div>
+                                <div class="home-price-detail-benefit">
+                                    <iconify-icon icon="akar-icons:check" class="home-price-detail-benefit-icon check"></iconify-icon>
+                                    <p>Benefit 1</p>
+                                </div>
+                                <div class="home-price-detail-benefit">
+                                    <iconify-icon icon="akar-icons:check" class="home-price-detail-benefit-icon check"></iconify-icon>
+                                    <p>Benefit 1</p>
+                                </div>
+                                <div class="home-price-detail-benefit">
+                                    <iconify-icon icon="akar-icons:cross" class="home-price-detail-benefit-icon cross"></iconify-icon>
+                                    <p>Benefit 1</p>
+                                </div>
                             </div>
+                            <a href="#" class="customer-secondary-btn">Get Plan</a>
+                        </div>
                             `)
                     }
 

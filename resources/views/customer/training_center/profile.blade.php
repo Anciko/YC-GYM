@@ -116,8 +116,11 @@
 
             </div>
         </div>
-        <button type="button" class="customer-secondary-btn customer-bmi-calculate-btn" id="customer_cancel">Cancel</button>
-        <button type="submit" class="customer-primary-btn customer-bmi-calculate-btn">Save and Calculate BMI</button>
+        <div class="customer-profile-save-cancel-container">
+            <button type="submit" class="customer-primary-btn customer-bmi-calculate-btn">Save and Calculate BMI</button>
+            <button type="button" class="customer-secondary-btn customer-bmi-calculate-btn" id="customer_cancel">Cancel</button>
+        </div>
+
 
     </div>
     </form>
@@ -161,7 +164,7 @@
             @endfor
         </select>
     <div class="weight-chart-container" id="weightchart">
-        <p>Your {{$plan}} History</p>
+        <p>Your Weight History</p>
         <canvas id="myChart"></canvas>
     </div>
 
