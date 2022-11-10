@@ -31,6 +31,7 @@
         <div style="float:right;padding-right:40px">
             <iconify-icon icon="cil:pen" class="change-name-icon" id="pen1"></iconify-icon>
         </div>
+
         <div class="customer-profile-personaldetails-grid">
             <div class="customer-profile-personaldetails-left">
                 <div class="customer-profile-personaldetail-container">
@@ -120,6 +121,8 @@
 
     </div>
     </form>
+    <button id="cc">cc</button>
+        <button id="dd" onclick="destroyChart();">dd</button>
     @hasanyrole('Platinum|Diamond|Gym Member')
     <div class="customer-profile-bmi-container">
         <div class="customer-profile-bmi-gradient">
@@ -302,7 +305,8 @@
 @push('scripts')
 @hasanyrole('Platinum|Diamond|Gym Member')
 <script>
-            var weight_history= @json($weight_history);
+    function line(){
+        var weight_history= @json($weight_history);
             if(weight_history.length<2){
                 $("#weightreview").show();
                 $("#weightchart").show();
@@ -364,6 +368,8 @@
                     }
 
             }
+    }
+
 
             function linechart(data){
             var weight_history=data;
@@ -426,16 +432,6 @@
     }
 
 
-    // const ctx =  document.getElementById('myChart').getContext('2d');
-
-    // const myChart=new Chart(ctx,{});
-
-    // function destroyChart() {
-    //     console.log(myChart);
-    //     console.log("myChart");
-    //     myChart.destroy();
-    //     }
-
     function year_filter(value) {
 
         console.log(value);
@@ -447,7 +443,8 @@
                     success: function(data) {
                         var data=data.weight_history;
                         destroyChart();
-                        linechart(data);
+
+
                     }
         })
     }
@@ -463,6 +460,15 @@
         // var indicator = (bmi/maxBmi)*100
 
         // console.log(indicator)
+
+        $("#cc").on('click', function(event){
+
+            line();
+        });
+
+        $("#dd").on('click', function(event){
+            destroyChart();
+            })
 
         $('.customer-profile-bmi-text').animate({ left: `+=${bmi}%` }, "slow");
         $(".name").hide();
