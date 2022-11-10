@@ -2,18 +2,20 @@
 
 namespace App\Http\Controllers\Api\V1;
 
+use Carbon\Carbon;
 use App\Models\User;
 use App\Models\Member;
 use App\Models\Payment;
 use App\Models\BankingInfo;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use App\Models\WeightHistory;
 use App\Models\PersonalChoice;
+use Spatie\Permission\Models\Role;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
-use Spatie\Permission\Models\Role;
 
 class AuthController extends Controller
 {
@@ -52,7 +54,7 @@ class AuthController extends Controller
         $user->waist = $request->waist;
         $user->hip = $request->hip ?? null;
         $user->shoulders = $request->shoulders;
-        $user->member_code = 'yc-' . Str::uuid();
+        $user->member_code = 'yc-' . substr(Str::uuid(),0,8);
 
         // bmi , bmr
         $user->bmi = $request->bmi;

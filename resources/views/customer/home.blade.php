@@ -37,9 +37,10 @@
     </div>
 
     <div class="home-price-details-container">
+        @foreach ($member_plans as $member_plan)
         <div class="home-price-detail-container">
-            <h1>Platinum</h1>
-            <p class="home-price-detail-price">MMK 5000 / month</p>
+            <h1>{{$member_plan->member_type}}</h1>
+            <p class="home-price-detail-price">MMK {{$member_plan->price}} / month</p>
 
             <div class="home-price-detail-benefits">
                 <div class="home-price-detail-benefit">
@@ -59,104 +60,15 @@
                     <p>Benefit 1</p>
                 </div>
             </div>
-            <a href="#" class="customer-secondary-btn">Upgrade</a>
-        </div>
-        <div class="home-price-detail-container">
-            <h1>Platinum</h1>
-            <p class="home-price-detail-price">MMK 5000 / month</p>
 
-            <div class="home-price-detail-benefits">
-                <div class="home-price-detail-benefit">
-                    <iconify-icon icon="akar-icons:check" class="home-price-detail-benefit-icon check"></iconify-icon>
-                    <p>Benefit 1</p>
-                </div>
-                <div class="home-price-detail-benefit">
-                    <iconify-icon icon="akar-icons:check" class="home-price-detail-benefit-icon check"></iconify-icon>
-                    <p>Benefit 1</p>
-                </div>
-                <div class="home-price-detail-benefit">
-                    <iconify-icon icon="akar-icons:check" class="home-price-detail-benefit-icon check"></iconify-icon>
-                    <p>Benefit 1</p>
-                </div>
-                <div class="home-price-detail-benefit">
-                    <iconify-icon icon="akar-icons:cross" class="home-price-detail-benefit-icon cross"></iconify-icon>
-                    <p>Benefit 1</p>
-                </div>
-            </div>
-            <a href="#" class="customer-secondary-btn">Upgrade</a>
+            <form action="{{ route('customer_upgrade', $member_plan->id) }}" method="POST">
+                @csrf
+                @method('PUT')
+                <button type="submit" class="customer-secondary-btn">Upgrade</button>
+            </form>
         </div>
-        <div class="home-price-detail-container">
-            <h1>Platinum</h1>
-            <p class="home-price-detail-price">MMK 5000 / month</p>
+        @endforeach
 
-            <div class="home-price-detail-benefits">
-                <div class="home-price-detail-benefit">
-                    <iconify-icon icon="akar-icons:check" class="home-price-detail-benefit-icon check"></iconify-icon>
-                    <p>Benefit 1</p>
-                </div>
-                <div class="home-price-detail-benefit">
-                    <iconify-icon icon="akar-icons:check" class="home-price-detail-benefit-icon check"></iconify-icon>
-                    <p>Benefit 1</p>
-                </div>
-                <div class="home-price-detail-benefit">
-                    <iconify-icon icon="akar-icons:check" class="home-price-detail-benefit-icon check"></iconify-icon>
-                    <p>Benefit 1</p>
-                </div>
-                <div class="home-price-detail-benefit">
-                    <iconify-icon icon="akar-icons:cross" class="home-price-detail-benefit-icon cross"></iconify-icon>
-                    <p>Benefit 1</p>
-                </div>
-            </div>
-            <a href="#" class="customer-secondary-btn">Upgrade</a>
-        </div>
-        <div class="home-price-detail-container">
-            <h1>Platinum</h1>
-            <p class="home-price-detail-price">MMK 5000 / month</p>
-
-            <div class="home-price-detail-benefits">
-                <div class="home-price-detail-benefit">
-                    <iconify-icon icon="akar-icons:check" class="home-price-detail-benefit-icon check"></iconify-icon>
-                    <p>Benefit 1</p>
-                </div>
-                <div class="home-price-detail-benefit">
-                    <iconify-icon icon="akar-icons:check" class="home-price-detail-benefit-icon check"></iconify-icon>
-                    <p>Benefit 1</p>
-                </div>
-                <div class="home-price-detail-benefit">
-                    <iconify-icon icon="akar-icons:check" class="home-price-detail-benefit-icon check"></iconify-icon>
-                    <p>Benefit 1</p>
-                </div>
-                <div class="home-price-detail-benefit">
-                    <iconify-icon icon="akar-icons:cross" class="home-price-detail-benefit-icon cross"></iconify-icon>
-                    <p>Benefit 1</p>
-                </div>
-            </div>
-            <a href="#" class="customer-secondary-btn">Upgrade</a>
-        </div>
-        <div class="home-price-detail-container">
-            <h1>Platinum</h1>
-            <p class="home-price-detail-price">MMK 5000 / month</p>
-
-            <div class="home-price-detail-benefits">
-                <div class="home-price-detail-benefit">
-                    <iconify-icon icon="akar-icons:check" class="home-price-detail-benefit-icon check"></iconify-icon>
-                    <p>Benefit 1</p>
-                </div>
-                <div class="home-price-detail-benefit">
-                    <iconify-icon icon="akar-icons:check" class="home-price-detail-benefit-icon check"></iconify-icon>
-                    <p>Benefit 1</p>
-                </div>
-                <div class="home-price-detail-benefit">
-                    <iconify-icon icon="akar-icons:check" class="home-price-detail-benefit-icon check"></iconify-icon>
-                    <p>Benefit 1</p>
-                </div>
-                <div class="home-price-detail-benefit">
-                    <iconify-icon icon="akar-icons:cross" class="home-price-detail-benefit-icon cross"></iconify-icon>
-                    <p>Benefit 1</p>
-                </div>
-            </div>
-            <a href="#" class="customer-secondary-btn">Upgrade</a>
-        </div>
     </div>
 
 </section>

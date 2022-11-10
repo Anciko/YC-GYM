@@ -368,12 +368,12 @@ class CustomerProfileController extends Controller
     }
 
 
-    public function customerWeightHistoryDates() {
+    public function customerWorkoutHistoryDates() {
         $auth_user = auth()->user();
-        $weight_histories = WeightHistory::where('user_id', $auth_user->id)->get();
+        $workout_infos = PersonalWorkOutInfo::where('user_id', $auth_user->id)->get();
 
         return response()->json([
-            'weight_histories' => $weight_histories
+            'workout_infos' => $workout_infos
         ]);
     }
 }

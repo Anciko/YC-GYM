@@ -43,7 +43,7 @@
                 <ul>
                     <li class="customer-dropdown">
                     <a href="#" data-toggle="dropdown">
-                        <img class="nav-profile-img" src="{{asset('img/avatar.png')}}"/>
+                        <img class="nav-profile-img" src="{{asset('img/user.jpg')}}"/>
 
                         <i class="icon-arrow"></i></a>
                     <ul class="customer-dropdown-menu">
