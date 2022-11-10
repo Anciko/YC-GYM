@@ -1,3 +1,10 @@
+.customer-change-member-plan-link{
+    display: block;
+    width: max-content;
+    margin-left: auto;
+
+}
+
 .customer-trainingcenter-group-chat-container{
     max-width: 550px;
     margin: auto;
@@ -10,7 +17,7 @@
 }
 
 .customer-training-center-header-container{
-    margin-top: 140px;
+    margin-top: 40px;
     text-align: center;
 }
 
