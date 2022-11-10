@@ -164,7 +164,7 @@
             @endfor
         </select>
     <div class="weight-chart-container" id="weightchart">
-        <p>Your {{$plan}} History</p>
+        <p>Your Weight History</p>
         <canvas id="myChart"></canvas>
     </div>
 

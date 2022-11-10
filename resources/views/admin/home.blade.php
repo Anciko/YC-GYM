@@ -95,17 +95,6 @@
 
 @push('scripts')
     <script>
-       
-
-        // $(document).ready(function() {
-        //     let from_member = $('.from_member').val();
-        //     $('.from_member').on('change', function() {
-        //         from_member =  $('.from_member').val();
-        //     });
-        //     console.log('Outer',from_member);
-
-        // });
-
 
         const labels1 = [
             'January',
