@@ -106,10 +106,18 @@
     padding-left: 20px;
 }
 
-.customer-bmi-calculate-btn{
-    display: block;
-    margin: auto;
+.customer-profile-save-cancel-container{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    justify-content: center;
     margin-top: 40px;
+}
+
+.customer-bmi-calculate-btn{
+    /* display: block; */
+    /* margin: auto; */
+    /* margin-top: 40px; */
     padding: 10px 30px;
 }
 
@@ -493,7 +501,7 @@
     max-width: 600px;
     height: 400px;
     margin: auto;
-    margin-top: 140px;
+    margin-top: 40px;
     /* background-color: white; */
     /* padding: 20px; */
     border-radius: 10px;
@@ -512,6 +520,8 @@
     color: var(--customer-text-color);
     display: block;
     margin-left: auto;
+    margin-right: 80px;
+    margin-top: 100px;
 }
 
 .weight-chart-filter option{
@@ -629,6 +639,10 @@
 
     .weight-chart-container{
         /* padding: 5px; */
+    }
+
+    .customer-profile-save-cancel-container{
+        flex-direction: column;
     }
 }
 

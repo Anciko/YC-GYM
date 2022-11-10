@@ -9,7 +9,7 @@
         @method('POST')
     <div class="customer-profile-img-name-container">
         <div class="customer-profile-img-container">
-            <img src="{{asset('img/avatar.jpg')}}">
+            <img src="{{asset('img/user.jpg')}}">
         </div>
         <div class="customer-profile-name-container">
             <p id="name">{{auth()->user()->name}}</p>
@@ -31,6 +31,7 @@
         <div style="float:right;padding-right:40px">
             <iconify-icon icon="cil:pen" class="change-name-icon" id="pen1"></iconify-icon>
         </div>
+
         <div class="customer-profile-personaldetails-grid">
             <div class="customer-profile-personaldetails-left">
                 <div class="customer-profile-personaldetail-container">
@@ -115,8 +116,11 @@
 
             </div>
         </div>
-        <button type="button" class="customer-secondary-btn customer-bmi-calculate-btn" id="customer_cancel">Cancel</button>
-        <button type="submit" class="customer-primary-btn customer-bmi-calculate-btn">Save and Calculate BMI</button>
+        <div class="customer-profile-save-cancel-container">
+            <button type="submit" class="customer-primary-btn customer-bmi-calculate-btn">Save and Calculate BMI</button>
+            <button type="button" class="customer-secondary-btn customer-bmi-calculate-btn" id="customer_cancel">Cancel</button>
+        </div>
+
 
     </div>
     </form>
@@ -153,14 +157,14 @@
             </div>
         </div>
     </div>
-    <div class="weight-chart-container" id="weightchart">
-        <?php $currentyear=\Carbon\Carbon::now()->format("Y"); ?>
+    <?php $currentyear=\Carbon\Carbon::now()->format("Y"); ?>
         <select class="weight-chart-filter" onchange="year_filter(this.value)">
             @for ($i = $currentyear; $i >= $year; $i--)
             <option value={{$i}} name="year">{{$i}}</option>
             @endfor
         </select>
-        <p>Your {{$plan}} History</p>
+    <div class="weight-chart-container" id="weightchart">
+        <p>Your Weight History</p>
         <canvas id="myChart"></canvas>
     </div>
 
@@ -302,12 +306,78 @@
 @push('scripts')
 @hasanyrole('Platinum|Diamond|Gym Member')
 <script>
-    function linechart(data){
+            // var weight_history= @json($weight_history);
+            // if(weight_history.length<2){
+            //     $("#weightreview").show();
+            //     $("#weightchart").show();
+            // }else{
+
+            //     $("#weightreview").hide();
+            //     $("#weightchart").show();
+
+            //     let weight = [];
+            //     let date = [];
+            //     for(let i = 0; i < weight_history.length; i++){
+
+            //         weight.push(
+
+            //         weight_history[i].weight
+            //         );
+
+            //         date.push(
+
+            //         weight_history[i].date
+
+            //         );
+
+            //         }
+
+            //     const labels = date;
+
+            //     console.log(weight);
+            //     const data = {
+            //         labels: labels,
+            //         datasets: [{
+            //         label: 'Weight(lb)',
+            //         fill: true,
+
+            //         borderColor: "#4D72E8",
+            //         backgroundColor:"rgba(77,114,232,0.3)",
+
+            //         data:weight,
+
+            //         }]
+            //     };
+
+            //     const config = {
+            //         type: 'line',
+            //         data: data,
+            //         options: {
+            //             maintainAspectRatio: false,
+            //         }
+            //     };
+
+            //     const myChart = new Chart(
+            //         document.getElementById('myChart'),
+            //         config
+            //     );
+
+            //     function destroyChart() {
+            //         console.log("destroy chart");
+            //         myChart.destroy();
+            //         }
+
+            // }
+            let myChart=null;
+            function linechart(data){
             var weight_history=data;
             if(weight_history.length<2){
+                $(".weight-chart-filter").show();
                 $("#weightreview").show();
-                $("#weightchart").show();
+                $("#weightchart").hide();
             }else{
+                //$("#weightchart").show();
+                $(".weight-chart-filter").show();
                 $("#weightreview").hide();
                 $("#weightchart").show();
 
@@ -328,51 +398,52 @@
 
                     }
 
-                const labels = date;
+                    const labels = date;
 
-                console.log(weight);
-                const data = {
-                    labels: labels,
-                    datasets: [{
-                    label: 'Weight(lb)',
-                    fill: true,
+                    console.log(weight);
+                    const data = {
+                        labels: labels,
+                        datasets: [{
+                        label: 'Weight(lb)',
+                        fill: true,
 
-                    borderColor: "#4D72E8",
-                    backgroundColor:"rgba(77,114,232,0.3)",
+                        borderColor: "#4D72E8",
+                        backgroundColor:"rgba(77,114,232,0.3)",
 
-                    data:weight,
+                        data:weight,
 
-                    }]
-                };
+                        }]
+                    };
 
-                const config = {
-                    type: 'line',
-                    data: data,
-                    options: {
-                        maintainAspectRatio: false,
+                    const config = {
+                        type: 'line',
+                        data: data,
+                        options: {
+                            maintainAspectRatio: false,
+                        }
+                    };
+
+                    // const myChart = new Chart(
+                    //     document.getElementById('myChart'),
+                    //     config
+                    // );
+                    var ctx=document.getElementById('myChart').getContext("2d");
+
+                    if(myChart!=null){
+                    myChart.destroy();
                     }
-                };
-
-                const myChart = new Chart(
-                    document.getElementById('myChart'),
-                    config
-                );
+                    myChart = new Chart(ctx,
+                        config
+                    );
 
             }
 
 
     }
 
-    const ctx =  document.getElementById('myChart').getContext('2d');
-    const myChart=new Chart(ctx,{});
-    function destroyChart() {
-
-        myChart.destroy();
-
-        }
 
     function year_filter(value) {
-        destroyChart();
+
         console.log(value);
         var url="profile/year/";
         $.ajax({
@@ -380,28 +451,21 @@
                     url: url+value,
                     datatype: "json",
                     success: function(data) {
-
                         var data=data.weight_history;
 
                         linechart(data);
+
+
                     }
         })
     }
 
     $( document ).ready(function() {
-
-        var data = @json($weight_history);
-        destroyChart();
-        linechart(data);
-
+        //destroyChart();
+         var data = @json($weight_history);
+        // destroyChart();
+         linechart(data);
         var bmi=@json($bmi);
-        // var bmi=17;
-        // var maxBmi = 50
-
-        // var indicator = (bmi/maxBmi)*100
-
-        // console.log(indicator)
-
         $('.customer-profile-bmi-text').animate({ left: `+=${bmi}%` }, "slow");
         $(".name").hide();
         $('.customer-name-calculate-btn').hide();
