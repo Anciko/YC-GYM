@@ -34,7 +34,7 @@ use App\Http\Controllers\Customer\Customer_TrainingCenterController;
 
 
 Route::group(['middleware' => 'prevent-back-history'], function () {
-    Route::get('/locale/{lange}',[HomeController::class, 'lang'])->name('locale');
+    Route::get('/locale/{lange}', [HomeController::class, 'lang'])->name('locale');
     Route::get('/customerlogin', [CustomerLoginController::class, 'login'])->name('customerlogin');
     Route::get('customer/checkPhone', [CustomerRegisterController::class, 'checkPhone'])->name('checkPhone');
     Route::get('customer/checkemail', [CustomerRegisterController::class, 'checkemail'])->name('checkEmail');
@@ -48,11 +48,13 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
     Route::post('customer/customerCreate', [CustomerRegisterController::class, 'CustomerData'])->name('customerCreate');
 
     // NCK
-    Route::put('/customer_payment_active_staus/{id}',
-                [RegisterPaymentController::class, 'changeStatusAndType'] )->name('customer_upgrade');
+    Route::put(
+        '/customer_payment_active_staus/{id}',
+        [RegisterPaymentController::class, 'changeStatusAndType']
+    )->name('customer_upgrade');
 
 
-    Route::post('/member/upgraded-history/', [HomeController::class, 'memberUpgradedHistory'] )->name('member-upgraded-history');
+    Route::post('/member/upgraded-history/', [HomeController::class, 'memberUpgradedHistory'])->name('member-upgraded-history');
 
     // Route::get('');
     //NCK
@@ -65,11 +67,11 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
     Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
     Auth::routes();
- Route::middleware('auth')->group(function () {
-    Route::get('customer/profile', [Customer_TrainingCenterController::class, 'profile'])->name('customer-profile');
-    Route::post('customer/profile/update', [Customer_TrainingCenterController::class, 'profile_update'])->name('customer-profile.update');
-    Route::post('customer/profile/name/update', [Customer_TrainingCenterController::class, 'profile_update_name'])->name('customer-profile-name.update');
-    Route::get('customer/profile/year/{year}', [Customer_TrainingCenterController::class, 'year_filter'])->name('customer-profile.year');
+    Route::middleware('auth')->group(function () {
+        Route::get('customer/profile', [Customer_TrainingCenterController::class, 'profile'])->name('customer-profile');
+        Route::post('customer/profile/update', [Customer_TrainingCenterController::class, 'profile_update'])->name('customer-profile.update');
+        Route::post('customer/profile/name/update', [Customer_TrainingCenterController::class, 'profile_update_name'])->name('customer-profile-name.update');
+        Route::get('customer/profile/year/{year}', [Customer_TrainingCenterController::class, 'year_filter'])->name('customer-profile.year');
 
     Route::get('/home', [App\Http\Controllers\HomeController::class, 'home'])->name('social_media');
 });
@@ -120,8 +122,8 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
             Route::post('/banwords/update/{id}', [BanWordsController::class, 'update'])->name('banwords.update');
             Route::get('/banwords/destroy/{id}', [BanWordsController::class, 'destroy'])->name('banwords.destroy');
             Route::get('/banwords/create/', [BanWordsController::class, 'create'])->name('banwords.create');
-            Route::post('/banwords/store',[BanWordsController::class, 'store'])->name('banwords.store');
-            Route::get('admin/banword/datatable/ssd',[BanWordsController::class, 'ssd']);
+            Route::post('/banwords/store', [BanWordsController::class, 'store'])->name('banwords.store');
+            Route::get('admin/banword/datatable/ssd', [BanWordsController::class, 'ssd']);
             // all users
             Route::resource('user', UserController::class);
             Route::get('admin/user/datatable/ssd', [UserController::class, 'ssd']);
@@ -195,100 +197,98 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
 
             //training center
             Route::resource('traininggroup', TrainingGroupController::class);
-            Route::get('traininggroup/{traininggroup}/ssd', [TrainingGroupController::class,'ssd']);
-            Route::get('/trainingcenter/index', [TrainingCenterController::class,'index'])->name('trainingcenter.index');
-            Route::get('/trainingcenter/entergroup',[TrainingCenterController::class,'entergroup'])->name('trainingcenter.entergroup');
-            Route::get('/trainingcenter/chat/{id}',[TrainingCenterController::class,'chat_message'])->name('chat_message');
-            Route::get('/trainingcenter/chat/viewmedia/{id}',[TrainingCenterController::class,'view_media'])->name('trainingcenter.view_media');
-            Route::get('/trainingcenter/chat/viewmember/{id}',[TrainingCenterController::class,'view_member'])->name('trainingcenter.view_member');
+            Route::get('traininggroup/{traininggroup}/ssd', [TrainingGroupController::class, 'ssd']);
+            Route::get('/trainingcenter/index', [TrainingCenterController::class, 'index'])->name('trainingcenter.index');
+            Route::get('/trainingcenter/entergroup', [TrainingCenterController::class, 'entergroup'])->name('trainingcenter.entergroup');
+            Route::get('/trainingcenter/chat/{id}', [TrainingCenterController::class, 'chat_message'])->name('chat_message');
+            Route::get('/trainingcenter/chat/viewmedia/{id}', [TrainingCenterController::class, 'view_media'])->name('trainingcenter.view_media');
+            Route::get('/trainingcenter/chat/viewmember/{id}', [TrainingCenterController::class, 'view_member'])->name('trainingcenter.view_member');
             Route::post('trainingcenter/show_member/search/{id}', [TrainingCenterController::class, 'show_member'])->name('show_member');
-            Route::get('/trainingcenter/add_member/{id}/{gp_id}',[TrainingCenterController::class,'add_member'])->name('add_member');
-            Route::get('/trainingcenter/kick_member/{id}', [TrainingCenterController::class,'kick_member'])->name('kick_member');
-
+            Route::get('/trainingcenter/add_member/{id}/{gp_id}', [TrainingCenterController::class, 'add_member'])->name('add_member');
+            Route::get('/trainingcenter/kick_member/{id}', [TrainingCenterController::class, 'kick_member'])->name('kick_member');
         });
     }); //admin prefix
 
-        Route::middleware(['role:Free'])->group(function () {
-            Route::get('/free', [TrainerManagementConntroller::class, 'free'])->name('free');
-        });
-        Route::middleware(['role:Platinum|Diamond|Gym Member'])->group(function () {
+    Route::middleware(['role:Free'])->group(function () {
+        Route::get('/free', [TrainerManagementConntroller::class, 'free'])->name('free');
+    });
+    Route::middleware(['role:Platinum|Diamond|Gym Member'])->group(function () {
 
-            Route::get('customer/today', [Customer_TrainingCenterController::class, 'todaywater'])->name('today');
-            Route::get('customer/lastsevenDay/{date}', [Customer_TrainingCenterController::class, 'lastsevenDay'])->name('last7day');
-            Route::get('/customer/workout/lastsevenDay/', [Customer_TrainingCenterController::class, 'workout_sevenday'])->name('workout_sevenday');
-            Route::get('/customer/workout/filter/{from}/{to}', [Customer_TrainingCenterController::class, 'workout_filter'])->name('workout_filter');
+        Route::get('customer/today', [Customer_TrainingCenterController::class, 'todaywater'])->name('today');
+        Route::get('customer/lastsevenDay/{date}', [Customer_TrainingCenterController::class, 'lastsevenDay'])->name('last7day');
+        Route::get('/customer/workout/lastsevenDay/', [Customer_TrainingCenterController::class, 'workout_sevenday'])->name('workout_sevenday');
+        Route::get('/customer/workout/filter/{from}/{to}', [Customer_TrainingCenterController::class, 'workout_filter'])->name('workout_filter');
 
-            Route::get('customer/training_center/workout/workout_complete/{t_sum}/{cal_sum?}/{count_video?}/{group_id?}',[Customer_TrainingCenterController::class,'workout_complete'])->name('workout_complete');
-            Route::get('customer/training_center/workout/workout_complete_gym/{t_sum}/{cal_sum?}/{count_video?}/{group_id?}',[Customer_TrainingCenterController::class,'workout_complete_gym'])->name('workout_complete.gym');
-            Route::post('customer/training_center/workout/workout_complete/store/',[Customer_TrainingCenterController::class,'workout_complete_store'])->name('workout_complete.store');
+        Route::get('customer/training_center/workout/workout_complete/{t_sum}/{cal_sum?}/{count_video?}/{group_id?}', [Customer_TrainingCenterController::class, 'workout_complete'])->name('workout_complete');
+        Route::get('customer/training_center/workout/workout_complete_gym/{t_sum}/{cal_sum?}/{count_video?}/{group_id?}', [Customer_TrainingCenterController::class, 'workout_complete_gym'])->name('workout_complete.gym');
+        Route::post('customer/training_center/workout/workout_complete/store/', [Customer_TrainingCenterController::class, 'workout_complete_store'])->name('workout_complete.store');
 
-            Route::get('customer/meal/sevendays/{date}', [Customer_TrainingCenterController::class, 'meal_sevendays'])->name('meal_sevendays');
+        Route::get('customer/meal/sevendays/{date}', [Customer_TrainingCenterController::class, 'meal_sevendays'])->name('meal_sevendays');
 
-            Route::get('customer/training_center', [Customer_TrainingCenterController::class, 'index'])->name('training_center.index');
-            Route::get('customer/training_center/meal', [Customer_TrainingCenterController::class, 'meal'])->name('training_center.meal');
-            Route::get('customer/training_center/workout_plan', [Customer_TrainingCenterController::class, 'workout_plan'])->name('training_center.workout_plan');
-            Route::get('customer/training_center/water', [Customer_TrainingCenterController::class, 'water'])->name('training_center.water');
-            Route::post('customer/training_center/water', [Customer_TrainingCenterController::class, 'water_track'])->name('training_center.water.store');
-            Route::get('customer/training_center/workout/home', [Customer_TrainingCenterController::class, 'workout_home'])->name('training_center.workout.home');
-            Route::get('customer/training_center/workout/gym', [Customer_TrainingCenterController::class, 'workout_gym'])->name('training_center.workout.gym');
+        Route::get('customer/training_center', [Customer_TrainingCenterController::class, 'index'])->name('training_center.index');
+        Route::get('customer/training_center/meal', [Customer_TrainingCenterController::class, 'meal'])->name('training_center.meal');
+        Route::get('customer/training_center/workout_plan', [Customer_TrainingCenterController::class, 'workout_plan'])->name('training_center.workout_plan');
+        Route::get('customer/training_center/water', [Customer_TrainingCenterController::class, 'water'])->name('training_center.water');
+        Route::post('customer/training_center/water', [Customer_TrainingCenterController::class, 'water_track'])->name('training_center.water.store');
+        Route::get('customer/training_center/workout/home', [Customer_TrainingCenterController::class, 'workout_home'])->name('training_center.workout.home');
+        Route::get('customer/training_center/workout/gym', [Customer_TrainingCenterController::class, 'workout_gym'])->name('training_center.workout.gym');
 
-            Route::post('customer/training_center/breakfast', [Customer_TrainingCenterController::class, 'showbreakfast'])->name('customer/training_center/breakfast');
-            Route::post('customer/training_center/lunch', [Customer_TrainingCenterController::class, 'showlunch'])->name('customer/training_center/lunch');
-            Route::post('customer/training_center/snack', [Customer_TrainingCenterController::class, 'showsnack'])->name('customer/training_center/snack');
-            Route::post('customer/training_center/dinner', [Customer_TrainingCenterController::class, 'showdinner'])->name('customer/training_center/dinner');
-            Route::post('customer/training_center/foodList', [Customer_TrainingCenterController::class, 'foodList'])->name('customer/training_center/foodList');
-        });
+        Route::post('customer/training_center/breakfast', [Customer_TrainingCenterController::class, 'showbreakfast'])->name('customer/training_center/breakfast');
+        Route::post('customer/training_center/lunch', [Customer_TrainingCenterController::class, 'showlunch'])->name('customer/training_center/lunch');
+        Route::post('customer/training_center/snack', [Customer_TrainingCenterController::class, 'showsnack'])->name('customer/training_center/snack');
+        Route::post('customer/training_center/dinner', [Customer_TrainingCenterController::class, 'showdinner'])->name('customer/training_center/dinner');
+        Route::post('customer/training_center/foodList', [Customer_TrainingCenterController::class, 'foodList'])->name('customer/training_center/foodList');
+    });
 
-        // Route::middleware(['role:Platinum|Diamond|Gym Member'])->group(function () {
-
-
-        //     Route::get('customer/training_center/workout_complete/{t_sum}/{cal_sum?}/{count_video?}/{group_id?}',[Customer_TrainingCenterController::class,'workout_complete'])->name('workout_complete');
-        //     Route::get('customer/training_center',[Customer_TrainingCenterController::class,'index'])->name('training_center.index');
-        //     Route::post('customer/training_center/workout_complete/store/',[Customer_TrainingCenterController::class,'workout_complete_store'])->name('workout_complete.store');
-
-        //     Route::get('customer/training_center/meal',[Customer_TrainingCenterController::class,'meal'])->name('training_center.meal');
-        //     Route::get('customer/training_center/workout_plan',[Customer_TrainingCenterController::class,'workout_plan'])->name('training_center.workout_plan');
-        //     Route::get('customer/training_center/water',[Customer_TrainingCenterController::class,'water'])->name('training_center.water');
+    // Route::middleware(['role:Platinum|Diamond|Gym Member'])->group(function () {
 
 
-        //     Route::post('customer/training_center/breakfast',[Customer_TrainingCenterController::class,'showbreakfast'])->name('customer/training_center/breakfast');
-        //     Route::post('customer/training_center/lunch',[Customer_TrainingCenterController::class,'showlunch'])->name('customer/training_center/lunch');
-        //     Route::post('customer/training_center/snack',[Customer_TrainingCenterController::class,'showsnack'])->name('customer/training_center/snack');
-        //     Route::post('customer/training_center/dinner',[Customer_TrainingCenterController::class,'showdinner'])->name('customer/training_center/dinner');
-        //     Route::post('customer/training_center/foodList',[Customer_TrainingCenterController::class,'foodList'])->name('customer/training_center/foodList');
+    //     Route::get('customer/training_center/workout_complete/{t_sum}/{cal_sum?}/{count_video?}/{group_id?}',[Customer_TrainingCenterController::class,'workout_complete'])->name('workout_complete');
+    //     Route::get('customer/training_center',[Customer_TrainingCenterController::class,'index'])->name('training_center.index');
+    //     Route::post('customer/training_center/workout_complete/store/',[Customer_TrainingCenterController::class,'workout_complete_store'])->name('workout_complete.store');
 
-        // });
+    //     Route::get('customer/training_center/meal',[Customer_TrainingCenterController::class,'meal'])->name('training_center.meal');
+    //     Route::get('customer/training_center/workout_plan',[Customer_TrainingCenterController::class,'workout_plan'])->name('training_center.workout_plan');
+    //     Route::get('customer/training_center/water',[Customer_TrainingCenterController::class,'water'])->name('training_center.water');
 
-        Route::middleware(['role:Free'])->group(function () {
-            Route::get('/free',[TrainerManagementConntroller::class,'free'])->name('free');
-        });
 
-        Route::middleware(['role:Platinum'])->group(function () {
-            Route::get('/platinum', [TrainerManagementConntroller::class, 'platinum'])->name('platinum');
-        });
-        Route::middleware(['role:Gold'])->group(function () {
-            Route::get('/gold', [TrainerManagementConntroller::class, 'gold'])->name('gold');
-        });
-        Route::middleware(['role:Diamond'])->group(function () {
-            Route::get('/diamond', [TrainerManagementConntroller::class, 'diamond'])->name('diamond');
-        });
-        Route::middleware(['role:Ruby'])->group(function () {
-            Route::get('/ruby', [TrainerManagementConntroller::class, 'ruby'])->name('ruby');
-        });
-        Route::middleware(['role:Ruby Premium'])->group(function () {
-            Route::get('/ruby_premium', [TrainerManagementConntroller::class, 'ruby_premium'])->name('ruby_premium');
-        });
-        Route::middleware(['role:Gold'])->group(function () {
-            Route::get('/gold',[TrainerManagementConntroller::class,'gold'])->name('gold');
-        });
-        Route::middleware(['role:Gym Member'])->group(function () {
-            Route::get('/gym_member',[TrainerManagementConntroller::class,'gym_member'])->name('gym_member');
-        });
+    //     Route::post('customer/training_center/breakfast',[Customer_TrainingCenterController::class,'showbreakfast'])->name('customer/training_center/breakfast');
+    //     Route::post('customer/training_center/lunch',[Customer_TrainingCenterController::class,'showlunch'])->name('customer/training_center/lunch');
+    //     Route::post('customer/training_center/snack',[Customer_TrainingCenterController::class,'showsnack'])->name('customer/training_center/snack');
+    //     Route::post('customer/training_center/dinner',[Customer_TrainingCenterController::class,'showdinner'])->name('customer/training_center/dinner');
+    //     Route::post('customer/training_center/foodList',[Customer_TrainingCenterController::class,'foodList'])->name('customer/training_center/foodList');
 
-        Route::middleware(['role:Gold|Ruby|Ruby Premium'])->group(function () {
-        Route::get('customer/groups',[CustomerManagementController::class,'showgroup'])->name('groups');
-        Route::get('customer',[CustomerManagementController::class,'showchat'])->name('group');
-        Route::get('customer/view_media',[CustomerManagementController::class,'view_media'])->name('view_media');
-        });
+    // });
 
+    Route::middleware(['role:Free'])->group(function () {
+        Route::get('/free', [TrainerManagementConntroller::class, 'free'])->name('free');
+    });
+
+    Route::middleware(['role:Platinum'])->group(function () {
+        Route::get('/platinum', [TrainerManagementConntroller::class, 'platinum'])->name('platinum');
+    });
+    Route::middleware(['role:Gold'])->group(function () {
+        Route::get('/gold', [TrainerManagementConntroller::class, 'gold'])->name('gold');
+    });
+    Route::middleware(['role:Diamond'])->group(function () {
+        Route::get('/diamond', [TrainerManagementConntroller::class, 'diamond'])->name('diamond');
+    });
+    Route::middleware(['role:Ruby'])->group(function () {
+        Route::get('/ruby', [TrainerManagementConntroller::class, 'ruby'])->name('ruby');
+    });
+    Route::middleware(['role:Ruby Premium'])->group(function () {
+        Route::get('/ruby_premium', [TrainerManagementConntroller::class, 'ruby_premium'])->name('ruby_premium');
+    });
+    Route::middleware(['role:Gold'])->group(function () {
+        Route::get('/gold', [TrainerManagementConntroller::class, 'gold'])->name('gold');
+    });
+    Route::middleware(['role:Gym Member'])->group(function () {
+        Route::get('/gym_member', [TrainerManagementConntroller::class, 'gym_member'])->name('gym_member');
+    });
+
+    Route::middleware(['role:Gold|Ruby|Ruby Premium'])->group(function () {
+        Route::get('customer/groups', [CustomerManagementController::class, 'showgroup'])->name('groups');
+        Route::get('customer', [CustomerManagementController::class, 'showchat'])->name('group');
+        Route::get('customer/view_media', [CustomerManagementController::class, 'view_media'])->name('view_media');
+    });
 });
