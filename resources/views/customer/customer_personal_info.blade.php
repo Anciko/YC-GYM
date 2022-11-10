@@ -388,7 +388,7 @@
                                     <p>Benefit 1</p>
                                 </div>
                             </div>
-                            <a href="#" class="customer-secondary-btn">Get Plan</a>
+                            <a href="`{{route('home')}}`" class="customer-secondary-btn">Get Plan</a>
                         </div>
                             `)
                     }
