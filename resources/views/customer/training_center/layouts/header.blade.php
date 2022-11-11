@@ -27,9 +27,11 @@
             @endhasanyrole
             <a href="#">Shop</a>
             <a href="#">Search</a>
-            @auth
+            {{-- @auth --}}
+            @if( count(auth()->user()->roles) < 1 )
             <a href="{{route('customer-personal_infos')}}">Training Center</a>
-            @endauth
+            @endif
+            {{-- @endauth --}}
             @hasanyrole('Diamond|Platinum|Gym Member')
             <a href="{{route('training_center.index')}}">Training Center</a>
             @endhasanyrole
