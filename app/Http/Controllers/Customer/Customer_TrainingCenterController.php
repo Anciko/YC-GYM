@@ -5,15 +5,16 @@ namespace App\Http\Controllers\Customer;
 use Carbon\Carbon;
 use App\Models\Meal;
 use App\Models\User;
+use App\Models\Member;
 use App\Models\Workout;
 use App\Models\MealPlan;
 use App\Models\WaterTracked;
 use Illuminate\Http\Request;
+use App\Models\WeightHistory;
 use App\Models\PersonalMealInfo;
 use Illuminate\Support\Facades\DB;
 use App\Models\PersonalWorkOutInfo;
 use App\Http\Controllers\Controller;
-use App\Models\WeightHistory;
 use RealRashid\SweetAlert\Facades\Alert;
 
 class Customer_TrainingCenterController extends Controller
@@ -40,6 +41,15 @@ class Customer_TrainingCenterController extends Controller
 
         return view('customer.training_center.index', compact('workout_plan', 'tc_workouts'));
     }
+
+    public function member_plan()
+    {
+        $members = Member::orderBy('price', 'ASC')->get();
+
+        $durations = Member::groupBy('duration')->where('duration', '!=', 0)->get();
+        return view('customer.training_center.member_plan',compact('members','durations'));
+    }
+
     public function workout_plan()
     {
         $user = auth()->user();
