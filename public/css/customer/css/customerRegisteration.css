@@ -586,6 +586,10 @@ input.invalid, select.invalid {
     border-bottom: 1px solid var(--customer-primary-color);
 }
 
+.customer-registeration-card input.invalid, .customer-registeration-card select.invalid{
+    border-bottom: 2px solid red;
+}
+
 .customer-registeration-card .checkbox-tile{
     border: 2px solid var(--customer-text-color);
 }
