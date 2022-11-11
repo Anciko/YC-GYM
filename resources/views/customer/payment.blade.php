@@ -1,4 +1,4 @@
-@extends('customer.layouts.app')
+@extends('customer.layouts.app_home')
 
 @section('content')
 @include('sweetalert::alert')
@@ -26,7 +26,7 @@
             <form action="{{ route('ewallet_store') }}" method="POST" enctype="multipart/form-data" class="customer-transaction-form">
                 @csrf
             <div class="customer-transaction-form-img">
-                <img src="../imgs/kpay.png"/>
+                <img src="{{asset('image/kpay.png')}}"/>
             </div>
 
             <div class="customer-transaction-input-container">
@@ -108,7 +108,7 @@
             <form action="{{ route('ewallet_store') }}" method="POST" enctype="multipart/form-data" class="customer-transaction-form">
                 @csrf
                 <div class="customer-transaction-form-img">
-                    <img src="../imgs/cbpay.jfif"/>
+                    <img src="{{asset('image/cbpay.jfif')}}"/>
                 </div>
                 <div class="customer-transaction-input-container">
                     <p>Choosen Plan:</p>
@@ -186,7 +186,7 @@
             <form action="{{ route('ewallet_store') }}" method="POST" enctype="multipart/form-data" class="customer-transaction-form">
                 @csrf
                 <div class="customer-transaction-form-img">
-                    <img src="../imgs/wavepay.jfif"/>
+                    <img src="{{asset('image/wavepay.jfif')}}"/>
                 </div>
                 <div class="customer-transaction-input-container">
                     <p>Choosen Plan:</p>
@@ -266,7 +266,7 @@
             <form action="{{ route('ewallet_store') }}" method="POST" enctype="multipart/form-data" class="customer-transaction-form">
                 @csrf
                 <div class="customer-transaction-form-img">
-                    <img src="../imgs/ayapay.jfif"/>
+                    <img src="{{asset('image/ayapay.jfif')}}"/>
                 </div>
                 <div class="customer-transaction-input-container">
                     <p>Choosen Plan:</p>
@@ -349,7 +349,7 @@
             <form action="{{ route('bank_payment_store') }}" method="POST" enctype="multipart/form-data" class="customer-transaction-form">
                 @csrf
                 <div class="customer-transaction-form-img">
-                    <img src="../imgs/kbzbank-removebg-preview.png"/>
+                    <img src="{{asset('image/kbzbank-removebg-preview.png')}}"/>
                 </div>
                 <div class="customer-transaction-input-container">
                     <p>Choosen Plan:</p>
@@ -443,7 +443,7 @@
             <form action="{{ route('bank_payment_store') }}" method="POST" enctype="multipart/form-data" class="customer-transaction-form">
                 @csrf
                 <div class="customer-transaction-form-img">
-                    <img src="../imgs/cbbank-removebg-preview.png"/>
+                    <img src="{{asset('image/cbbank-removebg-preview.png')}}"/>
                 </div>
                 <div class="customer-transaction-input-container">
                     <p>Choosen Plan:</p>
@@ -521,7 +521,7 @@
             <form action="{{ route('bank_payment_store') }}" method="POST" enctype="multipart/form-data" class="customer-transaction-form">
                 @csrf
                 <div class="customer-transaction-form-img">
-                    <img src="../imgs/ayabank-removebg-preview.png"/>
+                    <img src="{{asset('image/ayabank-removebg-preview.png')}}"/>
                 </div>
                 <div class="customer-transaction-input-container">
                     <p>Choosen Plan:</p>
@@ -599,7 +599,7 @@
             <form action="{{ route('bank_payment_store') }}" method="POST" enctype="multipart/form-data" class="customer-transaction-form">
                 @csrf
                 <div class="customer-transaction-form-img">
-                    <img src="../imgs/mabbank-removebg-preview.png"/>
+                    <img src="{{asset('image/mabbank-removebg-preview.png')}}"/>
                 </div>
                 <div class="customer-transaction-input-container">
                     <p>Choosen Plan:</p>
@@ -667,8 +667,8 @@
 
 
 
-<div class="customer-main-content-container">
-    <form id="customer-transaction-choice-form">
+<div class="customer-main-content-container margin-top">
+    <form id="customer-transaction-choice-form" class="customer-payment-parent-container">
         <p class="customer-transaction-form-header">
             Confirm Transaction Via
         </p>
@@ -690,7 +690,7 @@
                             <span class="checkbox-tile">
                               <span class="checkbox-icon">
                                 <div class="transaction-choice-img">
-                                    <img src="../imgs/kpay.png"/>
+                                    <img src="{{asset('image/kpay.png')}}"/>
                                 </div>
                               </span>
                               <span class="checkbox-label">KBZ Pay<br>
@@ -705,7 +705,7 @@
                             <input type="checkbox" name = "transactionChoice" class="checkbox-input" data-bs-toggle="modal" data-bs-target="#cbpayModal" onclick="checkedOnTransactionChoiceClick(this,'transactionChoice')"/>
                             <span class="checkbox-tile">
                               <span class="checkbox-icon">
-                                <div class="transaction-choice-img"><img src="../imgs/cbpay.jfif"/></div>
+                                <div class="transaction-choice-img"><img src="{{asset('image/cbpay.jfif')}}"/></div>
                               </span>
                               <span class="checkbox-label">CB Pay<br>
 
@@ -718,7 +718,7 @@
                             <input type="checkbox" name = "transactionChoice" class="checkbox-input" data-bs-toggle="modal" data-bs-target="#wavepayModal" onclick="checkedOnTransactionChoiceClick(this,'transactionChoice')"/>
                             <span class="checkbox-tile">
                               <span class="checkbox-icon">
-                                <div class="transaction-choice-img"><img src="../imgs/wavepay.jfif"/></div>
+                                <div class="transaction-choice-img"><img src="{{asset('image/wavepay.jfif')}}"/></div>
                               </span>
                               <span class="checkbox-label">Wave Pay<br>
 
@@ -731,7 +731,7 @@
                             <input type="checkbox" name = "transactionChoice" class="checkbox-input" data-bs-toggle="modal" data-bs-target="#ayapayModal" onclick="checkedOnTransactionChoiceClick(this,'transactionChoice')"/>
                             <span class="checkbox-tile">
                               <span class="checkbox-icon">
-                                <div class="transaction-choice-img"><img src="../imgs/ayapay.jfif"/></div>
+                                <div class="transaction-choice-img"><img src="{{asset('image/ayapay.jfif')}}"/></div>
                               </span>
                               <span class="checkbox-label">AYA Pay<br>
 
@@ -760,7 +760,7 @@
                             <span class="checkbox-tile">
                               <span class="checkbox-icon">
                                 <div class="transaction-choice-img">
-                                    <img src="../imgs/kbzbank-removebg-preview.png"/>
+                                    <img src="{{asset('image/kbzbank-removebg-preview.png')}}"/>
                                 </div>
                               </span>
                               <span class="checkbox-label">KBZ Bank<br>
@@ -775,7 +775,7 @@
                             <input type="checkbox" name = "transactionChoice" class="checkbox-input" data-bs-toggle="modal" data-bs-target="#cbbankModal" onclick="checkedOnTransactionChoiceClick(this,'transactionChoice')"/>
                             <span class="checkbox-tile">
                               <span class="checkbox-icon">
-                                <div class="transaction-choice-img"><img src="../imgs/cbbank-removebg-preview.png"/></div>
+                                <div class="transaction-choice-img"><img src="{{asset('image/cbbank-removebg-preview.png')}}"/></div>
                               </span>
                               <span class="checkbox-label">CB Bank<br>
 
@@ -788,7 +788,7 @@
                             <input type="checkbox" name = "transactionChoice" class="checkbox-input" data-bs-toggle="modal" data-bs-target="#ayabankModal" onclick="checkedOnTransactionChoiceClick(this,'transactionChoice')"/>
                             <span class="checkbox-tile">
                               <span class="checkbox-icon">
-                                <div class="transaction-choice-img"><img src="../imgs/ayabank-removebg-preview.png"/></div>
+                                <div class="transaction-choice-img"><img src="{{asset('image/ayabank-removebg-preview.png')}}"/></div>
                               </span>
                               <span class="checkbox-label">AYA Bank<br>
 
@@ -801,7 +801,7 @@
                             <input type="checkbox" name = "transactionChoice" class="checkbox-input" data-bs-toggle="modal" data-bs-target="#mabbankModal" onclick="checkedOnTransactionChoiceClick(this,'transactionChoice')"/>
                             <span class="checkbox-tile">
                               <span class="checkbox-icon">
-                                <div class="transaction-choice-img"><img src="../imgs/mabbank-removebg-preview.png"/></div>
+                                <div class="transaction-choice-img"><img src="{{asset('image/mabbank-removebg-preview.png')}}"/></div>
                               </span>
                               <span class="checkbox-label">MAB Bank<br>
 

@@ -34,23 +34,24 @@
 
         </div>
     </div>
-
-    <div class="training-center-testimonials-container">
-        <div class="training-center-testimonial">
-            <img src="../imgs/trainer1.jpg">
-            <p>Sapien tempor dolor sed gravida augue commodo integer amet viverra.</p>
-        </div>
-        <div class="training-center-testimonial">
-            <img src="../imgs/trainer1.jpg">
-            <p>Sapien tempor dolor sed gravida augue commodo integer amet viverra.</p>
-        </div>
-        <div class="training-center-testimonial">
-            <img src="../imgs/trainer1.jpg">
-            <p>Sapien tempor dolor sed gravida augue commodo integer amet viverra.</p>
-        </div>
-        <div class="training-center-testimonial">
-            <img src="../imgs/trainer1.jpg">
-            <p>Sapien tempor dolor sed gravida augue commodo integer amet viverra.</p>
+    <div class="training-center-testimonials-wrapper">
+        <div class="training-center-testimonials-container">
+            <div class="training-center-testimonial">
+                <img src="../imgs/trainer1.jpg">
+                <p>Sapien tempor dolor sed gravida augue commodo integer amet viverra.</p>
+            </div>
+            <div class="training-center-testimonial">
+                <img src="../imgs/trainer1.jpg">
+                <p>Sapien tempor dolor sed gravida augue commodo integer amet viverra.</p>
+            </div>
+            <div class="training-center-testimonial">
+                <img src="../imgs/trainer1.jpg">
+                <p>Sapien tempor dolor sed gravida augue commodo integer amet viverra.</p>
+            </div>
+            <div class="training-center-testimonial">
+                <img src="../imgs/trainer1.jpg">
+                <p>Sapien tempor dolor sed gravida augue commodo integer amet viverra.</p>
+            </div>
         </div>
     </div>
 
@@ -64,8 +65,9 @@
 
         </div>
     </div>
-@foreach($durations as $duration)
+
     <div class="training-center-plan-durations-container">
+        @foreach($durations as $duration)
         <div class="member-plan-duration-container">
             <label>
                 <input type="checkbox" name = "memberPlanDuration" class=" customer-member-plan-duration-checkbox-input"  onclick="checkedOnDurationClick(this,'memberPlanDuration')" value="{{$duration->duration}}"/>
@@ -84,8 +86,9 @@
                 <p class="customer-member-plan-duration-checkbox-title">6 months</p>
             </label>
         </div> --}}
+        @endforeach
     </div>
-@endforeach
+
     <div class="home-price-details-container">
 
     </div>

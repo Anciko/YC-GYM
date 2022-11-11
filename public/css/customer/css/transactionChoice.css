@@ -1,16 +1,23 @@
+.customer-payment-parent-container{
+    background-color: var(--customer-card-bg-color);
+    padding: 20px;
+    border-radius: 10px;
+}
+
 .customer-transaction-choice-form{
     margin-bottom: 20px;
 }
 
 .customer-transaction-form-header{
-    margin: 40px 0;
+    margin-bottom: 40px;
     text-align: center;
-    color: white;
+    color: var(--customer-text-color);
     font-weight: 600;
     font-size: 20px;
 }
 
 .customer-transaction-choices-parent-container{
+
 
 }
 
@@ -22,7 +29,7 @@
 .customer-transaction-choices-ewallet-header{
     display: flex;
     align-items: center;
-    color: white;
+    color: var(--customer-text-color);
     margin-bottom: 30px;
 }
 
@@ -90,6 +97,7 @@
 
 .customer-transaction-input-container p{
     margin-bottom: 0;
+    font-size: 14px;
 }
 
 .customer-transaction-input-container input{
@@ -105,6 +113,7 @@
     /* flex-flow:column wrap; */
     /* justify-content:center; */
     margin-top: 20px;
+    gap: 10px;
 }
 
   .preview{
@@ -120,6 +129,9 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
+    gap: 10px;
+    flex-wrap: wrap;
+    font-size: 14px;
   }
 
   #myfile{
@@ -177,6 +189,11 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
+    gap: 0 10px;
+  }
+
+  .customer-transaction-admin-phone p, .customer-transaction-admin-phone p{
+    font-size: 14px;
   }
 
   .customer-transaction-form-btn-container{
@@ -206,8 +223,16 @@
   .customer-transaction-line{
     width: 100%;
     height: 1px;
-    background-color: white;
+    background-color: var(--customer-text-color);
     margin: 30px 0;
+  }
+
+  .customer-payment-parent-container .checkbox-tile{
+    border: 2px solid var(--customer-text-color);
+  }
+
+  .customer-payment-parent-container .checkbox-icon, .customer-payment-parent-container .checkbox-label{
+    color: var(--customer-text-color);
   }
 
   @media screen and (max-width:600px){
@@ -215,5 +240,13 @@
         flex-direction: row;
         flex-wrap: wrap;
         justify-content: space-around;
+    }
+
+    .customer-transaction-input-container input{
+        width: 170px;
+    }
+
+    .customer-transaction-admin-details{
+        padding: 15px 10px;
     }
   }
