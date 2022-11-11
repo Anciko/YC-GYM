@@ -27,6 +27,9 @@
             @endhasanyrole
             <a href="#">Shop</a>
             <a href="#">Search</a>
+            @auth
+            <a href="{{route('customer-personal_infos')}}">Training Center</a>
+            @endauth
             @hasanyrole('Diamond|Platinum|Gym Member')
             <a href="{{route('training_center.index')}}">Training Center</a>
             @endhasanyrole

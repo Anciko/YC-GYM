@@ -145,15 +145,24 @@ class CustomerRegisterController extends Controller
         }
     }
 
+    public function updateinfo($request_type)
+    {
+        $user=User::findOrFail(auth()->user()->id);
+        $user->request_type=$request_type;
+        $user->update();
+
+        return view('customer.customer_registration');
+    }
+
     public function register(Request $request)
     {
-        $validated = $request->validate([
+        $request->validate([
             'name' => 'required',
             'phone' => 'required|min:9|max:11|unique:users',
             'email' => 'required|unique:users',
             'address' => 'required',
             'password' => 'required|min:6|max:11',
-            'password_confirmation' => 'required|same:password'
+            'confirmPassword' => 'required|same:password'
         ]);
         $user = new User();
         $user->name=$request->name;
@@ -167,7 +176,7 @@ class CustomerRegisterController extends Controller
         return redirect()->route('social_media');
     }
     public function personal_info(){
-        // dd("ok");
+
         $id = auth()->user()->id;
         $user = User::find($id);
         $banking_info = BankingInfo::all();

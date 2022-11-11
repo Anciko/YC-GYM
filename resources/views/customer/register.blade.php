@@ -36,7 +36,7 @@
         <div class="text-danger">{{ $message }}</div>
         @enderror
 
-        <input  type="password"  class="customer-registeration-input @error('confirmPassword') is-invalid @enderror" placeholder="Confirm Password" name="confirmPassword">
+        <input  type="password" class="customer-registeration-input @error('confirmPassword') is-invalid @enderror" placeholder="Confirm Password" name="confirmPassword">
         @error('confirmPassword')
         <div class="text-danger">{{ $message }}</div>
         @enderror
