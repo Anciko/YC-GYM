@@ -13,7 +13,17 @@
 
     </div>
 @endif
+<style>
+    .member-duration{
+        margin-right: 100px;
+        font-weight: bold;
+    }
 
+    .member-cost{
+        margin-right: 120px;
+        font-weight: bold;
+    }
+</style>
 <!--kpay modal-->
 <div class="modal fade" id="kpayModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"  aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
@@ -31,11 +41,11 @@
 
             <div class="customer-transaction-input-container">
                 <p>Choosen Plan:</p>
-                <p>{{$member->member_type}}( {{$member->duration}} month)</p>
+                <p class="member-duration">{{$member->member_type}}( {{$member->duration}} month)</p>
             </div>
             <div class="customer-transaction-input-container">
                 <p>Cost:</p>
-                <p>{{$member->price}}MMK</p>
+                <p class="member-cost">{{$member->price}}MMK</p>
             </div>
             <div class="customer-transaction-input-container">
                 <p>KPay Phone Number:</p>
@@ -112,11 +122,11 @@
                 </div>
                 <div class="customer-transaction-input-container">
                     <p>Choosen Plan:</p>
-                    <p>{{$member->member_type}}( {{$member->duration}} month)</p>
+                    <p class="member-duration">{{$member->member_type}}( {{$member->duration}} month)</p>
                 </div>
                 <div class="customer-transaction-input-container">
                     <p>Cost:</p>
-                    <p>{{$member->price}}MMK</p>
+                    <p class="member-cost">{{$member->price}}MMK</p>
                 </div>
                 <div class="customer-transaction-input-container">
                     <p>CBpay Phone Number:</p>
@@ -190,11 +200,11 @@
                 </div>
                 <div class="customer-transaction-input-container">
                     <p>Choosen Plan:</p>
-                    <p>{{$member->member_type}}( {{$member->duration}} month)</p>
+                    <p class="member-duration">{{$member->member_type}}( {{$member->duration}} month)</p>
                 </div>
                 <div class="customer-transaction-input-container">
                     <p>Cost:</p>
-                    <p>{{$member->price}}MMK</p>
+                    <p class="member-cost">{{$member->price}}MMK</p>
                 </div>
                 <div class="customer-transaction-input-container">
                     <p>Wave pay Phone Number:</p>
@@ -270,11 +280,11 @@
                 </div>
                 <div class="customer-transaction-input-container">
                     <p>Choosen Plan:</p>
-                    <p>{{$member->member_type}}( {{$member->duration}} month)</p>
+                    <p class="member-duration">{{$member->member_type}}( {{$member->duration}} month)</p>
                 </div>
                 <div class="customer-transaction-input-container">
                     <p>Cost:</p>
-                    <p>{{$member->price}}MMK</p>
+                    <p class="member-cost">{{$member->price}}MMK</p>
                 </div>
                 <div class="customer-transaction-input-container">
                     <p>Choosed Plan:</p>
@@ -353,11 +363,11 @@
                 </div>
                 <div class="customer-transaction-input-container">
                     <p>Choosen Plan:</p>
-                    <p>{{$member->member_type}}( {{$member->duration}} month)</p>
+                    <p class="member-duration">{{$member->member_type}}( {{$member->duration}} month)</p>
                 </div>
                 <div class="customer-transaction-input-container">
                     <p>Cost:</p>
-                    <p>{{$member->price}}MMK</p>
+                    <p class="member-cost">{{$member->price}}MMK</p>
                 </div>
                 <div class="customer-transaction-input-container">
                     <p>Bank Account Number:</p>
@@ -447,11 +457,11 @@
                 </div>
                 <div class="customer-transaction-input-container">
                     <p>Choosen Plan:</p>
-                    <p>{{$member->member_type}}( {{$member->duration}} month)</p>
+                    <p class="member-duration">{{$member->member_type}}( {{$member->duration}} month)</p>
                 </div>
                 <div class="customer-transaction-input-container">
                     <p>Cost:</p>
-                    <p>{{$member->price}}MMK</p>
+                    <p class="member-cost">{{$member->price}}MMK</p>
                 </div>
                 <div class="customer-transaction-input-container">
                     <p>Bank Account Number:</p>
@@ -525,11 +535,11 @@
                 </div>
                 <div class="customer-transaction-input-container">
                     <p>Choosen Plan:</p>
-                    <p>{{$member->member_type}}( {{$member->duration}} month)</p>
+                    <p class="member-duration">{{$member->member_type}}( {{$member->duration}} month)</p>
                 </div>
                 <div class="customer-transaction-input-container">
                     <p>Cost:</p>
-                    <p>{{$member->price}}MMK</p>
+                    <p class="member-cost">{{$member->price}}MMK</p>
                 </div>
                 <div class="customer-transaction-input-container">
                     <p>Bank Account Number:</p>
@@ -603,11 +613,11 @@
                 </div>
                 <div class="customer-transaction-input-container">
                     <p>Choosen Plan:</p>
-                    <p>{{$member->member_type}}( {{$member->duration}} month)</p>
+                    <p class="member-duration">{{$member->member_type}}( {{$member->duration}} month)</p>
                 </div>
                 <div class="customer-transaction-input-container">
                     <p>Cost:</p>
-                    <p>{{$member->price}}MMK</p>
+                    <p class="member-cost">{{$member->price}}MMK</p>
                 </div>
                 <div class="customer-transaction-input-container">
                     <p>Bank Account Number:</p>
