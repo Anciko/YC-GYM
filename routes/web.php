@@ -80,6 +80,8 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
     //Route::post('customer/register', [App\Http\Controllers\Auth\RegisterController::class, 'register'])->name('customer_register');
     Route::post('customer/register', [App\Http\Controllers\Customer\CustomerRegisterController::class, 'register'])->name('customer_register');
 
+    Route::get('customer/updateinfo/{request_type}', [App\Http\Controllers\Customer\CustomerRegisterController::class, 'updateinfo'])->name('updateinfo');
+
     Route::get('/user/workout/start', [UserWorkoutController::class, 'getstart'])->name('userworkout.getstart');
 
     Route::get('password_reset_view', [PassResetController::class, 'passResetView'])->name('password_reset_view');

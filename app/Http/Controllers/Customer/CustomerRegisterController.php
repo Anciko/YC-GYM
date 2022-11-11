@@ -145,6 +145,15 @@ class CustomerRegisterController extends Controller
         }
     }
 
+    public function updateinfo($request_type)
+    {
+        $user=User::findOrFail(auth()->user()->id);
+        $user->request_type=$request_type;
+        $user->update();
+
+        return view('customer.customer_registration');
+    }
+
     public function register(Request $request)
     {
         $request->validate([

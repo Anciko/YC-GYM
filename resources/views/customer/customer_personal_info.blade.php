@@ -103,7 +103,7 @@
     <script src="https://cdn.jsdelivr.net/npm/@joeattardi/emoji-button@3.0.3/dist/index.min.js"></script>
     <script src="../js/theme.js"></script>
     <script>
-        $(document).ready(function(){
+    $(document).ready(function(){
 
         let member = @json($members);
         var memberPlanDurationCheckboxesList = document.getElementsByName("memberPlanDuration");
@@ -115,7 +115,7 @@
             }
         }
 
-        })
+        });
         window.onload = function() {
 
             let slider = document.querySelector('#slider');
@@ -269,7 +269,7 @@
                                     <p>Benefit 1</p>
                                 </div>
                             </div>
-                            <a href="`{{route('home')}}`" class="customer-secondary-btn">Get Plan</a>
+                            <a href="/customer/updateinfo/${value.id}" class="customer-secondary-btn" id="getplan">Get Plan</a>
                         </div>
                             `)
                     }
@@ -298,7 +298,7 @@
                                     <p>Benefit 1</p>
                                 </div>
                             </div>
-                            <a href="#" class="customer-secondary-btn">Get Plan</a>
+                            <a href="/customer/updateinfo/${value.id}" class="customer-secondary-btn" id="getplan">Get Plan</a>
                         </div>
                             `)
                     }
