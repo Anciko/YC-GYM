@@ -96,7 +96,12 @@
 @push('scripts')
     <script>
         let members = @json($members);
-        console.log(members);
+        let memberArr = Object.values(members)
+
+        var months = JSON.parse('{!! json_encode($months) !!}');
+        var monthCount = JSON.parse('{!! json_encode($monthCount) !!}');
+
+        console.log(months);
 
         // $(document).ready(function() {
         //     let from_member = $('.from_member').val();
@@ -115,15 +120,21 @@
             'April',
             'May',
             'June',
+            'July',
+            'August',
+            'September',
+            'October',
+            'November',
+            'December'
         ];
 
         const data1 = {
-            labels: labels1,
+            labels: months,
             datasets: [{
-                label: 'My First dataset',
+                label: 'Member upgraded history',
                 backgroundColor: '#222E3C',
                 borderColor: '#222E3C',
-                data: [0, 10, 5, 2, 20, 30, 45],
+                data: monthCount,
             }]
         };
 

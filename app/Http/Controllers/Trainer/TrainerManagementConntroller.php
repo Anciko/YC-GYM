@@ -33,6 +33,7 @@ class TrainerManagementConntroller extends Controller
                         ->where('member_type','!=','Gym Member')
                         ->get();
          $groups=TrainingGroup::where('trainer_id',auth()->user()->id)->get();
+         $group=TrainingGroup::where('trainer_id',auth()->user()->id)->first();
          return view('trainer.index',compact('messages','members','groups'));
     }
 
