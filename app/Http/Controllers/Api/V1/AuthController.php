@@ -136,6 +136,7 @@ class AuthController extends Controller
             $user->name = $request->name;
             $user->email = $request->email;
             $user->phone = $request->phone;
+            $user->address = $request->address;
             $user->password = Hash::make($request->password);
             $user->member_code = 'yc-' . substr(Str::uuid(), 0, 8);
             $user->member_type = "Free";
