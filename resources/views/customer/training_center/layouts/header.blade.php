@@ -28,8 +28,10 @@
             <a href="#">Shop</a>
             <a href="#">Search</a>
             @auth
-            @if ( auth()->user()->member_type == 'Free')
+            @if ( auth()->user()->request_type ==null)
             <a href="{{route('customer-personal_infos')}}">Training Center</a>
+            @elseif(auth()->user()->request_type !=null && auth()->user()->active_status==0)
+            <a href="{{route('customer_payment')}}">Training Center</a>
             @endif
             @endauth
             @hasanyrole('Diamond|Platinum|Gym Member')

@@ -29,7 +29,6 @@ class RegisterPaymentController extends Controller
 
         $auth_user = auth()->user();
         $user = User::findOrFail($auth_user->id);
-        $user->active_status = 1;
         $user->request_type = $member->id;
 
         $user->update();

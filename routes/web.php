@@ -228,6 +228,8 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
         Route::get('customer/meal/sevendays/{date}', [Customer_TrainingCenterController::class, 'meal_sevendays'])->name('meal_sevendays');
 
         Route::get('customer/training_center', [Customer_TrainingCenterController::class, 'index'])->name('training_center.index');
+        Route::get('customer/training_center/member_plan', [Customer_TrainingCenterController::class, 'member_plan'])->name('training_center.member_plan');
+
         Route::get('customer/training_center/meal', [Customer_TrainingCenterController::class, 'meal'])->name('training_center.meal');
         Route::get('customer/training_center/workout_plan', [Customer_TrainingCenterController::class, 'workout_plan'])->name('training_center.workout_plan');
         Route::get('customer/training_center/water', [Customer_TrainingCenterController::class, 'water'])->name('training_center.water');
