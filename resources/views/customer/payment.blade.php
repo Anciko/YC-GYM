@@ -1,4 +1,4 @@
-@extends('customer.layouts.app')
+@extends('customer.layouts.app_home')
 
 @section('content')
 @include('sweetalert::alert')
@@ -609,8 +609,8 @@
 
 
 
-<div class="customer-main-content-container">
-    <form id="customer-transaction-choice-form">
+<div class="customer-main-content-container margin-top">
+    <form id="customer-transaction-choice-form" class="customer-payment-parent-container">
         <p class="customer-transaction-form-header">
             Confirm Transaction Via
         </p>
@@ -755,7 +755,6 @@
                 </div>
             </div>
         </div>
-
 
     </form>
 </div>

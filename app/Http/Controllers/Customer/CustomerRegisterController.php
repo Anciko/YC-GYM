@@ -99,7 +99,7 @@ class CustomerRegisterController extends Controller
         $weight_history->user_id = auth()->user()->id;
         $weight_history->date = $weight_date;
         $weight_history->save();
-        Alert::success('Success', 'Information Updated Successfully');
+        //Alert::success('Success', 'Information Updated Successfully');
         // return redirect()->route('social_media');
     }
 
