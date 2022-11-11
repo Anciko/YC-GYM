@@ -66,6 +66,8 @@ html{
     animation: 1s ease-out 0s 1 slideInFromTop;
 }
 
+
+
 .customer-registeration-form-header{
     text-align: center;
     font-size: 19px;
@@ -360,7 +362,13 @@ input.invalid, select.invalid {
 .body-type-img{
     width: 60px;
     height: 120px;
-    background-color: #DDDDDD;
+    /* background-color: #DDDDDD; */
+}
+
+.body-type-img img{
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
 }
 
 .checkbox-big .checkbox-tile{
@@ -370,14 +378,26 @@ input.invalid, select.invalid {
 .typical-day-img{
     height: 100px;
     width: 150px;
-    background-color: #DDDDDD;
+    /* background-color: #DDDDDD; */
+}
+
+.typical-day-img img{
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
 }
 
 .diet-icon{
     width: 30px;
     height: 30px;
     border-radius: 50%;
-    background-color: #DDDDDD;
+    /* background-color: #DDDDDD; */
+}
+
+.diet-icon img{
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
 }
 
 
@@ -388,7 +408,13 @@ input.invalid, select.invalid {
 .average-night-img{
     width: 100%;
     height: 190px;
-    background-color: #DDDDDD;
+    /* background-color: #DDDDDD; */
+}
+
+.average-night-img img{
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
 }
 
 .checkbox-grid-container{
@@ -482,7 +508,13 @@ input.invalid, select.invalid {
     width: 60px;
     height: 60px;
     border-radius: 50%;
-    background-color: #DDDDDD;
+    /* background-color: #DDDDDD; */
+}
+
+.checkbox-icon-medium img{
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
 }
 
 .customer-member-plan-form{
@@ -533,6 +565,48 @@ input.invalid, select.invalid {
     margin-top: 40px;
     text-align: center;
     font-weight: 600;
+}
+
+.customer-registeration-card{
+    border: none;
+    background-color: var(--customer-card-bg-color);
+
+}
+
+.customer-registeration-card .customer-registeration-form-header{
+    color: var(--customer-text-color);
+}
+
+.customer-registeration-card .customer-registeration-label{
+    color: var(--customer-text-color);
+}
+
+.customer-registeration-card .customer-registeration-input{
+    color: var(--customer-text-color);
+    border-bottom: 1px solid var(--customer-primary-color);
+}
+
+.customer-registeration-card input.invalid, .customer-registeration-card select.invalid{
+    border-bottom: 2px solid red;
+}
+
+.customer-registeration-card .checkbox-tile{
+    border: 2px solid var(--customer-text-color);
+}
+
+.customer-registeration-card .checkbox-icon,.customer-registeration-card .checkbox-label{
+    color: var(--customer-text-color);
+}
+
+.customer-registeration-card .checkbox-input:checked + .checkbox-tile{
+    background-color: var(--customer-primary-color);
+}
+
+.customer-registeration-card .floating-checkbox:nth-child(2n):before{
+    background-color: var(--customer-text-color);
+}
+.customer-registeration-card .floating-checkbox:nth-child(2n-1):before{
+    background-color: var(--customer-text-color);
 }
 
 

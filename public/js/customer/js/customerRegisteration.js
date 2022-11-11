@@ -9,17 +9,25 @@
         var currentTab = 0; // Current tab is set to be the first tab (0)
         showTab(currentTab); // Display the current tab
 
+        $(".hip-tooltip").hide()
+
         function checkFemale(gender){
             console.log(gender.value)
             const hip = `<input  type="number" required class="customer-registeration-input" placeholder="Hip" name="hip">`
+            // const toolTip = `<iconify-icon  icon="ant-design:exclamation-circle-outlined" class="description-icon hip-tooltip" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Stand with your feet directly beneath your hips and wrap the tape around the widest part of your hips and buttocks."></iconify-icon>`
             const hipNode = document.querySelector('[name="hip"]')
+            // const toolTipNode = document.querySelector('.hip-tooltip')
             const parent = document.querySelector("#parent-hip")
             if(gender.value === "female"){
                 parent.insertAdjacentHTML("afterbegin",hip)
+                $(".hip-tooltip").show()
+                // parent.insertAdjacentHTML("afterbegin",toolTip)
                 // console.log(hip)
             }else{
                 if(hipNode){
                     parent.removeChild(hipNode);
+                    $(".hip-tooltip").hide()
+                    // parent.removeChild(toolTipNode)
                 }
 
             }

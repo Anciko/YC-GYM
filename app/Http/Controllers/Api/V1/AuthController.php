@@ -136,6 +136,7 @@ class AuthController extends Controller
             $user->name = $request->name;
             $user->email = $request->email;
             $user->phone = $request->phone;
+            $user->address = $request->address;
             $user->password = Hash::make($request->password);
             $user->member_code = 'yc-' . substr(Str::uuid(), 0, 8);
             $user->member_type = "Free";
@@ -341,29 +342,31 @@ class AuthController extends Controller
 
         $user = User::findOrFail($auth_user->id);
         $user->active_status = 1;
+        $user->request_type = $request->member_id;
+        $user->save();
 
         ///////
 
-        if ($user->member_type != "Free") {
-            $user->members()->attach(['from_member_id' => $user->request_type, 'to_member_id' => $request->member_id, 'member_type_level' => $user->membertype_level]);
+        // if ($user->member_type != "Free") {
+        //     $user->members()->attach(['from_member_id' => $user->request_type, 'to_member_id' => $request->member_id, 'member_type_level' => $user->membertype_level]);
 
 
-            $member = Member::findOrFail($request->member_id);
-            $user->member_type = $member->member_type;
+        //     $member = Member::findOrFail($request->member_id);
+        //     $user->member_type = $member->member_type;
 
-            $user->syncRoles($member->member_type);
-            $user->save();
-        }
+        //     $user->syncRoles($member->member_type);
+        //     $user->save();
+        // }
 
-        if ($user->member_type == "Free") {
-            $user->members()->attach(['to_member_id' => $request->member_id, 'member_type_level' => $request->member_type_level]);
+        // if ($user->member_type == "Free") {
+        //     $user->members()->attach(['to_member_id' => $request->member_id, 'member_type_level' => $request->member_type_level]);
 
-            $member = Member::findOrFail($request->member_id);
-            $user->membertype_level = $request->member_type_level;
-            $user->member_type = $member->member_type;
-            $user->syncRoles($member->member_type);
-            $user->save();
-        }
+        //     $member = Member::findOrFail($request->member_id);
+        //     $user->membertype_level = $request->member_type_level;
+        //     $user->member_type = $member->member_type;
+        //     $user->syncRoles($member->member_type);
+        //     $user->save();
+        // }
 
         //////
 
@@ -401,30 +404,32 @@ class AuthController extends Controller
 
         $user = User::findOrFail($auth_user->id);
         $user->active_status = 1;
+        $user->request_type = $request->member_id;
+        $user->save();
         ///////
 
-        if ($user->member_type != "Free") {
-            $user->members()->attach(['from_member_id' => $user->request_type, 'to_member_id' => $request->member_id, 'member_type_level' => $user->membertype_level]);
+        // if ($user->member_type != "Free") {
+        //     $user->members()->attach(['from_member_id' => $user->request_type, 'to_member_id' => $request->member_id, 'member_type_level' => $user->membertype_level]);
 
 
-            $member = Member::findOrFail($request->member_id);
-            $user->member_type = $member->member_type;
+        //     $member = Member::findOrFail($request->member_id);
+        //     $user->member_type = $member->member_type;
 
-            $user->syncRoles($member->member_type);
-            $user->save();
-        }
+        //     $user->syncRoles($member->member_type);
+        //     $user->save();
+        // }
 
 
 
-        if ($user->member_type == "Free") {
-            $user->members()->attach(['to_member_id' => $request->member_id, 'member_type_level' => $request->member_type_level]);
+        // if ($user->member_type == "Free") {
+        //     $user->members()->attach(['to_member_id' => $request->member_id, 'member_type_level' => $request->member_type_level]);
 
-            $member = Member::findOrFail($request->member_id);
-            $user->membertype_level = $request->member_type_level;
-            $user->member_type = $member->member_type;
-            $user->syncRoles($member->member_type);
-            $user->save();
-        }
+        //     $member = Member::findOrFail($request->member_id);
+        //     $user->membertype_level = $request->member_type_level;
+        //     $user->member_type = $member->member_type;
+        //     $user->syncRoles($member->member_type);
+        //     $user->save();
+        // }
 
 
 

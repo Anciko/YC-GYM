@@ -28,8 +28,14 @@
             <a href="#">Shop</a>
             <a href="#">Search</a>
             @auth
+<<<<<<< HEAD
             @if ( count(auth()->user()->roles) < 1)
+=======
+            @if ( auth()->user()->request_type ==null)
+>>>>>>> 67dd6ced3035db2632562807b21942eb5933e580
             <a href="{{route('customer-personal_infos')}}">Training Center</a>
+            @elseif(auth()->user()->request_type !=null && auth()->user()->active_status==0)
+            <a href="{{route('customer_payment')}}">Training Center</a>
             @endif
             @endauth
             @hasanyrole('Diamond|Platinum|Gym Member')
