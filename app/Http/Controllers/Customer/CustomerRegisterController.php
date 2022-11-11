@@ -21,8 +21,8 @@ class CustomerRegisterController extends Controller
 
     public function CustomerData(Request $request)
     {
-        $user_id=auth()->user()->id;
-        $user = User::findOrFail($user_id);
+        $user_id=auth()->user();
+        $user = User::findOrFail($user_id->id);
 
         $all_info = $request->allData; // json string
         $all_info =  json_decode(json_encode($all_info));
@@ -33,10 +33,10 @@ class CustomerRegisterController extends Controller
         $weight = json_decode(json_encode($weight));
 
         $user_member_type_level = $all_info->proficiency[0];
-        $user_member_type = $all_info->memberPlan[0];
+        // $user_member_type = $all_info->memberPlan[0];
         $user_gender = $bodyMeasurements->gender;
 
-        $member = Member::findOrFail($user_member_type);
+        $member = Member::findOrFail($user_id->request_type);
 
         $from_date = Carbon::now();
         $to_date = Carbon::now()->addMonths($member->duration);
@@ -47,11 +47,6 @@ class CustomerRegisterController extends Controller
         $user_bodyArea = json_encode($all_info->bodyArea);
         //$user->request_type = $user_member_type; ///
 
-        $user->name = $all_info->personalInfo[0];
-        $user->phone = $all_info->personalInfo[1];
-        $user->email = $all_info->personalInfo[2];
-        $user->address = $all_info->personalInfo[3];
-        $user->password = Hash::make($all_info->personalInfo[4]);
         $user->height = $bodyMeasurements->height;
         $user->age = $bodyMeasurements->age;
         $user->gender = $user_gender;
@@ -105,7 +100,7 @@ class CustomerRegisterController extends Controller
         $weight_history->date = $weight_date;
         $weight_history->save();
         Alert::success('Success', 'Information Updated Successfully');
-        return redirect()->route('social_media');
+        // return redirect()->route('social_media');
     }
 
     public function checkPhone(Request $request)

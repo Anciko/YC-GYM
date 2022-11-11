@@ -1,4 +1,4 @@
-@extends('customer.layouts.app')
+@extends('customer.layouts.app_home')
 
 @section('content')
 <form id="regForm">
