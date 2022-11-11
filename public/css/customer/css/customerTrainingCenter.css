@@ -1081,12 +1081,22 @@ ul#move li:nth-child(5) {
     margin-top: 40px;
 }
 
+.training-center-testimonials-wrapper{
+
+    width: 100%;
+    overflow-x: auto;
+    /* white-space: nowrap; */
+}
+
 .training-center-testimonials-container{
     display: flex;
     align-items: center;
     justify-content: space-around;
+    min-width: 1000px;
     gap: 10px 20px;
-    flex-wrap: wrap;
+    /* flex-wrap: wrap; */
+
+
 }
 
 .training-center-testimonial{

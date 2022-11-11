@@ -34,23 +34,24 @@
 
         </div>
     </div>
-
-    <div class="training-center-testimonials-container">
-        <div class="training-center-testimonial">
-            <img src="../imgs/trainer1.jpg">
-            <p>Sapien tempor dolor sed gravida augue commodo integer amet viverra.</p>
-        </div>
-        <div class="training-center-testimonial">
-            <img src="../imgs/trainer1.jpg">
-            <p>Sapien tempor dolor sed gravida augue commodo integer amet viverra.</p>
-        </div>
-        <div class="training-center-testimonial">
-            <img src="../imgs/trainer1.jpg">
-            <p>Sapien tempor dolor sed gravida augue commodo integer amet viverra.</p>
-        </div>
-        <div class="training-center-testimonial">
-            <img src="../imgs/trainer1.jpg">
-            <p>Sapien tempor dolor sed gravida augue commodo integer amet viverra.</p>
+    <div class="training-center-testimonials-wrapper">
+        <div class="training-center-testimonials-container">
+            <div class="training-center-testimonial">
+                <img src="../imgs/trainer1.jpg">
+                <p>Sapien tempor dolor sed gravida augue commodo integer amet viverra.</p>
+            </div>
+            <div class="training-center-testimonial">
+                <img src="../imgs/trainer1.jpg">
+                <p>Sapien tempor dolor sed gravida augue commodo integer amet viverra.</p>
+            </div>
+            <div class="training-center-testimonial">
+                <img src="../imgs/trainer1.jpg">
+                <p>Sapien tempor dolor sed gravida augue commodo integer amet viverra.</p>
+            </div>
+            <div class="training-center-testimonial">
+                <img src="../imgs/trainer1.jpg">
+                <p>Sapien tempor dolor sed gravida augue commodo integer amet viverra.</p>
+            </div>
         </div>
     </div>
 
