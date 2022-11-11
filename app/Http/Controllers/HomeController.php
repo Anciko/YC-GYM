@@ -135,15 +135,16 @@ class HomeController extends Controller
 
     public function customer_register()
     {
-        $user = User::find(1);
-        $banking_info = BankingInfo::all();
-        // $mem = $user->members()->get();
-        $users = User::with('members')->orderBy('created_at', 'DESC')->get();
+        // $user = User::find(1);
+        // $banking_info = BankingInfo::all();
+        // // $mem = $user->members()->get();
+        // $users = User::with('members')->orderBy('created_at', 'DESC')->get();
 
-        $members = Member::orderBy('price', 'ASC')->get();
+        // $members = Member::orderBy('price', 'ASC')->get();
 
-        $durations = Member::groupBy('duration')->where('duration', '!=', 0)->get();
-        return view('customer.register', compact('durations', 'members', 'banking_info'));
+        // $durations = Member::groupBy('duration')->where('duration', '!=', 0)->get();
+        // return view('customer.register', compact('durations', 'members', 'banking_info'));
+        return view('customer.register');
     }
 
     public function getRegister()

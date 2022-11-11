@@ -148,6 +148,7 @@ class CustomerRegisterController extends Controller
 
     public function register(Request $request)
     {
+        // dd("dd");
         $request->validate([
             'name' => 'required',
             'phone' => 'required|min:9|max:11|unique:users',
