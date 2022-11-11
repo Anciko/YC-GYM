@@ -27,11 +27,11 @@
             @endhasanyrole
             <a href="#">Shop</a>
             <a href="#">Search</a>
-            {{-- @auth --}}
-            @if( count(auth()->user()->roles) < 1 )
+            @auth
+            @if ( auth()->user()->member_type == 'Free')
             <a href="{{route('customer-personal_infos')}}">Training Center</a>
             @endif
-            {{-- @endauth --}}
+            @endauth
             @hasanyrole('Diamond|Platinum|Gym Member')
             <a href="{{route('training_center.index')}}">Training Center</a>
             @endhasanyrole
@@ -43,7 +43,7 @@
             @hasanyrole('Trainer')
             <a href="{{route('trainer')}}">Training Center</a>
             @endhasanyrole
-
+            @auth
             <div class="customer-dropdown-container">
                 <ul>
                     <li class="customer-dropdown">
@@ -62,6 +62,7 @@
                     </li>
                 </ul>
             </div>
+            @endauth
         </div>
 
         {{-- <div class="customer-navlinks-notiprofile-container">
