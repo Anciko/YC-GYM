@@ -36,7 +36,7 @@
   </head>
   <body>
 
-        @include('customer.layouts.header')
+        @include('customer.training_center.layouts.header')
         <!--theme-->
         <script src="{{asset('js/theme.js')}}"></script>
         <div class="nav-overlay">

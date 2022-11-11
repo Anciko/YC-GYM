@@ -45,7 +45,7 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
     //Route::get('/customer/signup', [App\Http\Controllers\HomeController::class, 'customersignup'])->name('home');
 
     Route::post('/data/save', [HomeController::class, 'store'])->name('data.save');
-    Route::post('customer/customerCreate', [CustomerRegisterController::class, 'CustomerData'])->name('customerCreate');
+    Route::post('customer/updateinfo/customerCreate', [CustomerRegisterController::class, 'CustomerData'])->name('customerCreate');
 
     // NCK
     Route::put(

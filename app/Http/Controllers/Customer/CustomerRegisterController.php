@@ -21,7 +21,8 @@ class CustomerRegisterController extends Controller
 
     public function CustomerData(Request $request)
     {
-        $user = new User();
+        $user_id=auth()->user()->id;
+        $user = User::findOrFail($user_id);
 
         $all_info = $request->allData; // json string
         $all_info =  json_decode(json_encode($all_info));
@@ -44,8 +45,7 @@ class CustomerRegisterController extends Controller
 
         $user_bad_habits = json_encode($all_info->badHabits);
         $user_bodyArea = json_encode($all_info->bodyArea);
-        $user->member_type = 'Free'; ///
-        $user->request_type = $user_member_type; ///
+        //$user->request_type = $user_member_type; ///
 
         $user->name = $all_info->personalInfo[0];
         $user->phone = $all_info->personalInfo[1];
@@ -57,12 +57,7 @@ class CustomerRegisterController extends Controller
         $user->gender = $user_gender;
         $user->daily_life = $all_info->typicalDay[0];
         $user->diet_type = $all_info->diet[0];
-
-        if ($user_member_type == 1) {
-            $user->active_status = 0;
-        } else {
-            $user->active_status = 1;
-        }
+        $user->active_status = 0;
 
         if ($user_gender == 'male') {
             $user->hip = 0;
@@ -97,11 +92,11 @@ class CustomerRegisterController extends Controller
         $user->member_code = 'yc-' . substr(Str::uuid(), 0, 8);
 
         $member_id = 1; ///
-        $user->save();
+        $user->update();
 
-        $user->members()->attach($member_id, ['member_type_level' => $user_member_type_level]);
-        $user->assignRole('Free');
-        Auth::login($user);
+        // $user->members()->attach($member_id, ['member_type_level' => $user_member_type_level]);
+        // $user->assignRole('Free');
+        // Auth::login($user);
 
         $weight_history = new WeightHistory();
         $weight_date = Carbon::now()->toDateString();
@@ -109,6 +104,8 @@ class CustomerRegisterController extends Controller
         $weight_history->user_id = auth()->user()->id;
         $weight_history->date = $weight_date;
         $weight_history->save();
+        Alert::success('Success', 'Information Updated Successfully');
+        return redirect()->route('social_media');
     }
 
     public function checkPhone(Request $request)
@@ -170,6 +167,7 @@ class CustomerRegisterController extends Controller
         $user->email=$request->email;
         $user->address=$request->address;
         $user->password=Hash::make($request->password);
+        $user->member_type = 'Free';
         $user->save();
         Auth::login($user);
         Alert::success('Success', 'Sign Up Successfully');
