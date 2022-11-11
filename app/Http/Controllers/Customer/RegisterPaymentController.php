@@ -23,13 +23,13 @@ class RegisterPaymentController extends Controller
 
     public function changeStatusAndType($id)
     {
+        
         $banking_info = BankingInfo::all();
 
         $member = Member::findOrFail($id);
 
         $auth_user = auth()->user();
         $user = User::findOrFail($auth_user->id);
-        $user->active_status = 1;
         $user->request_type = $member->id;
 
         $user->update();

@@ -157,7 +157,6 @@
             });
             $(document).on('click', '#group-chat', function(e) {
                 e.preventDefault();
-
                 $("#send_message").empty();
                 $('#trainer_message_form').show();
                 $(".trainer-group-chat-media-container").empty();
@@ -172,6 +171,7 @@
                 // var id=$(this).val();
                 var id = $(this).data('id');
                 localStorage.setItem('group_id', id);
+                console.log(id)
                 $.ajax({
                     type: "GET",
                     url: "trainer/group/show/" + id,
@@ -400,7 +400,7 @@
                 // var url = new URL(this.href);
                 // var id = url.searchParams.get("id"); //get-id
                 var id = $('.view_member').attr('id')
-                console.log("group_id", id);
+                console.log("group_idjhhhjh", id);
                 $.ajax({
                     type: "GET",
                     url: "/trainer/view_member/" + id,
@@ -656,14 +656,14 @@
             clearGroupChatImg();
 
         });
-        var groupid = localStorage.getItem('group_id');
+        var id = localStorage.getItem('group_id');
+            console.log('group id pusher', id);
         Pusher.logToConsole = true;
         var pusher = new Pusher('576dc7f4f561e15a42ef', {
             cluster: 'eu',
             encrypted: true
         });
-        var id = localStorage.getItem('group_id');
-        console.log("testing", id);
+
         var channel = pusher.subscribe('trainer-message.'+id);
         channel.bind('training_message_event', function(data) {
             console.log(data);
@@ -725,10 +725,12 @@
                                         </div>`;
                 }
             }
-
+            // pusher.unsubscribe('trainer-message.'+id);
 
         });
+
         //end
+
 
         function clearGroupChatImg() {
             console.log("clear img preview")

@@ -61,9 +61,9 @@
                 </div>
             </div>
 
-            <form action="{{ route('customer_upgrade', $member_plan->id) }}" method="POST">
+            <form action="{{ route('customer_upgrade', $member_plan->id) }}" method="GET">
                 @csrf
-                @method('PUT')
+                {{-- @method('PUT') --}}
                 <button type="submit" class="customer-secondary-btn">Upgrade</button>
             </form>
         </div>

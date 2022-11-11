@@ -12,6 +12,8 @@
            <h3>Request Member Payment Detail</h3>
           </div>
 
+          
+
           @if ($payment != null)
 
                @foreach ($payment as $pay)
@@ -34,7 +36,7 @@
                         <label class="fs-5">Payment name :</label>
                         <label class="ms-2 text-capitalize">{{$pay->payment_name ?? "Bank"}}</label>
                         </div>
-                        @if ($pay->payment_type == "bank")
+                        @if ($pay->payment_type == "banking")
                             <div id="bank-number">
                                 <label class="fs-5">Bank account number :</label>
                                 <label class="ms-2 text-capitalize">{{$pay->bank_account_number ?? "E-wallet"}}</label>
