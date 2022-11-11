@@ -48,10 +48,7 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
     Route::post('customer/customerCreate', [CustomerRegisterController::class, 'CustomerData'])->name('customerCreate');
 
     // NCK
-    Route::put(
-        '/customer_payment_active_staus/{id}',
-        [RegisterPaymentController::class, 'changeStatusAndType']
-    )->name('customer_upgrade');
+    Route::get('/customer_payment_active_staus/{id}',[RegisterPaymentController::class, 'changeStatusAndType'])->name('customer_upgrade');
 
 
     Route::post('/member/upgraded-history/', [HomeController::class, 'memberUpgradedHistory'])->name('member-upgraded-history');

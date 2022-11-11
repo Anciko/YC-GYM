@@ -34,6 +34,7 @@
             <h2 class="text-center mb-0">Request - Member</h2>
         </div>
 
+
         <div class="col-12 card p-4 mb-5">
             <table class="table table-striped Datatable" id="export" style="width: 100%">
                 <thead>
@@ -118,6 +119,13 @@
                 Toast.fire({
                     icon: 'success',
                     title: '{{ Session::get('success') }}'
+                })
+            @endif
+
+            @if (Session::has('usernotfound'))
+            Toast.fire({
+                    icon: 'danger',
+                    title: '{{ Session::get('usernotfound') }}'
                 })
             @endif
 

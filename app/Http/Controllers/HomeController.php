@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
 use App\Models\User;
 use App\Models\Member;
 use App\Models\BankingInfo;
@@ -56,7 +57,16 @@ class HomeController extends Controller
     }
 
     public function index()
-    {
+        { $members = MemberHistory::select('date')->get()->groupBy(function($members){
+            return Carbon::parse($members->date)->format('F');
+        });
+        $months = [];
+        $monthCount = [];
+        foreach($members as $month=>$values){
+            $months[]= $month;
+            $monthCount[]= count($values);
+        }
+
         $free_user = DB::table('users')->where('member_type', 'Free')->count();
         $platinum_user = DB::table('users')->where('member_type', 'Platinum')->count();
         $gold_user = DB::table('users')->where('member_type', 'Gold')->count();
@@ -68,11 +78,11 @@ class HomeController extends Controller
                 // $members = MemberHistory::where('member_id', 1)->where('member_id',2)->get();
 
                 $member_plans = Member::where('member_type', '!=', 'Gym Member')->get();
-                return view('admin.home', compact('member_plans', 'free_user', 'platinum_user', 'gold_user', 'diamond_user', 'ruby_user', 'rubyp_user'));
+                return view('admin.home', compact('member_plans', 'free_user', 'platinum_user', 'gold_user', 'diamond_user', 'ruby_user', 'rubyp_user','members','months','monthCount'));
             } elseif (Auth::user()->hasRole('King')) {
-                return view('admin.home', compact('free_user', 'platinum_user', 'gold_user', 'diamond_user', 'ruby_user', 'rubyp_user'));
+                return view('admin.home', compact('free_user', 'platinum_user', 'gold_user', 'diamond_user', 'ruby_user', 'rubyp_user','members','months','monthCount'));
             } elseif (Auth::user()->hasRole('Queen')) {
-                return view('admin.home', compact('free_user', 'platinum_user', 'gold_user', 'diamond_user', 'ruby_user', 'rubyp_user'));
+                return view('admin.home', compact('free_user', 'platinum_user', 'gold_user', 'diamond_user', 'ruby_user', 'rubyp_user','members','months','monthCount'));
             } else {
                 $member_plans = Member::where('member_type', '!=', 'Free')->where('member_type', '!=', 'Gym Member')->get();
                 return view('customer.home', compact('member_plans'));
@@ -83,12 +93,24 @@ class HomeController extends Controller
         }
     }
 
+
     public function memberUpgradedHistory(Request $request)
     {
-        $members = MemberHistory::where('member_id', $request->from_member)->orWhere('member_id', $request->to_member)->get();
-        $member_plans = Member::where('member_type', '!=', 'Gym Member')->get();
+            $members = MemberHistory::select('date')->where('from_member_id', $request->from_member)->where('to_member_id', $request->to_member)->get()->groupBy(function($members){
+                return Carbon::parse($members->date)->format('F');
+            });
+            $months = [];
+            $monthCount = [];
+            foreach($members as $month=>$values){
+                $months[]= $month;
+                $monthCount[]= count($values);
+            }
+        //    dd($members->toArray());
+            $member_plans = Member::where('member_type', '!=', 'Gym Member')->get();
 
-        return view('admin.member_history', compact('members', 'member_plans'));
+            return view('admin.member_history', compact('members', 'member_plans','months','monthCount'));
+
+
     }
 
     public function home()

@@ -95,7 +95,8 @@
 
 @push('scripts')
     <script>
-
+        var months = JSON.parse('{!! json_encode($months) !!}');
+        var monthCount = JSON.parse('{!! json_encode($monthCount) !!}');
         const labels1 = [
             'January',
             'February',
@@ -106,12 +107,12 @@
         ];
 
         const data1 = {
-            labels: labels1,
+            labels: months,
             datasets: [{
-                label: 'My First dataset',
+                label: 'Member upgraded history',
                 backgroundColor: '#222E3C',
                 borderColor: '#222E3C',
-                data: [0, 10, 5, 2, 20, 30, 45],
+                data: monthCount,
             }]
         };
 

@@ -23,6 +23,7 @@ class RegisterPaymentController extends Controller
 
     public function changeStatusAndType($id)
     {
+        
         $banking_info = BankingInfo::all();
 
         $member = Member::findOrFail($id);
