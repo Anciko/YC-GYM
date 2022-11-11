@@ -13,13 +13,16 @@ use Spatie\Permission\Models\Role;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use App\Http\Requests\CustomerRequest;
+use RealRashid\SweetAlert\Facades\Alert;
 
 class CustomerRegisterController extends Controller
 {
 
     public function CustomerData(Request $request)
     {
-        $user = new User();
+        $user_id=auth()->user();
+        $user = User::findOrFail($user_id->id);
 
         $all_info = $request->allData; // json string
         $all_info =  json_decode(json_encode($all_info));
@@ -30,10 +33,10 @@ class CustomerRegisterController extends Controller
         $weight = json_decode(json_encode($weight));
 
         $user_member_type_level = $all_info->proficiency[0];
-        $user_member_type = $all_info->memberPlan[0];
+        // $user_member_type = $all_info->memberPlan[0];
         $user_gender = $bodyMeasurements->gender;
 
-        $member = Member::findOrFail($user_member_type);
+        $member = Member::findOrFail($user_id->request_type);
 
         $from_date = Carbon::now();
         $to_date = Carbon::now()->addMonths($member->duration);
@@ -42,25 +45,14 @@ class CustomerRegisterController extends Controller
 
         $user_bad_habits = json_encode($all_info->badHabits);
         $user_bodyArea = json_encode($all_info->bodyArea);
-        $user->member_type = 'Free'; ///
-        $user->request_type = $user_member_type; ///
+        //$user->request_type = $user_member_type; ///
 
-        $user->name = $all_info->personalInfo[0];
-        $user->phone = $all_info->personalInfo[1];
-        $user->email = $all_info->personalInfo[2];
-        $user->address = $all_info->personalInfo[3];
-        $user->password = Hash::make($all_info->personalInfo[4]);
         $user->height = $bodyMeasurements->height;
         $user->age = $bodyMeasurements->age;
         $user->gender = $user_gender;
         $user->daily_life = $all_info->typicalDay[0];
         $user->diet_type = $all_info->diet[0];
-
-        if ($user_member_type == 1) {
-            $user->active_status = 0;
-        } else {
-            $user->active_status = 1;
-        }
+        $user->active_status = 0;
 
         if ($user_gender == 'male') {
             $user->hip = 0;
@@ -95,11 +87,11 @@ class CustomerRegisterController extends Controller
         $user->member_code = 'yc-' . substr(Str::uuid(), 0, 8);
 
         $member_id = 1; ///
-        $user->save();
+        $user->update();
 
-        $user->members()->attach($member_id, ['member_type_level' => $user_member_type_level]);
-        $user->assignRole('Free');
-        Auth::login($user);
+        // $user->members()->attach($member_id, ['member_type_level' => $user_member_type_level]);
+        // $user->assignRole('Free');
+        // Auth::login($user);
 
         $weight_history = new WeightHistory();
         $weight_date = Carbon::now()->toDateString();
@@ -107,6 +99,8 @@ class CustomerRegisterController extends Controller
         $weight_history->user_id = auth()->user()->id;
         $weight_history->date = $weight_date;
         $weight_history->save();
+        Alert::success('Success', 'Information Updated Successfully');
+        // return redirect()->route('social_media');
     }
 
     public function checkPhone(Request $request)
@@ -143,16 +137,49 @@ class CustomerRegisterController extends Controller
         }
     }
 
+    public function updateinfo($request_type)
+    {
+        $user=User::findOrFail(auth()->user()->id);
+        $user->request_type=$request_type;
+        $user->update();
+
+        return view('customer.customer_registration');
+    }
+
     public function register(Request $request)
     {
-        // $this->validator($request->all())->validate();
+        $request->validate([
+            'name' => 'required',
+            'phone' => 'required|min:9|max:11|unique:users',
+            'email' => 'required|unique:users',
+            'address' => 'required',
+            'password' => 'required|min:6|max:11',
+            'confirmPassword' => 'required|same:password'
+        ]);
+        $user = new User();
+        $user->name=$request->name;
+        $user->phone=$request->phone;
+        $user->email=$request->email;
+        $user->address=$request->address;
+        $user->password=Hash::make($request->password);
+        $user->member_type = 'Free';
+        $user->save();
+        Auth::login($user);
+        Alert::success('Success', 'Sign Up Successfully');
+        return redirect()->route('social_media');
+    }
+    public function personal_info(){
 
-        // event(new Registered($user = $this->create($request->all())));
+        $id = auth()->user()->id;
+        $user = User::find($id);
+        $banking_info = BankingInfo::all();
+        // $mem = $user->members()->get();
+        $users = User::with('members')->orderBy('created_at', 'DESC')->get();
 
-        // $this->guard()->login($user);
+        $members = Member::orderBy('price', 'ASC')->get();
 
-        // return $this->registered($request, $user)
-        //                 ?: redirect('$this->redirectPath()');
-        //return redirect('/');
+        $durations = Member::groupBy('duration')->where('duration', '!=', 0)->get();
+        // dd($duration);
+        return view('customer.customer_personal_info', compact('durations', 'members', 'banking_info'));
     }
 }

@@ -1,6 +1,7 @@
 @extends('customer.training_center.layouts.app')
 
 @section('content')
+<a href="{{route('training_center.member_plan')}}" class="customer-primary-btn margin-top customer-change-member-plan-link">Change Member Plan</a>
 <div class="customer-training-center-header-container">
     <h1>{{Str::ucfirst($workout_plan)}}</h1>
     <p>Thursday Sep 22, 2022</p>

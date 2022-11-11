@@ -30,7 +30,6 @@ class RegisterPaymentController extends Controller
 
         $auth_user = auth()->user();
         $user = User::findOrFail($auth_user->id);
-        $user->active_status = 1;
         $user->request_type = $member->id;
 
         $user->update();
@@ -57,7 +56,11 @@ class RegisterPaymentController extends Controller
         //dd($request->all());
         $user = auth()->user();
 
+        $user = User::findOrFail($user->id);
+        $user->active_status = 1;
 
+
+        $user->update();
          // Store Image
          if($request->hasFile('image')) {
             $image = $request->file('image');
@@ -98,6 +101,9 @@ class RegisterPaymentController extends Controller
         ]);
         //dd($request->all());
         $user = auth()->user();
+        $user = User::findOrFail($user->id);
+        $user->active_status = 1;
+        $user->update();
          // Store Image
          if($request->hasFile('image')) {
             $image = $request->file('image');
