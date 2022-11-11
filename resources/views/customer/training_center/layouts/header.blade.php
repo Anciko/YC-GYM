@@ -28,7 +28,7 @@
             <a href="#">Shop</a>
             <a href="#">Search</a>
             @auth
-            @if ( auth()->user()->member_type == 'Free')
+            @if ( count(auth()->user()->roles) < 1)
             <a href="{{route('customer-personal_infos')}}">Training Center</a>
             @endif
             @endauth
