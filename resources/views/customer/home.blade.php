@@ -43,6 +43,7 @@
             <p class="home-price-detail-price">MMK {{$member_plan->price}} / month</p>
 
             <div class="home-price-detail-benefits">
+                
                 <div class="home-price-detail-benefit">
                     <iconify-icon icon="akar-icons:check" class="home-price-detail-benefit-icon check"></iconify-icon>
                     <p>Benefit 1</p>
@@ -61,11 +62,11 @@
                 </div>
             </div>
 
-            <form action="{{ route('customer_upgrade', $member_plan->id) }}" method="GET">
+            {{-- <form action="{{ route('customer_upgrade', $member_plan->id) }}" method="GET">
                 @csrf
-                {{-- @method('PUT') --}}
                 <button type="submit" class="customer-secondary-btn">Upgrade</button>
-            </form>
+            </form> --}}
+            <button type="button" class="customer-secondary-btn">Upgrade</button>
         </div>
         @endforeach
 

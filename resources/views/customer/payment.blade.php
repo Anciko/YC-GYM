@@ -30,6 +30,14 @@
             </div>
 
             <div class="customer-transaction-input-container">
+                <p>Choosen Plan:</p>
+                <p>{{$member->member_type}}( {{$member->duration}} month)</p>
+            </div>
+            <div class="customer-transaction-input-container">
+                <p>Cost:</p>
+                <p>{{$member->price}}MMK</p>
+            </div>
+            <div class="customer-transaction-input-container">
                 <p>KPay Phone Number:</p>
                 <input type="text" name = "payment_name" hidden value="KBZ Pay">
                 <input type="number" name = "phone" required>
@@ -42,7 +50,7 @@
             <div class="customer-transaction-input-container">
                 <p>Amount:
                 </p>
-                <input type="number" required name = "amount">
+                <input type="text" readonly name = "amount" >
             </div>
 
             <div class="customer-transaction-receipt-img">
@@ -79,7 +87,7 @@
 
             <div class="customer-transaction-form-btn-container">
                 <button type="submit" class="customer-transaction-form-submit">Confirm</button>
-                <button type="reset"  class="customer-transaction-form-cencel" onclick="clearTransactionImg()">Cancel</button>
+                <button type="reset"  class="customer-transaction-form-cencel" onclick="clearTransactionImg()">Reset</button>
             </div>
           </form>
         </div>
@@ -102,7 +110,14 @@
                 <div class="customer-transaction-form-img">
                     <img src="../imgs/cbpay.jfif"/>
                 </div>
-
+                <div class="customer-transaction-input-container">
+                    <p>Choosen Plan:</p>
+                    <p>{{$member->member_type}}( {{$member->duration}} month)</p>
+                </div>
+                <div class="customer-transaction-input-container">
+                    <p>Cost:</p>
+                    <p>{{$member->price}}MMK</p>
+                </div>
                 <div class="customer-transaction-input-container">
                     <p>CBpay Phone Number:</p>
                     <input type="text" name = "payment_name" hidden value="CB Pay">
@@ -115,7 +130,7 @@
                 <div class="customer-transaction-input-container">
                     <p>Amount:
                     </p>
-                    <input type="number" name = "amount" required>
+                    <input type="text" readonly name = "amount">
                 </div>
 
                 <div class="customer-transaction-receipt-img">
@@ -151,7 +166,7 @@
 
                 <div class="customer-transaction-form-btn-container">
                     <button type="submit" class="customer-transaction-form-submit">Confirm</button>
-                    <button type="reset"  class="customer-transaction-form-cencel" onclick="clearTransactionImg()">Cancel</button>
+                    <button type="reset"  class="customer-transaction-form-cencel" onclick="clearTransactionImg()">Reset</button>
                 </div>
             </form>
         </div>
@@ -173,7 +188,14 @@
                 <div class="customer-transaction-form-img">
                     <img src="../imgs/wavepay.jfif"/>
                 </div>
-
+                <div class="customer-transaction-input-container">
+                    <p>Choosen Plan:</p>
+                    <p>{{$member->member_type}}( {{$member->duration}} month)</p>
+                </div>
+                <div class="customer-transaction-input-container">
+                    <p>Cost:</p>
+                    <p>{{$member->price}}MMK</p>
+                </div>
                 <div class="customer-transaction-input-container">
                     <p>Wave pay Phone Number:</p>
                     <input type="text" name = "payment_name" hidden value="Wave Pay">
@@ -186,7 +208,7 @@
                 <div class="customer-transaction-input-container">
                     <p>Amount:
                     </p>
-                    <input type="number" name ="amount" required>
+                    <input type="text" readonly name = "amount">
                 </div>
 
                 <div class="customer-transaction-receipt-img">
@@ -224,16 +246,13 @@
 
                 <div class="customer-transaction-form-btn-container">
                     <button type="submit" class="customer-transaction-form-submit">Confirm</button>
-                    <button type="reset"  class="customer-transaction-form-cencel" onclick="clearTransactionImg()">Cancel</button>
+                    <button type="reset"  class="customer-transaction-form-cencel" onclick="clearTransactionImg()">Reset</button>
                 </div>
             </form>
         </div>
       </div>
     </div>
 </div>
-
-
-
 
 <!--ayapay modal-->
 <div class="modal fade" id="ayapayModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -249,7 +268,18 @@
                 <div class="customer-transaction-form-img">
                     <img src="../imgs/ayapay.jfif"/>
                 </div>
-
+                <div class="customer-transaction-input-container">
+                    <p>Choosen Plan:</p>
+                    <p>{{$member->member_type}}( {{$member->duration}} month)</p>
+                </div>
+                <div class="customer-transaction-input-container">
+                    <p>Cost:</p>
+                    <p>{{$member->price}}MMK</p>
+                </div>
+                <div class="customer-transaction-input-container">
+                    <p>Choosed Plan:</p>
+                    <input type="text" value="{{$member->member_type}}( {{$member->duration}} month)" readonly>
+                </div>
                 <div class="customer-transaction-input-container">
                     <p>Ayapay Phone Number:</p>
                     <input type="text" name = "payment_name" hidden value="AYA Pay">
@@ -262,7 +292,7 @@
                 <div class="customer-transaction-input-container">
                     <p>Amount:
                     </p>
-                    <input type="number"  name = "amount" required>
+                    <input type="text" readonly name = "amount">
                 </div>
 
                 <div class="customer-transaction-receipt-img">
@@ -298,7 +328,7 @@
 
                 <div class="customer-transaction-form-btn-container">
                     <button type="submit" class="customer-transaction-form-submit">Confirm</button>
-                    <button type="reset"  class="customer-transaction-form-cencel" onclick="clearTransactionImg()">Cancel</button>
+                    <button type="reset"  class="customer-transaction-form-cencel" onclick="clearTransactionImg()">Reset</button>
                 </div>
             </form>
         </div>
@@ -321,7 +351,14 @@
                 <div class="customer-transaction-form-img">
                     <img src="../imgs/kbzbank-removebg-preview.png"/>
                 </div>
-
+                <div class="customer-transaction-input-container">
+                    <p>Choosen Plan:</p>
+                    <p>{{$member->member_type}}( {{$member->duration}} month)</p>
+                </div>
+                <div class="customer-transaction-input-container">
+                    <p>Cost:</p>
+                    <p>{{$member->price}}MMK</p>
+                </div>
                 <div class="customer-transaction-input-container">
                     <p>Bank Account Number:</p>
                     <input type="text" name = "payment_name" hidden value="KBZ Bank">
@@ -334,7 +371,7 @@
                 <div class="customer-transaction-input-container">
                     <p>Amount:
                     </p>
-                    <input type="number" name ="amount" required>
+                    <input type="text" readonly name = "amount">
                 </div>
 
                 <div class="customer-transaction-receipt-img">
@@ -386,7 +423,7 @@
 
                 <div class="customer-transaction-form-btn-container">
                     <button type="submit" class="customer-transaction-form-submit">Confirm</button>
-                    <button type="reset"  class="customer-transaction-form-cencel" onclick="clearTransactionImg()">Cancel</button>
+                    <button type="reset"  class="customer-transaction-form-cencel" onclick="clearTransactionImg()">Reset</button>
                 </div>
             </form>
         </div>
@@ -408,7 +445,14 @@
                 <div class="customer-transaction-form-img">
                     <img src="../imgs/cbbank-removebg-preview.png"/>
                 </div>
-
+                <div class="customer-transaction-input-container">
+                    <p>Choosen Plan:</p>
+                    <p>{{$member->member_type}}( {{$member->duration}} month)</p>
+                </div>
+                <div class="customer-transaction-input-container">
+                    <p>Cost:</p>
+                    <p>{{$member->price}}MMK</p>
+                </div>
                 <div class="customer-transaction-input-container">
                     <p>Bank Account Number:</p>
                     <input type="text" name = "payment_name" hidden value="CB Bank">
@@ -457,7 +501,7 @@
 
                 <div class="customer-transaction-form-btn-container">
                     <button type="submit" class="customer-transaction-form-submit">Confirm</button>
-                    <button type="reset"  class="customer-transaction-form-cencel" onclick="clearTransactionImg()">Cancel</button>
+                    <button type="reset"  class="customer-transaction-form-cencel" onclick="clearTransactionImg()">Reset</button>
                 </div>
             </form>
         </div>
@@ -479,7 +523,14 @@
                 <div class="customer-transaction-form-img">
                     <img src="../imgs/ayabank-removebg-preview.png"/>
                 </div>
-
+                <div class="customer-transaction-input-container">
+                    <p>Choosen Plan:</p>
+                    <p>{{$member->member_type}}( {{$member->duration}} month)</p>
+                </div>
+                <div class="customer-transaction-input-container">
+                    <p>Cost:</p>
+                    <p>{{$member->price}}MMK</p>
+                </div>
                 <div class="customer-transaction-input-container">
                     <p>Bank Account Number:</p>
                     <input type="text" name = "payment_name" hidden value="AYA Bank">
@@ -528,7 +579,7 @@
 
                 <div class="customer-transaction-form-btn-container">
                     <button type="submit" class="customer-transaction-form-submit">Confirm</button>
-                    <button type="reset"  class="customer-transaction-form-cencel" onclick="clearTransactionImg()">Cancel</button>
+                    <button type="reset"  class="customer-transaction-form-cencel" onclick="clearTransactionImg()">Reset</button>
                 </div>
             </form>
         </div>
@@ -550,7 +601,14 @@
                 <div class="customer-transaction-form-img">
                     <img src="../imgs/mabbank-removebg-preview.png"/>
                 </div>
-
+                <div class="customer-transaction-input-container">
+                    <p>Choosen Plan:</p>
+                    <p>{{$member->member_type}}( {{$member->duration}} month)</p>
+                </div>
+                <div class="customer-transaction-input-container">
+                    <p>Cost:</p>
+                    <p>{{$member->price}}MMK</p>
+                </div>
                 <div class="customer-transaction-input-container">
                     <p>Bank Account Number:</p>
                     <input type="text" name = "payment_name" hidden value="MAB Bank">
@@ -599,7 +657,7 @@
 
                 <div class="customer-transaction-form-btn-container">
                     <button type="submit" class="customer-transaction-form-submit">Confirm</button>
-                    <button type="reset"  class="customer-transaction-form-cencel" onclick="clearTransactionImg()">Cancel</button>
+                    <button type="reset"  class="customer-transaction-form-cencel" onclick="clearTransactionImg()">Reset</button>
                 </div>
             </form>
         </div>
