@@ -18,11 +18,12 @@
             <span>(User ID: {{auth()->user()->member_code}})</span>
         </div>
         <iconify-icon icon="cil:pen" class="change-name-icon" id="name_edit_pen"></iconify-icon>
+
         <button type="submit" class="customer-primary-btn customer-name-calculate-btn">Save</button>
         <button type="button" class="customer-secondary-btn customer-name-calculate-btn" id="customer_name_cancel">Cancel</button>
     </div>
     </form>
-
+    @hasanyrole('Platinum|Diamond|Gym Member')
     <form class="personal_detail" method="POST" action="{{route('customer-profile.update')}}">
         @csrf
         @method('POST')
@@ -124,7 +125,7 @@
 
     </div>
     </form>
-    @hasanyrole('Platinum|Diamond|Gym Member')
+
     <div class="customer-profile-bmi-container">
         <div class="customer-profile-bmi-gradient">
             <div class="percentage-line"></div>
@@ -306,68 +307,6 @@
 @push('scripts')
 @hasanyrole('Platinum|Diamond|Gym Member')
 <script>
-            // var weight_history= @json($weight_history);
-            // if(weight_history.length<2){
-            //     $("#weightreview").show();
-            //     $("#weightchart").show();
-            // }else{
-
-            //     $("#weightreview").hide();
-            //     $("#weightchart").show();
-
-            //     let weight = [];
-            //     let date = [];
-            //     for(let i = 0; i < weight_history.length; i++){
-
-            //         weight.push(
-
-            //         weight_history[i].weight
-            //         );
-
-            //         date.push(
-
-            //         weight_history[i].date
-
-            //         );
-
-            //         }
-
-            //     const labels = date;
-
-            //     console.log(weight);
-            //     const data = {
-            //         labels: labels,
-            //         datasets: [{
-            //         label: 'Weight(lb)',
-            //         fill: true,
-
-            //         borderColor: "#4D72E8",
-            //         backgroundColor:"rgba(77,114,232,0.3)",
-
-            //         data:weight,
-
-            //         }]
-            //     };
-
-            //     const config = {
-            //         type: 'line',
-            //         data: data,
-            //         options: {
-            //             maintainAspectRatio: false,
-            //         }
-            //     };
-
-            //     const myChart = new Chart(
-            //         document.getElementById('myChart'),
-            //         config
-            //     );
-
-            //     function destroyChart() {
-            //         console.log("destroy chart");
-            //         myChart.destroy();
-            //         }
-
-            // }
             let myChart=null;
             function linechart(data){
             var weight_history=data;
@@ -638,10 +577,10 @@
                     success: function(data) {
                         console.log(data);
                         if(data.water == null){
-                            renderTodayCircle(3000,0)
+                            renderCircle(3000,0)
                         }
                         else{
-                            renderTodayCircle(3000,data.water.update_water)
+                            renderCircle(3000,data.water.update_water)
                         }
 
                     }
@@ -1062,7 +1001,7 @@
         return date
     }
 
-    //rendering today water circle progress
+    //rendering last 7 days water circle progress
     function renderCircle(total,taken){
         var result = taken / total
         var color
@@ -1098,7 +1037,7 @@
     }
 
 
-    //rendering last 7 days water circle progress
+    //rendering today water circle progress
     function renderTodayCircle(total,taken){
         var result = taken / total
         console.log('today',taken)
@@ -1251,19 +1190,19 @@
 
         });
 
-        $('#name_edit_pen').on('click',function(){
-            $(".name").show();
-            $('.customer-name-calculate-btn').show();
-            $('#name_edit_pen').hide();
-            $("#name").hide();
-        })
+        // $('#name_edit_pen').on('click',function(){
+        //     $(".name").show();
+        //     $('.customer-name-calculate-btn').show();
+        //     $('#name_edit_pen').hide();
+        //     $("#name").hide();
+        // })
 
-        $("#customer_name_cancel").on('click',function(event){
-            $(".name").hide();
-            $('.customer-name-calculate-btn').hide();
-            $('#name_edit_pen').show();
-            $("#name").show();
-        })
+        // $("#customer_name_cancel").on('click',function(event){
+        //     $(".name").hide();
+        //     $('.customer-name-calculate-btn').hide();
+        //     $('#name_edit_pen').show();
+        //     $("#name").show();
+        // })
 
         $(".personal_detail").submit(function(){
             $('.customer-bmi-calculate-btn').attr('disabled', true);
@@ -1271,4 +1210,26 @@
     })
 </script>
 @endhasanyrole
+<script>
+    $( document ).ready(function() {
+
+        $(".name").hide();
+        $('.customer-name-calculate-btn').hide();
+        $(".customer-bmi-calculate-btn").hide();
+        $('#name_edit_pen').on('click',function(){
+            console.log("testing");
+            $(".name").show();
+            $('.customer-name-calculate-btn').show();
+            $('#name_edit_pen').hide();
+            $("#name").hide();
+        });
+
+        $("#customer_name_cancel").on('click',function(event){
+            $(".name").hide();
+            $('.customer-name-calculate-btn').hide();
+            $('#name_edit_pen').show();
+            $("#name").show();
+        })
+    });
+</script>
 @endpush

@@ -1,32 +1,7 @@
-@extends('customer.layouts.app')
+@extends('customer.layouts.app_home')
 
 @section('content')
 <form id="regForm">
-    {{-- @csrf
-    method="POST" {{ route('customer_register') }} --}}
-    <!--personal infos-->
-    <div class="cutomer-registeration-form tab">
-        <p class="customer-registeration-form-header">
-            Personal Informations
-        </p>
-
-
-        <input  type="text" required class="customer-registeration-input" placeholder="Name" name="name">
-        <input  type="phone" required class="customer-registeration-input" placeholder="Phone" name="phone" id="phone">
-        <input  type="email" required class="customer-registeration-input" placeholder="Email" name="email" id="email">
-        <input  type="text" required class="customer-registeration-input" placeholder="Address" name="address">
-        <input  type="password" required class="customer-registeration-input" placeholder="Password" name="password">
-        <input  type="password" required class="customer-registeration-input" placeholder="Confirm Password" name="confirmPassword">
-
-        <div class="customer-form-btn-container">
-          <button type="button" id="prevBtn" onclick="nextPrev(-1)">Previous</button>
-          <button class="customer-registeration-next-btn customer-primary-btn" type="button" id="nextBtn" onclick="nextPrev(1,'personalInfo')">
-            <p>Next</p>
-            <iconify-icon icon="akar-icons:arrow-right" class="customer-next-icon"></iconify-icon>
-          </button>
-        </div>
-
-    </div>
 
     <!-- body measurements-->
     <div class="cutomer-registeration-form tab">
@@ -1146,77 +1121,6 @@
 
     </div>
 
-
-    <!--member plan-->
-    <div class="cutomer-registeration-form tab customer-member-plan-form">
-      <p class="customer-registeration-form-header">
-         Choose your plan<br>
-         <span>One time welcome offer</span>
-      </p>
-      <div class="member-plan-duration-parent-container">
-        <p>Get Offers For</p>
-        <div class="member-plan-duretions-container">
-            @foreach ($durations as $duration)
-            @if ($duration->duration !=0 || $duration->duration !=null)
-                <div class="member-plan-duration-container">
-                    <label>
-                        <input type="checkbox" name = "memberPlanDuration" class=" customer-member-plan-duration-checkbox-input"  onclick="checkedOnDurationClick(this,'memberPlanDuration')" value="{{$duration->duration}}"/>
-                        <p class="customer-member-plan-duration-checkbox-title">{{$duration->duration}} month</p>
-                    </label>
-                </div>
-            @endif
-
-            @endforeach
-
-            {{-- <div class="member-plan-duration-container">
-                <label>
-                    <input type="checkbox" name = "memberPlanDuration" class=" customer-member-plan-duration-checkbox-input"  onclick="checkedOnClick(this,'memberPlanDuration')"/>
-                    <p class="customer-member-plan-duration-checkbox-title">3 months</p>
-                </label>
-            </div>
-            <div class="member-plan-duration-container">
-                <label>
-                    <input type="checkbox" name = "memberPlanDuration" class=" customer-member-plan-duration-checkbox-input"  onclick="checkedOnClick(this,'memberPlanDuration')"/>
-                    <p class="customer-member-plan-duration-checkbox-title">6 months</p>
-                </label>
-            </div> --}}
-        </div>
-
-      </div>
-
-      <div id="customer-member-plan"></div>
-
-        {{-- @foreach ($members as $member)
-            <div class="checkbox customer-member-plan-checkbox">
-                <label class="checkbox-wrapper">
-                <input type="checkbox" name = "memberPlan" class=" customer-member-plan-checkbox-input" value="{{$member->id}}" onclick="checkedOnClick(this,'memberPlan')" />
-                <span class="checkbox-tile">
-
-                    <span class="checkbox-label">{{$member->member_type}}
-
-                    </span>
-                    <span class="checkbox-price-label"> {{$member->price}} mmk/ {{$member->duration}} month</span>
-
-                </span>
-                </label>
-            </div>
-        @endforeach --}}
-
-      <div class="customer-form-btn-container">
-        <button class="customer-registeration-prev-btn customer-primary-btn" type="button" id="prevBtn" onclick="nextPrev(-1)">
-          <iconify-icon icon="akar-icons:arrow-left" class="customer-prev-icon"></iconify-icon>
-          <p>Previous</p>
-        </button>
-        <button class="customer-registeration-next-btn customer-primary-btn" type="button" id="nextBtn" onclick="nextPrev(1,'memberPlan')">
-          <p>Next</p>
-          <iconify-icon icon="akar-icons:arrow-right" class="customer-next-icon"></iconify-icon>
-        </button>
-      </div>
-
-    </div>
-
-
-
     <!--proficiency-->
     <div class="cutomer-registeration-form tab">
       <p class="customer-registeration-form-header">
@@ -1289,83 +1193,7 @@
 @endsection
 @push('scripts')
 <script>
-$(document).ready(function(){
 
-    let member = @json($members);
-    var memberPlanDurationCheckboxesList = document.getElementsByName("memberPlanDuration");
-    for(var i = 0; i < memberPlanDurationCheckboxesList.length;i++){
-        if(memberPlanDurationCheckboxesList.item(i).value === '1'){
-            // console.log("check 1")
-            memberPlanDurationCheckboxesList.item(i).checked = true
-            checkedOnDurationClick(memberPlanDurationCheckboxesList.item(i),"memberPlanDuration")
-        }
-    }
-
-})
-
-const checkedOnDurationClick = (el,category) => {
-    let member = @json($members);
-    $("#customer-member-plan").empty()
-
-    if(category === 'memberPlanDuration'){
-
-        var memberPlanDurationCheckboxesList = document.getElementsByName("memberPlanDuration");
-
-        for(var i = 0; i < memberPlanDurationCheckboxesList.length;i++){
-            memberPlanDurationCheckboxesList.item(i).checked = false
-        }
-    }
-
-    if(el.checked){
-        el.checked = false;
-    }else{
-        el.checked = true;
-    }
-
-        $.each(member, function(index, value){
-
-            if( value.duration === "0" &&  el.value === '1'){
-                $("#customer-member-plan").append(`
-                    <div class="checkbox customer-member-plan-checkbox">
-                        <label class="checkbox-wrapper">
-                        <input type="checkbox" name = "memberPlan"
-                        class=" customer-member-plan-checkbox-input" value=${value.id} onclick="checkedOnClick(this,'memberPlan')" />
-                        <span class="checkbox-tile">
-
-                            <span class="checkbox-label">${value.member_type}
-
-                            </span>
-                            <span class="checkbox-price-label">${value.price}mmk/${value.duration}month</span>
-
-                        </span>
-                        </label>
-                    </div>
-                    `)
-            }
-            else if(el.value === value.duration){
-                    // console.log(value)
-                    $("#customer-member-plan").append(`
-                    <div class="checkbox customer-member-plan-checkbox">
-                        <label class="checkbox-wrapper">
-                        <input type="checkbox" name = "memberPlan"
-                        class=" customer-member-plan-checkbox-input" value=${value.id} onclick="checkedOnClick(this,'memberPlan')" />
-                        <span class="checkbox-tile">
-
-                            <span class="checkbox-label">${value.member_type}
-
-                            </span>
-                            <span class="checkbox-price-label">${value.price}mmk/${value.duration}month</span>
-
-                        </span>
-                        </label>
-                    </div>
-                    `)
-            }
-
-
-        });
-
-}
 </script>
 @endpush
 

@@ -6,11 +6,6 @@
 
         }
 
-
-
-
-
-
         var currentTab = 0; // Current tab is set to be the first tab (0)
         showTab(currentTab); // Display the current tab
 
@@ -938,7 +933,7 @@
 
             $.ajax({
                 url : 'customerCreate',
-                method: 'post',
+                method: 'POST',
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 },
