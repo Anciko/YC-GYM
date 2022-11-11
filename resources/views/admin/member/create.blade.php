@@ -22,6 +22,14 @@
                     <input type="number" class="form-control" id="price" name="price">
                 </div>
                 <div class="mt-4">
+                    <label for="price" class="form-label">Pros</label>
+                    <textarea  class="form-control" id="price" name="pros"></textarea>
+                </div>
+                <div class="mt-4">
+                    <label for="price" class="form-label">Cons</label>
+                    <textarea class="form-control" id="price" name="cons"></textarea>
+                </div>
+                <div class="mt-4">
                     <label for="price" class="form-label">Role</label>
                     <select class="form-control " name="role_id">
                         @foreach ($roles as $role)

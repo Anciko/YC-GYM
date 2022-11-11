@@ -18,6 +18,8 @@ class CreateMembersTable extends Migration
             $table->string('member_type');
             $table->string('duration')->default(0);
             $table->integer('price')->default(0);
+            $table->text('pros')->nullable();
+            $table->text('cons')->nullable();
             $table->integer('role_id')->default(0);
             $table->timestamps();
         });
