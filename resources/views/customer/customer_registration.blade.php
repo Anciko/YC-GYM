@@ -4,7 +4,7 @@
 <form id="regForm">
 
     <!-- body measurements-->
-    <div class="cutomer-registeration-form tab">
+    <div class="cutomer-registeration-form tab customer-registeration-card">
         <p class="customer-registeration-form-header">
             Body Measurements
         </p>
@@ -72,7 +72,7 @@
     </div>
 
     <!--physical limitations-->
-    <div class="cutomer-registeration-form tab">
+    <div class="cutomer-registeration-form tab customer-registeration-card">
         <p class="customer-registeration-form-header">
            Do you have any physical limitations?
         </p>
@@ -148,7 +148,7 @@
     </div>
 
     <!--which activities do you prefer-->
-    <div class="cutomer-registeration-form tab">
+    <div class="cutomer-registeration-form tab customer-registeration-card">
       <p class="customer-registeration-form-header">
          Which activities do you prefer?
       </p>
@@ -222,7 +222,7 @@
     </div>
 
     <!--your body type-->
-    <div class="cutomer-registeration-form tab">
+    <div class="cutomer-registeration-form tab customer-registeration-card">
       <p class="customer-registeration-form-header">
          Your body type<br>
          <span>Which body type do you have?</span>
@@ -289,7 +289,7 @@
     </div>
 
     <!--main goal-->
-    <div class="cutomer-registeration-form tab">
+    <div class="cutomer-registeration-form tab customer-registeration-card">
       <p class="customer-registeration-form-header">
          What's your main goal?
       </p>
@@ -350,7 +350,7 @@
     </div>
 
     <!--typical day-->
-    <div class="cutomer-registeration-form tab">
+    <div class="cutomer-registeration-form tab customer-registeration-card">
       <p class="customer-registeration-form-header">
          What's your typical day look like?<br>
          <span>You need an individual approach based on your habits to reach your goal</span>
@@ -361,7 +361,9 @@
           <input type="checkbox" name = "typicalDay" class="checkbox-input" value="at the office"  onclick="checkedOnClick(this,'typicalDay')"/>
           <span class="checkbox-tile">
             <span class="checkbox-icon">
-              <div class="typical-day-img"></div>
+              <div class="typical-day-img">
+                <img src="{{asset('image/registeration/at_the_office.png')}}">
+              </div>
             </span>
             <span class="checkbox-label">At the office<br>
               <span class="checkbox-label-small">Little to no physical activity</span>
@@ -375,7 +377,9 @@
           <input type="checkbox" name = "typicalDay" class="checkbox-input" value="walking daily" onclick="checkedOnClick(this,'typicalDay')"/>
           <span class="checkbox-tile">
             <span class="checkbox-icon">
-              <div class="typical-day-img"></div>
+              <div class="typical-day-img">
+                <img src="{{asset('image/registeration/walking.png')}}">
+              </div>
             </span>
             <span class="checkbox-label">Walking Daily<br>
               <span class="checkbox-label-small">Moderate amount of physical activity</span>
@@ -388,7 +392,9 @@
           <input type="checkbox" name = "typicalDay" class="checkbox-input" value="working physically" onclick="checkedOnClick(this,'typicalDay')"/>
           <span class="checkbox-tile">
             <span class="checkbox-icon">
-              <div class="typical-day-img"></div>
+              <div class="typical-day-img">
+                <img src="{{asset('image/registeration/working_physically.png')}}">
+              </div>
             </span>
             <span class="checkbox-label">Working physically<br>
               <span class="checkbox-label-small">Good amount of physical activity</span>
@@ -401,7 +407,9 @@
           <input type="checkbox" name = "typicalDay" class="checkbox-input" value="mostly at home" onclick="checkedOnClick(this,'typicalDay')"/>
           <span class="checkbox-tile">
             <span class="checkbox-icon">
-              <div class="typical-day-img"></div>
+              <div class="typical-day-img">
+                <img src="{{asset('image/registeration/physicallt_active.png')}}">
+              </div>
             </span>
             <span class="checkbox-label">Mostly at home<br>
               <span class="checkbox-label-small">No physical ativity at all</span>
@@ -425,7 +433,7 @@
     </div>
 
     <!--diet type-->
-    <div class="cutomer-registeration-form tab">
+    <div class="cutomer-registeration-form tab customer-registeration-card">
       <p class="customer-registeration-form-header">
          Choose your diet type
 
@@ -436,7 +444,9 @@
           <input type="checkbox" name = "diet" class="checkbox-input" value="traditional" onclick="checkedOnClick(this,'diet')"/>
           <span class="checkbox-tile">
             <span class="checkbox-icon">
-              <div class="diet-icon"></div>
+              <div class="diet-icon">
+                <img src="{{asset('image/registeration/traditional.png')}}">
+              </div>
             </span>
             <span class="checkbox-label">Traditional<br>
 
@@ -450,7 +460,9 @@
           <input type="checkbox" name = "diet" class="checkbox-input" value="vagetarian" onclick="checkedOnClick(this,'diet')"/>
           <span class="checkbox-tile">
             <span class="checkbox-icon">
-              <div class="diet-icon"></div>
+              <div class="diet-icon">
+                <img src="{{asset('image/registeration/vagetarion.png')}}">
+              </div>
             </span>
             <span class="checkbox-label">Vagetarian<br>
 
@@ -464,7 +476,9 @@
           <input type="checkbox" name = "diet" class="checkbox-input" value="keto" onclick="checkedOnClick(this,'diet')"/>
           <span class="checkbox-tile">
             <span class="checkbox-icon">
-              <div class="diet-icon"></div>
+              <div class="diet-icon">
+                <img src="{{asset('image/registeration/keto.png')}}">
+              </div>
             </span>
             <span class="checkbox-label">Keto<br>
 
@@ -478,7 +492,9 @@
           <input type="checkbox" name = "diet" class="checkbox-input" value="pescatarian" onclick="checkedOnClick(this,'diet')"/>
           <span class="checkbox-tile">
             <span class="checkbox-icon">
-              <div class="diet-icon"></div>
+              <div class="diet-icon">
+                <img src="{{asset('image/registeration/pescatarian.png')}}">
+              </div>
             </span>
             <span class="checkbox-label">Pescatarian<br>
 
@@ -492,7 +508,9 @@
           <input type="checkbox" name = "diet" class="checkbox-input" value="vegan" onclick="checkedOnClick(this,'diet')"/>
           <span class="checkbox-tile">
             <span class="checkbox-icon">
-              <div class="diet-icon"></div>
+              <div class="diet-icon">
+                <img src="{{asset('image/registeration/vegan.png')}}">
+              </div>
             </span>
             <span class="checkbox-label">Vegan<br>
 
@@ -506,7 +524,9 @@
           <input type="checkbox" name = "diet" class="checkbox-input" value="keto vegan" onclick="checkedOnClick(this,'diet')"/>
           <span class="checkbox-tile">
             <span class="checkbox-icon">
-              <div class="diet-icon"></div>
+              <div class="diet-icon">
+                <img src="{{asset('image/registeration/keto_vegan.png')}}">
+              </div>
             </span>
             <span class="checkbox-label">Keto vegan<br>
 
@@ -520,7 +540,9 @@
           <input type="checkbox" name = "diet" class="checkbox-input" value="lactose free" onclick="checkedOnClick(this,'diet')"/>
           <span class="checkbox-tile">
             <span class="checkbox-icon">
-              <div class="diet-icon"></div>
+              <div class="diet-icon">
+                <img src="{{asset('image/registeration/lactose_free.png')}}">
+              </div>
             </span>
             <span class="checkbox-label">Lactose free<br>
 
@@ -545,13 +567,15 @@
     </div>
 
     <!--average night-->
-    <div class="cutomer-registeration-form tab">
+    <div class="cutomer-registeration-form tab customer-registeration-card">
       <p class="customer-registeration-form-header">
          What's your average night like?<br>
          <span>Sleep is vary important not only for well-being but also for keeping in shape</span>
       </p>
 
-      <div class="average-night-img"></div>
+      <div class="average-night-img">
+        <img src="{{asset('image/registeration/sleep.png')}}">
+      </div>
 
       <div class="checkbox-grid-container">
         <div class="checkbox">
@@ -619,7 +643,7 @@
     </div>
 
     <!--energy level-->
-    <div class="cutomer-registeration-form tab">
+    <div class="cutomer-registeration-form tab customer-registeration-card">
       <p class="customer-registeration-form-header">
          How's your energy level during the day?<br>
       </p>
@@ -629,7 +653,9 @@
           <input type="checkbox" name = "energyLevel" class="checkbox-input" value="even throughout the day"  onclick="checkedOnClick(this,'energyLevel')"/>
           <span class="checkbox-tile">
             <span class="checkbox-icon">
-              <div class="typical-day-img"></div>
+              <div class="typical-day-img">
+                <img src="{{asset('image/registeration/even.png')}}">
+              </div>
             </span>
             <span class="checkbox-label">Even throughout the day<br>
 
@@ -643,7 +669,9 @@
           <input type="checkbox" name = "energyLevel" class="checkbox-input" value="a dip in energy around lunch time" onclick="checkedOnClick(this,'energyLevel')"/>
           <span class="checkbox-tile">
             <span class="checkbox-icon">
-              <div class="typical-day-img"></div>
+              <div class="typical-day-img">
+                <img src="{{asset('image/registeration/dip_lunch.png')}}">
+              </div>
             </span>
             <span class="checkbox-label">I feel a dip in energy around lunch time<br>
 
@@ -656,7 +684,9 @@
           <input type="checkbox" name = "energyLevel" class="checkbox-input" value="a nap after meals" onclick="checkedOnClick(this,'energyLevel')"/>
           <span class="checkbox-tile">
             <span class="checkbox-icon">
-              <div class="typical-day-img"></div>
+              <div class="typical-day-img">
+                <img src="{{asset('image/registeration/nap_aftermeals.png')}}">
+              </div>
             </span>
             <span class="checkbox-label">I need a nap after meals<br>
 
@@ -680,13 +710,15 @@
     </div>
 
     <!--ideal weight-->
-    <div class="cutomer-registeration-form tab">
+    <div class="cutomer-registeration-form tab customer-registeration-card">
       <p class="customer-registeration-form-header">
         When was the last time you were at your ideal weight?
 
       </p>
 
-      <div class="average-night-img"></div>
+      <div class="average-night-img">
+        <img src="{{asset('image/registeration/ideal_weight.png')}}">
+      </div>
 
       <div class="checkbox-grid-container">
         <div class="checkbox">
@@ -754,7 +786,7 @@
     </div>
 
     <!--area of the body that needs the most attention-->
-    <div class="cutomer-registeration-form tab">
+    <div class="cutomer-registeration-form tab customer-registeration-card">
       <p class="customer-registeration-form-header">
         Which areas of your body need the most attention?
 
@@ -854,13 +886,15 @@
 
     </div>
     <!--how physically active are you-->
-    <div class="cutomer-registeration-form tab">
+    <div class="cutomer-registeration-form tab customer-registeration-card">
       <p class="customer-registeration-form-header">
          How physically active are you?<br>
          <span>Your physical activity plays a major role if you want to lose weight or keep in shape while spending most of your time in the office</span>
       </p>
 
-      <div class="average-night-img"></div>
+      <div class="average-night-img">
+        <img src="{{asset('image/registeration/physical_activity.png')}}">
+      </div>
 
       <div class="checkbox-grid-container">
         <div class="checkbox">
@@ -928,7 +962,7 @@
     </div>
 
     <!--bad habits-->
-    <div class="cutomer-registeration-form tab">
+    <div class="cutomer-registeration-form tab customer-registeration-card">
       <p class="customer-registeration-form-header">
          Bad habits<br>
          <span>Which activities are yout guilty pleasure?</span>
@@ -939,7 +973,9 @@
           <input type="checkbox" name = "badHabits" class="checkbox-input" value="i don't rest enough"  />
           <span class="checkbox-tile">
             <span class="checkbox-icon">
-              <div class="checkbox-icon-medium"></div>
+              <div class="checkbox-icon-medium">
+                <img src="{{asset('image/registeration/enough_rest.png')}}">
+              </div>
             </span>
             <span class="checkbox-label">I don't rest enough<br>
 
@@ -953,7 +989,9 @@
           <input type="checkbox" name = "badHabits" class="checkbox-input" value="sweet tooth"  />
           <span class="checkbox-tile">
             <span class="checkbox-icon">
-              <div class="checkbox-icon-medium"></div>
+              <div class="checkbox-icon-medium">
+                <img src="{{asset('image/registeration/sweet_tooth.png')}}">
+              </div>
             </span>
             <span class="checkbox-label">I have a sweet tooth<br>
 
@@ -967,7 +1005,9 @@
           <input type="checkbox" name = "badHabits" class="checkbox-input" value="too much soda"  />
           <span class="checkbox-tile">
             <span class="checkbox-icon">
-              <div class="checkbox-icon-medium"></div>
+              <div class="checkbox-icon-medium">
+                <img src="{{asset('image/registeration/soda.png')}}">
+              </div>
             </span>
             <span class="checkbox-label">I consume too much soda<br>
 
@@ -981,7 +1021,9 @@
           <input type="checkbox" name = "badHabits" class="checkbox-input" value="a lot of salty foods"  />
           <span class="checkbox-tile">
             <span class="checkbox-icon">
-              <div class="checkbox-icon-medium"></div>
+              <div class="checkbox-icon-medium">
+                <img src="{{asset('image/registeration/salty_food.png')}}">
+              </div>
             </span>
             <span class="checkbox-label">I consume a lot of salty foods<br>
 
@@ -995,7 +1037,9 @@
           <input type="checkbox" name = "badHabits" class="checkbox-input" value="late night snacks"  />
           <span class="checkbox-tile">
             <span class="checkbox-icon">
-              <div class="checkbox-icon-medium"></div>
+              <div class="checkbox-icon-medium">
+                <img src="{{asset('image/registeration/snacks.png')}}">
+              </div>
             </span>
             <span class="checkbox-label">Late night snacks<br>
 
@@ -1021,7 +1065,7 @@
     </div>
 
     <!--daily water intake-->
-    <div class="cutomer-registeration-form tab">
+    <div class="cutomer-registeration-form tab customer-registeration-card">
       <p class="customer-registeration-form-header">
          What's your daily water intake?
 
@@ -1032,7 +1076,9 @@
           <input type="checkbox" name = "waterIntake" class="checkbox-input" value="only coffee or tea"  onclick="checkedOnClick(this,'waterIntake')"/>
           <span class="checkbox-tile">
             <span class="checkbox-icon">
-              <div class="checkbox-icon-medium"></div>
+              <div class="checkbox-icon-medium">
+                <img src="{{asset('image/registeration/coffee.png')}}">
+              </div>
             </span>
             <span class="checkbox-label">I only have coffee or tea<br>
 
@@ -1046,7 +1092,9 @@
           <input type="checkbox" name = "waterIntake" class="checkbox-input" value="about 2 glasses"  onclick="checkedOnClick(this,'waterIntake')"/>
           <span class="checkbox-tile">
             <span class="checkbox-icon">
-              <div class="checkbox-icon-medium"></div>
+              <div class="checkbox-icon-medium">
+                <img src="{{asset('image/registeration/2glasses.png')}}">
+              </div>
             </span>
             <span class="checkbox-label">About 2 glasses<br>
 
@@ -1060,7 +1108,9 @@
           <input type="checkbox" name = "waterIntake" class="checkbox-input" value="2 to 6 glasses"  onclick="checkedOnClick(this,'waterIntake')"/>
           <span class="checkbox-tile">
             <span class="checkbox-icon">
-              <div class="checkbox-icon-medium"></div>
+              <div class="checkbox-icon-medium">
+                <img src="{{asset('image/registeration/6glasses.png')}}">
+              </div>
             </span>
             <span class="checkbox-label">2 to 6 glasses<br>
 
@@ -1074,7 +1124,9 @@
           <input type="checkbox" name = "waterIntake" class="checkbox-input" value="more than 6 glasses"  onclick="checkedOnClick(this,'waterIntake')"/>
           <span class="checkbox-tile">
             <span class="checkbox-icon">
-              <div class="checkbox-icon-medium"></div>
+              <div class="checkbox-icon-medium">
+                <img src="{{asset('image/registeration/water_bottle.png')}}">
+              </div>
             </span>
             <span class="checkbox-label">More than 6 glasses<br>
 
@@ -1099,7 +1151,7 @@
     </div>
 
     <!--weight -->
-    <div class="cutomer-registeration-form tab">
+    <div class="cutomer-registeration-form tab customer-registeration-card">
         <p class="customer-registeration-form-header">
             Weight
          </p>
@@ -1122,7 +1174,7 @@
     </div>
 
     <!--proficiency-->
-    <div class="cutomer-registeration-form tab">
+    <div class="cutomer-registeration-form tab customer-registeration-card">
       <p class="customer-registeration-form-header">
          How proficient are you?<br>
 
@@ -1136,7 +1188,9 @@
             <input type="checkbox" name = "proficiency" class="checkbox-input" value="beginner"  onclick="checkedOnClick(this,'proficiency')"/>
             <span class="checkbox-tile">
               <span class="checkbox-icon">
-                <div class="body-type-img"></div>
+                <div class="body-type-img">
+                    <img src="{{asset('image/registeration/beginner.png')}}">
+                </div>
               </span>
               <span class="checkbox-label">Beginner<br>
 
@@ -1150,7 +1204,9 @@
             <input type="checkbox" name = "proficiency" class="checkbox-input" value="advanced" onclick="checkedOnClick(this,'proficiency')"/>
             <span class="checkbox-tile">
               <span class="checkbox-icon">
-                <div class="body-type-img"></div>
+                <div class="body-type-img">
+                    <img src="{{asset('image/registeration/advanced.png')}}">
+                </div>
               </span>
               <span class="checkbox-label">Advanced<br>
 
@@ -1163,7 +1219,9 @@
             <input type="checkbox" name = "proficiency" class="checkbox-input" value="professional" onclick="checkedOnClick(this,'proficiency')"/>
             <span class="checkbox-tile">
               <span class="checkbox-icon">
-                <div class="body-type-img"></div>
+                <div class="body-type-img">
+                    <img src="{{asset('image/registeration/professional.png')}}">
+                </div>
               </span>
               <span class="checkbox-label">Professional<br>
 

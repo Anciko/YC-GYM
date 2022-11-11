@@ -41,7 +41,6 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
 
     Route::get('customer/checkemail', [CustomerRegisterController::class, 'checkemail'])->name('checkPhone');
 
-
     //Route::get('/customer/signup', [App\Http\Controllers\HomeController::class, 'customersignup'])->name('home');
 
     Route::post('/data/save', [HomeController::class, 'store'])->name('data.save');
