@@ -245,4 +245,8 @@
     .customer-transaction-input-container input{
         width: 170px;
     }
+
+    .customer-transaction-admin-details{
+        padding: 15px 10px;
+    }
   }
