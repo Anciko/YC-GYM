@@ -9,6 +9,7 @@ use App\Models\BankingInfo;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Models\WeightHistory;
+use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Role;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
@@ -180,7 +181,10 @@ class CustomerRegisterController extends Controller
         $members = Member::orderBy('price', 'ASC')->get();
 
         $durations = Member::groupBy('duration')->where('duration', '!=', 0)->get();
+        $pros=DB::table('members')->select('pros')->get()->toArray();
+        $cons=DB::table('members')->select('cons')->get()->toArray();
+
         // dd($duration);
-        return view('customer.customer_personal_info', compact('durations', 'members', 'banking_info'));
+        return view('customer.customer_personal_info', compact('durations', 'members', 'banking_info','pros','cons'));
     }
 }
