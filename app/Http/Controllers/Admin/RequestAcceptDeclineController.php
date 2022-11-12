@@ -34,6 +34,8 @@ class RequestAcceptDeclineController extends Controller
                 $member_history->save();
                 $u->active_status=2;
                 $u->member_type = $member->member_type;
+                $role=Role::findOrFail($member->role_id);
+                $u->syncRoles($role->name);
                 $u->update();
                 return back()->with('success','Upgraded Success');
             }
