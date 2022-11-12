@@ -2,10 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use DatePeriod;
+use DateInterval;
 use Carbon\Carbon;
 use App\Models\User;
 use App\Models\Member;
+use Carbon\CarbonPeriod;
 use App\Models\BankingInfo;
+use Faker\Provider\DateTime;
 use Illuminate\Http\Request;
 use App\Models\MemberHistory;
 use Illuminate\Support\Facades\DB;
@@ -65,6 +69,7 @@ class HomeController extends Controller
         foreach($members as $month=>$values){
             $months[]= $month;
             $monthCount[]= count($values);
+            // dd($monthCount);
         }
 
         $free_user = DB::table('users')->where('member_type', 'Free')->count();
@@ -75,10 +80,60 @@ class HomeController extends Controller
         $rubyp_user = DB::table('users')->where('member_type', 'Ruby Premium')->count();
         if (Auth::check()) {
             if (Auth::user()->hasRole('System_Admin')) {
-                // $members = MemberHistory::where('member_id', 1)->where('member_id',2)->get();
-
                 $member_plans = Member::where('member_type', '!=', 'Gym Member')->get();
-                return view('admin.home', compact('member_plans', 'free_user', 'platinum_user', 'gold_user', 'diamond_user', 'ruby_user', 'rubyp_user','members','months','monthCount'));
+
+                DB::unprepared(DB::raw("
+                     CREATE TEMPORARY TABLE from_member_id(
+                         user_id INT ,
+                         member_id INT,
+                         date date)
+                     ")); //true
+                DB::statement(DB::raw("INSERT INTO from_member_id(user_id,member_id,date)
+                     SELECT user_id, member_id ,date
+                     FROM member_histories
+                     WHERE member_id  = 1;")); //true
+               DB::unprepared(DB::raw("
+               CREATE TEMPORARY TABLE to_member_id(
+                   user_id INT ,
+                   member_id INT,
+                   date date)
+               ")); //true
+               $current_month = Carbon::Now()->toDateString();
+               $subSix = Carbon::Now()->subMonth(6)->toDateString();
+                DB::statement(DB::raw("INSERT INTO to_member_id(user_id,member_id,date)
+                    SELECT user_id, member_id ,date
+                    FROM member_histories
+                    WHERE member_id  = 4;"));
+                $aa = DB::select("SELECT Month(a.date) as Month,Count(a.user_id) as member_count from to_member_id a , from_member_id b
+                WHERE a.user_id = b.user_id
+                and a.date > b.date
+                and a.date BETWEEN '$subSix' and '$current_month'
+                Group By Month(a.date)");
+                // dd($aa);
+
+                // dd($current_month);
+
+                $result = CarbonPeriod::create($subSix, '1 month',  $current_month);
+
+                //dd($result);
+                $mon = [];
+                $monNum = [];
+                foreach ($result as $dt) {
+
+                    $mm =   $dt->format("F");
+                    $monthNumber =   $dt->format("m");
+
+                    array_push($mon,$mm);
+                    array_push($monNum,$monthNumber);
+                    //dd($mon);
+                }
+                // foreach($aa as $mon=>$values){
+                //     // dd()
+                //     $months[]= $month;
+                //     $monthCount[]= count($values);
+                // }
+
+                return view('admin.home', compact('member_plans', 'free_user', 'platinum_user', 'gold_user', 'diamond_user', 'ruby_user', 'rubyp_user','members','months','aa','mon','monthCount','monNum'));
             } elseif (Auth::user()->hasRole('King')) {
                 return view('admin.home', compact('free_user', 'platinum_user', 'gold_user', 'diamond_user', 'ruby_user', 'rubyp_user','members','months','monthCount'));
             } elseif (Auth::user()->hasRole('Queen')) {
@@ -107,10 +162,7 @@ class HomeController extends Controller
             }
         //    dd($members->toArray());
             $member_plans = Member::where('member_type', '!=', 'Gym Member')->get();
-
             return view('admin.member_history', compact('members', 'member_plans','months','monthCount'));
-
-
     }
 
     public function home()

@@ -55,7 +55,7 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
     // Route::get('');
     //NCK
 
-    Route::get('customer_payment', [RegisterPaymentController::class, 'payment'])->name('customer_payment');
+    Route::get('/customer_payment', [RegisterPaymentController::class, 'payment'])->name('customer_payment');
     // Route::get('test_payment', [RegisterPaymentController::class, 'test'])->name('test_payment');
     Route::post('ewallet_store', [RegisterPaymentController::class, 'ewallet_store'])->name('ewallet_store');
     Route::post('bank_payment_store', [RegisterPaymentController::class, 'bank_payment_store'])->name('bank_payment_store');

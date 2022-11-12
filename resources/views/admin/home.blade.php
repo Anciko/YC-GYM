@@ -2,6 +2,7 @@
 
 @section('dashboard-active', 'active')
 @section('content')
+
     <p class="fs-6 fw-bold">Number of members</p>
     <div class="d-flex justify-content-around align-items-center flex-wrap">
         <div style="width:150px;height:150px;" class="bd-white shadow rounded-circle">
@@ -47,7 +48,7 @@
                 <p class="fs-6 fw-bold">Members who upgraded from</p>
                 <select style="width: 170px;height:40px" class="ms-4 ps-1 rounded from_member" name="from_member">
                     @foreach ($member_plans as $member_plan)
-                        <option value="{{ $member_plan->id }}">{{ $member_plan->member_type }}</option>
+                        <option value="{{ $member_plan->id }}">{{ $member_plan->member_type }}</o  ption>
                     @endforeach
                 </select>
             </div>
@@ -66,11 +67,6 @@
                 <button type="submit" class="btn btn-primary mt-4">Search</button>
             </div>
         </form>
-
-
-
-
-
     </div>
 
     <div style="max-width: 700px;max-height:400px;" class="mx-auto">
@@ -95,8 +91,61 @@
 
 @push('scripts')
     <script>
-        var months = JSON.parse('{!! json_encode($months) !!}');
+        $(document).ready(function() {
+
+                function search(){
+                            var keyword = $('#search').val();
+                            // console.log(keyword);
+                            var group_id = {{$selected_group->id}};
+
+                            var search_url = "{{ route('trainer/member/search',':id') }}";
+                            search_url = search_url.replace(':id', group_id);
+                            $.post(search_url,
+                            {
+                                _token: $('meta[name="csrf-token"]').attr('content'),
+                                keyword:keyword
+                            },
+                            function(data){
+                                table_post_row(data);
+                                console.log(data);
+                            });
+                        }
+
+
+        var months = JSON.parse('{!! json_encode($mon) !!}');
+        var MonthsNum = JSON.parse('{!! json_encode($monNum) !!}');
         var monthCount = JSON.parse('{!! json_encode($monthCount) !!}');
+        var mm = JSON.parse('{!! json_encode($aa) !!}');
+        const propertyNames = Object.keys(mm);
+        console.log(propertyNames);
+        var numberOfPeople = []
+        console.log(months)
+        console.log(MonthsNum)
+
+        for(let i = 0;i < MonthsNum.length;i++){
+            let found = false
+            for(let j = 0;j < mm.length;j++){
+                // console.log(MonthsNum[j] == mm[i]?.Month)
+                if(MonthsNum[i] == mm[j]?.Month){
+                    // numberOfPeople.push(mm[i].member_count)
+                    found = true
+                    var memberCount = mm[j].member_count
+                }else{
+                    // numberOfPeople.push(0)
+                }
+            }
+
+            if(found){
+                numberOfPeople.push(memberCount)
+            }else{
+                numberOfPeople.push(0)
+            }
+
+        }
+
+        console.log(numberOfPeople)
+
+        console.log(mm[0].months,"dd");
         const labels1 = [
             'January',
             'February',
@@ -106,17 +155,21 @@
             'June',
         ];
 
-        const data1 = {
-            labels: months,
-            datasets: [{
-                label: 'Member upgraded history',
-                backgroundColor: '#222E3C',
-                borderColor: '#222E3C',
-                data: monthCount,
-            }]
-        };
-
-        const config1 = {
+            console.log("ready");
+            // $.each(mm, function(index, value){
+                // console.log(value);
+                const data1 = {
+                    labels:months ,
+                    datasets: [{
+                        label: 'Member upgraded history',
+                        backgroundColor: '#222E3C',
+                        borderColor: '#222E3C',
+                        data:  numberOfPeople
+                    }]
+                };
+                console.log(data1.datasets);
+                console.log(mm);
+            const config1 = {
             type: 'bar',
             data: data1,
             options: {}
@@ -126,6 +179,9 @@
             document.getElementById('chart1'),
             config1
         );
+            // });
+
+
 
         const labels2 = [
             'January',
@@ -158,5 +214,6 @@
             document.getElementById('chart2'),
             config2
         );
+    });
     </script>
 @endpush
