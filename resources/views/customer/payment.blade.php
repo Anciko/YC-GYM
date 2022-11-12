@@ -287,10 +287,6 @@
                     <p class="member-cost">{{$member->price}}MMK</p>
                 </div>
                 <div class="customer-transaction-input-container">
-                    <p>Choosed Plan:</p>
-                    <input type="text" value="{{$member->member_type}}( {{$member->duration}} month)" required>
-                </div>
-                <div class="customer-transaction-input-container">
                     <p>Ayapay Phone Number:</p>
                     <input type="text" name = "payment_name" hidden value="AYA Pay">
                     <input type="number" name="phone" required>
