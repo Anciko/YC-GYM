@@ -240,7 +240,7 @@
                             </div>
                             <form action="{{ url('/customer_payment_active_staus/${value.id}') }}" method="POST">
                                 @csrf
-                                @method('PUT')
+                               
                                 <button type="submit" class="customer-secondary-btn">Upgrade</button>
                             </form>
                         </div>

@@ -60,7 +60,7 @@
             <div class="customer-transaction-input-container">
                 <p>Amount:
                 </p>
-                <input type="text" readonly name = "amount" >
+                <input type="text" required name = "amount" >
             </div>
 
             <div class="customer-transaction-receipt-img">
@@ -140,7 +140,7 @@
                 <div class="customer-transaction-input-container">
                     <p>Amount:
                     </p>
-                    <input type="text" readonly name = "amount">
+                    <input type="text" required name = "amount">
                 </div>
 
                 <div class="customer-transaction-receipt-img">
@@ -218,7 +218,7 @@
                 <div class="customer-transaction-input-container">
                     <p>Amount:
                     </p>
-                    <input type="text" readonly name = "amount">
+                    <input type="text" required name = "amount">
                 </div>
 
                 <div class="customer-transaction-receipt-img">
@@ -288,7 +288,7 @@
                 </div>
                 <div class="customer-transaction-input-container">
                     <p>Choosed Plan:</p>
-                    <input type="text" value="{{$member->member_type}}( {{$member->duration}} month)" readonly>
+                    <input type="text" value="{{$member->member_type}}( {{$member->duration}} month)" required>
                 </div>
                 <div class="customer-transaction-input-container">
                     <p>Ayapay Phone Number:</p>
@@ -302,7 +302,7 @@
                 <div class="customer-transaction-input-container">
                     <p>Amount:
                     </p>
-                    <input type="text" readonly name = "amount">
+                    <input type="text" required name = "amount">
                 </div>
 
                 <div class="customer-transaction-receipt-img">
@@ -381,7 +381,7 @@
                 <div class="customer-transaction-input-container">
                     <p>Amount:
                     </p>
-                    <input type="text" readonly name = "amount">
+                    <input type="text" required name = "amount">
                 </div>
 
                 <div class="customer-transaction-receipt-img">

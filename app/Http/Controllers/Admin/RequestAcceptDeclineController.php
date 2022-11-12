@@ -21,13 +21,13 @@ class RequestAcceptDeclineController extends Controller
         dd("dd");
     }
     public function accept(Request $request, $id){
+
         $u=User::findOrFail($id);
         $member_history = MemberHistory::where('user_id',$id)->first();
         $member = Member::findOrFail($u->request_type);
 
         try {
-            if($member_history->user_id == $id){
-
+            if($member_history != null && $member_history->user_id == $id){
                 $member_history->from_member_id = $member_history->to_member_id;
                 $member_history->to_member_id = $member->id;
                 $member_history->member_id = $member->id;
@@ -40,15 +40,16 @@ class RequestAcceptDeclineController extends Controller
                 return back()->with('success','Upgraded Success');
             }
             else{
-                //dd($member_history);
+                // dd($member);
                $member_role = Member::where('id',$member->id)->first();
                $role=Role::findOrFail($member_role->role_id);
                DB::table('model_has_roles')->where('model_id',$id)->delete();
+
                $u->assignRole($role->name);
                $u->member_type = $member->member_type;
                $u->active_status=2;
                $u->update();
-               $u->members()->attach($u->request_type, ['member_type_level' => $u->membertype_level]);
+               $u->members()->attach($u->request_type, ['member_type_level' => $u->membertype_level,'to_member_id'=>$u->request_type]);
                return back()->with('success','Accepted');
            }
         } catch (\Throwable $th) {

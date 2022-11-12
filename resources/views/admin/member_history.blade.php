@@ -69,10 +69,9 @@
     </div>
 
     <div style="max-width: 700px;max-height:400px;" class="mx-auto">
-        @section('chart1')
-        <canvas id="chart1"></canvas>
-        @endsection
 
+        <canvas id="chart1"></canvas>
+      
     </div>
 
     <form action="{{route('member-upgraded-history')}}" method="POST">
