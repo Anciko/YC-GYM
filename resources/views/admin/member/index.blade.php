@@ -47,6 +47,8 @@
                         <th>No</th>
                         <th>Member Type</th>
                         <th>Duration(Month)</th>
+                        <th>Pros</th>
+                        <th>Cons</th>
                         <th>Price</th>
                         <th>Action</th>
                     </tr>
@@ -84,6 +86,14 @@
                     {
                         data: 'price',
                         name: 'price'
+                    },
+                    {
+                        data: 'pros',
+                        name: 'pros'
+                    },
+                    {
+                        data: 'cons',
+                        name: 'cons'
                     },
                     {
                         data: 'action',

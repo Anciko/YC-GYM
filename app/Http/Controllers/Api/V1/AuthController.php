@@ -342,6 +342,7 @@ class AuthController extends Controller
 
         $user = User::findOrFail($auth_user->id);
         $user->active_status = 1;
+        $user->request_type = $request->member_id;
         $user->save();
 
         ///////
@@ -403,6 +404,7 @@ class AuthController extends Controller
 
         $user = User::findOrFail($auth_user->id);
         $user->active_status = 1;
+        $user->request_type = $request->member_id;
         $user->save();
         ///////
 

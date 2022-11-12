@@ -28,7 +28,7 @@
             <a href="#">Shop</a>
             <a href="#">Search</a>
             @auth
-            @if ( auth()->user()->request_type ==null)
+            @if ( auth()->user()->request_type ==null || auth()->user()->member_code ==null)
             <a href="{{route('customer-personal_infos')}}">Training Center</a>
             @elseif(auth()->user()->request_type !=null && auth()->user()->active_status==0)
             <a href="{{route('customer_payment')}}">Training Center</a>
