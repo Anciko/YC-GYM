@@ -36,7 +36,7 @@ class RegisterPaymentController extends Controller
 
         $user->update();
 
-        return view('customer.payment',compact('banking_info'));
+        return view('customer.payment',compact('banking_info','member'));
 
     }
 

@@ -12,8 +12,8 @@ class PaymentController extends Controller
 {
     public function detail($id){
 
-            $payment = Payment::where('user_id',$id)->get();
-            //dd($payment->toArray());
+            $payment = Payment::where('user_id',$id)->latest()->first();
+            // dd($payment);
             return view('admin.request.paymentdetail', compact('payment'));
     }
 

@@ -1,6 +1,7 @@
 .customer-profile-parent-container{
     max-width: 900px;
     margin: auto;
+    margin-bottom: 40px;
     padding: 20px;
     margin-top: 140px;
     background-color: var(--customer-card-bg-color);
@@ -502,6 +503,7 @@
     height: 400px;
     margin: auto;
     margin-top: 40px;
+    margin-bottom: 40px;
     /* background-color: white; */
     /* padding: 20px; */
     border-radius: 10px;

@@ -7,37 +7,37 @@
         <div style="width:150px;height:150px;" class="bd-white shadow rounded-circle">
             <img src="{{ asset('image/free.png') }}" style="width: 50px;height:50px;margin-top:16px;" class="d-block mx-auto">
             <p class="fw-bold text-center mb-0">Free</p>
-            <p class="fw-bold text-center fs-3 text-dark">100</p>
+            <p class="fw-bold text-center fs-3 text-dark">{{$free_user}}</p>
         </div>
         <div style="width:150px;height:150px;" class="bd-white shadow rounded-circle">
             <img src="{{ asset('image/platinum.png') }}" style="width: 50px;height:50px;margin-top:16px;"
                 class="d-block mx-auto">
             <p class="fw-bold text-center mb-0">Platinum</p>
-            <p class="fw-bold text-center fs-3 text-dark">100</p>
+            <p class="fw-bold text-center fs-3 text-dark">{{$platinum_user}}</p>
         </div>
         <div style="width:150px;height:150px;" class="bd-white shadow rounded-circle">
             <img src="{{ asset('image/gold.png') }}" style="width: 50px;height:50px;margin-top:16px;"
                 class="d-block mx-auto">
             <p class="fw-bold text-center mb-0">Gold</p>
-            <p class="fw-bold text-center fs-3 text-dark">100</p>
+            <p class="fw-bold text-center fs-3 text-dark">{{$gold_user}}</p>
         </div>
         <div style="width:150px;height:150px;" class="bd-white shadow rounded-circle">
             <img src="{{ asset('image/diamond.png') }}" style="width: 50px;height:50px;margin-top:16px;"
                 class="d-block mx-auto">
             <p class="fw-bold text-center mb-0">Diamond</p>
-            <p class="fw-bold text-center fs-3 text-dark">100</p>
+            <p class="fw-bold text-center fs-3 text-dark">{{$diamond_user}}</p>
         </div>
         <div style="width:150px;height:150px;" class="bd-white shadow rounded-circle">
             <img src="{{ asset('image/ruby.png') }}" style="width: 50px;height:50px;margin-top:16px;"
                 class="d-block mx-auto">
             <p class="fw-bold text-center mb-0">Ruby</p>
-            <p class="fw-bold text-center fs-3 text-dark">100</p>
+            <p class="fw-bold text-center fs-3 text-dark">{{$ruby_user}}</p>
         </div>
         <div style="width:150px;height:150px;" class="bd-white shadow rounded-circle">
             <img src="{{ asset('image/rubyPremium.png') }}" style="width: 50px;height:50px;margin-top:16px;"
                 class="d-block mx-auto">
             <p class="fw-bold text-center mb-0">Ruby Premium</p>
-            <p class="fw-bold text-center fs-3 text-dark">100</p>
+            <p class="fw-bold text-center fs-3 text-dark">{{$rubyp_user}}</p>
         </div>
     </div>
     <div class="my-5">
@@ -66,27 +66,27 @@
                 <button type="submit" class="btn btn-primary mt-4">Search</button>
             </div>
         </form>
-
-
-
-
-
     </div>
 
     <div style="max-width: 700px;max-height:400px;" class="mx-auto">
+
         <canvas id="chart1"></canvas>
+
     </div>
 
-    <div class="d-flex mt-5 justify-content-center gap-5">
-        <p class="fs-6 fw-bold">Number of members in</p>
-        <select style="width: 170px;height:40px" class="ms-4 ps-1 rounded">
-            <option selected value="january">January</option>
-        </select>
-        <select style="width: 170px;height:40px" class="ms-4 ps-1 rounded">
-            <option selected value="2022">2022</option>
-        </select>
-        <button class="btn btn-primary">Search</button>
-    </div>
+    <form action="{{route('member-upgraded-history')}}" method="POST">
+        @csrf
+        <div class="d-flex mt-5 justify-content-center gap-5">
+            <p class="fs-6 fw-bold">Number of members in</p>
+            <select style="width: 170px;height:40px" class="ms-4 ps-1 rounded" name="member_type">
+                @foreach ($member_plans as $member_plan)
+                            <option value="{{ $member_plan->id }}">{{ $member_plan->member_type }}</option>
+                @endforeach
+            </select>
+
+            <button type="submit" class="btn btn-primary">Search</button>
+        </div>
+    </form>
 
     <div style="max-width: 700px;max-height:400px;" class="mx-auto">
         <canvas id="chart2"></canvas>
@@ -101,6 +101,8 @@
         var months = JSON.parse('{!! json_encode($months) !!}');
         var monthCount = JSON.parse('{!! json_encode($monthCount) !!}');
 
+        var month_filter = JSON.parse('{!! json_encode($months_filter) !!}');
+        var monthCount_filter = JSON.parse('{!! json_encode($monthCount_filter) !!}');
         console.log(months);
 
         // $(document).ready(function() {
@@ -160,12 +162,12 @@
 
 
         const data2 = {
-            labels: labels2,
+            labels: month_filter,
             datasets: [{
-                label: 'My First dataset',
+                label: 'Number of Member',
                 backgroundColor: '#222E3C',
                 borderColor: '#222E3C',
-                data: [0, 10, 5, 2, 20, 30, 45],
+                data: monthCount_filter
             }]
         };
 

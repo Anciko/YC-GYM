@@ -45,9 +45,10 @@ class Customer_TrainingCenterController extends Controller
     public function member_plan()
     {
         $members = Member::orderBy('price', 'ASC')->get();
-
+        $pros=DB::table('members')->select('pros')->get()->toArray();
+        $cons=DB::table('members')->select('cons')->get()->toArray();
         $durations = Member::groupBy('duration')->where('duration', '!=', 0)->get();
-        return view('customer.training_center.member_plan',compact('members','durations'));
+        return view('customer.training_center.member_plan',compact('members','durations','pros','cons'));
     }
 
     public function workout_plan()
