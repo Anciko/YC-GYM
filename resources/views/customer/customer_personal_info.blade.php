@@ -251,32 +251,44 @@
 
                 $.each(member, function(index, value){
 
-                    // if( value.duration === "0" &&  el.value === '1'){
+                    if( value.duration === "0" &&  el.value === '1'){
+
+                        pros.forEach((pro)=>{
+                                console.log(pro.pros?.split(','))
+                            })
+                            $(".home-price-details-container").append(`
+                            <div class="home-price-detail-container">
+                            <h1>${value.member_type}</h1>
+                            <p class="home-price-detail-price">MMK ${value.price} / month</p>
+                            <div class="home-price-detail-benefits">
+                            ${
+                                value.pros?.split(',').map((item) => (
+                                    `
+                                <div class="home-price-detail-benefit">
+                                <iconify-icon icon="akar-icons:check" class="home-price-detail-benefit-icon check"></iconify-icon>
+                                <p>${item}</p>
+                                </div>
+                            `
+                                )).join('')
+                            }
+                            ${
+                                value.cons?.split(',').map((item) => (
+                                    `
+                                <div class="home-price-detail-benefit">
+                                    <iconify-icon icon="akar-icons:cross" class="home-price-detail-benefit-icon cross"></iconify-icon>
+                                <p>${item}</p>
+                                </div>
+                            `
+                                )).join('')
+                            }
 
 
-                    //     function myFunction(value, index, array) {
-                    //         console.log(value);
-                    //         }
-
-
-                    //     $(".home-price-details-container").append(`
-                    //     <div class="home-price-detail-container">
-                    //         <h1>${value.member_type}</h1>
-                    //         <p class="home-price-detail-price">MMK 5000 / month</p>
-
-                    //         <div class="home-price-detail-benefits">
-
-                    //             <div class="home-price-detail-benefit">
-                    //             <iconify-icon icon="akar-icons:check" class="home-price-detail-benefit-icon check"></iconify-icon>
-                    //             <p>${value.pros}</p>
-                    //             </div>
-                    //         </div>
-                    //         <a href="/customer/updateinfo/${value.id}" class="customer-secondary-btn" id="getplan">Get Plan</a>
-                    //     </div>
-                    //         `)
-                    // }
-                    // else if(el.value === value.duration){
-                            // console.log(value)
+                            <a href="/customer/updateinfo/${value.id}" class="customer-secondary-btn" id="getplan">Get Plan</a>
+                        </div>
+                            `)
+                    }
+                    else if(el.value === value.duration){
+                            console.log(value)
 
                             pros.forEach((pro)=>{
                                 console.log(pro.pros?.split(','))
@@ -311,7 +323,7 @@
                             <a href="/customer/updateinfo/${value.id}" class="customer-secondary-btn" id="getplan">Get Plan</a>
                         </div>
                             `)
-                    // }
+                    }
 
 
                 });

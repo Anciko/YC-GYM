@@ -291,5 +291,6 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
         Route::get('customer/groups', [CustomerManagementController::class, 'showgroup'])->name('groups');
         Route::get('customer', [CustomerManagementController::class, 'showchat'])->name('group');
         Route::get('customer/view_media', [CustomerManagementController::class, 'view_media'])->name('view_media');
+        Route::get('customer/trainingcenter/memberplan', [Customer_TrainingCenterController::class, 'member_plan'])->name('trainingcenter.member_plan');
     });
 });

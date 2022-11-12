@@ -30,11 +30,6 @@ class RoleSeeder extends Seeder
         ]);
 
         Role::create([
-        'name' =>'Free',
-        'guard_name' => 'web'
-        ]);
-
-        Role::create([
             'name' =>'Platinum',
             'guard_name' => 'web'
             ]);

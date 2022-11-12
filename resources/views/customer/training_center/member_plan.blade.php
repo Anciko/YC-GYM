@@ -8,8 +8,9 @@
 
         </div>
     </div>
-@foreach($durations as $duration)
     <div class="training-center-plan-durations-container">
+@foreach($durations as $duration)
+
         <div class="member-plan-duration-container">
             <label>
                 <input type="checkbox" name = "memberPlanDuration" class=" customer-member-plan-duration-checkbox-input"  onclick="checkedOnDurationClick(this,'memberPlanDuration')" value="{{$duration->duration}}"/>
@@ -28,8 +29,9 @@
                 <p class="customer-member-plan-duration-checkbox-title">6 months</p>
             </label>
         </div> --}}
-    </div>
+
 @endforeach
+</div>
     <div class="home-price-details-container">
 
     </div>
@@ -208,7 +210,7 @@
                             <form action="{{ url('/customer_payment_active_staus/${value.id}') }}" method="POST">
                                 @csrf
                                 @method('PUT')
-                                <button type="submit" class="customer-secondary-btn">Upgrade</button>
+                                <button type="submit" class="customer-secondary-btn">Change</button>
                             </form>
                         </div>
                             `)
@@ -240,8 +242,8 @@
                             </div>
                             <form action="{{ url('/customer_payment_active_staus/${value.id}') }}" method="POST">
                                 @csrf
-                               
-                                <button type="submit" class="customer-secondary-btn">Upgrade</button>
+
+                                <button type="submit" class="customer-secondary-btn">Change</button>
                             </form>
                         </div>
                             `)
