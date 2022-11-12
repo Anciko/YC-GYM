@@ -74,20 +74,24 @@
     </div>
 
     <div style="max-width: 700px;max-height:400px;" class="mx-auto">
-        <canvas id="chart1"></canvas>
-        @yield('charts')
+        {{-- <canvas id="chart1"></canvas> --}}
+        @yield('chart1')
     </div>
 
-    <div class="d-flex mt-5 justify-content-center gap-5">
-        <p class="fs-6 fw-bold">Number of members in</p>
-        <select style="width: 170px;height:40px" class="ms-4 ps-1 rounded">
-            <option selected value="january">January</option>
-        </select>
-        <select style="width: 170px;height:40px" class="ms-4 ps-1 rounded">
-            <option selected value="2022">2022</option>
-        </select>
-        <button class="btn btn-primary">Search</button>
-    </div>
+    <form action="{{route('member-upgraded-history')}}" method="POST">
+        @csrf
+        <div class="d-flex mt-5 justify-content-center gap-5">
+            <p class="fs-6 fw-bold">Number of members in</p>
+            <select style="width: 170px;height:40px" class="ms-4 ps-1 rounded" name="member_type">
+                @foreach ($member_plans as $member_plan)
+                            <option value="{{ $member_plan->id }}">{{ $member_plan->member_type }}</option>
+                @endforeach
+            </select>
+
+            <button type="submit" class="btn btn-primary">Search</button>
+        </div>
+    </form>
+
 
     <div style="max-width: 700px;max-height:400px;" class="mx-auto">
         <canvas id="chart2"></canvas>

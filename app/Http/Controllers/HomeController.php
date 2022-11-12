@@ -57,15 +57,16 @@ class HomeController extends Controller
     }
 
     public function index()
-        { $members = MemberHistory::select('date')->get()->groupBy(function($members){
+        {
+            $members = MemberHistory::select('date')->get()->groupBy(function($members){
             return Carbon::parse($members->date)->format('F');
-        });
-        $months = [];
-        $monthCount = [];
-        foreach($members as $month=>$values){
-            $months[]= $month;
-            $monthCount[]= count($values);
-        }
+            });
+            $months = [];
+            $monthCount = [];
+            foreach($members as $month=>$values){
+                $months[]= $month;
+                $monthCount[]= count($values);
+            }
 
         $free_user = DB::table('users')->where('member_type', 'Free')->count();
         $platinum_user = DB::table('users')->where('member_type', 'Platinum')->count();
@@ -78,7 +79,7 @@ class HomeController extends Controller
                 // $members = MemberHistory::where('member_id', 1)->where('member_id',2)->get();
 
                 $member_plans = Member::where('member_type', '!=', 'Gym Member')->get();
-                return view('admin.home', compact('member_plans', 'free_user', 'platinum_user', 'gold_user', 'diamond_user', 'ruby_user', 'rubyp_user','members','months','monthCount'));
+                return view('admin.home', compact('member_plans', 'free_user', 'platinum_user', 'gold_user', 'diamond_user', 'ruby_user', 'rubyp_user','members','months','monthCount',));
             } elseif (Auth::user()->hasRole('King')) {
                 return view('admin.home', compact('free_user', 'platinum_user', 'gold_user', 'diamond_user', 'ruby_user', 'rubyp_user','members','months','monthCount'));
             } elseif (Auth::user()->hasRole('Queen')) {
@@ -96,6 +97,14 @@ class HomeController extends Controller
 
     public function memberUpgradedHistory(Request $request)
     {
+        $free_user = DB::table('users')->where('member_type', 'Free')->count();
+        $platinum_user = DB::table('users')->where('member_type', 'Platinum')->count();
+        $gold_user = DB::table('users')->where('member_type', 'Gold')->count();
+        $diamond_user = DB::table('users')->where('member_type', 'Diamond')->count();
+        $ruby_user = DB::table('users')->where('member_type', 'Ruby')->count();
+        $rubyp_user = DB::table('users')->where('member_type', 'Ruby Premium')->count();
+
+
             $members = MemberHistory::select('date')->where('from_member_id', $request->from_member)->where('to_member_id', $request->to_member)->get()->groupBy(function($members){
                 return Carbon::parse($members->date)->format('F');
             });
@@ -105,10 +114,21 @@ class HomeController extends Controller
                 $months[]= $month;
                 $monthCount[]= count($values);
             }
+
+            $member_plan_filter = MemberHistory::select('date')->where('member_id',$request->member_type)->get()->groupBy(function($members){
+                return Carbon::parse($members->date)->format('F');
+            });
+            $months_filter = [];
+            $monthCount_filter = [];
+            foreach($member_plan_filter as $month=>$values){
+                $months_filter[]= $month;
+                $monthCount_filter[]= count($values);
+            }
+
         //    dd($members->toArray());
             $member_plans = Member::where('member_type', '!=', 'Gym Member')->get();
 
-            return view('admin.member_history', compact('members', 'member_plans','months','monthCount'));
+            return view('admin.member_history', compact('members', 'member_plans','months','monthCount','member_plan_filter','months_filter','monthCount_filter','free_user','platinum_user','gold_user','diamond_user','ruby_user','rubyp_user'));
 
 
     }
