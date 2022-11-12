@@ -47,7 +47,7 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
     Route::post('customer/updateinfo/customerCreate', [CustomerRegisterController::class, 'CustomerData'])->name('customerCreate');
 
     // NCK
-    Route::get('/customer_payment_active_staus/{id}',[RegisterPaymentController::class, 'changeStatusAndType'])->name('customer_upgrade');
+    Route::post('/customer_payment_active_staus/{id}',[RegisterPaymentController::class, 'changeStatusAndType'])->name('customer_upgrade');
 
 
     Route::post('/member/upgraded-history/', [HomeController::class, 'memberUpgradedHistory'])->name('member-upgraded-history');
@@ -291,5 +291,6 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
         Route::get('customer/groups', [CustomerManagementController::class, 'showgroup'])->name('groups');
         Route::get('customer', [CustomerManagementController::class, 'showchat'])->name('group');
         Route::get('customer/view_media', [CustomerManagementController::class, 'view_media'])->name('view_media');
+        Route::get('customer/trainingcenter/memberplan', [Customer_TrainingCenterController::class, 'member_plan'])->name('trainingcenter.member_plan');
     });
 });

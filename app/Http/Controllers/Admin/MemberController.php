@@ -128,6 +128,8 @@ class MemberController extends Controller
        $member_store->member_type=$request->member_type;
        $member_store->duration=$request->duration;
        $member_store->price=$request->price;
+       $member_store->pros=$request->pros;
+       $member_store->cons=$request->cons;
        $member_store->role_id=$request->role_id;
        $member_store->save();
        return redirect()->route('member.index')->with('success', 'New Member Type is created successfully!');
@@ -158,9 +160,10 @@ class MemberController extends Controller
         $member_update=Member::findOrFail($id);
         $member_update->member_type=$request->member_type;
         $member_update->duration=$request->duration;
+        $member_update->pros=$request->pros;
+        $member_update->cons=$request->cons;
         $member_update->role_id=$request->role_id;
         $member_update->price=$request->price;
-
         $member_update->update();
         return redirect()->route('member.index')->with('success', 'Member Type is updated successfully!');
     }

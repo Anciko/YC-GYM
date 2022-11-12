@@ -586,6 +586,10 @@ input.invalid, select.invalid {
     border-bottom: 1px solid var(--customer-primary-color);
 }
 
+.customer-registeration-card input.invalid, .customer-registeration-card select.invalid{
+    border-bottom: 2px solid red;
+}
+
 .customer-registeration-card .checkbox-tile{
     border: 2px solid var(--customer-text-color);
 }
@@ -604,6 +608,8 @@ input.invalid, select.invalid {
 .customer-registeration-card .floating-checkbox:nth-child(2n-1):before{
     background-color: var(--customer-text-color);
 }
+
+
 
 
 @media screen and (max-width:600px){

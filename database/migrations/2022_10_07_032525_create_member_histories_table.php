@@ -16,6 +16,7 @@ class CreateMemberHistoriesTable extends Migration
         Schema::create('member_histories', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreignId('member_id')->references('id')->on('members')->onDelete('cascade');
             $table->integer('from_member_id')->nullable();
             $table->integer('to_member_id')->nullable();
             $table->string('member_type_level');

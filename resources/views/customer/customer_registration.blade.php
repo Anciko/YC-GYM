@@ -42,15 +42,15 @@
         </select>
         <div class="customer-registeration-with-description">
             <input  type="number" required class="customer-registeration-input" placeholder="Neck" name="neck">
-            <iconify-icon icon="ant-design:exclamation-circle-outlined" class="description-icon" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Description on measuring neck size"></iconify-icon>
+            <iconify-icon icon="ant-design:exclamation-circle-outlined" class="description-icon" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Place the measuring tape around the neck at the height where the collar would normally rest – just below your Adam's apple."></iconify-icon>
         </div>
         <div class="customer-registeration-with-description">
             <input  type="number" required class="customer-registeration-input" placeholder="Waist" name="waist">
-            <iconify-icon icon="ant-design:exclamation-circle-outlined" class="description-icon" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Description on measuring waist size"></iconify-icon>
+            <iconify-icon icon="ant-design:exclamation-circle-outlined" class="description-icon" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="place a non-stretch tape measure around your midsection above your hip bones, making sure the tape measure is horizontal around your waist. Keep the tape measure snug, but make sure to avoid compressing the skin ( 14 ). Breathe out, then measure the circumference of your waist"></iconify-icon>
         </div>
         <div class="customer-registeration-with-description" id="parent-hip">
             <!-- <input  type="number" required class="customer-registeration-input" placeholder="Hip" name="hip"> -->
-            <iconify-icon  icon="ant-design:exclamation-circle-outlined" class="description-icon" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Description on measuring hip size"></iconify-icon>
+            <iconify-icon  icon="ant-design:exclamation-circle-outlined" class="description-icon hip-tooltip" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Stand with your feet directly beneath your hips and wrap the tape around the widest part of your hips and buttocks."></iconify-icon>
         </div>
         <div class="customer-registeration-with-description">
             <input  type="number" required class="customer-registeration-input" placeholder="Shoulders" name="shoulders">
@@ -174,7 +174,7 @@
             <span class="checkbox-icon">
               <iconify-icon icon="game-icons:gym-bag" class="checkbox-icon-icon"></iconify-icon>
             </span>
-            <span class="checkbox-label">Working out at a gym-bag<br>
+            <span class="checkbox-label">Working out at a gym<br>
               <span class="checkbox-label-small">with weights and machines</span>
             </span>
           </span>
@@ -236,7 +236,9 @@
             <input type="checkbox" name = "bodyType" class="checkbox-input" value="Ectomorph"  onclick="checkedOnClick(this,'bodyType')"/>
             <span class="checkbox-tile">
               <span class="checkbox-icon">
-                <div class="body-type-img"></div>
+                <div class="body-type-img">
+                    <img src="{{asset('image/registeration/ectomorph.png')}}">
+                </div>
               </span>
               <span class="checkbox-label">Ectomorph<br>
 
@@ -250,7 +252,9 @@
             <input type="checkbox" name = "bodyType" class="checkbox-input" value="Mesomorph" onclick="checkedOnClick(this,'bodyType')"/>
             <span class="checkbox-tile">
               <span class="checkbox-icon">
-                <div class="body-type-img"></div>
+                <div class="body-type-img">
+                    <img src="{{asset('image/registeration/mesomorph.png')}}">
+                </div>
               </span>
               <span class="checkbox-label">Mesomorph<br>
 
@@ -263,7 +267,9 @@
             <input type="checkbox" name = "bodyType" class="checkbox-input" value="Endomorph" onclick="checkedOnClick(this,'bodyType')"/>
             <span class="checkbox-tile">
               <span class="checkbox-icon">
-                <div class="body-type-img"></div>
+                <div class="body-type-img">
+                    <img src="{{asset('image/registeration/endomorph.png')}}">
+                </div>
               </span>
               <span class="checkbox-label">Endomorph<br>
 

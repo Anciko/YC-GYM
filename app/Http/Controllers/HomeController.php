@@ -57,15 +57,26 @@ class HomeController extends Controller
     }
 
     public function index()
-        { $members = MemberHistory::select('date')->get()->groupBy(function($members){
+        {   $year = Carbon::now()->year;
+            $members = MemberHistory::select('date')->whereYear('date', '=', $year)->get()->groupBy(function($members){
             return Carbon::parse($members->date)->format('F');
-        });
-        $months = [];
-        $monthCount = [];
-        foreach($members as $month=>$values){
-            $months[]= $month;
-            $monthCount[]= count($values);
-        }
+            });
+            $months = [];
+            $monthCount = [];
+            foreach($members as $month=>$values){
+                $months[]= $month;
+                $monthCount[]= count($values);
+            }
+
+            $member_plan_filter = MemberHistory::select('date')->whereYear('date', '=', $year)->get()->groupBy(function($members){
+                return Carbon::parse($members->date)->format('F');
+            });
+            $months_filter = [];
+            $monthCount_filter = [];
+            foreach($member_plan_filter as $month=>$values){
+                $months_filter[]= $month;
+                $monthCount_filter[]= count($values);
+            }
 
         $free_user = DB::table('users')->where('member_type', 'Free')->count();
         $platinum_user = DB::table('users')->where('member_type', 'Platinum')->count();
@@ -78,25 +89,30 @@ class HomeController extends Controller
                 // $members = MemberHistory::where('member_id', 1)->where('member_id',2)->get();
 
                 $member_plans = Member::where('member_type', '!=', 'Gym Member')->get();
-                return view('admin.home', compact('member_plans', 'free_user', 'platinum_user', 'gold_user', 'diamond_user', 'ruby_user', 'rubyp_user','members','months','monthCount'));
+                return view('admin.home', compact('member_plans', 'free_user', 'platinum_user', 'gold_user', 'diamond_user', 'ruby_user', 'rubyp_user','members','months','monthCount','months_filter','monthCount_filter'));
             } elseif (Auth::user()->hasRole('King')) {
-                return view('admin.home', compact('free_user', 'platinum_user', 'gold_user', 'diamond_user', 'ruby_user', 'rubyp_user','members','months','monthCount'));
+                return view('admin.home', compact('free_user', 'platinum_user', 'gold_user', 'diamond_user', 'ruby_user', 'rubyp_user','members','months','monthCount','months_filter','monthCount_filter'));
             } elseif (Auth::user()->hasRole('Queen')) {
-                return view('admin.home', compact('free_user', 'platinum_user', 'gold_user', 'diamond_user', 'ruby_user', 'rubyp_user','members','months','monthCount'));
+                return view('admin.home', compact('free_user', 'platinum_user', 'gold_user', 'diamond_user', 'ruby_user', 'rubyp_user','members','months','monthCount','months_filter','monthCount_filter'));
             } else {
-                $member_plans = Member::where('member_type', '!=', 'Free')->where('member_type', '!=', 'Gym Member')->get();
+                $member_plans = Member::where('member_type', '!=', 'Free')->where('duration', '=', 1)->get();
                 return view('customer.home', compact('member_plans'));
             }
         } else {
             // not logged-in
-            return view('customer.index');
+            $members = Member::orderBy('price', 'ASC')->where('duration',1)->get();
+            $durations = Member::groupBy('duration')->where('duration', '!=', 0)->get();
+            $pros=DB::table('members')->select('pros')->get()->toArray();
+            $cons=DB::table('members')->select('cons')->get()->toArray();
+            return view('customer.index',compact('members','durations','pros','cons'));
         }
     }
 
 
     public function memberUpgradedHistory(Request $request)
     {
-            $members = MemberHistory::select('date')->where('from_member_id', $request->from_member)->where('to_member_id', $request->to_member)->get()->groupBy(function($members){
+            $year = Carbon::now()->year;
+            $members = MemberHistory::select('date')->whereYear('date', '=', $year)->where('from_member_id', $request->from_member)->where('to_member_id', $request->to_member)->get()->groupBy(function($members){
                 return Carbon::parse($members->date)->format('F');
             });
             $months = [];
@@ -105,17 +121,34 @@ class HomeController extends Controller
                 $months[]= $month;
                 $monthCount[]= count($values);
             }
+
+            $member_plan_filter = MemberHistory::select('date')->whereYear('date', '=', $year)->where('member_id',$request->member_type)->get()->groupBy(function($members){
+                return Carbon::parse($members->date)->format('F');
+            });
+            $months_filter = [];
+            $monthCount_filter = [];
+            foreach($member_plan_filter as $month=>$values){
+                $months_filter[]= $month;
+                $monthCount_filter[]= count($values);
+            }
+
         //    dd($members->toArray());
             $member_plans = Member::where('member_type', '!=', 'Gym Member')->get();
-
-            return view('admin.member_history', compact('members', 'member_plans','months','monthCount'));
+            return response()->json([
+                'member_plans'=>$member_plans,
+                'months'=>$months,
+                'monthCount'=>$monthCount,
+                'member_plan_filter'=>$member_plan_filter,
+                'months_filter'=>$months_filter,
+                'monthCount_filter'=>$monthCount_filter
+            ]);
 
 
     }
 
     public function home()
     {
-        $member_plans = Member::where('member_type', '!=', 'Free')->where('member_type', '!=', 'Gym Member')->get();
+        $member_plans = Member::where('member_type', '!=', 'Free')->where('duration','=',1)->get();
         return view('customer.home',compact('member_plans'));
     }
 
@@ -135,15 +168,16 @@ class HomeController extends Controller
 
     public function customer_register()
     {
-        $user = User::find(1);
-        $banking_info = BankingInfo::all();
-        // $mem = $user->members()->get();
-        $users = User::with('members')->orderBy('created_at', 'DESC')->get();
+        // $user = User::find(1);
+        // $banking_info = BankingInfo::all();
+        // // $mem = $user->members()->get();
+        // $users = User::with('members')->orderBy('created_at', 'DESC')->get();
 
-        $members = Member::orderBy('price', 'ASC')->get();
+        // $members = Member::orderBy('price', 'ASC')->get();
 
-        $durations = Member::groupBy('duration')->where('duration', '!=', 0)->get();
-        return view('customer.register', compact('durations', 'members', 'banking_info'));
+        // $durations = Member::groupBy('duration')->where('duration', '!=', 0)->get();
+        // return view('customer.register', compact('durations', 'members', 'banking_info'));
+        return view('customer.register');
     }
 
     public function getRegister()

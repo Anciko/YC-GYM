@@ -14,16 +14,18 @@ use RealRashid\SweetAlert\Facades\Alert;
 class RegisterPaymentController extends Controller
 {
     //
-    public function payment()
+    public function payment(Request $request)
     {
+        $request_type=auth()->user()->request_type;
+        $member=Member::findOrFail($request_type);
         $banking_info = BankingInfo::all();
 
-        return view('customer.payment',compact('banking_info'));
+        return view('customer.payment',compact('banking_info','member'));
     }
 
     public function changeStatusAndType($id)
     {
-        
+
         $banking_info = BankingInfo::all();
 
         $member = Member::findOrFail($id);
@@ -34,7 +36,7 @@ class RegisterPaymentController extends Controller
 
         $user->update();
 
-        return view('customer.payment',compact('banking_info'));
+        return view('customer.payment',compact('banking_info','member'));
 
     }
 

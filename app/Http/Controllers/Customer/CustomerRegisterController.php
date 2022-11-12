@@ -9,6 +9,7 @@ use App\Models\BankingInfo;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Models\WeightHistory;
+use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Role;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
@@ -99,7 +100,7 @@ class CustomerRegisterController extends Controller
         $weight_history->user_id = auth()->user()->id;
         $weight_history->date = $weight_date;
         $weight_history->save();
-        Alert::success('Success', 'Information Updated Successfully');
+        //Alert::success('Success', 'Information Updated Successfully');
         // return redirect()->route('social_media');
     }
 
@@ -148,6 +149,7 @@ class CustomerRegisterController extends Controller
 
     public function register(Request $request)
     {
+        // dd("dd");
         $request->validate([
             'name' => 'required',
             'phone' => 'required|min:9|max:11|unique:users',
@@ -179,7 +181,10 @@ class CustomerRegisterController extends Controller
         $members = Member::orderBy('price', 'ASC')->get();
 
         $durations = Member::groupBy('duration')->where('duration', '!=', 0)->get();
+        $pros=DB::table('members')->select('pros')->get()->toArray();
+        $cons=DB::table('members')->select('cons')->get()->toArray();
+
         // dd($duration);
-        return view('customer.customer_personal_info', compact('durations', 'members', 'banking_info'));
+        return view('customer.customer_personal_info', compact('durations', 'members', 'banking_info','pros','cons'));
     }
 }

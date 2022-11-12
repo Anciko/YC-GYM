@@ -26,7 +26,9 @@ class CreateMemberRequest extends FormRequest
         return [
             'member_type' => 'required',
             'duration' => 'required',
-            'price' => 'required'
+            'price' => 'required',
+            'pros' => 'required',
+            'cons' => 'required'
         ];
     }
 }
