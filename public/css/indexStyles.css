@@ -154,7 +154,8 @@
 .index-price-detail-benefits{
     margin-top: 20px;
     margin-left: 10px;
-
+    height: 250px;
+    overflow-y: scroll;
 }
 
 .index-price-detail-benefit{

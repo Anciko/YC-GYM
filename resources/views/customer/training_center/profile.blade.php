@@ -23,7 +23,7 @@
         <button type="button" class="customer-secondary-btn customer-name-calculate-btn" id="customer_name_cancel">Cancel</button>
     </div>
     </form>
-    @hasanyrole('Platinum|Diamond|Gym Member')
+    @hasanyrole('Platinum|Diamond|Gym Member|Gold|Ruby|Ruby Premium')
     <form class="personal_detail" method="POST" action="{{route('customer-profile.update')}}">
         @csrf
         @method('POST')
@@ -173,7 +173,8 @@
         <p style="margin-top:100px;margin-left:150px">You don’t have weight history  to review.
             Keep working out.</p>
     </div>
-
+    @endhasanyrole
+    @hasanyrole('Platinum|Diamond|Gym Member')
     <div class="customer-profile-trackers-parent-container">
         <div class="customer-profile-trackers-headers-container">
             <div class="customer-profile-tracker-header" id="workout">
@@ -305,7 +306,7 @@
 
 @endsection
 @push('scripts')
-@hasanyrole('Platinum|Diamond|Gym Member')
+@hasanyrole('Platinum|Diamond|Gym Member|Gold|Ruby|Ruby Premium')
 <script>
             let myChart=null;
             function linechart(data){
