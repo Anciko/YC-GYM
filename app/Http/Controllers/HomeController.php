@@ -95,7 +95,7 @@ class HomeController extends Controller
             } elseif (Auth::user()->hasRole('Queen')) {
                 return view('admin.home', compact('free_user', 'platinum_user', 'gold_user', 'diamond_user', 'ruby_user', 'rubyp_user','members','months','monthCount','months_filter','monthCount_filter'));
             } else {
-                $member_plans = Member::where('member_type', '!=', 'Free')->where('member_type', '!=', 'Gym Member')->get();
+                $member_plans = Member::where('member_type', '!=', 'Free')->where('duration', '=', 1)->get();
                 return view('customer.home', compact('member_plans'));
             }
         } else {
@@ -148,7 +148,7 @@ class HomeController extends Controller
 
     public function home()
     {
-        $member_plans = Member::where('member_type', '!=', 'Free')->where('duration', '=',1)->get();
+        $member_plans = Member::where('member_type', '!=', 'Free')->where('duration','=',1)->get();
         return view('customer.home',compact('member_plans'));
     }
 
