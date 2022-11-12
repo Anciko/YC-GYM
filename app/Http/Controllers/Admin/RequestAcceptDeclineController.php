@@ -29,6 +29,7 @@ class RequestAcceptDeclineController extends Controller
             if($member_history->user_id == $id){
                 $member_history->from_member_id = $member_history->to_member_id;
                 $member_history->to_member_id = $member->id;
+                $member_history->member_id = $member->id;
                 $member_history->save();
                 $u->active_status=2;
                 $u->member_type = $member->member_type;
