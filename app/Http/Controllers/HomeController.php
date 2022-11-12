@@ -90,7 +90,11 @@ class HomeController extends Controller
             }
         } else {
             // not logged-in
-            return view('customer.index');
+            $members = Member::orderBy('price', 'ASC')->where('duration',1)->get();
+            $durations = Member::groupBy('duration')->where('duration', '!=', 0)->get();
+            $pros=DB::table('members')->select('pros')->get()->toArray();
+            $cons=DB::table('members')->select('cons')->get()->toArray();
+            return view('customer.index',compact('members','durations','pros','cons'));
         }
     }
 
@@ -135,7 +139,7 @@ class HomeController extends Controller
 
     public function home()
     {
-        $member_plans = Member::where('member_type', '!=', 'Free')->where('member_type', '!=', 'Gym Member')->get();
+        $member_plans = Member::where('member_type', '!=', 'Free')->where('duration', '=',1)->get();
         return view('customer.home',compact('member_plans'));
     }
 

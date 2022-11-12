@@ -246,7 +246,6 @@
                 el.checked = true;
             }
             let pros=@json($pros);
-            console.log(pros);
             let cons=@json($cons);
 
                 $.each(member, function(index, value){
