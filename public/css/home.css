@@ -122,7 +122,8 @@
 .home-price-detail-benefits{
     margin-top: 20px;
     margin-left: 10px;
-
+    height: 200px;
+    overflow-y: scroll;
 }
 
 .home-price-detail-benefit{

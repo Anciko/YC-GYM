@@ -285,25 +285,25 @@
                             <div class="home-price-detail-container">
                             <h1>${value.member_type}</h1>
                             <p class="home-price-detail-price">MMK ${value.price} / month</p>
-
+                            <div class="home-price-detail-benefits">
                             ${
                                 value.pros?.split(',').map((item) => (
-                                    `<div class="home-price-detail-benefits">
+                                    `
                                 <div class="home-price-detail-benefit">
                                 <iconify-icon icon="akar-icons:check" class="home-price-detail-benefit-icon check"></iconify-icon>
                                 <p>${item}</p>
                                 </div>
-                            </div>`
+                            `
                                 )).join('')
                             }
                             ${
                                 value.cons?.split(',').map((item) => (
-                                    `<div class="home-price-detail-benefits">
+                                    `
                                 <div class="home-price-detail-benefit">
                                     <iconify-icon icon="akar-icons:cross" class="home-price-detail-benefit-icon cross"></iconify-icon>
                                 <p>${item}</p>
                                 </div>
-                            </div>`
+                            `
                                 )).join('')
                             }
 

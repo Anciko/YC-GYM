@@ -66,11 +66,6 @@
                 <button type="submit" class="btn btn-primary mt-4">Search</button>
             </div>
         </form>
-
-
-
-
-
     </div>
 
     <div style="max-width: 700px;max-height:400px;" class="mx-auto">
