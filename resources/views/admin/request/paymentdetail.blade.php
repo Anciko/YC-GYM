@@ -60,7 +60,7 @@
 
                     <div>
                         <label class="fs-5">Amount :</label>
-                        <label class="ms-2 text-capitalize">{{$pay->amount ?? "Amount not have."}}</label>
+                        <label class="ms-2 text-capitalize">{{$payment->amount ?? "Amount not have."}}</label>
                     </div>
                     </div>
                     </div>
