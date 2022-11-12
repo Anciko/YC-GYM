@@ -75,6 +75,7 @@
 
     <div style="max-width: 700px;max-height:400px;" class="mx-auto">
         <canvas id="chart1"></canvas>
+        @yield('charts')
     </div>
 
     <div class="d-flex mt-5 justify-content-center gap-5">
