@@ -51,6 +51,7 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
 
 
     Route::post('/member/upgraded-history/', [HomeController::class, 'memberUpgradedHistory'])->name('member-upgraded-history');
+    Route::post('/member/upgraded-history-monthly/', [HomeController::class, 'memberUpgradedHistory_monthly'])->name('member-upgraded-history-monthly');
 
     // Route::get('');
     //NCK
