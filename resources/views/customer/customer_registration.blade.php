@@ -8,8 +8,7 @@
         <p class="customer-registeration-form-header">
             Body Measurements
         </p>
-
-
+        <input type="hidden" value={{$request_type}} name="request_type">
         <div class="customer-registeration-height-container">
           <p class="customer-registeration-label">Height</p>
           <select class="customer-registeration-input" name="feet">

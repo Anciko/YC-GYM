@@ -37,12 +37,7 @@ class CustomerRegisterController extends Controller
         // $user_member_type = $all_info->memberPlan[0];
         $user_gender = $bodyMeasurements->gender;
 
-        $member = Member::findOrFail($user_id->request_type);
-
-        $from_date = Carbon::now();
-        $to_date = Carbon::now()->addMonths($member->duration);
-        $user->from_date = $from_date;
-        $user->to_date = $to_date;
+        //$member = Member::findOrFail($user_id->request_type);
 
         $user_bad_habits = json_encode($all_info->badHabits);
         $user_bodyArea = json_encode($all_info->bodyArea);
@@ -54,6 +49,13 @@ class CustomerRegisterController extends Controller
         $user->daily_life = $all_info->typicalDay[0];
         $user->diet_type = $all_info->diet[0];
         $user->active_status = 0;
+
+        $user->request_type = $bodyMeasurements->request_type;
+        $member = Member::findOrFail($user->request_type);
+        $from_date = Carbon::now();
+        $to_date = Carbon::now()->addMonths($member->duration);
+        $user->from_date = $from_date;
+        $user->to_date = $to_date;
 
         if ($user_gender == 'male') {
             $user->hip = 0;
@@ -140,11 +142,11 @@ class CustomerRegisterController extends Controller
 
     public function updateinfo($request_type)
     {
-        $user=User::findOrFail(auth()->user()->id);
-        $user->request_type=$request_type;
-        $user->update();
+        //$user=User::findOrFail(auth()->user()->id);
+        //$user->request_type=$request_type;
+        //$user->update();
 
-        return view('customer.customer_registration');
+        return view('customer.customer_registration',compact('request_type'));
     }
 
     public function register(Request $request)
