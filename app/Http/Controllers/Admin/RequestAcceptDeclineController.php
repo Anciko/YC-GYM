@@ -9,6 +9,7 @@ use App\Models\MemberHistory;
 use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Role;
 use App\Http\Controllers\Controller;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 
 class RequestAcceptDeclineController extends Controller
@@ -26,12 +27,15 @@ class RequestAcceptDeclineController extends Controller
         $member_history = MemberHistory::where('user_id',$id)->first();
         $member = Member::findOrFail($u->request_type);
 
-        try {
+        // try {
             if($member_history != null && $member_history->user_id == $id){
-                $member_history->from_member_id = $member_history->to_member_id;
-                $member_history->to_member_id = $member->id;
-                $member_history->member_id = $member->id;
-                $member_history->save();
+
+                $member_history->create([
+                    'user_id'=>$id,
+                    'member_id'=>$member->id,
+                    'member_type_level'=>$member_history->member_type_level,
+                    'date'=>Carbon::now()->toDateString()
+                ]);
                 $u->active_status=2;
                 $u->member_type = $member->member_type;
                 $role=Role::findOrFail($member->role_id);
@@ -52,9 +56,9 @@ class RequestAcceptDeclineController extends Controller
                $u->members()->attach($u->request_type, ['member_type_level' => $u->membertype_level,'to_member_id'=>$u->request_type]);
                return back()->with('success','Accepted');
            }
-        } catch (\Throwable $th) {
-           return back()->with(['usernotfound'=>'User accepted fail.']);
-        }
+        // } catch (\Throwable $th) {
+        //    return back()->with(['usernotfound'=>'User accepted fail.']);
+        // }
     }
 
     public function decline($id){
