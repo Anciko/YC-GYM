@@ -161,11 +161,11 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
             // Meal
             Route::resource('meal', MealController::class);
             Route::get('admin/getmeal', [MealController::class, 'getMeal'])->name('getmeal');
-            Route::get('admin/meal/{id}/delete', [MealController::class, 'destroy'])->name('meal.delete');
+            Route::get('/meal/{id}/delete', [MealController::class, 'destroy'])->name('meal.delete');
 
             // Member
             Route::resource('member', MemberController::class);
-            Route::get('admin/member/{id}/delete', [MemberController::class, 'destroy'])->name('member.delete');
+            Route::get('/member/{id}/delete', [MemberController::class, 'destroy'])->name('member.delete');
             Route::get('admin/member/datatable/ssd', [MemberController::class, 'ssd']);
 
             Route::get('user_member', [MemberController::class, 'user_member_show'])->name('member.user_member');

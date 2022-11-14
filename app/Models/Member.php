@@ -27,15 +27,15 @@ class Member extends Model
                     ->withTimestamps();
     }
 
-    public static function boot() {
-        parent::boot();
-        self::deleting(function($member) {
-            $member->mealplan()->each(function($mealplan) {
-                $mealplan->meal()->each(function($meal){
-                    $meal->delete();
-                });
-                $mealplan->delete();
-            });
-        });
-    }
+    // public static function boot() {
+    //     parent::boot();
+    //     self::deleting(function($member) {
+    //         $member->mealplan()->each(function($mealplan) {
+    //             $mealplan->meal()->each(function($meal){
+    //                 $meal->delete();
+    //             });
+    //             $mealplan->delete();
+    //         });
+    //     });
+    // }
 }

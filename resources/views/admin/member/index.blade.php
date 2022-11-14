@@ -114,9 +114,11 @@
                     })
                     .then((willDelete) => {
                         if (willDelete) {
+                            var add_url = "{{ route('member.delete', [':id']) }}";
+                            add_url = add_url.replace(':id', id);
                             $.ajax({
                                 method: "GET",
-                                url: `admin/member/${id}/delete`
+                                url: add_url
                             }).done(function(res) {
                                 Toast.fire({
                                     icon: 'success',
