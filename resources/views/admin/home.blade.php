@@ -96,122 +96,71 @@
 
 @push('scripts')
     <script>
-        var chart1_form = document.getElementById('chart1Form');
-        var chart2_form = document.getElementById('chart2Form');
+        $(document).ready(function() {
 
-        chart1_form.addEventListener('click', function(e) {
 
-            e.preventDefault();
-            if (myChart1 != null) {
-                myChart1.destroy();
-            }
-            var fromMember = document.getElementById('fromMember').value;
-            var toMember = document.getElementById('toMember').value;
-            axios.post('/member/upgraded-history/', {
-                from_member: fromMember,
-                to_member: toMember
-            }).then(response => {
 
-                var months = response.data.months
-                var monthCount = response.data.monthCount
-                const data1 = {
-                    labels: months,
-                    datasets: [{
-                        label: 'Member upgraded history',
-                        borderColor: 'rgb(255, 99, 132)',
-                        backgroundColor: 'rgba(255, 99, 132, 0.2)',
-                        borderWidth: 1,
-                        data: monthCount,
-                    }]
-                };
 
-                const config1 = {
-                    type: 'bar',
-                    data: data1,
-                    options: {
-                        scales: {
-                            yAxes: [{
-                                ticks: {
-                                    beginAtZero: true
-                                }
-                            }]
-                        }
-                    }
-                };
-
-                 myChart1 = new Chart(
-                    document.getElementById('chart1'),
-                    config1
-                );
-
-            })
-        })
-
-        chart2_form.addEventListener('click', function(e) {
-
-            e.preventDefault();
-            if (myChart2 != null || myChart2 == null) {
-                myChart2.destroy();
-            }
-            var member_type = document.getElementById('memberType').value;
-
-            axios.post('/member/upgraded-history/', {
-                member_type: member_type
-            }).then(response => {
-
-                var months_filter = response.data.months_filter
-                var monthCount_filter = response.data.monthCount_filter
-                const data2 = {
-                    labels: months_filter,
-                    datasets: [{
-                        label: 'Number of Member',
-                        backgroundColor: 'rgba(54, 162, 235, 0.2)',
-                        borderColor: 'rgb(54, 162, 235)',
-                        borderWidth: 1,
-                        data: monthCount_filter
-                    }]
-                };
-                const config2 = {
-                    type: 'bar',
-                    data: data2,
-                    options: {
-                        scales: {
-                            yAxes: [{
-                                ticks: {
-                                    beginAtZero: true
-                                }
-                            }]
-                        }
-                    }
-                };
-
-                 myChart2 = new Chart(
-                    document.getElementById('chart2'),
-                    config2
-                );
-
-            })
-        })
-
-        var months_con = JSON.parse('{!! json_encode($months) !!}');
-        var monthCount_con = JSON.parse('{!! json_encode($monthCount) !!}');
-
+        var months = JSON.parse('{!! json_encode($mon) !!}');
+        var MonthsNum = JSON.parse('{!! json_encode($monNum) !!}');
+        var monthCount = JSON.parse('{!! json_encode($monthCount) !!}');
         var months_filter_con = JSON.parse('{!! json_encode($months_filter) !!}');
         var monthCount_filter_con = JSON.parse('{!! json_encode($monthCount_filter) !!}');
+        var mm = JSON.parse('{!! json_encode($aa) !!}');
+        const propertyNames = Object.keys(mm);
+        console.log(propertyNames);
+        var numberOfPeople = []
+        console.log(months)
+        console.log(MonthsNum)
 
+        for(let i = 0;i < MonthsNum.length;i++){
+            let found = false
+            for(let j = 0;j < mm.length;j++){
+                // console.log(MonthsNum[j] == mm[i]?.Month)
+                if(MonthsNum[i] == mm[j]?.Month){
+                    // numberOfPeople.push(mm[i].member_count)
+                    found = true
+                    var memberCount = mm[j].member_count
+                }else{
+                    // numberOfPeople.push(0)
+                }
+            }
 
-        const data1 = {
-            labels: months_con,
-            datasets: [{
-                label: 'Member upgraded history',
-                borderColor: 'rgb(255, 99, 132)',
-                backgroundColor: 'rgba(255, 99, 132, 0.2)',
-                data: monthCount_con,
-                borderWidth: 1
-            }]
-        };
+            if(found){
+                numberOfPeople.push(memberCount)
+            }else{
+                numberOfPeople.push(0)
+            }
 
-        const config1 = {
+        }
+
+        console.log(numberOfPeople)
+
+        console.log(mm[0].months,"dd");
+        const labels1 = [
+            'January',
+            'February',
+            'March',
+            'April',
+            'May',
+            'June',
+        ];
+
+            console.log("ready");
+            // $.each(mm, function(index, value){
+                // console.log(value);
+                const data1 = {
+                    labels:months ,
+                    datasets: [{
+                        label: 'Member upgraded history',
+                        backgroundColor: '#222E3C',
+                        borderColor: '#222E3C',
+                        data:  numberOfPeople
+                    }]
+                };
+                console.log(data1.datasets);
+                console.log(mm);
+            const config1 = {
             type: 'bar',
             data: data1,
             options: {}
@@ -221,8 +170,54 @@
             document.getElementById('chart1'),
             config1
         );
+        var chart1_form = document.getElementById('chart1Form');
+        var chart2_form = document.getElementById('chart2Form');
             // });
+            chart2_form.addEventListener('click', function(e) {
 
+e.preventDefault();
+if (myChart2 != null || myChart2 == null) {
+    myChart2.destroy();
+}
+var member_type = document.getElementById('memberType').value;
+
+axios.post('/member/upgraded-history/', {
+    member_type: member_type
+}).then(response => {
+
+    var months_filter = response.data.months_filter
+    var monthCount_filter = response.data.monthCount_filter
+    const data2 = {
+        labels: months_filter,
+        datasets: [{
+            label: 'Number of Member',
+            backgroundColor: 'rgba(54, 162, 235, 0.2)',
+            borderColor: 'rgb(54, 162, 235)',
+            borderWidth: 1,
+            data: monthCount_filter
+        }]
+    };
+    const config2 = {
+        type: 'bar',
+        data: data2,
+        options: {
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true
+                    }
+                }]
+            }
+        }
+    };
+
+     myChart2 = new Chart(
+        document.getElementById('chart2'),
+        config2
+    );
+
+})
+})
 
 
 

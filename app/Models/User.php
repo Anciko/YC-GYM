@@ -37,7 +37,7 @@ class User extends Authenticatable
     public function members()
     {
         return $this->belongsToMany(Member::class, 'member_histories')
-                    ->withPivot(['to_member_id','from_member_id','member_type_level','deleted_at'])
+                    ->withPivot(['date','to_member_id','from_member_id','member_type_level','deleted_at'])
                     ->withTimestamps();
     }
 
