@@ -51,8 +51,8 @@
                     <li class="customer-dropdown">
                     <a href="#" data-toggle="dropdown">
                         <img class="nav-profile-img" src="{{asset('img/user.jpg')}}"/>
-
-                        <i class="icon-arrow"></i></a>
+                        <i class="icon-arrow"></i>
+                    </a>
                     <ul class="customer-dropdown-menu">
                         <li><a href="{{route('customer-profile')}}">Profile</a></li>
                         <li><form class="dropdown-item" id="logout-form" action="{{ route('logout') }}" method="POST">
