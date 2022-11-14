@@ -47,7 +47,7 @@
                 <select style="width: 170px;height:40px" class="ms-4 ps-1 rounded from_member" name="from_member"
                     id="fromMember">
                     @foreach ($member_plans as $member_plan)
-                        <option value="{{ $member_plan->id }}">{{ $member_plan->member_type }}</option>
+                        <option value="{{ $member_plan->id }}">{{ $member_plan->member_type }} - {{$member_plan->duration}}month</option>
                     @endforeach
                 </select>
             </div>
@@ -57,7 +57,7 @@
                 <select style="width: 170px;height:40px" class="ms-4 ps-1 rounded to_member" name="to_member"
                     id="toMember">
                     @foreach ($member_plans as $member_plan)
-                        <option value="{{ $member_plan->id }}">{{ $member_plan->member_type }}</option>
+                        <option value="{{ $member_plan->id }}">{{ $member_plan->member_type }} - {{$member_plan->duration}}month</option>
                     @endforeach
                 </select>
             </div>
@@ -79,7 +79,7 @@
             <p class="fs-6 fw-bold">Number of members in</p>
             <select style="width: 170px;height:40px" class="ms-4 ps-1 rounded" name="member_type" id="memberType">
                 @foreach ($member_plans as $member_plan)
-                    <option value="{{ $member_plan->id }}">{{ $member_plan->member_type }}</option>
+                    <option value="{{ $member_plan->id }}">{{ $member_plan->member_type }} - {{$member_plan->duration}}month</option>
                 @endforeach
             </select>
 
@@ -110,17 +110,46 @@
                 from_member: fromMember,
                 to_member: toMember
             }).then(response => {
+                console.log(response.data);
 
-                var months = response.data.months
-                var monthCount = response.data.monthCount
+                // var months = response.data.mon
+                var MonthsNum = response.data.monNum
+                var mm = response.data.aa
+
+                var numberOfPeople=[];
+
+                for(let i = 0;i < MonthsNum.length;i++){
+                    let found = false
+                    for(let j = 0;j < mm.length;j++){
+                        // console.log(MonthsNum[j] == mm[i]?.Month)
+                        if(MonthsNum[i] == mm[j]?.Month){
+                            // numberOfPeople.push(mm[i].member_count)
+                            found = true
+                            var memberCount = mm[j].member_count
+                        }else{
+                            // numberOfPeople.push(0)
+                        }
+                    }
+
+                    if(found){
+                        numberOfPeople.push(memberCount)
+                    }else{
+                        numberOfPeople.push(0)
+                    }
+
+                }
+
+                console.log(numberOfPeople)
+
+
                 const data1 = {
-                    labels: months,
+                    labels: response.data.mon,
                     datasets: [{
                         label: 'Member upgraded history',
                         borderColor: 'rgb(255, 99, 132)',
                         backgroundColor: 'rgba(255, 99, 132, 0.2)',
                         borderWidth: 1,
-                        data: monthCount,
+                        data: numberOfPeople,
                     }]
                 };
 
@@ -154,7 +183,7 @@
             }
             var member_type = document.getElementById('memberType').value;
 
-            axios.post('/member/upgraded-history/', {
+            axios.post('/member/upgraded-history-monthly/', {
                 member_type: member_type
             }).then(response => {
 
@@ -192,20 +221,48 @@
             })
         })
 
-        var months_con = JSON.parse('{!! json_encode($months) !!}');
-        var monthCount_con = JSON.parse('{!! json_encode($monthCount) !!}');
+
+        var mm = JSON.parse('{!! json_encode($aa) !!}');
+        var monthss = JSON.parse('{!! json_encode($mon) !!}');
+        var MonthsNum = JSON.parse('{!! json_encode($monNum) !!}');
 
         var months_filter_con = JSON.parse('{!! json_encode($months_filter) !!}');
         var monthCount_filter_con = JSON.parse('{!! json_encode($monthCount_filter) !!}');
 
+        var numberOfPeople=[];
+        for(let i = 0;i < MonthsNum.length;i++){
+            let found = false
+            for(let j = 0;j < mm.length;j++){
+                // console.log(MonthsNum[j] == mm[i]?.Month)
+                if(MonthsNum[i] == mm[j]?.Month){
+                    // numberOfPeople.push(mm[i].member_count)
+                    found = true
+                    var memberCount = mm[j].member_count
+                }else{
+                    // numberOfPeople.push(0)
+                }
+            }
+
+            if(found){
+                numberOfPeople.push(memberCount)
+            }else{
+                numberOfPeople.push(0)
+            }
+
+        }
+
+        console.log(numberOfPeople)
+        console.log(monthss);
+        console.log(mm);
+
 
         const data1 = {
-            labels: months_con,
+            labels: monthss,
             datasets: [{
                 label: 'Member upgraded history',
                 borderColor: 'rgb(255, 99, 132)',
                 backgroundColor: 'rgba(255, 99, 132, 0.2)',
-                data: monthCount_con,
+                data: numberOfPeople,
                 borderWidth: 1
             }]
         };
