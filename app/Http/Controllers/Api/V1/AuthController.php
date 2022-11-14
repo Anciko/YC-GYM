@@ -331,7 +331,7 @@ class AuthController extends Controller
         $image_name = $request->name;
 
         Storage::disk('local')->put(
-            'payments/' . $image_name,
+            'public/payments/' . $image_name,
             $file
         );
 
@@ -394,9 +394,10 @@ class AuthController extends Controller
         $image_name = $request->name;
 
         Storage::disk('local')->put(
-            'payments/' . $image_name,
+            'public/payments/' . $image_name,
             $file
         );
+
 
         $payment->photo = $image_name;
         $payment->save();

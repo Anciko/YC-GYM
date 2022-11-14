@@ -281,8 +281,12 @@
                                 )).join('')
                             }
 
+                            <form action="{{route('updateinfo')}}" method="POST">
+                                @csrf
+                                <input type="hidden" value=${value.id} name="request_type">
+                                <button type="submit" class="customer-secondary-btn" id="getplan">Get Plan</button>
+                            </form>
 
-                            <a href="/customer/updateinfo/${value.id}" class="customer-secondary-btn" id="getplan">Get Plan</a>
                         </div>
                             `)
                     }
@@ -317,9 +321,11 @@
                             `
                                 )).join('')
                             }
-
-
-                            <a href="/customer/updateinfo/${value.id}" class="customer-secondary-btn" id="getplan">Get Plan</a>
+                            <form action="{{route('updateinfo')}}" method="POST">
+                                @csrf
+                                <input type="hidden" value=${value.id} name="request_type">
+                                <button type="submit" class="customer-secondary-btn" id="getplan">Get Plan</button>
+                            </form>
                         </div>
                             `)
                     }
