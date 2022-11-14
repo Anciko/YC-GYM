@@ -46,6 +46,7 @@
                 <p class="fs-6 fw-bold">Members who upgraded from</p>
                 <select style="width: 170px;height:40px" class="ms-4 ps-1 rounded from_member" name="from_member"
                     id="fromMember">
+                    <option value="">Select Member Type</option>
                     @foreach ($member_plans as $member_plan)
                         <option value="{{ $member_plan->id }}">{{ $member_plan->member_type }} - {{$member_plan->duration}}month</option>
                     @endforeach
@@ -56,6 +57,7 @@
                 <p class="fs-6 fw-bold">Members who upgraded to</p>
                 <select style="width: 170px;height:40px" class="ms-4 ps-1 rounded to_member" name="to_member"
                     id="toMember">
+                    <option value="">Select Member Type</option>
                     @foreach ($member_plans as $member_plan)
                         <option value="{{ $member_plan->id }}">{{ $member_plan->member_type }} - {{$member_plan->duration}}month</option>
                     @endforeach
@@ -78,6 +80,7 @@
         <div class="d-flex mt-5 justify-content-center gap-5">
             <p class="fs-6 fw-bold">Number of members in</p>
             <select style="width: 170px;height:40px" class="ms-4 ps-1 rounded" name="member_type" id="memberType">
+                <option value="">Select Member Type</option>
                 @foreach ($member_plans as $member_plan)
                     <option value="{{ $member_plan->id }}">{{ $member_plan->member_type }} - {{$member_plan->duration}}month</option>
                 @endforeach
