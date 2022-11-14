@@ -44,7 +44,7 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
     //Route::get('/customer/signup', [App\Http\Controllers\HomeController::class, 'customersignup'])->name('home');
 
     Route::post('/data/save', [HomeController::class, 'store'])->name('data.save');
-    Route::post('customer/updateinfo/customerCreate', [CustomerRegisterController::class, 'CustomerData'])->name('customerCreate');
+    Route::post('customer/customerCreate', [CustomerRegisterController::class, 'CustomerData'])->name('customerCreate');
 
     // NCK
     Route::post('/customer_payment_active_staus/{id}',[RegisterPaymentController::class, 'changeStatusAndType'])->name('customer_upgrade');
@@ -76,7 +76,7 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
     //Route::post('customer/register', [App\Http\Controllers\Auth\RegisterController::class, 'register'])->name('customer_register');
     Route::post('customer/register', [App\Http\Controllers\Customer\CustomerRegisterController::class, 'register'])->name('customer_register');
 
-    Route::get('customer/updateinfo/{request_type}', [App\Http\Controllers\Customer\CustomerRegisterController::class, 'updateinfo'])->name('updateinfo');
+    Route::post('customer/updateinfo/', [App\Http\Controllers\Customer\CustomerRegisterController::class, 'updateinfo'])->name('updateinfo');
 
     Route::get('/user/workout/start', [UserWorkoutController::class, 'getstart'])->name('userworkout.getstart');
 

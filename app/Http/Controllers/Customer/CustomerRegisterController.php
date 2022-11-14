@@ -140,8 +140,9 @@ class CustomerRegisterController extends Controller
         }
     }
 
-    public function updateinfo($request_type)
+    public function updateinfo(Request $request)
     {
+        $request_type=$request->request_type;
         //$user=User::findOrFail(auth()->user()->id);
         //$user->request_type=$request_type;
         //$user->update();
