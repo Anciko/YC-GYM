@@ -10,12 +10,14 @@
           <h1 class="modal-title fs-5" id="exampleModalLabel">Create A Post</h1>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
+        {{-- <form method="post" class="modal-body" enctype= multipart/form-data>
+            @csrf --}}
         <form class="modal-body" method="POST" action="{{route('post.store')}}" enctype= multipart/form-data>
             @csrf
             @method('POST')
           <div class="addpost-caption">
             <p>Post Caption</p>
-            <textarea placeholder="Caption goes here..." name="caption"></textarea>
+            <textarea placeholder="Caption goes here..." name="caption" id="addPostCaption" class="addpost-caption-input"></textarea>
           </div>
 
           <div class="addpost-photovideo">
@@ -25,7 +27,7 @@
                 <div class="addpost-photovideo-btn">
                     <iconify-icon icon="akar-icons:circle-plus" class="addpst-photovideo-btn-icon"></iconify-icon>
                     <p>Photo/Video</p>
-                    <input type="file" id="addPostInput" name="addPostInput[]" multiple>
+                    <input type="file" id="addPostInput" name="addPostInput[]" multiple enctype="multipart/form-data">
                 </div>
 
                 <button class="addpost-photovideo-clear-btn" type="button" onclick="clearAddPost()">Clear</button>
@@ -37,7 +39,8 @@
 
 
             </div>
-            <button type="submit" class="customer-primary-btn addpost-submit-btn">Post</button>
+            <button type="submit" class="customer-primary-btn">Post</button>
+            {{-- <button type="submit" class="customer-primary-btn addpost-submit-btn">Post</button> --}}
         </form>
 
       </div>
@@ -514,11 +517,51 @@
             $(".social-media-left-container-trigger .arrow-icon").toggleClass("rotate-arrow")
         })
 
-        $('.addpost-submit-btn').click(function(){
-            var $fileUpload = $("#addPostInput");
-            if (parseInt($fileUpload.get(0).files.length)>5){
-                alert("You can only upload a maximum of 5 files");s
-            }
+        $('.addpost-submit-btn').click(function(e){
+            e.preventDefault();
+            var caption=$('#addPostCaption').val();
+
+            var url="{{route('post.store')}}";
+            var $fileUpload=$('#addPostInput').val();
+
+            // if(!$('.addpost-caption-input').val() && parseInt($fileUpload.get(0).files.length) === 0){
+            //     alert("Cannot post!!")
+            // }else{
+            //     // console.log(parseInt($fileUpload.get(0).files.length))
+            //     if (parseInt($fileUpload.get(0).files.length)>5){
+            //         alert("You can only upload a maximum of 5 files");
+            //     }else{
+                let image_upload = new FormData();
+                let TotalImages = $('#addPostInput')[0].files.length;  //Total Images
+                let images = $('#addPostInput')[0].files;
+
+                for (let i = 0; i < TotalImages; i++) {
+                    image_upload.append('images' + i, images[i]);
+                }
+                image_upload.append('TotalImages', TotalImages);
+                console.log(image_upload);
+
+                            //
+                    // $.ajaxSetup({
+                    //                 headers: {
+                    //                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    //                 }
+                    //             });
+                    //  $.ajax({
+                    //         type: "POST",
+                    //         _token: $('meta[name="csrf-token"]').attr('content'),
+                    //         url: url,
+                    //         data:image_upload,
+                    //         contentType: false,
+                    //         processData: false,
+                    //         success: function(data) {
+
+                    //         }
+                    //     });
+                //}
+            //}
+
+
         })
 
         $("#addPostInput").on("change", handleFileSelect);
