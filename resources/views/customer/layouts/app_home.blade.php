@@ -30,6 +30,8 @@
     <link href="{{ asset('css/customer/css/customerLogin.css')}}" rel="stylesheet"/>
 
     <link href="{{ asset('css/customer/css/transactionChoice.css')}}" rel="stylesheet"/>
+     <!--social media -->
+     <link href="{{ asset('css/socialMedia.css')}}" rel="stylesheet"/>
 
     <title>YC-fitness</title>
   </head>

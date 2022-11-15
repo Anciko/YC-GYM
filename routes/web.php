@@ -9,6 +9,7 @@ use App\Http\Controllers\Admin\MealController;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\SocialmediaController;
 use App\Http\Controllers\Admin\MemberController;
 use App\Http\Controllers\Admin\PaymentController;
 use App\Http\Controllers\Admin\RequestController;
@@ -20,13 +21,13 @@ use App\Http\Controllers\Auth\PassResetController;
 use App\Http\Controllers\Admin\PermissionController;
 use App\Http\Controllers\User\UserWorkoutController;
 use App\Http\Controllers\Admin\BankinginfoController;
+use App\Http\Controllers\Admin\TrainingGroupController;
+use App\Http\Controllers\Admin\TrainingCenterController;
 use App\Http\Controllers\Trainer\TrainerGroupController;
 use App\Http\Controllers\Customer\CustomerLoginController;
 use App\Http\Controllers\Customer\RegisterPaymentController;
 use App\Http\Controllers\Customer\CustomerRegisterController;
 use App\Http\Controllers\Admin\RequestAcceptDeclineController;
-use App\Http\Controllers\Admin\TrainingCenterController;
-use App\Http\Controllers\Admin\TrainingGroupController;
 use App\Http\Controllers\Trainer\TrainerManagementConntroller;
 use App\Http\Controllers\Customer\CustomerManagementController;
 use App\Http\Controllers\Customer\Customer_TrainingCenterController;
@@ -70,8 +71,13 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
         Route::post('customer/profile/update', [Customer_TrainingCenterController::class, 'profile_update'])->name('customer-profile.update');
         Route::post('customer/profile/name/update', [Customer_TrainingCenterController::class, 'profile_update_name'])->name('customer-profile-name.update');
         Route::get('customer/profile/year/{year}', [Customer_TrainingCenterController::class, 'year_filter'])->name('customer-profile.year');
+        Route::get('/home', [App\Http\Controllers\HomeController::class, 'home'])->name('social_media');
+        //Social Media
+        Route::get('/socialmedia_profile', [SocialmediaController::class, 'socialmedia_profile'])->name('socialmedia_profile');
 
-    Route::get('/home', [App\Http\Controllers\HomeController::class, 'home'])->name('social_media');
+        Route::post('search_users', [TrainerManagementConntroller::class, 'showMember'])->name('search_users');
+
+        Route::post('/post/store', [SocialmediaController::class, 'post_store'])->name('post.store');
 });
     Route::get('customer/register', [App\Http\Controllers\HomeController::class, 'customer_register'])->name('customer_register');
     //Route::post('customer/register', [App\Http\Controllers\Auth\RegisterController::class, 'register'])->name('customer_register');
