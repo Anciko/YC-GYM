@@ -334,6 +334,17 @@
 
                     </li>
 
+                    <li class="sidebar-item @yield('social-report-active')">
+
+                        <a class="sidebar-link" href="{{ route('report.index') }}">
+
+                            <i class="fa-solid fa-ban align-middle"></i>
+                            <span class="align-middle">Social Media Reports</span>
+
+                        </a>
+
+                    </li>
+
                 </ul>
 
             </div>

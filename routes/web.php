@@ -20,6 +20,7 @@ use App\Http\Controllers\Auth\PassResetController;
 use App\Http\Controllers\Admin\PermissionController;
 use App\Http\Controllers\User\UserWorkoutController;
 use App\Http\Controllers\Admin\BankinginfoController;
+use App\Http\Controllers\Admin\ReportController;
 use App\Http\Controllers\Trainer\TrainerGroupController;
 use App\Http\Controllers\Customer\CustomerLoginController;
 use App\Http\Controllers\Customer\RegisterPaymentController;
@@ -206,6 +207,9 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
             Route::post('trainingcenter/show_member/search/{id}', [TrainingCenterController::class, 'show_member'])->name('show_member');
             Route::get('/trainingcenter/add_member/{id}/{gp_id}', [TrainingCenterController::class, 'add_member'])->name('add_member');
             Route::get('/trainingcenter/kick_member/{id}', [TrainingCenterController::class, 'kick_member'])->name('kick_member');
+
+            //report
+            Route::resource('report',ReportController::class);
         });
     }); //admin prefix
 
