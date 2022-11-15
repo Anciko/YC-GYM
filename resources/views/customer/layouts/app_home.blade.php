@@ -33,6 +33,9 @@
      <!--social media -->
      <link href="{{ asset('css/socialMedia.css')}}" rel="stylesheet"/>
 
+    <!--social media -->
+    <link href="{{ asset('css/socialMedia.css')}}" rel="stylesheet"/>
+
     <title>YC-fitness</title>
   </head>
   <body class="customer-loggedin-bg">

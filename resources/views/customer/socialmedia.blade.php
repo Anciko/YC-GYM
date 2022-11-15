@@ -69,27 +69,24 @@
                         <a href="#">See All <iconify-icon icon="bi:arrow-right" class="arrow-icon"></iconify-icon></a>
                     </div>
 
-</section>
-
-<section class="home-prices-section">
-    <div class="section-header">
-        <p>Pricing Details</p>
-        <div class="section-header-underline">
-
-        </div>
-    </div>
-
-    <div class="home-price-details-container">
-        @foreach ($member_plans as $member_plan)
-        <div class="home-price-detail-container">
-            <h1>{{$member_plan->member_type}}</h1>
-            <p class="home-price-detail-price">MMK {{$member_plan->price}} / month</p>
-
-            <div class="home-price-detail-benefits">
-
-                <div class="home-price-detail-benefit">
-                    <iconify-icon icon="akar-icons:check" class="home-price-detail-benefit-icon check"></iconify-icon>
-                    <p>Benefit 1</p>
+                    <div class="social-media-left-friends-rows-container">
+                        <a href="#" class="social-media-left-friends-row">
+                            <img src="{{asset('img/customer/imgs/user_default.jpg')}}">
+                            <p>Friend Name</p>
+                        </a>
+                        <a href="#" class="social-media-left-friends-row">
+                            <img src="{{asset('img/customer/imgs/user_default.jpg')}}">
+                            <p>Friend Name</p>
+                        </a>
+                        <a href="#" class="social-media-left-friends-row">
+                            <img src="{{asset('img/customer/imgs/user_default.jpg')}}">
+                            <p>Friend Name</p>
+                        </a>
+                        <a href="#" class="social-media-left-friends-row">
+                            <img src="{{asset('img/customer/imgs/user_default.jpg')}}">
+                            <p>Friend Name</p>
+                        </a>
+                    </div>
                 </div>
 
                 <div class="social-media-left-messages-container">

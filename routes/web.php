@@ -66,6 +66,12 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
 
     Auth::routes();
     Route::middleware('auth')->group(function () {
+
+        //Social Media
+        Route::get('/socialmedia_profile', [SocialmediaController::class, 'socialmedia_profile'])->name('socialmedia.profile');
+        Route::get('/socialmedia', [SocialmediaController::class, 'index'])->name('socialmedia');
+        Route::post('/post/store', [SocialmediaController::class, 'post_store'])->name('post.store');
+
         Route::get('customer/personal_infos', [CustomerRegisterController::class, 'personal_info'])->name('customer-personal_infos');
         Route::get('customer/profile', [Customer_TrainingCenterController::class, 'profile'])->name('customer-profile');
         Route::post('customer/profile/update', [Customer_TrainingCenterController::class, 'profile_update'])->name('customer-profile.update');

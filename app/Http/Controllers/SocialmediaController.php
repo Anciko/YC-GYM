@@ -8,6 +8,10 @@ use RealRashid\SweetAlert\Facades\Alert;
 
 class SocialmediaController extends Controller
 {
+    public function index()
+    {
+        return view('customer.socialmedia');
+    }
     public function socialmedia_profile()
     {
         return view('customer.socialmedia_profile');
