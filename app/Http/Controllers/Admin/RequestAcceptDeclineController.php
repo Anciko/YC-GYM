@@ -46,6 +46,7 @@ class RequestAcceptDeclineController extends Controller
             }
             else{
                 // dd($member);
+                $current_date = Carbon::now()->toDateString();
                $member_role = Member::where('id',$member->id)->first();
                $role=Role::findOrFail($member_role->role_id);
                DB::table('model_has_roles')->where('model_id',$id)->delete();
@@ -54,7 +55,7 @@ class RequestAcceptDeclineController extends Controller
                $u->member_type = $member->member_type;
                $u->active_status=2;
                $u->update();
-               $u->members()->attach($u->request_type, ['member_type_level' => $u->membertype_level,'date'=> $date]);
+               $u->members()->attach($u->request_type, ['member_type_level' => $u->membertype_level,'date'=>$current_date]);
                return back()->with('success','Accepted');
            }
         // } catch (\Throwable $th) {

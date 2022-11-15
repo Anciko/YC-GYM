@@ -44,13 +44,14 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
     //Route::get('/customer/signup', [App\Http\Controllers\HomeController::class, 'customersignup'])->name('home');
 
     Route::post('/data/save', [HomeController::class, 'store'])->name('data.save');
-    Route::post('customer/updateinfo/customerCreate', [CustomerRegisterController::class, 'CustomerData'])->name('customerCreate');
+    Route::post('customer/customerCreate', [CustomerRegisterController::class, 'CustomerData'])->name('customerCreate');
 
     // NCK
     Route::post('/customer_payment_active_staus/{id}',[RegisterPaymentController::class, 'changeStatusAndType'])->name('customer_upgrade');
 
 
     Route::post('/member/upgraded-history/', [HomeController::class, 'memberUpgradedHistory'])->name('member-upgraded-history');
+    Route::post('/member/upgraded-history-monthly/', [HomeController::class, 'memberUpgradedHistory_monthly'])->name('member-upgraded-history-monthly');
 
     // Route::get('');
     //NCK
@@ -76,7 +77,7 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
     //Route::post('customer/register', [App\Http\Controllers\Auth\RegisterController::class, 'register'])->name('customer_register');
     Route::post('customer/register', [App\Http\Controllers\Customer\CustomerRegisterController::class, 'register'])->name('customer_register');
 
-    Route::get('customer/updateinfo/{request_type}', [App\Http\Controllers\Customer\CustomerRegisterController::class, 'updateinfo'])->name('updateinfo');
+    Route::post('customer/updateinfo/', [App\Http\Controllers\Customer\CustomerRegisterController::class, 'updateinfo'])->name('updateinfo');
 
     Route::get('/user/workout/start', [UserWorkoutController::class, 'getstart'])->name('userworkout.getstart');
 
@@ -160,11 +161,11 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
             // Meal
             Route::resource('meal', MealController::class);
             Route::get('admin/getmeal', [MealController::class, 'getMeal'])->name('getmeal');
-            Route::get('admin/meal/{id}/delete', [MealController::class, 'destroy'])->name('meal.delete');
+            Route::get('/meal/{id}/delete', [MealController::class, 'destroy'])->name('meal.delete');
 
             // Member
             Route::resource('member', MemberController::class);
-            Route::get('admin/member/{id}/delete', [MemberController::class, 'destroy'])->name('member.delete');
+            Route::get('/member/{id}/delete', [MemberController::class, 'destroy'])->name('member.delete');
             Route::get('admin/member/datatable/ssd', [MemberController::class, 'ssd']);
 
             Route::get('user_member', [MemberController::class, 'user_member_show'])->name('member.user_member');

@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
+use PhpOffice\PhpSpreadsheet\Calculation\DateTimeExcel\Month;
 
 class HomeController extends Controller
 {
@@ -61,15 +62,34 @@ class HomeController extends Controller
     }
 
     public function index()
-        { $members = MemberHistory::select('date')->get()->groupBy(function($members){
+    {
+        $year = Carbon::now()->year;
+        $current_month = Carbon::Now()->toDateString();
+        $subSix = Carbon::Now()->subMonth(6)->toDateString();
+        $result = CarbonPeriod::create($subSix, '1 month',  $current_month);
+
+        $aa = DB::select("SELECT Month(date) as Month,Count(user_id) as member_count From member_histories
+                    Group By Month(date)");
+
+        $mon = [];
+        $monNum = [];
+        foreach ($result as $dt) {
+            $mm = $dt->format("F");
+            $monthNumber = $dt->format("m");
+
+            array_push($mon,$mm);
+            array_push($monNum,$monthNumber);
+            //dd($mon);
+        }
+
+        $member_plan_filter = MemberHistory::select('date')->whereYear('date', '=', $year)->get()->groupBy(function ($members) {
             return Carbon::parse($members->date)->format('F');
         });
-        $months = [];
-        $monthCount = [];
-        foreach($members as $month=>$values){
-            $months[]= $month;
-            $monthCount[]= count($values);
-            // dd($monthCount);
+        $months_filter = [];
+        $monthCount_filter = [];
+        foreach ($member_plan_filter as $month => $values) {
+            $months_filter[] = $month;
+            $monthCount_filter[] = count($values);
         }
 
         $free_user = DB::table('users')->where('member_type', 'Free')->count();
@@ -81,122 +101,99 @@ class HomeController extends Controller
         if (Auth::check()) {
             if (Auth::user()->hasRole('System_Admin')) {
                 $member_plans = Member::where('member_type', '!=', 'Gym Member')->get();
-
-                DB::unprepared(DB::raw("
-                     CREATE TEMPORARY TABLE from_member_id(
-                         user_id INT ,
-                         member_id INT,
-                         date date)
-                     ")); //true
-                DB::statement(DB::raw("INSERT INTO from_member_id(user_id,member_id,date)
-                     SELECT user_id, member_id ,date
-                     FROM member_histories
-                     WHERE member_id  = 1;")); //true
-               DB::unprepared(DB::raw("
-               CREATE TEMPORARY TABLE to_member_id(
-                   user_id INT ,
-                   member_id INT,
-                   date date)
-               ")); //true
-               $current_month = Carbon::Now()->toDateString();
-               $subSix = Carbon::Now()->subMonth(6)->toDateString();
-                DB::statement(DB::raw("INSERT INTO to_member_id(user_id,member_id,date)
-                    SELECT user_id, member_id ,date
-                    FROM member_histories
-                    WHERE member_id  = 4;"));
-                $aa = DB::select("SELECT Month(a.date) as Month,Count(a.user_id) as member_count from to_member_id a , from_member_id b
-                WHERE a.user_id = b.user_id
-                and a.date > b.date
-                and a.date BETWEEN '$subSix' and '$current_month'
-                Group By Month(a.date)");
-                // dd($aa);
-
-                // dd($current_month);
-
-                $result = CarbonPeriod::create($subSix, '1 month',  $current_month);
-
-                //dd($result);
-                $mon = [];
-                $monNum = [];
-                foreach ($result as $dt) {
-
-                    $mm =   $dt->format("F");
-                    $monthNumber =   $dt->format("m");
-
-                    array_push($mon,$mm);
-                    array_push($monNum,$monthNumber);
-                    //dd($mon);
-                }
-                // foreach($aa as $mon=>$values){
-                //     // dd()
-                //     $months[]= $month;
-                //     $monthCount[]= count($values);
-                // }
-                $member_plan_filter = MemberHistory::select('date')->get()->groupBy(function($members){
-                    return Carbon::parse($members->date)->format('F');
-                });
-                $months_filter = [];
-                $monthCount_filter = [];
-                foreach($member_plan_filter as $month=>$values){
-                    $months_filter[]= $month;
-                    $monthCount_filter[]= count($values);
-                }
-
-                return view('admin.home', compact('member_plans', 'free_user', 'platinum_user', 'gold_user', 'diamond_user', 'ruby_user', 'rubyp_user','members','months','aa','mon','monthCount','monNum','months_filter','monthCount_filter'));
+                return view('admin.home', compact('member_plans', 'free_user', 'platinum_user', 'gold_user', 'diamond_user', 'ruby_user', 'rubyp_user','mon','monNum','aa','months_filter','monthCount_filter'));
             } elseif (Auth::user()->hasRole('King')) {
-                return view('admin.home', compact('free_user', 'platinum_user', 'gold_user', 'diamond_user', 'ruby_user', 'rubyp_user','members','months','monthCount'));
+                return view('admin.home', compact('free_user', 'platinum_user', 'gold_user', 'diamond_user', 'ruby_user', 'rubyp_user','mon','monNum','aa','months_filter','monthCount_filter'));
             } elseif (Auth::user()->hasRole('Queen')) {
-                return view('admin.home', compact('free_user', 'platinum_user', 'gold_user', 'diamond_user', 'ruby_user', 'rubyp_user','members','months','monthCount'));
+                return view('admin.home', compact('free_user', 'platinum_user', 'gold_user', 'diamond_user', 'ruby_user', 'rubyp_user','mon','monNum','aa','months_filter','monthCount_filter'));
             } else {
                 $member_plans = Member::where('member_type', '!=', 'Free')->where('member_type', '!=', 'Gym Member')->get();
                 return view('customer.home', compact('member_plans'));
             }
         } else {
             // not logged-in
-            return view('customer.index');
+            $members = Member::orderBy('price', 'ASC')->where('duration', 1)->get();
+            $durations = Member::groupBy('duration')->where('duration', '!=', 0)->get();
+            $pros = DB::table('members')->select('pros')->get()->toArray();
+            $cons = DB::table('members')->select('cons')->get()->toArray();
+            return view('customer.index', compact('members', 'durations', 'pros', 'cons'));
         }
     }
 
 
+
+
     public function memberUpgradedHistory(Request $request)
     {
+        DB::unprepared(DB::raw("CREATE TEMPORARY TABLE from_member_id(user_id INT ,member_id INT,date date)")); //true
+
+        DB::statement(DB::raw("INSERT INTO from_member_id(user_id,member_id,date) SELECT user_id, member_id ,date FROM member_histories WHERE member_id  = $request->from_member;"));
+        //true
+        DB::unprepared(DB::raw("
+        CREATE TEMPORARY TABLE to_member_id(
+            user_id INT ,
+            member_id INT,
+            date date)
+        ")); //true
+        $current_month = Carbon::Now()->toDateString();
+        $subSix = Carbon::Now()->subMonth(6)->toDateString();
+
+        DB::statement(DB::raw("INSERT INTO to_member_id(user_id,member_id,date)
+        SELECT user_id, member_id ,date
+        FROM member_histories
+        WHERE member_id  = $request->to_member;"));
+
+        $aa = DB::select("SELECT Month(a.date) as Month,Count(a.user_id) as member_count from to_member_id a , from_member_id b
+                    WHERE a.user_id = b.user_id
+                    and a.date > b.date
+                    and a.date BETWEEN '$subSix' and '$current_month'
+                    Group By Month(a.date)");
+
+        $result = CarbonPeriod::create($subSix, '1 month',  $current_month);
+
+        $mon = [];
+        $monNum = [];
+        foreach ($result as $dt) {
+            $mm = $dt->format("F");
+            $monthNumber = $dt->format("m");
+
+            array_push($mon,$mm);
+            array_push($monNum,$monthNumber);
+            //dd($mon);
+        }
+
+        return response()->json([
+            'mon'=>$mon,
+            'monNum'=>$monNum,
+            'aa'=>$aa,
+        ]);
+
+    }
+    public function memberUpgradedHistory_monthly(Request $request){
         $year = Carbon::now()->year;
-            $members = MemberHistory::select('date')->where('from_member_id', $request->from_member)->where('to_member_id', $request->to_member)->get()->groupBy(function($members){
-                return Carbon::parse($members->date)->format('F');
-            });
-            $months = [];
-            $monthCount = [];
-            foreach($members as $month=>$values){
-                $months[]= $month;
-                $monthCount[]= count($values);
-            }
 
-            $member_plan_filter = MemberHistory::select('date')->whereYear('date', '=', $year)->where('member_id',$request->member_type)->get()->groupBy(function($members){
-                return Carbon::parse($members->date)->format('F');
-            });
-            $months_filter = [];
-            $monthCount_filter = [];
-            foreach($member_plan_filter as $month=>$values){
-                $months_filter[]= $month;
-                $monthCount_filter[]= count($values);
-            }
-        //    dd($members->toArray());
-            $member_plans = Member::where('member_type', '!=', 'Gym Member')->get();
+        $member_plan_filter = MemberHistory::select('date')->whereYear('date', '=', $year)->where('member_id',$request->member_type)->get()
+        ->groupBy(function ($members){
+                        return Carbon::parse($members->date)->format('F');
+                    });
+        $months_filter = [];
+        $monthCount_filter = [];
+        foreach($member_plan_filter as $month=>$values){
+            $months_filter[]= $month;
+            $monthCount_filter[]= count($values);
+        }
 
-            return response()->json([
-                'member_plans'=>$member_plans,
-                'member_plan_filter'=>$member_plan_filter,
-                'months_filter'=>$months_filter,
-                'monthCount_filter'=>$monthCount_filter
-            ]);
-
-
+        return response()->json([
+            'member_plan_filter'=>$member_plan_filter,
+            'months_filter'=>$months_filter,
+            'monthCount_filter'=>$monthCount_filter
+        ]);
     }
 
     public function home()
     {
-        $member_plans = Member::where('member_type', '!=', 'Free')->where('member_type', '!=', 'Gym Member')->get();
-        return view('customer.home',compact('member_plans'));
+        $member_plans = Member::where('member_type', '!=', 'Free')->where('duration', '=', 1)->get();
+        return view('customer.home', compact('member_plans'));
     }
 
     public function customerregister()
