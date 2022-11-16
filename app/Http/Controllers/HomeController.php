@@ -2,11 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use DatePeriod;
+use DateInterval;
 use Carbon\Carbon;
 use App\Models\User;
 use App\Models\Member;
 use Carbon\CarbonPeriod;
 use App\Models\BankingInfo;
+use Faker\Provider\DateTime;
 use Illuminate\Http\Request;
 use App\Models\MemberHistory;
 use Illuminate\Support\Facades\DB;
@@ -97,8 +100,6 @@ class HomeController extends Controller
         $rubyp_user = DB::table('users')->where('member_type', 'Ruby Premium')->count();
         if (Auth::check()) {
             if (Auth::user()->hasRole('System_Admin')) {
-                // $members = MemberHistory::where('member_id', 1)->where('member_id',2)->get();
-
                 $member_plans = Member::where('member_type', '!=', 'Gym Member')->get();
                 return view('admin.home', compact('member_plans', 'free_user', 'platinum_user', 'gold_user', 'diamond_user', 'ruby_user', 'rubyp_user','mon','monNum','aa','months_filter','monthCount_filter'));
             } elseif (Auth::user()->hasRole('King')) {
@@ -106,7 +107,7 @@ class HomeController extends Controller
             } elseif (Auth::user()->hasRole('Queen')) {
                 return view('admin.home', compact('free_user', 'platinum_user', 'gold_user', 'diamond_user', 'ruby_user', 'rubyp_user','mon','monNum','aa','months_filter','monthCount_filter'));
             } else {
-                $member_plans = Member::where('member_type', '!=', 'Free')->where('duration', '=', 1)->get();
+                $member_plans = Member::where('member_type', '!=', 'Free')->where('member_type', '!=', 'Gym Member')->get();
                 return view('customer.home', compact('member_plans'));
             }
         } else {
@@ -120,7 +121,7 @@ class HomeController extends Controller
     }
 
 
-   
+
 
     public function memberUpgradedHistory(Request $request)
     {

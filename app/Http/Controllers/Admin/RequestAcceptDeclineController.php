@@ -26,7 +26,8 @@ class RequestAcceptDeclineController extends Controller
         $u=User::findOrFail($id);
         $member_history = MemberHistory::where('user_id',$id)->first();
         $member = Member::findOrFail($u->request_type);
-
+        $date  = Carbon::Now()->toDateString();
+        // dd($date);
         // try {
             if($member_history != null && $member_history->user_id == $id){
 
@@ -34,7 +35,7 @@ class RequestAcceptDeclineController extends Controller
                     'user_id'=>$id,
                     'member_id'=>$member->id,
                     'member_type_level'=>$member_history->member_type_level,
-                    'date'=>Carbon::now()->toDateString()
+                    'date'=> $date
                 ]);
                 $u->active_status=2;
                 $u->member_type = $member->member_type;

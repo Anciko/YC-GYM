@@ -38,7 +38,7 @@ class User extends Authenticatable
     public function members()
     {
         return $this->belongsToMany(Member::class, 'member_histories')
-                    ->withPivot(['to_member_id','from_member_id','member_type_level','deleted_at'])
+                    ->withPivot(['date','to_member_id','from_member_id','member_type_level','deleted_at'])
                     ->withTimestamps();
     }
 
@@ -79,6 +79,10 @@ class User extends Authenticatable
 
     public function trainingUser(){
         return $this->hasMany(TrainingUser::class,'user_id','id');
+    }
+
+    public function notifri(){
+        return $this->hasMany(Notification::class,'receiver_id');
     }
 
 //   public function member()

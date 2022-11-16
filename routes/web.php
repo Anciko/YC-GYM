@@ -57,7 +57,7 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
     // Route::get('');
     //NCK
 
-    Route::get('customer_payment', [RegisterPaymentController::class, 'payment'])->name('customer_payment');
+    Route::get('/customer_payment', [RegisterPaymentController::class, 'payment'])->name('customer_payment');
     // Route::get('test_payment', [RegisterPaymentController::class, 'test'])->name('test_payment');
     Route::post('ewallet_store', [RegisterPaymentController::class, 'ewallet_store'])->name('ewallet_store');
     Route::post('bank_payment_store', [RegisterPaymentController::class, 'bank_payment_store'])->name('bank_payment_store');
@@ -80,8 +80,20 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
         Route::post('customer/profile/update', [Customer_TrainingCenterController::class, 'profile_update'])->name('customer-profile.update');
         Route::post('customer/profile/name/update', [Customer_TrainingCenterController::class, 'profile_update_name'])->name('customer-profile-name.update');
         Route::get('customer/profile/year/{year}', [Customer_TrainingCenterController::class, 'year_filter'])->name('customer-profile.year');
+        Route::get('/home', [App\Http\Controllers\HomeController::class, 'home'])->name('social_media');
+        //Social Media
+        Route::get('/socialmedia_profile/{id}', [SocialmediaController::class, 'socialmedia_profile'])->name('socialmedia_profile');
 
-    Route::get('/home', [App\Http\Controllers\HomeController::class, 'home'])->name('social_media');
+        Route::post('search_users', [SocialmediaController::class, 'showUser'])->name('search_users');
+        Route::get('/addUser/{id}', [SocialmediaController::class, 'addUser'])->name('addUser');
+        Route::get('/cancelRequest/{id}', [SocialmediaController::class, 'cancelRequest'])->name('cancelRequest');
+        Route::get('/cancelRequest/{id}', [SocialmediaController::class, 'cancelRequest'])->name('cancelRequest');
+
+        Route::get('/notification_center', [SocialmediaController::class, 'notification_center'])->name('notification_center');
+
+        Route::get('/viewFriendRequestNoti/{id}/{noti_id}', [SocialmediaController::class, 'viewFriendRequestNoti'])->name('viewFriendRequestNoti');
+
+        Route::post('/post/store', [SocialmediaController::class, 'post_store'])->name('post.store');
 });
     Route::get('customer/register', [App\Http\Controllers\HomeController::class, 'customer_register'])->name('customer_register');
     //Route::post('customer/register', [App\Http\Controllers\Auth\RegisterController::class, 'register'])->name('customer_register');

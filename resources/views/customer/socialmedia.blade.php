@@ -61,8 +61,11 @@
     <div class="social-media-parent-container">
         <div class="social-media-left-container">
             <div class="social-media-left-search-container">
-                <input type="text">
+                <input type="text" id ="search">
                 <iconify-icon icon="akar-icons:search" class="search-icon"></iconify-icon>
+            </div>
+            <div class="cancel">
+            <a href="#" class="customer-secondary-btn cancel" >Cancel</a>
             </div>
             <div class="social-media-left-infos-container">
                 <div class="social-media-left-friends-container">
@@ -169,14 +172,7 @@
             </div>
 
             <div class="social-media-left-searched-items-container">
-                <a href="#" class="social-media-searched-item">
-                    <p>Name</p>
-                    <iconify-icon icon="bi:arrow-right-short" class="arrow-icon"></iconify-icon>
-                </a>
-                <a href="#" class="social-media-searched-item">
-                    <p>Name</p>
-                    <iconify-icon icon="bi:arrow-right-short" class="arrow-icon"></iconify-icon>
-                </a>
+
             </div>
 
         </div>
@@ -552,17 +548,153 @@
 @push('scripts')
 <script>
     $(document).ready(function() {
+        $(".cancel").hide();
         $( ".social-media-left-search-container input" ).focus(function() {
             // alert( "Handler for .focus() called." );
             $( ".social-media-left-infos-container" ).hide()
             $(".social-media-left-searched-items-container").show()
+            $(".cancel").show();
         });
 
-        $( ".social-media-left-search-container input" ).focusout(function() {
+        $(document).on('click', '.cancel', function(e) {
             // alert( "Handler for .focus() called." );
             $( ".social-media-left-infos-container" ).show()
             $(".social-media-left-searched-items-container").hide()
+            $(".cancel").hide()
+            $('.social-media-left-search-container input').val('')
         });
+
+
+                $(document).on('click', '#AddFriend', function(e) {
+                e.preventDefault();
+                $('.social-media-left-searched-items-container').empty();
+                var url = new URL(this.href);
+
+                var id = url.searchParams.get("id");
+                var group_id = $(this).attr("id");
+
+                var add_url = "{{ route('addUser', [':id']) }}";
+                add_url = add_url.replace(':id', id);
+                $(".add-member-btn").attr('href','');
+                $.ajax({
+                    type: "GET",
+                    url: add_url,
+                    datatype: "json",
+                    success: function(data) {
+                        console.log(data)
+                        search();
+                    }
+                })
+                });
+
+                $(document).on('click', '#cancelRequest', function(e) {
+                e.preventDefault();
+                Swal.fire({
+                        text: "Are you sure?",
+                        showClass: {
+                                popup: 'animate__animated animate__fadeInDown'
+                            },
+                            hideClass: {
+                                popup: 'animate__animated animate__fadeOutUp'
+                            },
+                        showCancelButton: true,
+                        confirmButtonText: 'Yes',
+                        cancelButtonText: 'No',
+
+                        }).then((result) => {
+                        /* Read more about isConfirmed, isDenied below */
+                        if (result.isConfirmed) {
+                             var url = new URL(this.href);
+                             var id = url.searchParams.get("id");
+                             var url = "{{ route('cancelRequest', [':id']) }}";
+                             url = url.replace(':id', id);
+                             $(".cancel-request-btn").attr('href','');
+                                $.ajax({
+                                    type: "GET",
+                                    url: url,
+                                    datatype: "json",
+                                    success: function(data) {
+                                        console.log(data)
+                                        search();
+                                    }
+                                })
+                            Swal.fire('Canceled Request!', '', 'success')
+                        }
+                        })
+                $('.social-media-left-searched-items-container').empty();
+                });
+
+
+                    $('.social-media-left-search-container input').on('keyup', function(){
+                            search();
+                    });
+
+                        function search(){
+
+                            var keyword = $('#search').val();
+                            //console.log(keyword);
+                            var search_url = "{{ route('search_users') }}";
+                            $.post(search_url,
+                            {
+                                _token: $('meta[name="csrf-token"]').attr('content'),
+                                keyword:keyword
+                            },
+                            function(data){
+                                table_post_row(data);
+                                console.log(data);
+                            });
+                        }
+                        // table row with ajax
+                        function table_post_row(res){
+                        var sender_id = {{auth()->user()->id}}
+                        let htmlView = '';
+                            if(res.users.length <= 0){
+                                htmlView+= `
+                                No data found.
+                                `;
+                            }
+
+
+
+                                for(let i = 0; i < res.users.length; i++){
+                                    id = res.users[i].id;
+                                    var url = "{{ route('socialmedia_profile', [':id']) }}";
+                                    url = url.replace(':id', id);
+
+                                    if(res.users[i].friend_status == 1 && res.users[i].sender_id == sender_id){
+                                        htmlView += `
+                                            <a href=`+url+` class = "profiles">
+                                                <p>`+res.users[i].name+`</p>
+                                            </a>
+                                            <a href="?id=` + res.users[i].id+`" class="customer-secondary-btn cancel-request-btn"
+                                            id = "cancelRequest">Cancel Request</a>
+                                            `
+                                    }
+                                    else if (res.users[i].friend_status == 2 && res.users[i].sender_id == sender_id){
+                                        htmlView += `
+                                            <a href= `+url+` class = "profiles">
+                                                <p>`+res.users[i].name+`</p>
+                                            </a>
+                                            <a href="?id=` + res.users[i].id+`" class="customer-secondary-btn add-friend-btn">Friends</a>
+                                            `
+                                    }
+                                    else{
+                                        htmlView += `
+                                            <a href=`+url+` class = "profiles">
+                                                <p>`+res.users[i].name+`</p>
+                                            </a>
+                                            <a href="?id=` + res.users[i].id+`" class="customer-secondary-btn add-friend-btn" id = "AddFriend">Add</a>
+                                    `
+                                    }
+
+                            }
+
+
+                            $('.social-media-left-searched-items-container').html(htmlView);
+                        }
+
+
+
         $('.social-media-post-header-icon').click(function(){
             $(this).next().toggle()
         })
