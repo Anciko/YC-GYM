@@ -10,11 +10,10 @@
           <h1 class="modal-title fs-5" id="exampleModalLabel">Create A Post</h1>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
-        {{-- <form method="post" class="modal-body" enctype= multipart/form-data>
-            @csrf --}}
-        <form class="modal-body" method="POST" action="{{route('post.store')}}" enctype= multipart/form-data>
+        <form class="modal-body" id="form">
+        {{-- <form class="modal-body" method="POST" action="{{route('post.store')}}" enctype= multipart/form-data>
             @csrf
-            @method('POST')
+            @method('POST') --}}
           <div class="addpost-caption">
             <p>Post Caption</p>
             <textarea placeholder="Caption goes here..." name="caption" id="addPostCaption" class="addpost-caption-input"></textarea>
@@ -39,7 +38,7 @@
 
 
             </div>
-            <button type="submit" class="customer-primary-btn">Post</button>
+            <button type="submit" class="customer-primary-btn addpost-submit-btn" id="">Post</button>
             {{-- <button type="submit" class="customer-primary-btn addpost-submit-btn">Post</button> --}}
         </form>
 
@@ -184,6 +183,63 @@
 
         <div class="social-media-right-container">
             <div class="social-media-posts-parent-container">
+                @foreach ($posts as $post)
+                <div class="social-media-post-container">
+                    <div class="social-media-post-header">
+                        <div class="social-media-post-name-container">
+                            <img src="{{asset('img/customer/imgs/user_default.jpg')}}">
+                            <div class="social-media-post-name">
+                                <p>{{$post->user->name}}</p>
+                                <span>{{ \Carbon\Carbon::parse($post->created_at)->format('d M Y , g:i A')}}</span>
+                            </div>
+
+
+                        </div>
+
+                        <iconify-icon icon="bi:three-dots-vertical" class="social-media-post-header-icon"></iconify-icon>
+
+                        <div class="post-actions-container">
+                            <div class="post-action">
+                                <iconify-icon icon="bi:save" class="post-action-icon"></iconify-icon>
+                                <p>Save</p>
+                            </div>
+
+                            <div class="post-action">
+                                <iconify-icon icon="material-symbols:report-outline" class="post-action-icon"></iconify-icon>
+                                <p>Report</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="social-media-content-container">
+                        <p>{{$post->caption}}</p>
+                        <div class="social-media-media-container">
+                            <?php foreach (json_decode($post->media)as $m){?>
+                            <div class="social-media-media">
+                                @if (pathinfo($m, PATHINFO_EXTENSION) == 'mp4')
+                                    <video controls>
+                                        <source src="{{asset('storage/post/'.$m) }}">
+                                    </video>
+                                @else
+                                    <img src="{{asset('storage/post/'.$m) }}">
+                                @endif
+                            </div>
+                            <?php }?>
+                        </div>
+                    </div>
+
+                    <div class="social-media-post-footer-container">
+                        <div class="social-media-post-like-container">
+                            <iconify-icon icon="akar-icons:heart" class="like-icon"></iconify-icon>
+                            <p><span>1.1k</span> Likes</p>
+                        </div>
+                        <div class="social-media-post-comment-container">
+                            <iconify-icon icon="bi:chat-right" class="comment-icon"></iconify-icon>
+                            <p><span>50</span> Comments</p>
+                        </div>
+                    </div>
+                </div>
+                @endforeach
                 <div class="social-media-post-container">
                     <div class="social-media-post-header">
                         <div class="social-media-post-name-container">
@@ -517,49 +573,57 @@
             $(".social-media-left-container-trigger .arrow-icon").toggleClass("rotate-arrow")
         })
 
-        $('.addpost-submit-btn').click(function(e){
+        $('#form').submit(function(e){
             e.preventDefault();
             var caption=$('#addPostCaption').val();
 
             var url="{{route('post.store')}}";
-            var $fileUpload=$('#addPostInput').val();
+            var $fileUpload=$('#addPostInput');
 
-            // if(!$('.addpost-caption-input').val() && parseInt($fileUpload.get(0).files.length) === 0){
-            //     alert("Cannot post!!")
-            // }else{
-            //     // console.log(parseInt($fileUpload.get(0).files.length))
-            //     if (parseInt($fileUpload.get(0).files.length)>5){
-            //         alert("You can only upload a maximum of 5 files");
-            //     }else{
-                let image_upload = new FormData();
-                let TotalImages = $('#addPostInput')[0].files.length;  //Total Images
-                let images = $('#addPostInput')[0].files;
 
-                for (let i = 0; i < TotalImages; i++) {
-                    image_upload.append('images' + i, images[i]);
+            if(!$('.addpost-caption-input').val() && parseInt($fileUpload.get(0).files.length) === 0){
+                alert("Cannot post!!")
+            }
+            else{
+                if (parseInt($fileUpload.get(0).files.length)>5){
+                    alert("You can only upload a maximum of 5 files");
                 }
-                image_upload.append('TotalImages', TotalImages);
-                console.log(image_upload);
+                else{
+                    e.preventDefault();
+                    let formData = new FormData(form);
 
-                            //
-                    // $.ajaxSetup({
-                    //                 headers: {
-                    //                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                    //                 }
-                    //             });
-                    //  $.ajax({
-                    //         type: "POST",
-                    //         _token: $('meta[name="csrf-token"]').attr('content'),
-                    //         url: url,
-                    //         data:image_upload,
-                    //         contentType: false,
-                    //         processData: false,
-                    //         success: function(data) {
+                    const totalImages = $("#addPostInput")[0].files.length;
+                    let images = $("#addPostInput")[0];
 
-                    //         }
-                    //     });
-                //}
-            //}
+                    for (let i = 0; i < totalImages; i++) {
+                        formData.append('images' + i, images.files[i]);
+                    }
+                    formData.append('totalImages', totalImages);
+
+                    var caption=$('#addPostCaption').val();
+
+                    $.ajaxSetup({
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        }
+                    });
+
+                    $.ajax({
+                            type:'POST',
+                            url:"{{route('post.store')}}",
+                            data: formData,
+                                processData: false,
+                                cache: false,
+                                contentType: false,
+                            success:function(data){
+
+                               window.location.reload();
+                               alert(data.message);
+                            }
+                    });
+
+                }
+            }
 
 
         })

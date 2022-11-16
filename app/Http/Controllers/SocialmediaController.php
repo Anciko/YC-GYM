@@ -12,7 +12,9 @@ class SocialmediaController extends Controller
 {
     public function index()
     {
-        return view('customer.socialmedia');
+        $posts=Post::all();
+        $posts=Post::orderBy('created_at','DESC')->with('user')->paginate(10);
+        return view('customer.socialmedia',compact('posts'));
     }
     public function socialmedia_profile()
     {
@@ -21,10 +23,13 @@ class SocialmediaController extends Controller
 
     public function post_store(Request $request)
     {
-        //dd($request);
+        $input = $request->all();
+
         $user=auth()->user();
-        if($request->hasfile('addPostInput')) {
-            foreach($request->file('addPostInput') as $file)
+        $images=$input['addPostInput'];
+
+        if($input['addPostInput']) {
+            foreach($images as $file)
             {
                 $extension = $file->extension();
                 $name = rand().".".$extension;
@@ -33,12 +38,8 @@ class SocialmediaController extends Controller
             }
         }
         $post = new Post();
-        $caption=$request->caption;
-        // $banwords=DB::table('ban_words')
-        //                 ->where('ban_word_english','like', '%' .$caption.'%')
-        //                 ->orWhere('ban_word_myanmar','like', '%' .$caption.'%')
-        //                 ->orWhere('ban_word_myanglish','like', '%' .$caption.'%')
-        //                 ->get()->toArray();
+        $caption=$input['caption'];
+
         $banwords=DB::table('ban_words')->select('ban_word_english','ban_word_myanmar','ban_word_myanglish')->get();
 
         foreach($banwords as $b){
@@ -47,22 +48,30 @@ class SocialmediaController extends Controller
            $em_banword=$b->ban_word_myanglish;
 
             if (str_contains($caption,$e_banword)) {
-                Alert::warning('Warning', 'Ban Ban Ban');
-                return redirect()->back();
+                // Alert::warning('Warning', 'Ban Ban Ban');
+                //return redirect()->back();
+                return response()->json([
+                    'message'=>'Ban Ban Ban',
+                ]);
             }elseif (str_contains($caption,$m_banword)){
-                Alert::warning('Warning', 'Ban Ban Ban');
-                return redirect()->back();
+                return response()->json([
+                    'message'=>'Ban Ban Ban',
+                ]);
             }elseif (str_contains($caption,$em_banword)){
-                Alert::warning('Warning', 'Ban Ban Ban');
-                return redirect()->back();
+                return response()->json([
+                    'message'=>'Ban Ban Ban',
+                ]);
             }
         }
 
         $post->user_id=$user->id;
-        $post->caption=$request->caption;
+        $post->caption=$input['caption'];
         $post->media = json_encode($imgData);
         $post->save();
-        Alert::success('Success', 'Post Created Successfully');
-        return redirect()->back();
+        return response()->json([
+            'message'=>'Post Created Successfully',
+        ]);
+        // Alert::success('Success', 'Post Created Successfully');
+        // return redirect()->back();
     }
 }

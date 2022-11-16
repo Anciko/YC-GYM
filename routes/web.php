@@ -70,7 +70,10 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
         //Social Media
         Route::get('/socialmedia_profile', [SocialmediaController::class, 'socialmedia_profile'])->name('socialmedia.profile');
         Route::get('/socialmedia', [SocialmediaController::class, 'index'])->name('socialmedia');
-        Route::post('/post/store', [SocialmediaController::class, 'post_store'])->name('post.store');
+        Route::post('/socialmedia', [SocialmediaController::class, 'post_store'])->name('post.store');
+
+        // Route::get('/testing', [SocialmediaController::class, 'index'])->name('testing');
+        // Route::post('/testing/store', [SocialmediaController::class, 'post_store'])->name('testing.store');
 
         Route::get('customer/personal_infos', [CustomerRegisterController::class, 'personal_info'])->name('customer-personal_infos');
         Route::get('customer/profile', [Customer_TrainingCenterController::class, 'profile'])->name('customer-profile');

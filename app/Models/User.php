@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Post;
 use App\Models\Payment;
 use App\Models\TrainingUser;
 use App\Models\TrainingGroup;
@@ -54,6 +55,16 @@ class User extends Authenticatable
 
     public function watertracks(){
         return $this->hasMany(WaterTracked::class,'user_id');
+    }
+
+    /**
+     * Get all of the comments for the User
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function posts()
+    {
+        return $this->hasMany(Post::class, 'user_id', 'id');
     }
 
     public function personalmealinfos()
