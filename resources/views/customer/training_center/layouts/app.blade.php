@@ -75,6 +75,23 @@
 
       <!--chart js-->
       <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+      <script>
+        $(document).ready(function(){
+                console.log("ready");
+                var user_id = {{auth()->user()->id}};
+                console.log(user_id);
+                var pusher = new Pusher('{{env("MIX_PUSHER_APP_KEY")}}', {
+                cluster: '{{env("PUSHER_APP_CLUSTER")}}',
+                encrypted: true
+                });
+
+                var channel = pusher.subscribe('friend_request.'+ user_id);
+                channel.bind('App\\Events\\Friend_Request', function(data) {
+                console.log(data);
+                $.notify(data, "success",{ position:"left" });
+                });
+        })
+    </script>
 
     @stack('scripts')
 

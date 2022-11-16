@@ -79,9 +79,16 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
         Route::get('customer/profile/year/{year}', [Customer_TrainingCenterController::class, 'year_filter'])->name('customer-profile.year');
         Route::get('/home', [App\Http\Controllers\HomeController::class, 'home'])->name('social_media');
         //Social Media
-        Route::get('/socialmedia_profile', [SocialmediaController::class, 'socialmedia_profile'])->name('socialmedia_profile');
+        Route::get('/socialmedia_profile/{id}', [SocialmediaController::class, 'socialmedia_profile'])->name('socialmedia_profile');
 
-        Route::post('search_users', [TrainerManagementConntroller::class, 'showMember'])->name('search_users');
+        Route::post('search_users', [SocialmediaController::class, 'showUser'])->name('search_users');
+        Route::get('/addUser/{id}', [SocialmediaController::class, 'addUser'])->name('addUser');
+        Route::get('/cancelRequest/{id}', [SocialmediaController::class, 'cancelRequest'])->name('cancelRequest');
+        Route::get('/cancelRequest/{id}', [SocialmediaController::class, 'cancelRequest'])->name('cancelRequest');
+
+        Route::get('/notification_center', [SocialmediaController::class, 'notification_center'])->name('notification_center');
+
+        Route::get('/viewFriendRequestNoti/{id}/{noti_id}', [SocialmediaController::class, 'viewFriendRequestNoti'])->name('viewFriendRequestNoti');
 
         Route::post('/post/store', [SocialmediaController::class, 'post_store'])->name('post.store');
 });

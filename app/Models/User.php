@@ -70,6 +70,10 @@ class User extends Authenticatable
         return $this->hasMany(TrainingUser::class,'user_id','id');
     }
 
+    public function notifri(){
+        return $this->hasMany(Notification::class,'receiver_id');
+    }
+
 //   public function member()
 //   {
 //       return $this->hasOne(User::class);

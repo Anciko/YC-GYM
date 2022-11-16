@@ -85,9 +85,42 @@
 
         </div> --}}
         <div class="customer-navlinks-notiprofile-container">
-            <a href="#"><iconify-icon icon="akar-icons:bell" class="nav-icon"></iconify-icon></a>
+            <iconify-icon icon="akar-icons:bell" class="nav-icon"></iconify-icon>
             <iconify-icon icon="pajamas:hamburger" class="burger-icon"></iconify-icon>
             <iconify-icon icon="akar-icons:cross" class="close-nav-icon"></iconify-icon>
+
+            <div class="notis-box-container">
+                <div class="notis-box-header">
+                    <p>Notifications</p>
+                    <a href="#">See All</a>
+                </div>
+
+                <div class="notis-box-notis-container">
+                    <?php $count = 0; ?>
+                    @foreach(auth()->user()->notifri->sortByDesc('created_at') as $noti)
+                    <?php if($count == 10) break; ?>
+
+                        @if($noti->notification_status == 1)
+                    <a href = "{{route('viewFriendRequestNoti',[$noti->sender_id,$noti->id])}}">
+                        <div class="notis-box-noti-row notis-box-unread-noti">
+                            <span>{{$noti->created_at->diffForHumans()}}
+                            </span>
+                            <p>{{$noti->description}}</p>
+                        </div>
+                    </a>
+                        @else
+                    <a href = "{{route('viewFriendRequestNoti',[$noti->sender_id,$noti->id])}}">
+                        <div class="notis-box-noti-row ">
+                            <span>{{$noti->created_at->diffForHumans()}}</span>
+                            <p>{{$noti->description}}</p>
+                        </div>
+                    </a>
+                        @endif
+                        <?php $count++; ?>
+                    @endforeach
+                </div>
+
+            </div>
         </div>
 
 
@@ -95,3 +128,8 @@
 
     </div>
 </div>
+
+<script>
+
+
+</script>
