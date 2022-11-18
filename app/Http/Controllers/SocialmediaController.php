@@ -18,39 +18,84 @@ class SocialmediaController extends Controller
 {
     public function index()
     {
-
+        // $users = DB::select("SELECT u.name,fri_sender.friend_status as Friend,fri_receiver.friend_status as Friend1 From
+        // users u left join friendships fri_sender on fri_sender.sender_id = u.id left join friendships fri_receiver on u.id = fri_receiver.receiver_id");
+        // $users =  User::select('users.name','receiver.receiver_id as fri_rec','sender.friend_status as fri_send',
+        // 'users.id','sender.sender_id')
+        //                 ->leftJoin('friendships as receiver','users.id','receiver.receiver_id')
+        //                 ->leftJoin('friendships as sender','users.id','sender.sender_id')
+        //                 ->get();
+        // dd($users);
         return view('customer.socialmedia');
     }
     public function socialmedia_profile(Request $request)
     {
         // dd($request->id);
+        $auth = Auth()->user()->id;
         $user = User::where('id',$request->id)->first();
-        return view('customer.socialmedia_profile',compact('user'));
+
+
+
+        $friend=DB::table('friendships')
+                    ->where('sender_id',$auth)
+                    ->orWhere('receiver_id',$auth)
+                    ->get();
+        foreach($friend as $fri)
+        {
+            $friend_status = Friendship::where('sender_id',$request->id)
+            ->orWhere('receiver_id',$request->id)->first();
+        }
+        // dd($friend_status);
+        return view('customer.socialmedia_profile',compact('user','friend_status'));
     }
     public function viewFriendRequestNoti(Request $request){
-        // dd($request->noti_id);
-        $noti =
+        DB::table('notifications')->where('id',$request->noti_id)->update(['notification_status' => 2]);
         $user = User::where('id',$request->id)->first();
-        return view('customer.socialmedia_profile',compact('user'));
+        $friend_status = Friendship::where('sender_id',auth()->user()->id)->orWhere('receiver_id',auth()->user()->id)->first();
+        return view('customer.socialmedia_profile',compact('user','friend_status'));
     }
 
     public function showUser(Request $request){
-        $users = User::select('users.name','friendships.receiver_id','friendships.friend_status','users.id','friendships.sender_id')
-        ->leftJoin('friendships','users.id','friendships.receiver_id')
-        ->orWhere('phone','LIKE','%'.$request->keyword.'%')->get();
-        if($request->keyword != ''){
-            $users = User::select('users.name','friendships.receiver_id','friendships.friend_status','users.id','friendships.sender_id')
-                            ->leftJoin('friendships','users.id','friendships.receiver_id')
-                            ->where('name','LIKE','%'.$request->keyword.'%')
-                            ->orWhere('phone','LIKE','%'.$request->keyword.'%')->get();
-        }
+
+        // if($request->keyword != ''){
+        //     $users =  User::select('users.name','friendships.receiver_id','friendships.friend_status',
+        //     'users.id','friendships.sender_id')
+        //                     ->leftJoin('friendships','users.id','friendships.sender_id')
+        //                     ->where('name','LIKE','%'.$request->keyword.'%')
+        //                     ->orWhere('phone','LIKE','%'.$request->keyword.'%')->get();
+        // }
+        $users = User::where('name','LIKE','%'.$request->keyword.'%')
+                        ->orWhere('phone','LIKE','%'.$request->keyword.'%')->get();
+        // $users = User::select('users.id','users.name')
+        // ->where('name','LIKE','%'.$request->keyword.'%')
+        // ->orWhere('phone','LIKE','%'.$request->keyword.'%')->get()->toArray();
+
+
+            $friends=DB::table('friendships')
+            ->where('friend_status',2)
+            ->orWhere('friend_status',1)
+            ->get();
+
+        //    $array =  array_push($users, ['friends'=> $friends]);
         return response()->json([
-            'users' => $users
+            'users' => $users,
+            'friends' => $friends,
+            // 'array' => $array
          ]);
     }
 
     public function notification_center(){
-        return view('customer.socialmedia_profile',compact('user'));
+        // $friend_requests = Friendship::select('users.id','users.name')
+        //                     ->leftJoin('users','users.id','friendships.receiver_id')
+        //                     ->where('receiver_id',auth()->user()->id)
+        //                     ->get();
+        $friend_requests=Friendship::select('sender.name','sender.id')
+            ->join('users as receiver', 'receiver.id', '=', 'friendships.receiver_id')
+            ->join('users as sender', 'sender.id', '=', 'friendships.sender_id')
+            ->where('receiver.id',auth()->user()->id)
+            ->where('friend_status',1)
+            ->get();
+        return view('customer.noti_center',compact('friend_requests'));
     }
 
     public function addUser(Request $request)
@@ -93,17 +138,43 @@ class SocialmediaController extends Controller
             $pusher->trigger('friend_request.'.$id , 'App\\Events\\Friend_Request', $data);
             return response()
                 ->json([
-                    'status'=>200,
                     'data'=>$data
             ]);
+    }
+    public function confirmRequest(Request $request){
+        $user = auth()->user();
+        DB::table('friendships')->where('receiver_id',$user->id)->where('sender_id',$request->id)->update(['friend_status' => 2]);
 
+        $options = array(
+            'cluster' => env('PUSHER_APP_CLUSTER'),
+            'encrypted' => true
+            );
+            $pusher = new Pusher(
+            env('PUSHER_APP_KEY'),
+            env('PUSHER_APP_SECRET'),
+            env('PUSHER_APP_ID'),
+            $options
+            );
+
+            $data = $user->name . ' accepted your friend request!';
+
+            $fri_noti = new Notification();
+            $fri_noti->description = $data;
+            $fri_noti->date = Carbon::Now()->toDateTimeString();
+            $fri_noti->sender_id = $user->id;
+            $fri_noti->receiver_id = $request->id;
+            $fri_noti->notification_status = 1;
+            $fri_noti->save();
+
+            $pusher->trigger('friend_request.'.$request->id , 'App\\Events\\Friend_Request', $data);
+            return redirect()->back();
     }
 
     public function cancelRequest(Request $request){
         $user_id = auth()->user()->id;
         $friend_ship_delete = Friendship::where('sender_id',$user_id)->where('receiver_id',$request->id);
         $friend_ship_delete->delete();
-        $noti_delete = NotiFriends::where('sender_id',$user_id)->where('receiver_id',$request->id);
+        $noti_delete = Notification::where('sender_id',$user_id)->where('receiver_id',$request->id);
         $noti_delete->delete();
     }
 

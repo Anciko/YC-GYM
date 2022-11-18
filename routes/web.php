@@ -84,11 +84,13 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
         Route::post('search_users', [SocialmediaController::class, 'showUser'])->name('search_users');
         Route::get('/addUser/{id}', [SocialmediaController::class, 'addUser'])->name('addUser');
         Route::get('/cancelRequest/{id}', [SocialmediaController::class, 'cancelRequest'])->name('cancelRequest');
-        Route::get('/cancelRequest/{id}', [SocialmediaController::class, 'cancelRequest'])->name('cancelRequest');
+
+        Route::get('/confirmRequest/{id}', [SocialmediaController::class, 'confirmRequest'])->name('confirmRequest');
 
         Route::get('/notification_center', [SocialmediaController::class, 'notification_center'])->name('notification_center');
 
         Route::get('/viewFriendRequestNoti/{id}/{noti_id}', [SocialmediaController::class, 'viewFriendRequestNoti'])->name('viewFriendRequestNoti');
+
 
         Route::post('/post/store', [SocialmediaController::class, 'post_store'])->name('post.store');
 });

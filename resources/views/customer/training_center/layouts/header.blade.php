@@ -92,7 +92,7 @@
             <div class="notis-box-container">
                 <div class="notis-box-header">
                     <p>Notifications</p>
-                    <a href="#">See All</a>
+                    <a href="{{ route('notification_center') }}">See All</a>
                 </div>
 
                 <div class="notis-box-notis-container">
@@ -100,7 +100,7 @@
                     @foreach(auth()->user()->notifri->sortByDesc('created_at') as $noti)
                     <?php if($count == 10) break; ?>
 
-                        @if($noti->notification_status == 1)
+                       @if($noti->notification_status == 1)
                     <a href = "{{route('viewFriendRequestNoti',[$noti->sender_id,$noti->id])}}">
                         <div class="notis-box-noti-row notis-box-unread-noti">
                             <span>{{$noti->created_at->diffForHumans()}}
