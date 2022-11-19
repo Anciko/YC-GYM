@@ -135,7 +135,7 @@
                 var id = $(this).data('id');
 
                 swal({
-                        text: "Are you sure you want to delete?",
+                        text: "Are you sure decline for member request?",
                         buttons: true,
                         dangerMode: true,
                     })

@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\Payment;
+use App\Models\Friendship;
 use App\Models\TrainingUser;
 use App\Models\TrainingGroup;
 use Laravel\Sanctum\HasApiTokens;
@@ -37,7 +38,7 @@ class User extends Authenticatable
     public function members()
     {
         return $this->belongsToMany(Member::class, 'member_histories')
-                    ->withPivot(['to_member_id','from_member_id','member_type_level','deleted_at'])
+                    ->withPivot(['date','to_member_id','from_member_id','member_type_level','deleted_at'])
                     ->withTimestamps();
     }
 
@@ -69,6 +70,21 @@ class User extends Authenticatable
     public function trainingUser(){
         return $this->hasMany(TrainingUser::class,'user_id','id');
     }
+
+    public function notifri(){
+        return $this->hasMany(Notification::class,'receiver_id');
+    }
+    public function friendship(){
+    return $this->belongsTo(Friendship::class);
+    }
+    // public function Sender(){
+    //     return $this->hasMany(Friendship::class,'receiver_id');
+    // }
+
+    // public function Receiver(){
+    //     return $this->hasMany(Friendship::class,'sender_id');
+    // }
+
 
 //   public function member()
 //   {

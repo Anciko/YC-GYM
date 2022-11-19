@@ -9,6 +9,7 @@ use App\Http\Controllers\Admin\MealController;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\SocialmediaController;
 use App\Http\Controllers\Admin\MemberController;
 use App\Http\Controllers\Admin\PaymentController;
 use App\Http\Controllers\Admin\RequestController;
@@ -20,13 +21,13 @@ use App\Http\Controllers\Auth\PassResetController;
 use App\Http\Controllers\Admin\PermissionController;
 use App\Http\Controllers\User\UserWorkoutController;
 use App\Http\Controllers\Admin\BankinginfoController;
+use App\Http\Controllers\Admin\TrainingGroupController;
+use App\Http\Controllers\Admin\TrainingCenterController;
 use App\Http\Controllers\Trainer\TrainerGroupController;
 use App\Http\Controllers\Customer\CustomerLoginController;
 use App\Http\Controllers\Customer\RegisterPaymentController;
 use App\Http\Controllers\Customer\CustomerRegisterController;
 use App\Http\Controllers\Admin\RequestAcceptDeclineController;
-use App\Http\Controllers\Admin\TrainingCenterController;
-use App\Http\Controllers\Admin\TrainingGroupController;
 use App\Http\Controllers\Trainer\TrainerManagementConntroller;
 use App\Http\Controllers\Customer\CustomerManagementController;
 use App\Http\Controllers\Customer\Customer_TrainingCenterController;
@@ -44,18 +45,19 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
     //Route::get('/customer/signup', [App\Http\Controllers\HomeController::class, 'customersignup'])->name('home');
 
     Route::post('/data/save', [HomeController::class, 'store'])->name('data.save');
-    Route::post('customer/updateinfo/customerCreate', [CustomerRegisterController::class, 'CustomerData'])->name('customerCreate');
+    Route::post('customer/customerCreate', [CustomerRegisterController::class, 'CustomerData'])->name('customerCreate');
 
     // NCK
     Route::post('/customer_payment_active_staus/{id}',[RegisterPaymentController::class, 'changeStatusAndType'])->name('customer_upgrade');
 
 
     Route::post('/member/upgraded-history/', [HomeController::class, 'memberUpgradedHistory'])->name('member-upgraded-history');
+    Route::post('/member/upgraded-history-monthly/', [HomeController::class, 'memberUpgradedHistory_monthly'])->name('member-upgraded-history-monthly');
 
     // Route::get('');
     //NCK
 
-    Route::get('customer_payment', [RegisterPaymentController::class, 'payment'])->name('customer_payment');
+    Route::get('/customer_payment', [RegisterPaymentController::class, 'payment'])->name('customer_payment');
     // Route::get('test_payment', [RegisterPaymentController::class, 'test'])->name('test_payment');
     Route::post('ewallet_store', [RegisterPaymentController::class, 'ewallet_store'])->name('ewallet_store');
     Route::post('bank_payment_store', [RegisterPaymentController::class, 'bank_payment_store'])->name('bank_payment_store');
@@ -64,19 +66,39 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
 
     Auth::routes();
     Route::middleware('auth')->group(function () {
+
+        //Social Media
+        Route::get('/socialmedia_profile', [SocialmediaController::class, 'socialmedia_profile'])->name('socialmedia.profile');
+        Route::get('/socialmedia', [SocialmediaController::class, 'index'])->name('socialmedia');
+        Route::post('/post/store', [SocialmediaController::class, 'post_store'])->name('post.store');
+
         Route::get('customer/personal_infos', [CustomerRegisterController::class, 'personal_info'])->name('customer-personal_infos');
         Route::get('customer/profile', [Customer_TrainingCenterController::class, 'profile'])->name('customer-profile');
         Route::post('customer/profile/update', [Customer_TrainingCenterController::class, 'profile_update'])->name('customer-profile.update');
         Route::post('customer/profile/name/update', [Customer_TrainingCenterController::class, 'profile_update_name'])->name('customer-profile-name.update');
         Route::get('customer/profile/year/{year}', [Customer_TrainingCenterController::class, 'year_filter'])->name('customer-profile.year');
+        Route::get('/home', [App\Http\Controllers\HomeController::class, 'home'])->name('social_media');
+        //Social Media
+        Route::get('/socialmedia_profile/{id}', [SocialmediaController::class, 'socialmedia_profile'])->name('socialmedia_profile');
 
-    Route::get('/home', [App\Http\Controllers\HomeController::class, 'home'])->name('social_media');
+        Route::post('search_users', [SocialmediaController::class, 'showUser'])->name('search_users');
+        Route::get('/addUser/{id}', [SocialmediaController::class, 'addUser'])->name('addUser');
+        Route::get('/cancelRequest/{id}', [SocialmediaController::class, 'cancelRequest'])->name('cancelRequest');
+
+        Route::get('/confirmRequest/{id}', [SocialmediaController::class, 'confirmRequest'])->name('confirmRequest');
+
+        Route::get('/notification_center', [SocialmediaController::class, 'notification_center'])->name('notification_center');
+
+        Route::get('/viewFriendRequestNoti/{id}/{noti_id}', [SocialmediaController::class, 'viewFriendRequestNoti'])->name('viewFriendRequestNoti');
+
+
+        Route::post('/post/store', [SocialmediaController::class, 'post_store'])->name('post.store');
 });
     Route::get('customer/register', [App\Http\Controllers\HomeController::class, 'customer_register'])->name('customer_register');
     //Route::post('customer/register', [App\Http\Controllers\Auth\RegisterController::class, 'register'])->name('customer_register');
     Route::post('customer/register', [App\Http\Controllers\Customer\CustomerRegisterController::class, 'register'])->name('customer_register');
 
-    Route::get('customer/updateinfo/{request_type}', [App\Http\Controllers\Customer\CustomerRegisterController::class, 'updateinfo'])->name('updateinfo');
+    Route::post('customer/updateinfo/', [App\Http\Controllers\Customer\CustomerRegisterController::class, 'updateinfo'])->name('updateinfo');
 
     Route::get('/user/workout/start', [UserWorkoutController::class, 'getstart'])->name('userworkout.getstart');
 
@@ -160,11 +182,11 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
             // Meal
             Route::resource('meal', MealController::class);
             Route::get('admin/getmeal', [MealController::class, 'getMeal'])->name('getmeal');
-            Route::get('admin/meal/{id}/delete', [MealController::class, 'destroy'])->name('meal.delete');
+            Route::get('/meal/{id}/delete', [MealController::class, 'destroy'])->name('meal.delete');
 
             // Member
             Route::resource('member', MemberController::class);
-            Route::get('admin/member/{id}/delete', [MemberController::class, 'destroy'])->name('member.delete');
+            Route::get('/member/{id}/delete', [MemberController::class, 'destroy'])->name('member.delete');
             Route::get('admin/member/datatable/ssd', [MemberController::class, 'ssd']);
 
             Route::get('user_member', [MemberController::class, 'user_member_show'])->name('member.user_member');

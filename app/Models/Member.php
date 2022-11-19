@@ -23,19 +23,19 @@ class Member extends Model
     public function users()
     {
         return $this->belongsToMany(User::class,'member_histories')
-                    ->withPivot(['from_member_id','to_member_id','member_type_level','deleted_at'])
+                    ->withPivot(['date','from_member_id','to_member_id','member_type_level','deleted_at'])
                     ->withTimestamps();
     }
 
-    public static function boot() {
-        parent::boot();
-        self::deleting(function($member) {
-            $member->mealplan()->each(function($mealplan) {
-                $mealplan->meal()->each(function($meal){
-                    $meal->delete();
-                });
-                $mealplan->delete();
-            });
-        });
-    }
+    // public static function boot() {
+    //     parent::boot();
+    //     self::deleting(function($member) {
+    //         $member->mealplan()->each(function($mealplan) {
+    //             $mealplan->meal()->each(function($meal){
+    //                 $meal->delete();
+    //             });
+    //             $mealplan->delete();
+    //         });
+    //     });
+    // }
 }

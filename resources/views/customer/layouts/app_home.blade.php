@@ -30,6 +30,11 @@
     <link href="{{ asset('css/customer/css/customerLogin.css')}}" rel="stylesheet"/>
 
     <link href="{{ asset('css/customer/css/transactionChoice.css')}}" rel="stylesheet"/>
+     <!--social media -->
+     <link href="{{ asset('css/socialMedia.css')}}" rel="stylesheet"/>
+
+    <!--social media -->
+    <link href="{{ asset('css/socialMedia.css')}}" rel="stylesheet"/>
 
     <title>YC-fitness</title>
   </head>
@@ -64,12 +69,41 @@
 
     <!--nav bar-->
     <script src={{asset('js/navBar.js')}}></script>
+    <script src={{asset('js/notify.js')}}></script>
+    <script src="https://js.pusher.com/4.1/pusher.min.js"></script>
+    <script>
+        // $(document).ready(function(){
+            $( document ).ready(function() {
+                $('.nav-icon').click(function(){
+                        $('.notis-box-container').toggle()
+                    })
 
+
+            // })
+                console.log("ready");
+                var user_id = {{auth()->user()->id}};
+                console.log(user_id);
+                var pusher = new Pusher('{{env("MIX_PUSHER_APP_KEY")}}', {
+                cluster: '{{env("PUSHER_APP_CLUSTER")}}',
+                encrypted: true
+                });
+
+                var channel = pusher.subscribe('friend_request.'+user_id);
+                channel.bind('App\\Events\\Friend_Request', function(data) {
+                console.log(data);
+                $.notify(data, "success",{ position:"left" });
+                });
+         })
+    </script>
     @stack('scripts')
 
     @push('scripts')
+
         <script>
              $(document).ready(function(){
+                console.log("ready");
+
+
             $(window).scroll(function(){
                 var scroll = $(window).scrollTop()
                 if(scroll>50){

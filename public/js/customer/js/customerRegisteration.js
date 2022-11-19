@@ -400,6 +400,7 @@
             // var weight = document.querySelector('[name="weight"]')
             // var idealWeight = document.querySelector('[name="idealWeight"]')
             var age = document.querySelector('[name="age"]')
+            var request_type = document.querySelector("[name='request_type']")
             var gender = document.querySelector('[name="gender"]')
             var neck = document.querySelector('[name="neck"]')
             var waist = document.querySelector('[name="waist"]')
@@ -433,6 +434,7 @@
                   waist : waist.value,
                   hip : hip?.value,
                   shoulders : shoulders.value,
+                  request_type:request_type.value,
                 //   bmi : bmi,
                 //   bfp : bfp,
                 }
