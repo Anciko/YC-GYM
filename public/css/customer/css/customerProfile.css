@@ -2,7 +2,7 @@
     max-width: 900px;
     margin: auto;
     margin-bottom: 40px;
-    padding: 20px;
+    /* padding: 20px; */
     margin-top: 140px;
     background-color: var(--customer-card-bg-color);
     box-shadow: 1px 1px 10px 0px rgba(0,0,0,0.25);
@@ -11,16 +11,83 @@
     border-radius: 10px;
 }
 
-.customer-profile-img-name-container{
+.customer-cover-photo-container{
+    position: relative;
+    width: 100%;
+    height: 300px;
+    margin-bottom: 100px;
+
+}
+
+.customer-cover-photo{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+}
+
+.customer-cover-img-change-btn{
+    position: absolute;
+    top: 0;
+    right: 0;
+    cursor: pointer;
+    box-shadow: 1px 1px 10px 0px rgba(0,0,0,0.25);
+-webkit-box-shadow: 1px 1px 10px 0px rgba(0,0,0,0.25);
+-moz-box-shadow: 1px 1px 10px 0px rgba(0,0,0,0.25);
+background-color: white;
+padding: 2px 5px;
+border-radius: 50%;
+margin: 10px;
+}
+
+.customer-cover-img-change-btn:hover{
+    background-color: var(--customer-primary-color);
+}
+
+.customer-cover-img-change-input{
+    display: none;
+}
+
+.customer-cover-img-change-icon{
+    font-size: 20px;
+    cursor: pointer;
+}
+
+.customer-cover-change-btns-container{
     display: flex;
     align-items: center;
-    gap: 20px 20px;
+    gap: 0 10px;
+    justify-content: center;
+    position: absolute;
+    top: 10px;
+    right: 60px;
+}
+
+.customer-cover-change-btns-container button{
+    font-size: 14px;
+}
+
+.customer-personal-details-form{
+    position: absolute;
+    /* top: 0; */
+    bottom: 0;
+    padding: 0 10px;
+    transform: translateY(50%);
+    width: 100%;
+}
+
+.customer-profile-img-name-container{
+    display: flex;
+    align-items: flex-end;
+    gap: 10px 20px;
 }
 
 .customer-profile-img-container {
     width: 100px;
     height: 100px;
     border-radius: 50%;
+    position: relative;
 }
 
 .customer-profile-img-container img{
@@ -55,6 +122,7 @@
 
 .customer-profile-personaldetails-parent-container{
     margin-top: 40px;
+    padding: 0 10px;
 }
 
 .customer-profile-personaldetails-parent-container > h1{
@@ -200,7 +268,9 @@
 .customer-profile-trackers-parent-container{
     margin-top: 100px;
     width: 100%;
+    /* padding: 0 10px; */
     border: 2px solid var(--customer-primary-color);
+    box-sizing: border-box;
 }
 
 .customer-profile-trackers-headers-container{
@@ -542,8 +612,352 @@
     display: none;
 } */
 
+.customer-profile-img-change-btn{
+    position: absolute;
+    top: 0;
+    right: 0;
+    cursor: pointer;
+    box-shadow: 1px 1px 10px 0px rgba(0,0,0,0.25);
+-webkit-box-shadow: 1px 1px 10px 0px rgba(0,0,0,0.25);
+-moz-box-shadow: 1px 1px 10px 0px rgba(0,0,0,0.25);
+background-color: white;
+padding: 2px 5px;
+border-radius: 50%;
+}
+
+.customer-profile-img-change-btn:hover{
+    background-color: var(--customer-primary-color);
+}
+
+.customer-profile-img-change-input{
+    display: none;
+}
+
+.customer-profile-img-change-icon{
+    font-size: 20px;
+    cursor: pointer;
+}
+
+.customer-profile-change-btns-container{
+    display: flex;
+    align-items: center;
+    gap: 0 10px;
+    justify-content: center;
+    /* margin-bottom: 20px; */
+
+}
+
+.customer-profile-change-btns-container button{
+    font-size: 14px;
+}
+
+.customer-change-name-btns-container{
+    display: flex;
+    align-items: center;
+    gap: 0 10px;
+}
+
+.name{
+    height: 40px;
+    border-radius: 5px;
+    width: 150px;
+}
+
+.customer-bio-form{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding:0 10px;
+}
+
+.customer-bio-form p{
+    font-size: 14px;
+    margin-bottom: 0;
+    color: var(--customer-text-color);
+}
+
+.customer-bio-change-icon{
+    font-size: 20px;
+    color: var(--customer-text-color);
+}
+
+.customer-bio-text{
+    display: flex;
+    align-items: center;
+    gap: 0 10px;
+}
+
+.customer-bio-text input{
+    height: 40px;
+    border-radius: 5px;
+    width: 200px;
+}
+
+.customer-profile-tabs-container{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.customer-profile-training-center-tab, .customer-profile-socialmedia-tab, .customer-profile-shop-tab{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0 10px;
+    width: 200px;
+    height: 45px;
+    border-radius: 10px;
+    background-color: var(--customer-card-bg-color);
+    box-shadow: 1px 1px 10px 0px rgba(0,0,0,0.25);
+    -webkit-box-shadow: 1px 1px 10px 0px rgba(0,0,0,0.25);
+    -moz-box-shadow: 1px 1px 10px 0px rgba(0,0,0,0.25);
+    background-color: var(--customer-card-bg-color);
+    cursor: pointer;
+}
+
+.customer-profile-training-center-tab p, .customer-profile-socialmedia-tab p, .customer-profile-shop-tab p{
+    margin-bottom: 0;
+    font-size: 14px;
+    color: var(--customer-text-color);
+}
+
+.customer-profile-tab-icon{
+    /* font-size: 20px; */
+    color: var(--customer-text-color);
+}
+
+.customer-profile-training-center-tab-active{
+    background-color: var(--customer-primary-color);
+}
+
+.customer-profile-training-center-tab-active p, .customer-profile-training-center-tab-active .customer-profile-tab-icon{
+    color: white;
+}
+
+.customer-profile-socialmedia-container{
+    max-width: 600px;
+    height: 500px;
+    overflow-y: scroll;
+    margin: auto;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    padding: 0 10px;
+}
+
+.customer-profile-friends-parent-container{
+    padding: 20px 0;
+    border-bottom: 1px solid var(--customer-light-text-color);
+}
+
+.customer-profile-friends-header{
+    display: flex;
+    justify-content: space-between;
+}
+
+.customer-profile-friends-header p{
+    margin-bottom: 0;
+    color: var(--customer-text-color);
+}
+
+.customer-profile-friends-header a{
+    display: flex;
+    align-items: center;
+    gap: 0 5px;
+    color: var(--customer-text-color);
+    text-decoration: none;
+}
+
+.customer-profile-friends-header a:hover{
+    color: var(--customer-primary-color);
+}
+
+.customer-profile-friends-container{
+    display: flex;
+    align-items: center;
+    gap: 10px 10px;
+    margin-top: 20px;
+    justify-content: space-around;
+}
+
+.customer-profile-friend{
+    width: 80px;
+}
+
+.customer-profile-friend img{
+    width: 100%;
+    height: 80px;
+    object-fit: cover;
+}
+
+.customer-profile-friend p{
+    margin-bottom: 0;
+    margin-top: 10px;
+    font-size: 14px;
+    color: var(--customer-text-color);
+}
+
+.customer-profile-posts-parent-container{
+    padding: 10px 0;
+}
+
+.customer-profile-posts-parent-container > p{
+    color: var(--customer-text-color);
+}
+
+.customer-post-container{
+    padding: 10px;
+    border: 1px solid var(--customer-primary-color);
+    border-radius: 6px;
+    margin-bottom: 20px;
+}
+
+.customer-post-header{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    position: relative;
+}
+
+.customer-post-name-container{
+    display: flex;
+    align-items: center;
+    /* justify-content: space-between; */
+    gap: 0 10px;
+}
+
+.customer-post-name-container img{
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.customer-post-name{
+    box-sizing: border-box;
+}
+
+.customer-post-name p{
+    margin-bottom: 0;
+    color: var(--customer-text-color);
+    box-sizing: border-box;
+    line-height: 10px;
+}
+
+.customer-post-name span{
+    font-size: 10px;
+    color: var(--customer-text-color);
+}
+
+.customer-post-header-icon{
+    font-size: 20px;
+    cursor: pointer;
+    color: var(--customer-text-color);
+}
+
+.customer-content-container p{
+    font-size: 14px;
+    color: var(--customer-text-color);
+}
+
+.customer-post-footer-container{
+    display: flex;
+    align-items: center;
+    gap: 0 25px;
+    margin-top: 20px;
+}
+
+.customer-post-like-container, .customer-post-comment-container{
+    display: flex;
+    align-items: center;
+    gap: 0 5px;
+
+}
+
+.customer-post-like-container p, .customer-post-comment-container p{
+    margin-bottom: 0;
+    font-size: 14px;
+    color: var(--customer-text-color);
+}
+
+.like-icon, .comment-icon{
+    cursor: pointer;
+    color: var(--customer-text-color);
+}
+
+.customer-media-container{
+    display: flex;
+    gap: 10px 10px;
+    flex-wrap: wrap;
+}
+
+.customer-media{
+    flex: 1 0 25%;
+    height: 300px;
+    /* flex-basis: 33.333333% */
+}
+
+.customer-media:nth-child(3):not(:last-child){
+    /* flex: 2;  */
+}
+
+.customer-media img{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.customer-media video{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.post-actions-container{
+    background-color: white;
+    box-shadow: 1px 1px 10px 0px rgba(0,0,0,0.25);
+    -webkit-box-shadow: 1px 1px 10px 0px rgba(0,0,0,0.25);
+    -moz-box-shadow: 1px 1px 10px 0px rgba(0,0,0,0.25);
+    /* padding: 5px; */
+    border-radius: 5px;
+    position: absolute;
+    top: 40px;
+    right: 0;
+    display: none;
+}
+
+.post-action{
+    display: flex;
+    align-items: center;
+    gap: 0 5px;
+    padding: 5px 10px;
+    cursor: pointer;
+}
+
+.post-action:hover{
+    background-color: var(--customer-primary-color);
+}
+
+.post-action p{
+    margin-bottom: 0;
+    font-size: 14px;
+    color: black;
+}
+
 
 @media screen and (max-width:1000px){
+    .customer-personal-details-form{
+        left: 50%;
+        transform: translate(-50%,50%);
+    }
+    .customer-profile-img-name-container{
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        /* margin: auto; */
+    }
     .customer-profile-days-container{
         flex-wrap: wrap;
         justify-content: center;
@@ -556,12 +970,32 @@
         justify-content: center;
     }
 
+    .customer-personal-details-form{
+        margin-left: 0;
+    }
+
+    .customer-bio-form{
+        flex-direction: column;
+
+    }
+
+    .customer-profile-tabs-container{
+        flex-direction: column;
+    }
+
+    .customer-profile-friends-container {
+        flex-wrap: wrap;
+    }
+
+    .customer-cover-photo-container{
+        margin-bottom: 150px;
+    }
 
 }
 
 @media screen and (max-width:600px){
     .customer-profile-parent-container{
-        padding: 20px 10px;
+        /* padding: 20px 10px; */
     }
 
     .weight-chart-container{
@@ -570,10 +1004,7 @@
     .customer-profile-tracker-workout-container, .customer-profile-tracker-meal-container, .customer-profile-tracker-water-container{
         padding: 5px;
     }
-    .customer-profile-img-name-container{
-        flex-direction: column;
-        justify-content: center;
-    }
+
     .customer-profile-bmi-gradient{
         width: 250px;
     }
