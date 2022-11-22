@@ -61,11 +61,14 @@
 
     <div class="social-media-parent-container">
         <div class="social-media-left-container">
-            <div class="social-media-left-search-container">
-                <input type="text" id ="search">
-                <iconify-icon icon="akar-icons:search" class="search-icon"></iconify-icon>
+            <div class="social-media-left-search-cancel-container">
+                <div class="social-media-left-search-container">
+                    <input type="text" id ="search">
+                    <iconify-icon icon="akar-icons:search" class="search-icon"></iconify-icon>
+                </div>
+                <div class="cancel">
             </div>
-            <div class="cancel">
+
             <a href="#" class="customer-secondary-btn cancel" >Cancel</a>
             </div>
             <div class="social-media-left-infos-container">
@@ -492,6 +495,7 @@
 @push('scripts')
 <script>
     $(document).ready(function() {
+
         $(".cancel").hide();
         $( ".social-media-left-search-container input" ).focus(function() {
             // alert( "Handler for .focus() called." );
@@ -663,7 +667,7 @@
                                         //     <a href= `+url+` class = "profiles">
                                         //         <p>`+res.users[i].name+`</p>
                                         //     </a>
-                                        //     <a href="?id=` + res.users[i].id+`" class="customer-secondary-btn add-friend-btn">Friend</a>
+                                        //     <a href="?id=` + res.users[i].id+`" class="customer-secondary-btn ">Friend</a>
                                         //     `
                                     }
                                     else if (
@@ -679,7 +683,7 @@
                                         //     <a href= `+url+` class = "profiles">
                                         //         <p>`+res.users[i].name+`</p>
                                         //     </a>
-                                        //     <a href="?id=` + res.users[i].id+`" class="customer-secondary-btn add-friend-btn">Friend</a>
+                                        //     <a href="?id=` + res.users[i].id+`" class="customer-secondary-btn ">Friend</a>
                                         //   `
                                     }
                                     else{
@@ -689,7 +693,7 @@
                                     //         <a href=`+url+` class = "profiles">
                                     //             <p>`+res.users[i].name+`</p>
                                     //         </a>
-                                    //         <a href="?id=` + res.users[i].id+`" class="customer-secondary-btn add-friend-btn" id = "AddFriend">Add</a>
+                                    //         <a href="?id=` + res.users[i].id+`" class="customer-secondary-btn " id = "AddFriend">Add</a>
                                     // `
                                     }
 
@@ -697,55 +701,67 @@
 
                             if(status === 'sender request'){
                                 htmlView += `
+                                            <div class="social-media-left-searched-item">
                                             <a href=`+url+` class = "profiles">
                                                 <p>`+res.users[i].name+`</p>
                                             </a>
-                                            <a href="?id=` + res.users[i].id+`" class="customer-secondary-btn cancel-request-btn"
-                                            id = "cancelRequest">Cancel Request</a>
+                                            <a href="?id=` + res.users[i].id+`" class=" cancel-request-btn"
+                                            id = "cancelRequest"><iconify-icon icon="material-symbols:cancel-schedule-send-rounded" class="search-item-icon"></iconify-icon></a>
+                                            </div>
                                             `
                             }
 
                             else if(status === 'receiver request'){
                                htmlView += `
+                                            <div class="social-media-left-searched-item">
                                             <a href=`+url+` class = "profiles">
                                                 <p>`+res.users[i].name+`</p>
                                             </a>
-                                            <a href=`+url+` class="customer-secondary-btn">Response</a>
+                                            <a href=`+url+` class=""><iconify-icon icon="bi:person-check" class="search-item-icon"></iconify-icon></a>
+                                            </div>
                                             `
                             }
 
                             else if(status === "profile"){
                                  htmlView += `
+                                            <div class="social-media-left-searched-item">
                                             <a href=`+url+` class = "profiles">
                                                 <p>`+res.users[i].name+`</p>
                                             </a>
-                                            <a href=`+url+` class="customer-secondary-btn "
-                                            >View Profile</a>
+                                            <a href=`+url+` class=""
+                                            ><iconify-icon icon="bi:people-fill" class="search-item-icon"></iconify-icon></a>
+                                            </div>
                                             `
                             }
 
                             else if(status === "sender view profile"){
                                 htmlView += `
+                                            <div class="social-media-left-searched-item">
                                             <a href= `+url+` class = "profiles">
                                                 <p>`+res.users[i].name+`</p>
                                             </a>
-                                            <a href=`+url+` class="customer-secondary-btn add-friend-btn">Friend</a>
+                                            <a href=`+url+` class=""><iconify-icon icon="bi:people-fill" class="search-item-icon"></iconify-icon></a>
+                                            </div>
                                           `
                             }
                             else if(status === "receiver view profile"){
                                 htmlView += `
+                                            <div class="social-media-left-searched-item">
                                             <a href= `+url+` class = "profiles">
                                                 <p>`+res.users[i].name+`</p>
                                             </a>
-                                            <a href=`+url+` class="customer-secondary-btn add-friend-btn">Friend</a>
+                                            <a href=`+url+` class=""><iconify-icon icon="bi:people-fill" class="search-item-icon"></iconify-icon></a>
+                                            </div>
                                           `
                             }
                             else{
                                     htmlView += `
+                                            <div class="social-media-left-searched-item">
                                             <a href=`+url+` class = "profiles">
                                                 <p>`+res.users[i].name+`</p>
                                             </a>
-                                            <a href="?id=` + res.users[i].id+`" class="customer-secondary-btn add-friend-btn" id = "AddFriend">Add</a>
+                                            <a href="?id=` + res.users[i].id+`" class="" id = "AddFriend"><iconify-icon icon="bi:person-add" class="search-item-icon"></iconify-icon></a>
+                                            </div>
                                     `
                             }
                             }

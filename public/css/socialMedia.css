@@ -46,6 +46,19 @@
     margin-bottom: 10px;
 }
 
+.social-media-left-search-cancel-container{
+    display: flex;
+    gap: 0 5px;
+}
+
+.social-media-left-search-cancel-container .customer-secondary-btn{
+    font-size: 14px;
+    padding: 0 5px;
+    height: 36px;
+    display: grid;
+    place-items: center;
+}
+
 .social-media-left-search-container input{
     width: 100%;
     height: 100%;
@@ -89,7 +102,7 @@
 }
 
 .social-media-left-friends-rows-container{
-    
+
 }
 
 .social-media-left-friends-row{
@@ -131,7 +144,7 @@
     margin-bottom: 20px;
     text-decoration: none;
 
-   
+
 }
 
 .social-media-left-messages-row img{
@@ -177,7 +190,7 @@
     margin-bottom: 20px;
     text-decoration: none;
 
-   
+
 }
 
 .social-media-left-gpmessages-row img{
@@ -227,7 +240,7 @@
     /* justify-content:center; */
     margin-top: 20px;
 }
-  
+
   .preview{
     border:none;
     width:100px;
@@ -235,14 +248,14 @@
     border: none;
     object-fit: cover;
   }
-  
+
   .selectImage{
     /* width:35%; */
     display: flex;
     align-items: center;
     justify-content: space-between;
   }
-  
+
   #myfile{
     /* width: 25%; */
     /* border:none; */
@@ -405,9 +418,9 @@
     display: flex;
     align-items: center;
     gap: 0 5px;
-    
+
 }
- 
+
 .social-media-post-like-container p, .social-media-post-comment-container p{
     margin-bottom: 0;
     font-size: 14px;
@@ -484,7 +497,7 @@
 
 .social-media-left-container-trigger{
     display: none;
-    
+
 }
 
 .social-media-left-container-trigger p{
@@ -504,7 +517,7 @@
     width: 100%;
     height: 140px;
     position: relative;
-    
+
 }
 
 .social-media-profile-bgimg-container > img{
@@ -800,7 +813,7 @@
     border-radius: 50%;
     object-fit: cover;
 }
- 
+
 .social-media-allchats-message-row > p{
     max-width: 300px;
     white-space: nowrap;
@@ -900,6 +913,24 @@
     display: none;
 }
 
+.social-media-left-searched-item{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.social-media-left-searched-item a{
+    color: var(--customer-text-color);
+    text-decoration: none;
+}
+
+.search-item-icon{
+    font-size: 30px;
+    color: var(--customer-text-color);
+
+}
+
 .social-media-searched-item{
     display: flex;
     align-items: center;
@@ -985,7 +1016,7 @@
     align-items: center;
     /* gap: 0 50px; */
     justify-content: space-around;
-   
+
 }
 
 .social-media-noti-likes-tab, .social-media-noti-requests-tab{
@@ -1204,7 +1235,7 @@
 }
 
 .social-media-all-comments{
-    
+
 }
 
 .social-media-comment-container{
@@ -1288,6 +1319,8 @@
     font-size: 14px;
     color: black;
 }
+
+
 @media screen and (max-width:1000px){
 
     .social-media-left-container-trigger{
@@ -1397,7 +1430,7 @@
         grid-template-columns: repeat(4,1fr);
     }
 
-    
+
 
     .social-media-allchats-message-row{
         flex-wrap: wrap;
@@ -1441,7 +1474,7 @@
         font-size: 25px;
     }
 
-    
+
     .social-media-request-row{
         margin-bottom: 30px;
     }
