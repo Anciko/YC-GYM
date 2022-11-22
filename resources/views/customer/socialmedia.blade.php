@@ -2,8 +2,303 @@
 
 @section('content')
 @include('sweetalert::alert')
+
+<div class="modal fade" id="addPostModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="exampleModalLabel">Create A Post</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <form class="modal-body" id="form">
+        {{-- <form class="modal-body" method="POST" action="{{route('post.store')}}" enctype= multipart/form-data>
+            @csrf
+            @method('POST') --}}
+          <div class="addpost-caption">
+            <p>Post Caption</p>
+            <textarea placeholder="Caption goes here..." name="caption" id="addPostCaption" class="addpost-caption-input"></textarea>
+          </div>
+
+          <div class="addpost-photovideo">
+
+            <span class="selectImage">
+
+                <div class="addpost-photovideo-btn">
+                    <iconify-icon icon="akar-icons:circle-plus" class="addpst-photovideo-btn-icon"></iconify-icon>
+                    <p>Photo/Video</p>
+                    <input type="file" id="addPostInput" name="addPostInput[]" multiple enctype="multipart/form-data">
+                </div>
+
+                <button class="addpost-photovideo-clear-btn" type="button" onclick="clearAddPost()">Clear</button>
+
+            </span>
+
+            <div class="addpost-photo-video-imgpreview-container">
+            </div>
+
+
+            </div>
+            <button type="submit" class="customer-primary-btn addpost-submit-btn" id="">Post</button>
+            {{-- <button type="submit" class="customer-primary-btn addpost-submit-btn">Post</button> --}}
+        </form>
+
+      </div>
+    </div>
+</div>
+
+<div class="modal fade" id="editPostModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="exampleModalLabel">Edit Post</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <form class="modal-body" id="edit_form">
+        {{-- <form class="modal-body" method="POST" action="{{route('post.store')}}" enctype= multipart/form-data>
+            @csrf
+            @method('POST') --}}
+            <input type="hidden" id="edit_post_id">
+
+          <div class="addpost-caption">
+            <p>Post Caption</p>
+            <textarea placeholder="Caption goes here..." name="caption" id="editPostCaption" class="addpost-caption-input"></textarea>
+          </div>
+
+          <div class="addpost-photovideo">
+
+            <span class="selectImage">
+
+                <div class="addpost-photovideo-btn">
+                    <iconify-icon icon="akar-icons:circle-plus" class="addpst-photovideo-btn-icon"></iconify-icon>
+                    <p>Photo/Video</p>
+                    <input type="file" id="editPostInput" name="editPostInput[]" multiple enctype="multipart/form-data">
+                </div>
+
+                <button class="addpost-photovideo-clear-btn" type="button" onclick="clearAddPost()">Clear</button>
+
+            </span>
+
+            <div class="editpost-photo-video-imgpreview-container">
+            </div>
+
+
+            </div>
+            <button type="submit" class="customer-primary-btn addpost-submit-btn">Update</button>
+            {{-- <button type="submit" class="customer-primary-btn addpost-submit-btn">Post</button> --}}
+        </form>
+
+      </div>
+    </div>
+</div>
+    <button class="social-media-addpost-btn customer-primary-btn margin-top" data-bs-toggle="modal" data-bs-target="#addPostModal">
+        <iconify-icon icon="akar-icons:circle-plus" class="addpost-icon"></iconify-icon>
+        <p>Add Post</p>
+    </button>
+
+    <div class="social-media-left-container-trigger">
+        Friends
+        <iconify-icon icon="bi:arrow-right" class="arrow-icon"></iconify-icon>
+    </div>
+
+    <div class="social-media-overlay"></div>
+
+    <div class="social-media-parent-container">
+        <div class="social-media-left-container">
+            <div class="social-media-left-search-container">
+                <input type="text" id ="search">
+                <iconify-icon icon="akar-icons:search" class="search-icon"></iconify-icon>
+            </div>
+            <div class="cancel">
+            <a href="#" class="customer-secondary-btn cancel" >Cancel</a>
+            </div>
+            <div class="social-media-left-infos-container">
+                <div class="social-media-left-friends-container">
+                    <div class="social-media-left-container-header">
+                        <p>Friends</p>
+                        <a href="#">See All <iconify-icon icon="bi:arrow-right" class="arrow-icon"></iconify-icon></a>
+                    </div>
+
+                    <div class="social-media-left-friends-rows-container">
+                        @forelse ($left_friends as $friend)
+                        <a href="{{route('socialmedia.profile',$friend->id)}}" class="social-media-left-friends-row">
+                            <img src="{{asset('img/customer/imgs/user_default.jpg')}}">
+                            <p>{{$friend->name}}</p>
+                        </a>
+                        @empty
+                        <p class="text-secondary p-1">No Friend</p>
+                        @endforelse
+                    </div>
+                </div>
+
+                <div class="social-media-left-messages-container">
+                    <div class="social-media-left-container-header">
+                        <p>Messages</p>
+                        <a href="#">See All <iconify-icon icon="bi:arrow-right" class="arrow-icon"></iconify-icon></a>
+                    </div>
+
+                    <div class="social-media-left-messages-rows-container">
+                        <a href="#" class="social-media-left-messages-row">
+                            <img src="{{asset('img/customer/imgs/user_default.jpg')}}">
+                            <p>
+                                Friend Name<br>
+                                <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Dui hendrerit potenti pellentesque tellus urna bibendum mollis. </span>
+                            </p>
+                        </a>
+                        <a href="#" class="social-media-left-messages-row">
+                            <img src="{{asset('img/customer/imgs/user_default.jpg')}}">
+                            <p>
+                                Friend Name<br>
+                                <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Dui hendrerit potenti pellentesque tellus urna bibendum mollis. </span>
+                            </p>
+                        </a>
+                        <a href="#" class="social-media-left-messages-row">
+                            <img src="{{asset('img/customer/imgs/user_default.jpg')}}">
+                            <p>
+                                Friend Name<br>
+                                <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Dui hendrerit potenti pellentesque tellus urna bibendum mollis. </span>
+                            </p>
+                        </a>
+                        <a href="#" class="social-media-left-messages-row">
+                            <img src="{{asset('img/customer/imgs/user_default.jpg')}}">
+                            <p>
+                                Friend Name<br>
+                                <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Dui hendrerit potenti pellentesque tellus urna bibendum mollis. </span>
+                            </p>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="social-media-left-gpmessages-container">
+                    <div class="social-media-left-container-header">
+                        <p>Group Messages</p>
+                        <a href="#">See All <iconify-icon icon="bi:arrow-right" class="arrow-icon"></iconify-icon></a>
+                    </div>
+
+                    <div class="social-media-left-gpmessages-rows-container">
+                        <a href="#" class="social-media-left-gpmessages-row">
+                            <img src="{{asset('img/customer/imgs/user_default.jpg')}}">
+                            <p>
+                                Group Name<br>
+                                <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Dui hendrerit potenti pellentesque tellus urna bibendum mollis. </span>
+                            </p>
+                        </a>
+                        <a href="#" class="social-media-left-gpmessages-row">
+                            <img src="{{asset('img/customer/imgs/user_default.jpg')}}">
+                            <p>
+                                Group Name<br>
+                                <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Dui hendrerit potenti pellentesque tellus urna bibendum mollis. </span>
+                            </p>
+                        </a>
+                        <a href="#" class="social-media-left-gpmessages-row">
+                            <img src="{{asset('img/customer/imgs/user_default.jpg')}}">
+                            <p>
+                                Group Name<br>
+                                <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Dui hendrerit potenti pellentesque tellus urna bibendum mollis. </span>
+                            </p>
+                        </a>
+                        <a href="#" class="social-media-left-gpmessages-row">
+                            <img src="{{asset('img/customer/imgs/user_default.jpg')}}">
+                            <p>
+                                Group Name<br>
+                                <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Dui hendrerit potenti pellentesque tellus urna bibendum mollis. </span>
+                            </p>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="social-media-left-searched-items-container">
+
+            </div>
+
+        </div>
+
         <div class="social-media-right-container">
             <div class="social-media-posts-parent-container">
+                @foreach ($posts as $post)
+                <div class="social-media-post-container">
+                    <div class="social-media-post-header">
+                        <div class="social-media-post-name-container">
+                            <a href="{{route('socialmedia.profile',$post->user_id)}}" style="text-decoration:none">
+                            <img src="{{asset('img/customer/imgs/user_default.jpg')}}">
+                            </a>
+                            <div class="social-media-post-name">
+                                <a href="{{route('socialmedia.profile',$post->user_id)}}" style="text-decoration:none">
+                                    <p>{{$post->user->name}}</p>
+                                </a>
+                                <span>{{ \Carbon\Carbon::parse($post->created_at)->format('d M Y , g:i A')}}</span>
+                            </div>
+
+
+                        </div>
+
+                        <iconify-icon icon="bi:three-dots-vertical" class="social-media-post-header-icon"></iconify-icon>
+
+                        <div class="post-actions-container">
+                            <div class="post-action">
+                                <iconify-icon icon="bi:save" class="post-action-icon"></iconify-icon>
+                                <p>Save</p>
+                            </div>
+                            {{-- <form action="{{ route('category.destroy',$post->id) }}" method="POST">
+                                @csrf
+                                @method('POST')
+                                <button type="submit">Delete</button>
+                            </form> --}}
+                        @if ($post->user->id == auth()->user()->id)
+
+                            <a id="edit_post" data-id="{{$post->id}}" data-bs-toggle="modal" >
+                                <div class="post-action">
+                                    <iconify-icon icon="bi:edit" class="post-action-icon"></iconify-icon>
+                                    <p>Edit</p>
+                                </div>
+                            </a>
+                            <a id="delete_post" data-id="{{$post->id}}">
+                                <div class="post-action">
+                                <iconify-icon icon="bi:delete" class="post-action-icon"></iconify-icon>
+                                <p>Delete</p>
+                                </div>
+                            </a>
+                        @endif
+                            <div class="post-action">
+                                <iconify-icon icon="material-symbols:report-outline" class="post-action-icon"></iconify-icon>
+                                <p>Report</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="social-media-content-container">
+                        @if ($post->media==null)
+                        <p>{{$post->caption}}</p>
+                        @else
+                        <p>{{$post->caption}}</p>
+                        <div class="social-media-media-container">
+                            <?php foreach (json_decode($post->media)as $m){?>
+                            <div class="social-media-media">
+                                @if (pathinfo($m, PATHINFO_EXTENSION) == 'mp4')
+                                    <video controls>
+                                        <source src="{{asset('storage/post/'.$m) }}">
+                                    </video>
+                                @else
+                                    <img src="{{asset('storage/post/'.$m) }}">
+                                @endif
+                            </div>
+                            <?php }?>
+                        </div>
+
+                        @endif
+                    </div>
+
+                    <div class="social-media-post-footer-container">
+                        <div class="social-media-post-like-container">
+                            <iconify-icon icon="akar-icons:heart" class="like-icon"></iconify-icon>
+                            <p><span>1.1k</span> Likes</p>
+                        </div>
+                        <div class="social-media-post-comment-container">
+                            <iconify-icon icon="bi:chat-right" class="comment-icon"></iconify-icon>
+                            <p><span>50</span> Comments</p>
+                        </div>
+                    </div>
+                </div>
+                @endforeach
                 <div class="social-media-post-container">
                     <div class="social-media-post-header">
                         <div class="social-media-post-name-container">
@@ -73,27 +368,6 @@
                         </div>
                     </div>
 
-                    <div class="social-media-content-container">
-                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Dui hendrerit potenti pellentesque tellus urna bibendum mollis.</p>
-                        <div class="social-media-media-container">
-                            <div class="social-media-media">
-                                <img src="https://images.pexels.com/photos/3813491/pexels-photo-3813491.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1">
-                            </div>
-                            <div class="social-media-media">
-                                <img src="https://images.pexels.com/photos/14190098/pexels-photo-14190098.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1">
-                            </div>
-                            <div class="social-media-media">
-                                <img src="https://images.pexels.com/photos/6033962/pexels-photo-6033962.jpeg?auto=compress&cs=tinysrgb&w=1600&lazy=load">
-                            </div>
-                            <div class="social-media-media">
-                                <img src="https://images.pexels.com/photos/9452717/pexels-photo-9452717.jpeg?auto=compress&cs=tinysrgb&w=1600&lazy=load">
-                            </div>
-                            <div class="social-media-media">
-                                <img src="https://images.pexels.com/photos/13920607/pexels-photo-13920607.jpeg?auto=compress&cs=tinysrgb&w=1600&lazy=load">
-                            </div>
-                        </div>
-                    </div>
-
                     <div class="social-media-post-footer-container">
                         <div class="social-media-post-like-container">
                             <iconify-icon icon="akar-icons:heart" class="like-icon"></iconify-icon>
@@ -105,210 +379,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="social-media-post-container">
-                    <div class="social-media-post-header">
-                        <div class="social-media-post-name-container">
-                            <img src="{{asset('img/customer/imgs/user_default.jpg')}}">
-                            <div class="social-media-post-name">
-                                <p>User Name</p>
-                                <span>19 Sep 2022, 11:02 AM</span>
-                            </div>
 
-
-                        </div>
-
-                        <iconify-icon icon="bi:three-dots-vertical" class="social-media-post-header-icon"></iconify-icon>
-
-                        <div class="post-actions-container">
-                            <div class="post-action">
-                                <iconify-icon icon="bi:save" class="post-action-icon"></iconify-icon>
-                                <p>Save</p>
-                            </div>
-
-                            <div class="post-action">
-                                <iconify-icon icon="material-symbols:report-outline" class="post-action-icon"></iconify-icon>
-                                <p>Report</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="social-media-content-container">
-                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Dui hendrerit potenti pellentesque tellus urna bibendum mollis.</p>
-                        <div class="social-media-media-container">
-                            <div class="social-media-media">
-                                <img src="https://images.pexels.com/photos/1552242/pexels-photo-1552242.jpeg?auto=compress&cs=tinysrgb&w=1600">
-                            </div>
-                            <div class="social-media-media">
-                                <img src="https://images.pexels.com/photos/1954524/pexels-photo-1954524.jpeg?auto=compress&cs=tinysrgb&w=1600">
-                            </div>
-                            <div class="social-media-media">
-                                <img src="https://images.pexels.com/photos/841130/pexels-photo-841130.jpeg?auto=compress&cs=tinysrgb&w=1600">
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="social-media-post-footer-container">
-                        <div class="social-media-post-like-container">
-                            <iconify-icon icon="akar-icons:heart" class="like-icon"></iconify-icon>
-                            <p><span>1.1k</span> Likes</p>
-                        </div>
-                        <div class="social-media-post-comment-container">
-                            <iconify-icon icon="bi:chat-right" class="comment-icon"></iconify-icon>
-                            <p><span>50</span> Comments</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="social-media-post-container">
-                    <div class="social-media-post-header">
-                        <div class="social-media-post-name-container">
-                            <img src="{{asset('img/customer/imgs/user_default.jpg')}}">
-                            <div class="social-media-post-name">
-                                <p>User Name</p>
-                                <span>19 Sep 2022, 11:02 AM</span>
-                            </div>
-
-
-                        </div>
-
-                        <iconify-icon icon="bi:three-dots-vertical" class="social-media-post-header-icon"></iconify-icon>
-                        <div class="post-actions-container">
-                            <div class="post-action">
-                                <iconify-icon icon="bi:save" class="post-action-icon"></iconify-icon>
-                                <p>Save</p>
-                            </div>
-
-                            <div class="post-action">
-                                <iconify-icon icon="material-symbols:report-outline" class="post-action-icon"></iconify-icon>
-                                <p>Report</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="social-media-content-container">
-                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Dui hendrerit potenti pellentesque tellus urna bibendum mollis.</p>
-                        <div class="social-media-media-container">
-                            <div class="social-media-media">
-                                <img src="https://images.pexels.com/photos/949131/pexels-photo-949131.jpeg?auto=compress&cs=tinysrgb&w=1600">
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="social-media-post-footer-container">
-                        <div class="social-media-post-like-container">
-                            <iconify-icon icon="akar-icons:heart" class="like-icon"></iconify-icon>
-                            <p><span>1.1k</span> Likes</p>
-                        </div>
-                        <div class="social-media-post-comment-container">
-                            <iconify-icon icon="bi:chat-right" class="comment-icon"></iconify-icon>
-                            <p><span>50</span> Comments</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="social-media-post-container">
-                    <div class="social-media-post-header">
-                        <div class="social-media-post-name-container">
-                            <img src="{{asset('img/customer/imgs/user_default.jpg')}}">
-                            <div class="social-media-post-name">
-                                <p>User Name</p>
-                                <span>19 Sep 2022, 11:02 AM</span>
-                            </div>
-                        </div>
-
-                        <iconify-icon icon="bi:three-dots-vertical" class="social-media-post-header-icon"></iconify-icon>
-                        <div class="post-actions-container">
-                            <div class="post-action">
-                                <iconify-icon icon="bi:save" class="post-action-icon"></iconify-icon>
-                                <p>Save</p>
-                            </div>
-
-                            <div class="post-action">
-                                <iconify-icon icon="material-symbols:report-outline" class="post-action-icon"></iconify-icon>
-                                <p>Report</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="social-media-content-container">
-                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Dui hendrerit potenti pellentesque tellus urna bibendum mollis.</p>
-                        <div class="social-media-media-container">
-                            <div class="social-media-media">
-                                <video controls>
-                                    <source src="../imgs/movie.mp4">
-                                </video>
-                            </div>
-                            <div class="social-media-media">
-                                <img src="https://images.pexels.com/photos/136404/pexels-photo-136404.jpeg?auto=compress&cs=tinysrgb&w=1600">
-                            </div>
-                            <div class="social-media-media">
-                                <img src="https://images.pexels.com/photos/949126/pexels-photo-949126.jpeg?auto=compress&cs=tinysrgb&w=1600">
-                            </div>
-                            <div class="social-media-media">
-                                <img src="https://images.pexels.com/photos/260447/pexels-photo-260447.jpeg?auto=compress&cs=tinysrgb&w=1600">
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="social-media-post-footer-container">
-                        <div class="social-media-post-like-container">
-                            <iconify-icon icon="akar-icons:heart" class="like-icon"></iconify-icon>
-                            <p><span>1.1k</span> Likes</p>
-                        </div>
-                        <div class="social-media-post-comment-container">
-                            <iconify-icon icon="bi:chat-right" class="comment-icon"></iconify-icon>
-                            <p><span>50</span> Comments</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="social-media-post-container">
-                    <div class="social-media-post-header">
-                        <div class="social-media-post-name-container">
-                            <img src="{{asset('img/customer/imgs/user_default.jpg')}}">
-                            <div class="social-media-post-name">
-                                <p>User Name</p>
-                                <span>19 Sep 2022, 11:02 AM</span>
-                            </div>
-
-
-                        </div>
-
-                        <iconify-icon icon="bi:three-dots-vertical" class="social-media-post-header-icon"></iconify-icon>
-                        <div class="post-actions-container">
-                            <div class="post-action">
-                                <iconify-icon icon="bi:save" class="post-action-icon"></iconify-icon>
-                                <p>Save</p>
-                            </div>
-
-                            <div class="post-action">
-                                <iconify-icon icon="material-symbols:report-outline" class="post-action-icon"></iconify-icon>
-                                <p>Report</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="social-media-content-container">
-                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Dui hendrerit potenti pellentesque tellus urna bibendum mollis.</p>
-                        <div class="social-media-media-container">
-                            <div class="social-media-media">
-                                <img src="https://images.pexels.com/photos/116079/pexels-photo-116079.jpeg?auto=compress&cs=tinysrgb&w=1600">
-                            </div>
-                            <div class="social-media-media">
-                                <img src="https://images.pexels.com/photos/4752861/pexels-photo-4752861.jpeg?auto=compress&cs=tinysrgb&w=1600">
-                            </div>
-
-                        </div>
-                    </div>
-
-                    <div class="social-media-post-footer-container">
-                        <div class="social-media-post-like-container">
-                            <iconify-icon icon="akar-icons:heart" class="like-icon"></iconify-icon>
-                            <p><span>1.1k</span> Likes</p>
-                        </div>
-                        <div class="social-media-post-comment-container">
-                            <iconify-icon icon="bi:chat-right" class="comment-icon"></iconify-icon>
-                            <p><span>50</span> Comments</p>
-                        </div>
-                    </div>
-                </div>
             </div>
         </div>
 
@@ -332,8 +403,209 @@
             $('.social-media-left-search-container input').val('')
         });
 
+        $(document).on('click', '#delete_post', function(e){
+            e.preventDefault();
+            var id = $(this).data('id');
+            Swal.fire({
+                        text: "Are you sure to delete post?",
+                        showClass: {
+                                popup: 'animate__animated animate__fadeInDown'
+                            },
+                            hideClass: {
+                                popup: 'animate__animated animate__fadeOutUp'
+                            },
+                        showCancelButton: true,
+                        confirmButtonText: 'Yes',
+                        cancelButtonText: 'No',
 
-                $(document).on('click', '#AddFriend', function(e) {
+                        }).then((willDelete) => {
+                            var add_url = "{{ route('post.destroy', [':id']) }}";
+                            add_url = add_url.replace(':id', id);
+
+                            $.ajaxSetup({
+                                    headers: {
+                                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                                    }
+                                });
+                            $.ajax({
+                                method: "POST",
+                                url: add_url,
+                                datatype: "json",
+                                success: function(data) {
+                                    window.location.reload();
+                                    // Swal.fire({
+                                    //             text: data.success,
+                                    //             showClass: {
+                                    //                     popup: 'animate__animated animate__fadeInDown'
+                                    //                 },
+                                    //                 hideClass: {
+                                    //                     popup: 'animate__animated animate__fadeOutUp'
+                                    //                 },
+                                    //             }).then(() => {
+                                    //     window.location.reload()
+                                    // })
+                                }
+                                })
+                        })
+        })
+
+        $(document).on('click','#edit_post',function(e){
+            e.preventDefault();
+            $(".editpost-photo-video-imgpreview-container").empty();
+
+            dtEdit.clearData()
+            document.getElementById('editPostInput').files = dtEdit.files;
+            var id = $(this).data('id');
+
+            $('#editPostModal').modal('show');
+            var add_url = "{{ route('post.edit', [':id']) }}";
+            add_url = add_url.replace(':id', id);
+
+            $.ajaxSetup({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    }
+                });
+            $.ajax({
+                    method: "POST",
+                    url: add_url,
+                    datatype: "json",
+                    success: function(data) {
+                        if(data.status==400){
+                            alert(data.message)
+                        }else{
+                            $('#editPostCaption').val(data.post.caption);
+                            $('#edit_post_id').val(data.post.id);
+
+                            var filesdb =JSON.parse(data.post.media);
+                            // var filesAmount=files.length;
+                            var storedFilesdb = filesdb;
+                            // console.log(storedFilesdb)
+
+
+                            filesdb.forEach(function(f) {
+                                fileExtension = f.replace(/^.*\./, '');
+                                if (fileExtension=='jpg'||'png'||'jpeg') {
+                                    var html = "<div class='addpost-preview'><iconify-icon icon='akar-icons:cross' data-file='" + f + "' class='delete-preview-db-icon'></iconify-icon><img src='storage/post/"+f+"' data-file='" + f + "' class='selFile' title='Click to remove'></div>";
+                                    $(".editpost-photo-video-imgpreview-container").append(html);
+
+                                }else if(fileExtension=='mp4'){
+                                    var html = "<div class='editpost-preview'><iconify-icon icon='akar-icons:cross' data-file='" + f.name + "' class='delete-preview-db-icon'></iconify-icon><video controls><source src='storage/post/"+f+"' data-file='" + f.name + "' class='selFile' title='Click to remove'>" + f+ "<br clear=\"left\"/><video></div>";
+                                    $(".editpost-photo-video-imgpreview-container").append(html);
+                                }
+
+                            });
+
+                            $("body").on("click", ".delete-preview-db-icon", removeFiledb);
+
+                            function removeFiledb(){
+                                var file = $(this).data('file')
+                                storedFilesdb = storedFilesdb.filter((item) => {
+                                    return file !== item
+                                })
+                                console.log(storedFilesdb)
+
+
+                                $(this).parent().remove();
+                            }
+
+                            $('#edit_form').submit(function(e){
+                                e.preventDefault();
+                                $('#editPostModal'). modal('hide');
+
+                            var fileUpload=$('#editPostInput');
+                            console.log(storedFilesdb.length );
+                            console.log(parseInt(fileUpload.get(0).files.length) );
+                            console.log(storedFilesdb);
+                            console.log(fileUpload.get(0).files);
+
+                            if(!$('#editPostCaption').val() && (parseInt(fileUpload.get(0).files.length) + storedFilesdb.length) === 0){
+                                alert("Cannot post!!")
+                            }else{
+                                if((parseInt(fileUpload.get(0).files.length))+storedFilesdb.length > 5){
+                                    Swal.fire({
+                                                text: "You can only upload a maximum of 5 files",
+                                                confirmButtonColor: '#3CDD57',
+                                                timer: 5000
+                                            });
+                                }else{
+                                    e.preventDefault();
+
+                                    var url="{{route('post.update')}}";
+                                    let formData = new FormData(edit_form);
+                                    var oldimg=storedFilesdb;
+                                    var edit_post_id=$('#edit_post_id').val();
+                                    var caption=$('#editPostCaption').val();
+
+                                    const totalImages = $("#editPostInput")[0].files.length;
+                                    let images = $("#editPostInput")[0];
+
+                                    // for (let i = 0; i < totalImages; i++) {
+                                        formData.append('images', images);
+                                    // }
+                                    formData.append('totalImages', totalImages);
+                                    formData.append('caption', caption);
+                                    formData.append('oldimg', storedFilesdb);
+                                    formData.append('edit_post_id', edit_post_id);
+
+                                    for (const value of formData.values()) {
+                                        console.log(value);
+                                    }
+
+                                    $.ajaxSetup({
+                                                headers: {
+                                                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                                                }
+                                            });
+
+                                    $.ajax({
+                                            type:'POST',
+                                            url:url,
+                                            data: formData,
+                                            processData: false,
+                                            cache: false,
+                                            contentType: false,
+                                            success:function(data){
+                                            Swal.fire({
+                                                        text: data.success,
+                                                        confirmButtonColor: '#3CDD57',
+                                                        timer: 5000
+                                                    }).then(() => {
+                                                        window.location.reload()
+                                        })
+                                                    }
+                                        });
+                                }
+
+                            }
+                            // var data={
+                            //             'caption':$('#editPostCaption').val(),
+                            //             'post_id':$('#edit_post_id').val()
+                            //         }
+                            // $.ajax({
+                            //                 type:'POST',
+                            //                 url:url,
+                            //                 data: data,
+                            //                 success:function(data){
+                            //                    Swal.fire({
+                            //                             text: data.success,
+                            //                             confirmButtonColor: '#3CDD57',
+                            //                             timer: 5000
+                            //                         }).then(() => {
+                            //                             window.location.reload()
+                            //             })
+                            //                 }
+                            //     });
+                        })
+
+                        }
+
+                    }
+                })
+
+        })
+
+        $(document).on('click', '#AddFriend', function(e) {
                 e.preventDefault();
                 $('.social-media-left-searched-items-container').empty();
                 var url = new URL(this.href);
@@ -344,15 +616,15 @@
                 var add_url = "{{ route('addUser', [':id']) }}";
                 add_url = add_url.replace(':id', id);
                 $(".add-member-btn").attr('href','');
-                $.ajax({
-                    type: "GET",
-                    url: add_url,
-                    datatype: "json",
-                    success: function(data) {
-                        console.log(data)
-                        search();
-                    }
-                })
+                    $.ajax({
+                        type: "GET",
+                        url: add_url,
+                        datatype: "json",
+                        success: function(data) {
+                            console.log(data)
+                            search();
+                        }
+                    })
                 });
 
                 $(document).on('click', '#cancelRequest', function(e) {
@@ -576,59 +848,81 @@
             $(".social-media-left-container-trigger .arrow-icon").toggleClass("rotate-arrow")
         })
 
-        $('.addpost-submit-btn').click(function(e){
+        $('#form').submit(function(e){
             e.preventDefault();
+            $('#addPostModal'). modal('hide');
             var caption=$('#addPostCaption').val();
 
             var url="{{route('post.store')}}";
-            var $fileUpload=$('#addPostInput').val();
+            var $fileUpload=$('#addPostInput');
 
-            // if(!$('.addpost-caption-input').val() && parseInt($fileUpload.get(0).files.length) === 0){
-            //     alert("Cannot post!!")
-            // }else{
-            //     // console.log(parseInt($fileUpload.get(0).files.length))
-            //     if (parseInt($fileUpload.get(0).files.length)>5){
-            //         alert("You can only upload a maximum of 5 files");
-            //     }else{
-                let image_upload = new FormData();
-                let TotalImages = $('#addPostInput')[0].files.length;  //Total Images
-                let images = $('#addPostInput')[0].files;
-
-                for (let i = 0; i < TotalImages; i++) {
-                    image_upload.append('images' + i, images[i]);
+            if(!$('.addpost-caption-input').val() && parseInt($fileUpload.get(0).files.length) === 0){
+                alert("Cannot post!!")
+            }
+            else{
+                if (parseInt($fileUpload.get(0).files.length)>5){
+                    Swal.fire({
+                        text: "You can only upload a maximum of 5 files",
+                        confirmButtonColor: '#3CDD57',
+                        timer: 5000
+                    });
                 }
-                image_upload.append('TotalImages', TotalImages);
-                console.log(image_upload);
+                else{
+                    e.preventDefault();
+                    let formData = new FormData(form);
 
-                            //
-                    // $.ajaxSetup({
-                    //                 headers: {
-                    //                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                    //                 }
-                    //             });
-                    //  $.ajax({
-                    //         type: "POST",
-                    //         _token: $('meta[name="csrf-token"]').attr('content'),
-                    //         url: url,
-                    //         data:image_upload,
-                    //         contentType: false,
-                    //         processData: false,
-                    //         success: function(data) {
+                    const totalImages = $("#addPostInput")[0].files.length;
+                    let images = $("#addPostInput")[0];
 
-                    //         }
-                    //     });
-                //}
-            //}
+                    for (let i = 0; i < totalImages; i++) {
+                        formData.append('images' + i, images.files[i]);
+                    }
+                    formData.append('totalImages', totalImages);
 
+                    var caption=$('#addPostCaption').val();
+
+                    $.ajaxSetup({
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        }
+                    });
+
+                    $.ajax({
+                            type:'POST',
+                            url:"{{route('post.store')}}",
+                            data: formData,
+                                processData: false,
+                                cache: false,
+                                contentType: false,
+                            success:function(data){
+
+                               Swal.fire({
+                                        text: data.message,
+                                        confirmButtonColor: '#3CDD57',
+                                        timer: 5000
+                                    }).then(() => {
+                                        window.location.reload()
+                        })
+                            }
+                    });
+
+                }
+            }
 
         })
 
+
+
         $("#addPostInput").on("change", handleFileSelect);
+        $("#editPostInput").on("change", handleFileSelectEdit);
 
         selDiv = $(".addpost-photo-video-imgpreview-container");
 
+        console.log(selDiv);
 
         $("body").on("click", ".delete-preview-icon", removeFile);
+        $("body").on("click", ".delete-preview-edit-input-icon", removeFileFromEditInput);
+
 
 
         console.log($("#selectFilesM").length);
@@ -636,8 +930,11 @@
 
 
     var selDiv = "";
+
     var storedFiles = [];
+    var storedFilesEdit = [];
     const dt = new DataTransfer();
+    const dtEdit = new DataTransfer();
 
     function handleFileSelect(e) {
 
@@ -645,9 +942,11 @@
         console.log(files)
 
         var filesArr = Array.prototype.slice.call(files);
+
         var device = $(e.target).data("device");
+
         filesArr.forEach(function(f) {
-            console.log(f)
+            console.log(f);
             if (f.type.match("image.*")) {
                 storedFiles.push(f);
 
@@ -684,7 +983,57 @@
         });
 
         document.getElementById('addPostInput').files = dt.files;
-        console.log(document.getElementById('addPostInput').files)
+        console.log(document.getElementById('addPostInput').files+" Add Post Input")
+
+    }
+    function handleFileSelectEdit(e) {
+
+        var files = e.target.files;
+        console.log(files)
+
+        var filesArr = Array.prototype.slice.call(files);
+
+        var device = $(e.target).data("device");
+
+        filesArr.forEach(function(f) {
+
+            if (f.type.match("image.*")) {
+                storedFilesEdit.push(f);
+
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                var html = "<div class='addpost-preview'><iconify-icon icon='akar-icons:cross' data-file='" + f.name + "' class='delete-preview-edit-input-icon'></iconify-icon><img src=\"" + e.target.result + "\" data-file='" + f.name + "' class='selFile' title='Click to remove'></div>";
+
+                if (device == "mobile") {
+                    $("#selectedFilesM").append(html);
+                } else {
+                    $(".editpost-photo-video-imgpreview-container").append(html);
+                }
+                }
+                reader.readAsDataURL(f);
+                dtEdit.items.add(f);
+            }else if(f.type.match("video.*")){
+                storedFilesEdit.push(f);
+
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                var html = "<div class='addpost-preview'><iconify-icon icon='akar-icons:cross' data-file='" + f.name + "' class='delete-preview-edit-input-icon'></iconify-icon><video controls><source src=\"" + e.target.result + "\" data-file='" + f.name + "' class='selFile' title='Click to remove'>" + f.name + "<br clear=\"left\"/><video></div>";
+
+                if (device == "mobile") {
+                    $("#selectedFilesM").append(html);
+                } else {
+                    $(".editpost-photo-video-imgpreview-container").append(html);
+                }
+                }
+                reader.readAsDataURL(f);
+                dtEdit.items.add(f);
+            }
+
+
+        });
+
+        document.getElementById('editPostInput').files = dtEdit.files;
+        console.log(document.getElementById('editPostInput').files+" Edit Post Input")
 
     }
 
@@ -706,6 +1055,28 @@
         }
         $(this).parent().remove();
     }
+    function removeFileFromEditInput(e) {
+        var file = $(this).data("file");
+        var names = [];
+        for(let i = 0; i < dtEdit.items.length; i++){
+            if(file === dtEdit.items[i].getAsFile().name){
+                dtEdit.items.remove(i);
+            }
+        }
+        document.getElementById('editPostInput').files = dtEdit.files;
+
+        for (var i = 0; i < storedFilesEdit.length; i++) {
+            if (storedFilesEdit[i].name === file) {
+            storedFilesEdit.splice(i, 1);
+            break;
+            }
+        }
+        $(this).parent().remove();
+    }
+
+
+
+
 
     function clearAddPost(){
         storedFiles = []

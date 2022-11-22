@@ -69,14 +69,18 @@
 
                     <div>
                     <div class="social-media-profile-username-container">
-                        <span class="social-media-profile-username">{{$user->name}}</span>
-                        <span class="social-media-profile-userID">(User ID: 1234567890)</span><br>
+                        <span class="social-media-profile-username">{{$user->name}}</span><br>
+                        {{-- <span class="social-media-profile-userID">(User ID: 1234567890)</span><br> --}}
                         <span class="social-media-profile-description">Lorem ipsum dolor sit amet, consectetur adipiscing elit.Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span>
                     </div>
 
                     <div class="social-media-profile-friends-parent-container">
                         <div class="social-media-profile-friends-header">
-                            <p>1200 Friends</p>
+                            @if (count($friends)>1)
+                            <p>{{count($friends)}} Friends</p>
+                            @else
+                            <p>{{count($friends)}} Friend</p>
+                            @endif
                             <a href="#">
                                 See All
                                 <iconify-icon icon="bi:arrow-right" class="arrow-icon"></iconify-icon>
@@ -84,338 +88,97 @@
                         </div>
 
                         <div class="social-media-profile-friends-container">
+                            @forelse ($friends as $friend)
                             <div class="social-media-profile-friend">
+                                <a href="{{route('socialmedia.profile',$friend->id)}}" style="text-decoration:none">
                                 <img src="{{asset('img/customer/imgs/user_default.jpg')}}">
-                                <p>User Name</p>
+
+                                <p>{{$friend->name}}</p>
+                            </a>
                             </div>
-                            <div class="social-media-profile-friend">
-                                <img src="{{asset('img/customer/imgs/user_default.jpg')}}">
-                                <p>User Name</p>
-                            </div>
-                            <div class="social-media-profile-friend">
-                                <img src="{{asset('img/customer/imgs/user_default.jpg')}}">
-                                <p>User Name</p>
-                            </div>
-                            <div class="social-media-profile-friend">
-                                <img src="{{asset('img/customer/imgs/user_default.jpg')}}">
-                                <p>User Name</p>
-                            </div>
-                            <div class="social-media-profile-friend">
-                                <img src="{{asset('img/customer/imgs/user_default.jpg')}}">
-                                <p>User Name</p>
-                            </div>
-                            <div class="social-media-profile-friend">
-                                <img src="{{asset('img/customer/imgs/user_default.jpg')}}">
-                                <p>User Name</p>
-                            </div>
+                            @empty
+                            <p class="text-secondary p-1">No Friend</p>
+                            @endforelse
                         </div>
                     </div>
 
                     <div class="social-media-profile-posts-parent-container">
                         <p>Post & Activities</p>
-                        <div class="social-media-post-container">
-                            <div class="social-media-post-header">
-                                <div class="social-media-post-name-container">
-                                    <img src="{{asset('img/customer/imgs/user_default.jpg')}}">
-                                    <div class="social-media-post-name">
-                                        <p>User Name</p>
-                                        <span>19 Sep 2022, 11:02 AM</span>
+
+                        @forelse ($posts as $post)
+                            <div class="social-media-post-container">
+                                <div class="social-media-post-header">
+                                    <div class="social-media-post-name-container">
+                                        <a href="{{route('socialmedia.profile',$post->user_id)}}" style="text-decoration:none">
+                                        <img src="{{asset('img/customer/imgs/user_default.jpg')}}">
+                                        </a>
+                                        <div class="social-media-post-name">
+                                            <a href="{{route('socialmedia.profile',$post->user_id)}}" style="text-decoration:none">
+                                                <p>{{$post->user->name}}</p>
+                                            </a>
+                                            <span>{{ \Carbon\Carbon::parse($post->created_at)->format('d M Y , g:i A')}}</span>
+                                        </div>
+
+
+                                    </div>
+
+                                    <iconify-icon icon="bi:three-dots-vertical" class="social-media-post-header-icon"></iconify-icon>
+                                    <div class="post-actions-container">
+                                        <div class="post-action">
+                                            <iconify-icon icon="bi:save" class="post-action-icon"></iconify-icon>
+                                            <p>Save</p>
+                                        </div>
+
+                                        <div class="post-action">
+                                            <iconify-icon icon="bi:delete" class="post-action-icon"></iconify-icon>
+                                            <p>Delete</p>
+                                        </div>
+
+
+                                        <div class="post-action">
+                                            <iconify-icon icon="material-symbols:report-outline" class="post-action-icon"></iconify-icon>
+                                            <p>Report</p>
+                                        </div>
                                     </div>
                                 </div>
 
-                                <iconify-icon icon="bi:three-dots-vertical" class="social-media-post-header-icon"></iconify-icon>
-
-                                <div class="post-actions-container" >
-                                    <div class="post-action">
-                                        <iconify-icon icon="bi:save" class="post-action-icon"></iconify-icon>
-                                        <p>Save</p>
+                                <div class="social-media-content-container">
+                                    @if ($post->media==null)
+                                    <p>{{$post->caption}}</p>
+                                    @else
+                                    <p>{{$post->caption}}</p>
+                                    <div class="social-media-media-container">
+                                        <?php foreach (json_decode($post->media)as $m){?>
+                                        <div class="social-media-media">
+                                            @if (pathinfo($m, PATHINFO_EXTENSION) == 'mp4')
+                                                <video controls>
+                                                    <source src="{{asset('storage/post/'.$m) }}">
+                                                </video>
+                                            @else
+                                                <img src="{{asset('storage/post/'.$m) }}">
+                                            @endif
+                                        </div>
+                                        <?php }?>
                                     </div>
 
-                                    <div class="post-action">
-                                        <iconify-icon icon="material-symbols:report-outline" class="post-action-icon"></iconify-icon>
-                                        <p>Report</p>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="social-media-content-container">
-                                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Dui hendrerit potenti pellentesque tellus urna bibendum mollis.</p>
-
-                            </div>
-
-                            <div class="social-media-post-footer-container">
-                                <div class="social-media-post-like-container">
-                                    <iconify-icon icon="akar-icons:heart" class="like-icon"></iconify-icon>
-                                    <p><span>1.1k</span> Likes</p>
-                                </div>
-                                <div class="social-media-post-comment-container">
-                                    <iconify-icon icon="bi:chat-right" class="comment-icon"></iconify-icon>
-                                    <p><span>50</span> Comments</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="social-media-post-container">
-                            <div class="social-media-post-header">
-                                <div class="social-media-post-name-container">
-                                    <img src="{{asset('img/customer/imgs/user_default.jpg')}}">
-                                    <div class="social-media-post-name">
-                                        <p>User Name</p>
-                                        <span>19 Sep 2022, 11:02 AM</span>
-                                    </div>
-
-
+                                    @endif
                                 </div>
 
-                                <iconify-icon icon="bi:three-dots-vertical" class="social-media-post-header-icon"></iconify-icon>
-                                <div class="post-actions-container">
-                                    <div class="post-action">
-                                        <iconify-icon icon="bi:save" class="post-action-icon"></iconify-icon>
-                                        <p>Save</p>
+                                <div class="social-media-post-footer-container">
+                                    <div class="social-media-post-like-container">
+                                        <iconify-icon icon="akar-icons:heart" class="like-icon"></iconify-icon>
+                                        <p><span>1.1k</span> Likes</p>
                                     </div>
-
-                                    <div class="post-action">
-                                        <iconify-icon icon="material-symbols:report-outline" class="post-action-icon"></iconify-icon>
-                                        <p>Report</p>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="social-media-content-container">
-                                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Dui hendrerit potenti pellentesque tellus urna bibendum mollis.</p>
-                                <div class="social-media-media-container">
-                                    <div class="social-media-media">
-                                        <img src="https://images.pexels.com/photos/3813491/pexels-photo-3813491.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1">
-                                    </div>
-                                    <div class="social-media-media">
-                                        <img src="https://images.pexels.com/photos/14190098/pexels-photo-14190098.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1">
-                                    </div>
-                                    <div class="social-media-media">
-                                        <img src="https://images.pexels.com/photos/6033962/pexels-photo-6033962.jpeg?auto=compress&cs=tinysrgb&w=1600&lazy=load">
-                                    </div>
-                                    <div class="social-media-media">
-                                        <img src="https://images.pexels.com/photos/9452717/pexels-photo-9452717.jpeg?auto=compress&cs=tinysrgb&w=1600&lazy=load">
-                                    </div>
-                                    <div class="social-media-media">
-                                        <img src="https://images.pexels.com/photos/13920607/pexels-photo-13920607.jpeg?auto=compress&cs=tinysrgb&w=1600&lazy=load">
+                                    <div class="social-media-post-comment-container">
+                                        <iconify-icon icon="bi:chat-right" class="comment-icon"></iconify-icon>
+                                        <p><span>50</span> Comments</p>
                                     </div>
                                 </div>
                             </div>
+                            @empty
+                            <p class="text-secondary p-1">No Post And Activity</p>
+                        @endforelse
 
-                            <div class="social-media-post-footer-container">
-                                <div class="social-media-post-like-container">
-                                    <iconify-icon icon="akar-icons:heart" class="like-icon"></iconify-icon>
-                                    <p><span>1.1k</span> Likes</p>
-                                </div>
-                                <div class="social-media-post-comment-container">
-                                    <iconify-icon icon="bi:chat-right" class="comment-icon"></iconify-icon>
-                                    <p><span>50</span> Comments</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="social-media-post-container">
-                            <div class="social-media-post-header">
-                                <div class="social-media-post-name-container">
-                                    <img src="{{asset('img/customer/imgs/user_default.jpg')}}">
-                                    <div class="social-media-post-name">
-                                        <p>User Name</p>
-                                        <span>19 Sep 2022, 11:02 AM</span>
-                                    </div>
-
-
-                                </div>
-
-                                <iconify-icon icon="bi:three-dots-vertical" class="social-media-post-header-icon"></iconify-icon>
-
-                                <div class="post-actions-container">
-                                    <div class="post-action">
-                                        <iconify-icon icon="bi:save" class="post-action-icon"></iconify-icon>
-                                        <p>Save</p>
-                                    </div>
-
-                                    <div class="post-action">
-                                        <iconify-icon icon="material-symbols:report-outline" class="post-action-icon"></iconify-icon>
-                                        <p>Report</p>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="social-media-content-container">
-                                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Dui hendrerit potenti pellentesque tellus urna bibendum mollis.</p>
-                                <div class="social-media-media-container">
-                                    <div class="social-media-media">
-                                        <img src="https://images.pexels.com/photos/1552242/pexels-photo-1552242.jpeg?auto=compress&cs=tinysrgb&w=1600">
-                                    </div>
-                                    <div class="social-media-media">
-                                        <img src="https://images.pexels.com/photos/1954524/pexels-photo-1954524.jpeg?auto=compress&cs=tinysrgb&w=1600">
-                                    </div>
-                                    <div class="social-media-media">
-                                        <img src="https://images.pexels.com/photos/841130/pexels-photo-841130.jpeg?auto=compress&cs=tinysrgb&w=1600">
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="social-media-post-footer-container">
-                                <div class="social-media-post-like-container">
-                                    <iconify-icon icon="akar-icons:heart" class="like-icon"></iconify-icon>
-                                    <p><span>1.1k</span> Likes</p>
-                                </div>
-                                <div class="social-media-post-comment-container">
-                                    <iconify-icon icon="bi:chat-right" class="comment-icon"></iconify-icon>
-                                    <p><span>50</span> Comments</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="social-media-post-container">
-                            <div class="social-media-post-header">
-                                <div class="social-media-post-name-container">
-                                    <img src="{{asset('img/customer/imgs/user_default.jpg')}}">
-                                    <div class="social-media-post-name">
-                                        <p>User Name</p>
-                                        <span>19 Sep 2022, 11:02 AM</span>
-                                    </div>
-
-
-                                </div>
-
-                                <iconify-icon icon="bi:three-dots-vertical" class="social-media-post-header-icon"></iconify-icon>
-                                <div class="post-actions-container">
-                                    <div class="post-action">
-                                        <iconify-icon icon="bi:save" class="post-action-icon"></iconify-icon>
-                                        <p>Save</p>
-                                    </div>
-
-                                    <div class="post-action">
-                                        <iconify-icon icon="material-symbols:report-outline" class="post-action-icon"></iconify-icon>
-                                        <p>Report</p>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="social-media-content-container">
-                                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Dui hendrerit potenti pellentesque tellus urna bibendum mollis.</p>
-                                <div class="social-media-media-container">
-                                    <div class="social-media-media">
-                                        <img src="https://images.pexels.com/photos/949131/pexels-photo-949131.jpeg?auto=compress&cs=tinysrgb&w=1600">
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="social-media-post-footer-container">
-                                <div class="social-media-post-like-container">
-                                    <iconify-icon icon="akar-icons:heart" class="like-icon"></iconify-icon>
-                                    <p><span>1.1k</span> Likes</p>
-                                </div>
-                                <div class="social-media-post-comment-container">
-                                    <iconify-icon icon="bi:chat-right" class="comment-icon"></iconify-icon>
-                                    <p><span>50</span> Comments</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="social-media-post-container">
-                            <div class="social-media-post-header">
-                                <div class="social-media-post-name-container">
-                                    <img src="{{asset('img/customer/imgs/user_default.jpg')}}">
-                                    <div class="social-media-post-name">
-                                        <p>User Name</p>
-                                        <span>19 Sep 2022, 11:02 AM</span>
-                                    </div>
-
-
-                                </div>
-
-                                <iconify-icon icon="bi:three-dots-vertical" class="social-media-post-header-icon"></iconify-icon>
-                                <div class="post-actions-container">
-                                    <div class="post-action">
-                                        <iconify-icon icon="bi:save" class="post-action-icon"></iconify-icon>
-                                        <p>Save</p>
-                                    </div>
-
-                                    <div class="post-action">
-                                        <iconify-icon icon="material-symbols:report-outline" class="post-action-icon"></iconify-icon>
-                                        <p>Report</p>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="social-media-content-container">
-                                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Dui hendrerit potenti pellentesque tellus urna bibendum mollis.</p>
-                                <div class="social-media-media-container">
-                                    <div class="social-media-media">
-                                        <img src="https://images.pexels.com/photos/136404/pexels-photo-136404.jpeg?auto=compress&cs=tinysrgb&w=1600">
-                                    </div>
-                                    <div class="social-media-media">
-                                        <img src="https://images.pexels.com/photos/949126/pexels-photo-949126.jpeg?auto=compress&cs=tinysrgb&w=1600">
-                                    </div>
-                                    <div class="social-media-media">
-                                        <img src="https://images.pexels.com/photos/260447/pexels-photo-260447.jpeg?auto=compress&cs=tinysrgb&w=1600">
-                                    </div>
-                                    <div class="social-media-media">
-                                        <img src="https://images.pexels.com/photos/949126/pexels-photo-949126.jpeg?auto=compress&cs=tinysrgb&w=1600">
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="social-media-post-footer-container">
-                                <div class="social-media-post-like-container">
-                                    <iconify-icon icon="akar-icons:heart" class="like-icon"></iconify-icon>
-                                    <p><span>1.1k</span> Likes</p>
-                                </div>
-                                <div class="social-media-post-comment-container">
-                                    <iconify-icon icon="bi:chat-right" class="comment-icon"></iconify-icon>
-                                    <p><span>50</span> Comments</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="social-media-post-container">
-                            <div class="social-media-post-header">
-                                <div class="social-media-post-name-container">
-                                    <img src="{{asset('img/customer/imgs/user_default.jpg')}}">
-                                    <div class="social-media-post-name">
-                                        <p>User Name</p>
-                                        <span>19 Sep 2022, 11:02 AM</span>
-                                    </div>
-
-
-                                </div>
-
-                                <iconify-icon icon="bi:three-dots-vertical" class="social-media-post-header-icon"></iconify-icon>
-                                <div class="post-actions-container">
-                                    <div class="post-action">
-                                        <iconify-icon icon="bi:save" class="post-action-icon"></iconify-icon>
-                                        <p>Save</p>
-                                    </div>
-
-                                    <div class="post-action">
-                                        <iconify-icon icon="material-symbols:report-outline" class="post-action-icon"></iconify-icon>
-                                        <p>Report</p>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="social-media-content-container">
-                                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Dui hendrerit potenti pellentesque tellus urna bibendum mollis.</p>
-                                <div class="social-media-media-container">
-                                    <div class="social-media-media">
-                                        <img src="https://images.pexels.com/photos/949131/pexels-photo-949131.jpeg?auto=compress&cs=tinysrgb&w=1600">
-                                    </div>
-                                    <div class="social-media-media">
-                                        <img src="https://images.pexels.com/photos/949131/pexels-photo-949131.jpeg?auto=compress&cs=tinysrgb&w=1600">
-                                    </div>
-
-                                </div>
-                            </div>
-
-                            <div class="social-media-post-footer-container">
-                                <div class="social-media-post-like-container">
-                                    <iconify-icon icon="akar-icons:heart" class="like-icon"></iconify-icon>
-                                    <p><span>1.1k</span> Likes</p>
-                                </div>
-                                <div class="social-media-post-comment-container">
-                                    <iconify-icon icon="bi:chat-right" class="comment-icon"></iconify-icon>
-                                    <p><span>50</span> Comments</p>
-                                </div>
-                            </div>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -467,6 +230,12 @@
                 })
                 });
     });
-    </script>
+
+    $( document ).ready(function() {
+    $('.social-media-post-header-icon').click(function(){
+            $(this).next().toggle()
+        })
+    })
+</script>
 
 @endpush

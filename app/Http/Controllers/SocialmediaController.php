@@ -18,24 +18,144 @@ class SocialmediaController extends Controller
 {
     public function index()
     {
-        // $users = DB::select("SELECT u.name,fri_sender.friend_status as Friend,fri_receiver.friend_status as Friend1 From
-        // users u left join friendships fri_sender on fri_sender.sender_id = u.id left join friendships fri_receiver on u.id = fri_receiver.receiver_id");
-        // $users =  User::select('users.name','receiver.receiver_id as fri_rec','sender.friend_status as fri_send',
-        // 'users.id','sender.sender_id')
-        //                 ->leftJoin('friendships as receiver','users.id','receiver.receiver_id')
-        //                 ->leftJoin('friendships as sender','users.id','sender.sender_id')
-        //                 ->get();
-        // dd($users);
-        return view('customer.socialmedia');
+        $user=auth()->user();
+        $user_id=$user->id;
+        $friends=DB::table('friendships')
+                    ->where('friend_status',2)
+                    ->where(function($query) use ($user_id){
+                        $query->where('sender_id',$user_id)
+                            ->orWhere('receiver_id',$user_id);
+                    })
+                    ->get(['sender_id','receiver_id'])->toArray();
+
+        if(!empty($friends)){
+            $n= array();
+            foreach($friends as $friend){
+                    $f=(array)$friend;
+                    array_push($n, $f['sender_id'],$f['receiver_id']);
+            }
+            $posts=Post::whereIn('user_id',$n)
+                        ->orderBy('created_at','DESC')
+                        ->with('user')
+                        ->paginate(30);
+        }else{
+            $n= array();
+            $posts=Post::where('user_id',$user->id)
+                    ->orderBy('created_at','DESC')
+                    ->with('user')
+                    ->paginate(30);
+        }
+        $left_friends=User::whereIn('id',$n)
+                        ->where('id','!=',$user->id)
+                        ->paginate(6);
+
+                        //dd($left_friends);
+        //$posts=Post::orderBy('created_at','DESC')->with('user')->paginate(10);
+        return view('customer.socialmedia',compact('posts','left_friends'));
     }
-    public function socialmedia_profile(Request $request)
+    public function socialmedia_profile($id)
     {
-        $auth = Auth()->user()->id;
-        $user = User::where('id',$request->id)->first();
-        $friend = DB::select("SELECT * FROM `friendships` WHERE (receiver_id = $auth or sender_id = $auth )
-        AND (receiver_id = $request->id or sender_id = $request->id)");
-        return view('customer.socialmedia_profile',compact('user','friend'));
+        //dd($id);
+        $user = User::where('id',$id)->first();
+        $posts=Post::where('user_id',$id)
+                    ->orderBy('created_at','DESC')
+                    ->with('user')
+                    ->paginate(30);
+
+        $friendships=DB::table('friendships')
+                    ->where('friend_status',2)
+                    ->where(function($query) use ($id){
+                        $query->where('sender_id',$id)
+                            ->orWhere('receiver_id',$id);
+                    })
+                    ->join('users as sender','sender.id','friendships.sender_id')
+                    ->join('users as receiver','receiver.id','friendships.receiver_id')
+                    ->get(['sender_id','receiver_id'])->toArray();
+                    //dd($friends);
+        $n= array();
+        foreach($friendships as $friend){
+                    $f=(array)$friend;
+                    array_push($n, $f['sender_id'],$f['receiver_id']);
+            }
+            $friends=User::whereIn('id',$n)
+                        ->where('id','!=',$user->id)
+                        ->paginate(6);
+
+        return view('customer.socialmedia_profile',compact('user','posts','friends'));
     }
+
+    public function post_update(Request $request)
+    {
+        $input = $request->all();
+
+        $edit_post=Post::findOrFail($input['edit_post_id']);
+        $edit_post->caption=$input['caption'];
+dd($input['oldimg']);
+            if($input['totalImages']!=0 && $input['oldimg']==null) {
+                $images=$input['editPostInput'];
+                foreach($images as $file)
+                {
+                    $extension = $file->extension();
+                    $name = rand().".".$extension;
+                    $file->storeAs('/public/post/', $name);
+                    $imgData[] = $name;
+                    $edit_post->media = json_encode($imgData);
+                }
+
+            }elseif($input['oldimg']!=null && $input['totalImages']==0){
+
+                $imgData[] = $input['oldimg'];
+
+                $edit_post->media =$imgData;
+
+            }elseif($input['oldimg']==null && $input['totalImages']==0){
+                $edit_post->media=null;
+
+            }else{
+                $oldimgData[] = $input['oldimg'];
+                $old_images =$oldimgData;
+
+                $images=$input['editPostInput'];
+
+                foreach($images as $file)
+                {
+                    $extension = $file->extension();
+                    $name = rand().".".$extension;
+                    $file->storeAs('/public/post/', $name);
+                    $imgData[] = $name;
+                    $new_images =$imgData;
+
+                }
+                $result=array_merge($old_images, $new_images);
+                $edit_post->media=json_encode($result);
+            }
+
+            $edit_post->update();
+
+        return response()->json([
+            'success' => 'Post Updated successfully!'
+        ]);
+    }
+
+    public function post_edit(Request $request,$id)
+    {
+        $post=Post::find($id);
+        if($post)
+        {
+            return response()->json([
+                'status'=>200,
+                'post'=>$post,
+            ]);
+        }
+        else
+        {
+            return response()->json([
+                'status'=>404,
+                'message'=>'Data Not Found',
+            ]);
+        }
+    }
+
     public function viewFriendRequestNoti(Request $request){
         $auth = Auth()->user()->id;
         DB::table('notifications')->where('id',$request->noti_id)->update(['notification_status' => 2]);
@@ -209,24 +329,40 @@ class SocialmediaController extends Controller
 
     public function post_store(Request $request)
     {
-        //dd($request);
+        $input = $request->all();
         $user=auth()->user();
-        if($request->hasfile('addPostInput')) {
-            foreach($request->file('addPostInput') as $file)
-            {
-                $extension = $file->extension();
-                $name = rand().".".$extension;
-                $file->storeAs('/public/post/', $name);
-                $imgData[] = $name;
+        $post = new Post();
+
+        if($input['totalImages']==0 && $input['caption']!=null){
+            $caption=$input['caption'];
+        }elseif($input['caption']==null && $input['totalImages']!=0){
+            $caption=null;
+            $images=$input['addPostInput'];
+            if($input['addPostInput']) {
+                foreach($images as $file)
+                {
+                    $extension = $file->extension();
+                    $name = rand().".".$extension;
+                    $file->storeAs('/public/post/', $name);
+                    $imgData[] = $name;
+                    $post->media = json_encode($imgData);
+                }
             }
         }
-        $post = new Post();
-        $caption=$request->caption;
-        // $banwords=DB::table('ban_words')
-        //                 ->where('ban_word_english','like', '%' .$caption.'%')
-        //                 ->orWhere('ban_word_myanmar','like', '%' .$caption.'%')
-        //                 ->orWhere('ban_word_myanglish','like', '%' .$caption.'%')
-        //                 ->get()->toArray();
+        elseif($input['totalImages']!=0 && $input['caption']!=null){
+            $caption=$input['caption'];
+            $images=$input['addPostInput'];
+            if($input['addPostInput']) {
+                foreach($images as $file)
+                {
+                    $extension = $file->extension();
+                    $name = rand().".".$extension;
+                    $file->storeAs('/public/post/', $name);
+                    $imgData[] = $name;
+                    $post->media = json_encode($imgData);
+                }
+            }
+        }
         $banwords=DB::table('ban_words')->select('ban_word_english','ban_word_myanmar','ban_word_myanglish')->get();
 
         foreach($banwords as $b){
@@ -235,22 +371,39 @@ class SocialmediaController extends Controller
            $em_banword=$b->ban_word_myanglish;
 
             if (str_contains($caption,$e_banword)) {
-                Alert::warning('Warning', 'Ban Ban Ban');
-                return redirect()->back();
+                // Alert::warning('Warning', 'Ban Ban Ban');
+                //return redirect()->back();
+                return response()->json([
+                    'message'=>'Ban Ban Ban',
+                ]);
             }elseif (str_contains($caption,$m_banword)){
-                Alert::warning('Warning', 'Ban Ban Ban');
-                return redirect()->back();
+                return response()->json([
+                    'message'=>'Ban Ban Ban',
+                ]);
             }elseif (str_contains($caption,$em_banword)){
-                Alert::warning('Warning', 'Ban Ban Ban');
-                return redirect()->back();
+                return response()->json([
+                    'message'=>'Ban Ban Ban',
+                ]);
             }
         }
 
         $post->user_id=$user->id;
-        $post->caption=$request->caption;
-        $post->media = json_encode($imgData);
+        $post->caption=$caption;
+
         $post->save();
-        Alert::success('Success', 'Post Created Successfully');
-        return redirect()->back();
+        return response()->json([
+            'message'=>'Post Created Successfully',
+        ]);
+        // Alert::success('Success', 'Post Created Successfully');
+        // return redirect()->back();
+    }
+
+    public function post_destroy($id)
+    {
+        Post::find($id)->delete($id);
+
+        return response()->json([
+            'success' => 'Post deleted successfully!'
+        ]);
     }
 }

@@ -15,6 +15,7 @@ use App\Models\PersonalMealInfo;
 use Illuminate\Support\Facades\DB;
 use App\Models\PersonalWorkOutInfo;
 use App\Http\Controllers\Controller;
+use App\Models\Profile;
 use RealRashid\SweetAlert\Facades\Alert;
 
 class Customer_TrainingCenterController extends Controller
@@ -211,6 +212,19 @@ class Customer_TrainingCenterController extends Controller
         Alert::success('Success', 'Name Updated Successfully');
         return redirect()->back();
     }
+
+    public function profile_update_cover(Request $request)
+    {
+        $profile=new Profile();
+        $profile->cover_photo=$request->cover;
+        //$user_id=auth()->user()->id;
+        // $user=User::findOrFail($user_id);
+        // $user->update();
+        $profile->save();
+        Alert::success('Success', 'Cover Photo Updated Successfully');
+        return redirect()->back();
+    }
+
 
     public function profile()
     {
