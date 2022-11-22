@@ -293,6 +293,15 @@
                         Last 7 Days
                     </div>
                 </div>
+            </div>
+            <div class="customer-post-container">
+                <div class="customer-post-header">
+                    <div class="customer-post-name-container">
+                        <img src="{{asset('image/trainer2.jpg')}}">
+                        <div class="customer-post-name">
+                            <p>User Name</p>
+                            <span>19 Sep 2022, 11:02 AM</span>
+                        </div>
 
                 <div class="customer-7days-filter-meal-container">
 
