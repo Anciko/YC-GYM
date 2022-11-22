@@ -5,6 +5,7 @@
 
 <div class="customer-profile-parent-container">
     <div class="customer-cover-photo-container">
+<<<<<<< HEAD
         <img class="customer-cover-photo" src="{{asset('image/trainer2.jpg')}}">
         <div class="customer-cover-change-btns-container">
             <button type="button" class="customer-primary-btn">Confirm</button>
@@ -14,6 +15,22 @@
             <input type="file" class="customer-cover-img-change-input">
             <iconify-icon icon="cil:pen" class="customer-cover-img-change-icon"></iconify-icon>
         </label>
+=======
+        <img class="customer-cover-photo" src="">
+        <div class="customer-cover-change-btns-container">
+            <form method="POST" action="{{route('customer-profile-cover.update')}}" enctype="multipart/form-data">
+                @csrf
+                @method('POST')
+                <button type="submit" class="customer-primary-btn">Confirm</button>
+
+            <button type="button" class="customer-secondary-btn customer-cover-change-cancel-btn">Cancel</button>
+        </div>
+            <label class="customer-cover-img-change-btn">
+                <input type="file" class="customer-cover-img-change-input" name="cover">
+                <iconify-icon icon="cil:pen" class="customer-cover-img-change-icon"></iconify-icon>
+            </label>
+            </form>
+>>>>>>> 60e9eb08f102dee1ce4e5d50e353a8b146551a7b
         <form class="personal_detail customer-personal-details-form" method="POST" action="{{route('customer-profile-name.update')}}">
             @csrf
             @method('POST')
@@ -36,6 +53,7 @@
 
                     <span>(User ID: {{auth()->user()->member_code}})</span>
                     <iconify-icon icon="cil:pen" class="change-name-icon" id="name_edit_pen"></iconify-icon>
+<<<<<<< HEAD
                 </div>
 
                 <div class="customer-change-name-btns-container">
@@ -398,6 +416,256 @@
                     <div class="customer-post-comment-container">
                         <iconify-icon icon="bi:chat-right" class="comment-icon"></iconify-icon>
                         <p><span>50</span> Comments</p>
+=======
+                </div>
+
+                <div class="customer-change-name-btns-container">
+                    <button type="submit" class="customer-primary-btn customer-name-calculate-btn">Save</button>
+                    <button type="button" class="customer-secondary-btn customer-name-calculate-btn" id="customer_name_cancel">Cancel</button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <form class="customer-bio-form">
+        <div class="customer-bio-text">
+            <p>Here’s a bio to describe you. Here’s a bio to describe you. Here’s a bio to describe you. Here’s a bio to describe you</p>
+            <input type="text" >
+            <iconify-icon icon="cil:pen" class="customer-bio-change-icon"></iconify-icon>
+        </div>
+        <div class="customer-bio-btns-container">
+            <button type="button" class="customer-primary-btn">Confirm</button>
+            <button type="button" class="customer-secondary-btn customer-bio-change-cancel-btn">Cancel</button>
+        </div>
+    </form>
+
+    <div class="customer-profile-tabs-container">
+        <div class="customer-profile-training-center-tab">
+            <iconify-icon icon="fa-solid:dumbbell" class="customer-profile-tab-icon"></iconify-icon>
+            <p>Training Center</p>
+        </div>
+        <div class="customer-profile-socialmedia-tab">
+            <iconify-icon icon="bi:chat-heart" class="customer-profile-tab-icon"></iconify-icon>
+            <p>Social Media</p>
+        </div>
+        <div class="customer-profile-shop-tab">
+            <iconify-icon icon="lucide:shopping-cart" class="customer-profile-tab-icon"></iconify-icon>
+            <p>Shop</p>
+        </div>
+    </div>
+    <div class="customer-profile-training-center-container">
+        @if(count(auth()->user()->roles)==0)
+        {{-- <div class="customer-profile-personaldetails-parent-container"> --}}
+        <p class="customer-notraining-message">
+            You don't have training center information.Please fill information
+            <a href="{{route('customer-personal_infos')}}">Training Center</a>
+        </p>
+        {{-- </div> --}}
+        @endif
+        @hasanyrole('Platinum|Diamond|Gym Member|Gold|Ruby|Ruby Premium')
+        <form class="personal_detail" method="POST" action="{{route('customer-profile.update')}}">
+                @csrf
+                @method('POST')
+            <div class="customer-profile-personaldetails-parent-container">
+                <h1>Your Profile</h1>
+                <div style="float:right;padding-right:40px">
+                    <iconify-icon icon="cil:pen" class="change-name-icon" id="pen1"></iconify-icon>
+                </div>
+
+                <div class="customer-profile-personaldetails-grid">
+                    <div class="customer-profile-personaldetails-left">
+                        <div class="customer-profile-personaldetail-container">
+                            <p>Age:</p>
+                            <div>
+                                <input type="number" value="{{auth()->user()->age}}" readonly="readonly" class="age" name="age">
+                                <span style = "visibility: hidden;">in</span>
+                            </div>
+                        </div>
+                        <?php
+                            $height=auth()->user()->height;
+                            $height_ft=floor($height/12);
+                            $height_in=$height%12;
+                            ?>
+                        <div class="customer-profile-personaldetail-container customer-profile-personaldetail-height-container">
+                            <p>Height:</p>
+                            <select name="height_ft" class="height_ft">
+                                <option value="3" {{"3" == $height_ft ? 'selected' : ''}}>3</option>
+                                <option value="4" {{"4" == $height_ft ? 'selected' : ''}}>4</option>
+                                <option value="5" {{"5" == $height_ft ? 'selected' : ''}}>5</option>
+                                <option value="6" {{"6" == $height_ft ? 'selected' : ''}}>6</option>
+                            </select>
+                            <span>ft</span>
+                            <select name="height_in" class="height_in">
+                                <option value="0" {{"0" == $height_in ? 'selected' : ''}}>0</option>
+                                <option value="1" {{"1" == $height_in ? 'selected' : ''}}>1</option>
+                                <option value="2" {{"2" == $height_in ? 'selected' : ''}}>2</option>
+                                <option value="3" {{"3" == $height_in ? 'selected' : ''}}>3</option>
+                                <option value="4" {{"4" == $height_in ? 'selected' : ''}}>4</option>
+                                <option value="5" {{"5" == $height_in ? 'selected' : ''}}>5</option>
+                                <option value="6" {{"6" == $height_in ? 'selected' : ''}}>6</option>
+                                <option value="7" {{"7" == $height_in ? 'selected' : ''}}>7</option>
+                                <option value="8" {{"8" == $height_in ? 'selected' : ''}}>8</option>
+                                <option value="9" {{"9" == $height_in ? 'selected' : ''}}>9</option>
+                                <option value="10" {{"10" == $height_in ? 'selected' : ''}}>10</option>
+                                <option value="11" {{"11" == $height_in ? 'selected' : ''}}>11</option>
+                            </select>
+                            <span>in</span>
+                        </div>
+
+                        <div class="customer-profile-personaldetail-container">
+                            <p>Weight:</p>
+                            <div>
+                                <input type="number" value="{{auth()->user()->weight}}" class="weight" name="weight" readonly>
+                                <span>lb</span>
+                            </div>
+
+                        </div>
+                        <div class="customer-profile-personaldetail-container">
+                            <p>Neck:</p>
+                            <div>
+                                <input type="number" value="{{auth()->user()->neck}}" class="neck" name="neck" readonly>
+                                <span>in</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="customer-profile-personaldetails-right">
+                        <div class="customer-profile-personaldetail-container">
+                            <p>Waist:</p>
+                            <div>
+                                <input type="number" value="{{auth()->user()->waist}}" name="waist" class="waist" readonly>
+                                <span>in</span>
+                            </div>
+                        </div>
+
+                        <div class="customer-profile-personaldetail-container ">
+                            <p>Hip:</p>
+                            <div>
+                                <input type="number"  value="{{auth()->user()->hip}}" name="hip" class="hip" readonly>
+                                <span>in</span>
+                            </div>
+                        </div>
+
+                        <div class="customer-profile-personaldetail-container">
+                            <p>Shoulders:</p>
+                            <div>
+                                <input type="number"  value="{{auth()->user()->shoulders}}" name="shoulders" class="shoulders" readonly>
+                                <span>in</span>
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div>
+                <div class="customer-profile-save-cancel-container">
+                    <button type="submit" class="customer-primary-btn customer-bmi-calculate-btn">Save and Calculate BMI</button>
+                    <button type="button" class="customer-secondary-btn customer-bmi-calculate-btn" id="customer_cancel">Cancel</button>
+                </div>
+
+
+            </div>
+        </form>
+
+        <div class="customer-profile-bmi-container">
+            <div class="customer-profile-bmi-gradient">
+                <div class="percentage-line"></div>
+                <div class="percentage-line"></div>
+                <div class="percentage-line"></div>
+                <div class="customer-profile-bmi-text">
+                    <div class="customer-profile-bmi-indicator">
+                        <div class="customer-profile-bmi-indicator-line"></div>
+                        <div class="customer-profile-bmi-indicator-ball"></div>
+                    </div>
+
+                    <?php $bmi=auth()->user()->bmi;
+                        if ($bmi <=18.5) {
+                            $plan='Weight Gain';
+                        }elseif ($bmi>=25) {
+                            $plan='Weight Loss';
+                        }else {
+                            $plan='Body Beauty';
+                        }
+                    ?>
+                    @if ($bmi <=18.5)
+                    <p>Your BMI , {{$bmi}} , is underweight.</p>
+                    @elseif ($bmi >18.5 && $bmi<=24.9)
+                    <p>Your BMI , {{$bmi}} , is normal.</p>
+                    @elseif ($bmi >25 && $bmi<=29.9)
+                    <p>Your BMI , {{$bmi}} , is overweight.</p>
+                    @else
+                    <p>Your BMI , {{$bmi}} , is obesity.</p>
+                    @endif
+                </div>
+            </div>
+        </div>
+        <?php $currentyear=\Carbon\Carbon::now()->format("Y"); ?>
+            <select class="weight-chart-filter" onchange="year_filter(this.value)">
+                @for ($i = $currentyear; $i >= $year; $i--)
+                <option value={{$i}} name="year">{{$i}}</option>
+                @endfor
+            </select>
+        <div class="weight-chart-container" id="weightchart">
+            <p>Your Weight History</p>
+            <canvas id="myChart"></canvas>
+        </div>
+
+        <div class="no-weight-chart" id="weightreview">
+            <p style="text-align:center;margin-top:100px;">You don’t have weight history  to review.
+                Keep working out.</p>
+        </div>
+        @endhasanyrole
+        @hasanyrole('Platinum|Diamond|Gym Member')
+        <div class="customer-profile-trackers-parent-container">
+            <div class="customer-profile-trackers-headers-container">
+                <div class="customer-profile-tracker-header" id="workout">
+                    Workout
+                </div>
+                <div class="customer-profile-tracker-header" id="meal">
+                    Meal
+                </div>
+                <div class="customer-profile-tracker-header" id="water">
+                    Water
+                </div>
+            </div>
+
+            <div class="customer-profile-tracker-workout-container">
+
+                <div id="my-calendar"></div>
+
+                <form class="customer-profile-days-container customer-profile-workout-days-container">
+                    <div class="customer-profile-days-btn" id="workout-today">
+                        Today
+                    </div>
+                    <div class="customer-profile-days-btn" id = "workout-7days">
+                        Last 7 Days
+                    </div>
+
+                    <div class="customer-profile-fromto-inputs-container">
+                        <div class="customer-profile-from">
+                            <p>From:</p>
+                            <input type="date" id="from_date">
+                        </div>
+                        <div class="customer-profile-to">
+                            <p>To:</p>
+                            <input type="date" id="to_date">
+                        </div>
+                    </div>
+
+                    <button type="button" class="customer-profile-workout-filter-btn">Filter</button>
+                </form>
+
+                <div class="customer-profile-workout-list-parent-container">
+
+                </div>
+
+            </div>
+            <div class="customer-profile-tracker-meal-container">
+                <div class="customer-profile-days-container">
+                    <div class="customer-profile-days-btn" id="meal-today">
+                        Today
+                    </div>
+                    <div class="customer-profile-days-btn" id = "meal-7days">
+                        Last 7 Days
+>>>>>>> 60e9eb08f102dee1ce4e5d50e353a8b146551a7b
                     </div>
                 </div>
             </div>
@@ -410,6 +678,140 @@
                             <span>19 Sep 2022, 11:02 AM</span>
                         </div>
 
+<<<<<<< HEAD
+=======
+                <div class="customer-7days-filter-meal-container">
+
+                </div>
+
+                <div class="customer-7days-meal-tables-container"></div>
+
+
+            </div>
+            <div class="customer-profile-tracker-water-container">
+                <div class="customer-profile-days-container">
+                    <div class="customer-profile-days-btn" id="water-today">
+                        Today
+                    </div>
+                    <div class="customer-profile-days-btn" id = "water-7days">
+                        Last 7 Days
+                    </div>
+                </div>
+
+                <div class="customer-7days-filter-water-container">
+
+                </div>
+
+                <div class="customer-profile-water-track-history-container">
+                    <div class="card-chart">
+                        <div class="card-donut water-chart" data-size="100" data-thickness="8"></div>
+                        <div class="card-center">
+                        <span class="card-value"></span>
+                        <div class="card-label"></div>
+                        </div>
+                    </div>
+
+                    <div class="customer-profile-water-track-history-text">
+                        <p></p>
+                        <span></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        @endhasanyrole
+    </div>
+
+    <div class="customer-profile-socialmedia-container">
+        <div class="customer-profile-friends-parent-container">
+            <div class="customer-profile-friends-header">
+                <p>1200 Friends</p>
+                <a href="#">
+                    See All
+                    <iconify-icon icon="bi:arrow-right" class="arrow-icon"></iconify-icon>
+                </a>
+            </div>
+
+            <div class="customer-profile-friends-container">
+                <div class="customer-profile-friend">
+                    <img src="{{asset('image/trainer2.jpg')}}">
+                    <p>User Name</p>
+                </div>
+                <div class="customer-profile-friend">
+                    <img src="{{asset('image/trainer2.jpg')}}">
+                    <p>User Name</p>
+                </div>
+                <div class="customer-profile-friend">
+                    <img src="{{asset('image/trainer2.jpg')}}">
+                    <p>User Name</p>
+                </div>
+                <div class="customer-profile-friend">
+                    <img src="{{asset('image/trainer2.jpg')}}">
+                    <p>User Name</p>
+                </div>
+                <div class="customer-profile-friend">
+                    <img src="{{asset('image/trainer2.jpg')}}">
+                    <p>User Name</p>
+                </div>
+                <div class="customer-profile-friend">
+                    <img src="{{asset('image/trainer2.jpg')}}">
+                    <p>User Name</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="customer-profile-posts-parent-container">
+            <p>Post & Activities</p>
+            <div class="customer-post-container">
+                <div class="customer-post-header">
+                    <div class="customer-post-name-container">
+                        <img src="{{asset('image/trainer2.jpg')}}">
+                        <div class="customer-post-name">
+                            <p>User Name</p>
+                            <span>19 Sep 2022, 11:02 AM</span>
+                        </div>
+                    </div>
+
+                    <iconify-icon icon="bi:three-dots-vertical" class="customer-post-header-icon"></iconify-icon>
+
+                    <div class="post-actions-container" >
+                        <div class="post-action">
+                            <iconify-icon icon="bi:save" class="post-action-icon"></iconify-icon>
+                            <p>Save</p>
+                        </div>
+
+                        <div class="post-action">
+                            <iconify-icon icon="material-symbols:report-outline" class="post-action-icon"></iconify-icon>
+                            <p>Report</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="customer-content-container">
+                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Dui hendrerit potenti pellentesque tellus urna bibendum mollis.</p>
+
+                </div>
+
+                <div class="customer-post-footer-container">
+                    <div class="customer-post-like-container">
+                        <iconify-icon icon="akar-icons:heart" class="like-icon"></iconify-icon>
+                        <p><span>1.1k</span> Likes</p>
+                    </div>
+                    <div class="customer-post-comment-container">
+                        <iconify-icon icon="bi:chat-right" class="comment-icon"></iconify-icon>
+                        <p><span>50</span> Comments</p>
+                    </div>
+                </div>
+            </div>
+            <div class="customer-post-container">
+                <div class="customer-post-header">
+                    <div class="customer-post-name-container">
+                        <img src="{{asset('image/trainer2.jpg')}}">
+                        <div class="customer-post-name">
+                            <p>User Name</p>
+                            <span>19 Sep 2022, 11:02 AM</span>
+                        </div>
+
+>>>>>>> 60e9eb08f102dee1ce4e5d50e353a8b146551a7b
 
                     </div>
 
@@ -1520,6 +1922,13 @@
             $('.customer-profile-shop-container').show()
         })
 
+<<<<<<< HEAD
+=======
+        $('.customer-post-header-icon').click(function(){
+            $(this).next().toggle()
+        })
+
+>>>>>>> 60e9eb08f102dee1ce4e5d50e353a8b146551a7b
     });
 </script>
 @endpush

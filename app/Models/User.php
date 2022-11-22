@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Post;
 use App\Models\Payment;
 use App\Models\Friendship;
 use App\Models\TrainingUser;
@@ -42,6 +43,11 @@ class User extends Authenticatable
                     ->withTimestamps();
     }
 
+    public function profile()
+    {
+        return $this->hasOne(Profile::class, 'user_id', 'id');
+    }
+
     public function tainer_groups()
     {
         return $this->belongsToMany(TrainingGroup::class,'training_users')
@@ -55,6 +61,11 @@ class User extends Authenticatable
 
     public function watertracks(){
         return $this->hasMany(WaterTracked::class,'user_id');
+    }
+
+    public function posts()
+    {
+        return $this->hasMany(Post::class, 'user_id', 'id');
     }
 
     public function personalmealinfos()

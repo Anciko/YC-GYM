@@ -33,4 +33,7 @@ class Friend_Request
     {
         return new PrivateChannel('friend_request');
     }
+    public function broadcastAs() {
+        return 'friendRequest';
+    }
 }

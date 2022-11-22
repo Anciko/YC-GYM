@@ -307,7 +307,20 @@
     flex-wrap: wrap;
 }
 
+.editpost-photo-video-imgpreview-container{
+    margin-top: 10px;
+    display: flex;
+    gap: 0 5px;
+    flex-wrap: wrap;
+}
+
 .addpost-preview{
+    width: 100px;
+    height: 100px;
+    position: relative;
+}
+
+.editpost-preview{
     width: 100px;
     height: 100px;
     position: relative;
@@ -320,6 +333,30 @@
 }
 
 .delete-preview-icon{
+    position: absolute;
+    top: 0;
+    right: 0;
+    font-size: 15px;
+    color: white;
+    background-color: red;
+    cursor: pointer;
+    padding: 5px;
+    border-radius: 3px;
+    z-index: 2;
+}
+.delete-preview-db-icon{
+    position: absolute;
+    top: 0;
+    right: 0;
+    font-size: 15px;
+    color: white;
+    background-color: red;
+    cursor: pointer;
+    padding: 5px;
+    border-radius: 3px;
+    z-index: 2;
+}
+.delete-preview-edit-input-icon{
     position: absolute;
     top: 0;
     right: 0;
@@ -471,6 +508,7 @@
     top: 40px;
     right: 0;
     display: none;
+    z-index: 10;
 }
 
 .post-action{

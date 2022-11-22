@@ -33,7 +33,6 @@ use App\Http\Controllers\Customer\CustomerManagementController;
 use App\Http\Controllers\Customer\Customer_TrainingCenterController;
 
 
-
 Route::group(['middleware' => 'prevent-back-history'], function () {
     Route::get('/locale/{lange}', [HomeController::class, 'lang'])->name('locale');
     Route::get('/customerlogin', [CustomerLoginController::class, 'login'])->name('customerlogin');
@@ -68,23 +67,35 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
     Route::middleware('auth')->group(function () {
 
         //Social Media
-        Route::get('/socialmedia_profile', [SocialmediaController::class, 'socialmedia_profile'])->name('socialmedia.profile');
+        Route::get('/socialmedia_profile/{$id}', [SocialmediaController::class, 'socialmedia_profile'])->name('socialmedia.profile');
         Route::get('/socialmedia', [SocialmediaController::class, 'index'])->name('socialmedia');
-        Route::post('/post/store', [SocialmediaController::class, 'post_store'])->name('post.store');
+        Route::post('/socialmedia', [SocialmediaController::class, 'post_store'])->name('post.store');
+        
+        Route::post('/socialmedia/delete/{id}', [SocialmediaController::class, 'post_destroy'])->name('post.destroy');
+        Route::post('/socialmedia/edit/{id}', [SocialmediaController::class, 'post_edit'])->name('post.edit');
+        Route::post('/socialmedia/update', [SocialmediaController::class, 'post_update'])->name('post.update');
+
+        // Route::get('/testing', [SocialmediaController::class, 'index'])->name('testing');
+        // Route::post('/testing/store', [SocialmediaController::class, 'post_store'])->name('testing.store');
 
         Route::get('customer/personal_infos', [CustomerRegisterController::class, 'personal_info'])->name('customer-personal_infos');
         Route::get('customer/profile', [Customer_TrainingCenterController::class, 'profile'])->name('customer-profile');
         Route::post('customer/profile/update', [Customer_TrainingCenterController::class, 'profile_update'])->name('customer-profile.update');
         Route::post('customer/profile/name/update', [Customer_TrainingCenterController::class, 'profile_update_name'])->name('customer-profile-name.update');
+        Route::post('customer/profile/cover/update', [Customer_TrainingCenterController::class, 'profile_update_cover'])->name('customer-profile-cover.update');
         Route::get('customer/profile/year/{year}', [Customer_TrainingCenterController::class, 'year_filter'])->name('customer-profile.year');
         Route::get('/home', [App\Http\Controllers\HomeController::class, 'home'])->name('social_media');
+
         //Social Media
         Route::get('/socialmedia_profile/{id}', [SocialmediaController::class, 'socialmedia_profile'])->name('socialmedia_profile');
 
         Route::post('search_users', [SocialmediaController::class, 'showUser'])->name('search_users');
         Route::get('/addUser/{id}', [SocialmediaController::class, 'addUser'])->name('addUser');
-        Route::get('/cancelRequest/{id}', [SocialmediaController::class, 'cancelRequest'])->name('cancelRequest');
 
+        Route::get('/unfriend/{id}', [SocialmediaController::class, 'unfriend'])->name('unfriend');
+
+        Route::get('/cancelRequest/{id}', [SocialmediaController::class, 'cancelRequest'])->name('cancelRequest');
+        Route::get('/declineRequest/{id}', [SocialmediaController::class, 'declineRequest'])->name('declineRequest');
         Route::get('/confirmRequest/{id}', [SocialmediaController::class, 'confirmRequest'])->name('confirmRequest');
 
         Route::get('/notification_center', [SocialmediaController::class, 'notification_center'])->name('notification_center');
