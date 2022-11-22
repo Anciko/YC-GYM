@@ -5,20 +5,22 @@
 
 <div class="customer-profile-parent-container">
     <div class="customer-cover-photo-container">
-        <img class="customer-cover-photo" src="{{asset('image/trainer2.jpg')}}">
+        <img class="customer-cover-photo" src="">
+        {{-- <h1>{{auth()->user()->profiles->id}}</h1> --}}
+        {{-- src="{{asset('storage/post/',auth()->user()->profiles->profile_image)}}" --}}
         <div class="customer-cover-change-btns-container">
-            <form method="POST" action="{{route('customer-profile-cover.update')}}">
+            <form method="POST" action="{{route('customer-profile-cover.update')}}" enctype="multipart/form-data">
                 @csrf
                 @method('POST')
                 <button type="submit" class="customer-primary-btn">Confirm</button>
 
             <button type="button" class="customer-secondary-btn customer-cover-change-cancel-btn">Cancel</button>
         </div>
-        <label class="customer-cover-img-change-btn">
-            <input type="file" class="customer-cover-img-change-input" name="cover">
-            <iconify-icon icon="cil:pen" class="customer-cover-img-change-icon"></iconify-icon>
-        </label>
-        </form>
+            <label class="customer-cover-img-change-btn">
+                <input type="file" class="customer-cover-img-change-input" name="cover">
+                <iconify-icon icon="cil:pen" class="customer-cover-img-change-icon"></iconify-icon>
+            </label>
+            </form>
         <form class="personal_detail customer-personal-details-form" method="POST" action="{{route('customer-profile-name.update')}}">
             @csrf
             @method('POST')
@@ -291,6 +293,15 @@
                         Last 7 Days
                     </div>
                 </div>
+            </div>
+            <div class="customer-post-container">
+                <div class="customer-post-header">
+                    <div class="customer-post-name-container">
+                        <img src="{{asset('image/trainer2.jpg')}}">
+                        <div class="customer-post-name">
+                            <p>User Name</p>
+                            <span>19 Sep 2022, 11:02 AM</span>
+                        </div>
 
                 <div class="customer-7days-filter-meal-container">
 

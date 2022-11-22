@@ -3,13 +3,6 @@
 @section('content')
 @include('sweetalert::alert')
 
-
-
-
-
-
-
-
         <div class="social-media-right-container">
             <div class="social-media-posts-parent-container">
                 @foreach ($posts as $post)
@@ -79,6 +72,42 @@
                                 @endif
                             </div>
                             <?php }?>
+                        </div>
+
+                        <div id="slider-wrapper" class="social-media-media-slider">
+                            <iconify-icon icon="akar-icons:cross" class="slider-close-icon"></iconify-icon>
+
+                            <div id="image-slider" class="image-slider">
+                                <!-- <iconify-icon icon="dashicons:arrow-left-alt2" class="image-slider-left-icon"></iconify-icon>
+                                <iconify-icon icon="dashicons:arrow-right-alt2" class="image-slider-right-icon"></iconify-icon> -->
+                                <ul class="ul-image-slider">
+
+                                    <?php foreach (json_decode($post->media)as $m){?>
+
+                                    <li >
+                                        <img src="{{asset('storage/post/'.$m) }}" alt="" />
+                                    </li>
+
+                                    <?php }?>
+                                </ul>
+
+                            </div>
+
+                            <div id="thumbnail" class="img-slider-thumbnails">
+                                <ul>
+                                    {{-- <li class="active"><img src="https://40.media.tumblr.com/tumblr_m92vwz7XLZ1qf4jqio1_540.jpg" alt="" /></li> --}}
+                                    <?php foreach (json_decode($post->media)as $m){?>
+                                        <li >
+                                            <img src="{{asset('storage/post/'.$m) }}">
+                                        </li>
+
+                                        <?php }?>
+
+                                </ul>
+                            </div>
+
+
+
                         </div>
 
                         @endif
@@ -184,6 +213,7 @@
 @push('scripts')
 {{-- <script>
     $(document).ready(function() {
+
         $(".cancel").hide();
         $( ".social-media-left-search-container input" ).focus(function() {
             // alert( "Handler for .focus() called." );
@@ -282,12 +312,17 @@
 
                             filesdb.forEach(function(f) {
                                 fileExtension = f.replace(/^.*\./, '');
-                                if (fileExtension=='jpg'||'png'||'jpeg') {
-                                    var html = "<div class='addpost-preview'><iconify-icon icon='akar-icons:cross' data-file='" + f + "' class='delete-preview-db-icon'></iconify-icon><img src='storage/post/"+f+"' data-file='" + f + "' class='selFile' title='Click to remove'></div>";
+                                console.log(fileExtension);
+                                if(fileExtension=='mp4') {
+                                    var html="<div class='addpost-preview'>\
+                                        <iconify-icon icon='akar-icons:cross' data-file='" + f + "' class='delete-preview-edit-input-icon'></iconify-icon>\
+                                        <video controls><source src='storage/post/" + f + "' data-file='" + f+ "' class='selFile' title='Click to remove'>" + f + "<br clear=\"left\"/>\
+                                        <video>\
+                                    </div>"
                                     $(".editpost-photo-video-imgpreview-container").append(html);
 
-                                }else if(fileExtension=='mp4'){
-                                    var html = "<div class='editpost-preview'><iconify-icon icon='akar-icons:cross' data-file='" + f.name + "' class='delete-preview-db-icon'></iconify-icon><video controls><source src='storage/post/"+f+"' data-file='" + f.name + "' class='selFile' title='Click to remove'>" + f+ "<br clear=\"left\"/><video></div>";
+                                }else{
+                                    var html = "<div class='addpost-preview'><iconify-icon icon='akar-icons:cross' data-file='" + f + "' class='delete-preview-db-icon'></iconify-icon><img src='storage/post/"+f+"' data-file='" + f + "' class='selFile' title='Click to remove'></div>";
                                     $(".editpost-photo-video-imgpreview-container").append(html);
                                 }
 
@@ -556,7 +591,7 @@
                                         //     <a href= `+url+` class = "profiles">
                                         //         <p>`+res.users[i].name+`</p>
                                         //     </a>
-                                        //     <a href="?id=` + res.users[i].id+`" class="customer-secondary-btn add-friend-btn">Friend</a>
+                                        //     <a href="?id=` + res.users[i].id+`" class="customer-secondary-btn ">Friend</a>
                                         //     `
                                     }
                                     else if (
@@ -572,7 +607,7 @@
                                         //     <a href= `+url+` class = "profiles">
                                         //         <p>`+res.users[i].name+`</p>
                                         //     </a>
-                                        //     <a href="?id=` + res.users[i].id+`" class="customer-secondary-btn add-friend-btn">Friend</a>
+                                        //     <a href="?id=` + res.users[i].id+`" class="customer-secondary-btn ">Friend</a>
                                         //   `
                                     }
                                     else{
@@ -582,7 +617,7 @@
                                     //         <a href=`+url+` class = "profiles">
                                     //             <p>`+res.users[i].name+`</p>
                                     //         </a>
-                                    //         <a href="?id=` + res.users[i].id+`" class="customer-secondary-btn add-friend-btn" id = "AddFriend">Add</a>
+                                    //         <a href="?id=` + res.users[i].id+`" class="customer-secondary-btn " id = "AddFriend">Add</a>
                                     // `
                                     }
 
@@ -590,55 +625,67 @@
 
                             if(status === 'sender request'){
                                 htmlView += `
+                                            <div class="social-media-left-searched-item">
                                             <a href=`+url+` class = "profiles">
                                                 <p>`+res.users[i].name+`</p>
                                             </a>
-                                            <a href="?id=` + res.users[i].id+`" class="customer-secondary-btn cancel-request-btn"
-                                            id = "cancelRequest">Cancel Request</a>
+                                            <a href="?id=` + res.users[i].id+`" class=" cancel-request-btn"
+                                            id = "cancelRequest"><iconify-icon icon="material-symbols:cancel-schedule-send-rounded" class="search-item-icon"></iconify-icon></a>
+                                            </div>
                                             `
                             }
 
                             else if(status === 'receiver request'){
                                htmlView += `
+                                            <div class="social-media-left-searched-item">
                                             <a href=`+url+` class = "profiles">
                                                 <p>`+res.users[i].name+`</p>
                                             </a>
-                                            <a href=`+url+` class="customer-secondary-btn">Response</a>
+                                            <a href=`+url+` class=""><iconify-icon icon="bi:person-check" class="search-item-icon"></iconify-icon></a>
+                                            </div>
                                             `
                             }
 
                             else if(status === "profile"){
                                  htmlView += `
+                                            <div class="social-media-left-searched-item">
                                             <a href=`+url+` class = "profiles">
                                                 <p>`+res.users[i].name+`</p>
                                             </a>
-                                            <a href=`+url+` class="customer-secondary-btn "
-                                            >View Profile</a>
+                                            <a href=`+url+` class=""
+                                            ><iconify-icon icon="bi:people-fill" class="search-item-icon"></iconify-icon></a>
+                                            </div>
                                             `
                             }
 
                             else if(status === "sender view profile"){
                                 htmlView += `
+                                            <div class="social-media-left-searched-item">
                                             <a href= `+url+` class = "profiles">
                                                 <p>`+res.users[i].name+`</p>
                                             </a>
-                                            <a href=`+url+` class="customer-secondary-btn add-friend-btn">Friend</a>
+                                            <a href=`+url+` class=""><iconify-icon icon="bi:people-fill" class="search-item-icon"></iconify-icon></a>
+                                            </div>
                                           `
                             }
                             else if(status === "receiver view profile"){
                                 htmlView += `
+                                            <div class="social-media-left-searched-item">
                                             <a href= `+url+` class = "profiles">
                                                 <p>`+res.users[i].name+`</p>
                                             </a>
-                                            <a href=`+url+` class="customer-secondary-btn add-friend-btn">Friend</a>
+                                            <a href=`+url+` class=""><iconify-icon icon="bi:people-fill" class="search-item-icon"></iconify-icon></a>
+                                            </div>
                                           `
                             }
                             else{
                                     htmlView += `
+                                            <div class="social-media-left-searched-item">
                                             <a href=`+url+` class = "profiles">
                                                 <p>`+res.users[i].name+`</p>
                                             </a>
-                                            <a href="?id=` + res.users[i].id+`" class="customer-secondary-btn add-friend-btn" id = "AddFriend">Add</a>
+                                            <a href="?id=` + res.users[i].id+`" class="" id = "AddFriend"><iconify-icon icon="bi:person-add" class="search-item-icon"></iconify-icon></a>
+                                            </div>
                                     `
                             }
                             }

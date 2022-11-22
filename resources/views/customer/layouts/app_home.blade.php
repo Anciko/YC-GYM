@@ -307,6 +307,78 @@
 
     <script>
     $(document).ready(function() {
+        //image slider start
+        console.log($(".image-slider"))
+
+        $.each($(".ul-image-slider"),function(){
+            console.log($(this).children('li').length)
+
+            $(this).children('li:first').addClass("active-img")
+        })
+        $.each($(".img-slider-thumbnails ul"),function(){
+            console.log($(this).children('li').length)
+
+            $(this).children('li:first').addClass("active")
+        })
+        $(function(){
+
+        $('.img-slider-thumbnails li').click(function(){
+            var thisIndex = $(this).index()
+            // console.log(thisIndex,$(this).siblings("li.active").index())
+            if($(this).siblings(".active").index() === -1){
+                return
+            }
+
+
+            if(thisIndex < $(this).siblings(".active").index()){
+                prevImage(thisIndex, $(this).parents(".img-slider-thumbnails").prev("#image-slider"));
+            }else if(thisIndex > $(this).siblings(".active").index()){
+                nextImage(thisIndex, $(this).parents(".img-slider-thumbnails").prev("#image-slider"));
+            }
+
+
+            $(this).siblings('.active').removeClass('active');
+            $(this).addClass('active');
+
+            });
+
+        });
+
+    var width = $('#image-slider').width();
+    console.log(width)
+
+    function nextImage(newIndex, parent){
+        parent.find('li').eq(newIndex).addClass('next-img').css('left', width).animate({left: 0},600);
+        parent.find('li.active-img').removeClass('active-img').css('left', '0').animate({left: '-100%'},600);
+        parent.find('li.next-img').attr('class', 'active-img');
+    }
+    function prevImage(newIndex, parent){
+        parent.find('li').eq(newIndex).addClass('next-img').css('left', -width).animate({left: 0},600);
+        parent.find('li.active-img').removeClass('active-img').css('left', '0').animate({left: '100%'},600);
+        parent.find('li.next-img').attr('class', 'active-img');
+    }
+
+    /* Thumbails */
+    // var ThumbailsWidth = ($('#image-slider').width() - 18.5)/7;
+    // $('#thumbnail li').find('img').css('width', ThumbailsWidth);
+
+    $('.social-media-media-slider').hide()
+
+    $(".social-media-media-container").click(function(){
+
+        $(this).siblings(".social-media-media-slider").show()
+        $(this).hide()
+    })
+
+    $(".slider-close-icon").click(function(){
+        $(this).closest('.social-media-media-slider').hide()
+        $(this).closest('.social-media-media-slider').siblings('.social-media-media-container').show()
+    })
+        //image slider end
+
+
+
+
         $(".cancel").hide();
         $( ".social-media-left-search-container input" ).focus(function() {
             // alert( "Handler for .focus() called." );
@@ -327,19 +399,14 @@
             e.preventDefault();
             var id = $(this).data('id');
             Swal.fire({
-                        text: "Are you sure to delete post?",
-                        showClass: {
-                                popup: 'animate__animated animate__fadeInDown'
-                            },
-                            hideClass: {
-                                popup: 'animate__animated animate__fadeOutUp'
-                            },
+                        text: 'Are you sure to delete this post?',
+                        timerProgressBar: true,
+                        showCloseButton: true,
                         showCancelButton: true,
-                        confirmButtonText: 'Yes',
-                        cancelButtonText: 'No',
-
-                        }).then((willDelete) => {
-                            var add_url = "{{ route('post.destroy', [':id']) }}";
+                        icon: 'warning',
+                    }).then((result) => {
+                    if (result.isConfirmed) {
+                        var add_url = "{{ route('post.destroy', [':id']) }}";
                             add_url = add_url.replace(':id', id);
 
                             $.ajaxSetup({
@@ -348,25 +415,18 @@
                                     }
                                 });
                             $.ajax({
-                                method: "POST",
-                                url: add_url,
-                                datatype: "json",
-                                success: function(data) {
-                                    window.location.reload();
-                                    // Swal.fire({
-                                    //             text: data.success,
-                                    //             showClass: {
-                                    //                     popup: 'animate__animated animate__fadeInDown'
-                                    //                 },
-                                    //                 hideClass: {
-                                    //                     popup: 'animate__animated animate__fadeOutUp'
-                                    //                 },
-                                    //             }).then(() => {
-                                    //     window.location.reload()
-                                    // })
-                                }
+                                    method: "POST",
+                                    url: add_url,
+                                    datatype: "json",
+                                    success: function(data) {
+                                        window.location.reload();
+                                    }
                                 })
-                        })
+                    }else{
+
+                    }
+                    })
+
         })
 
         $(document).on('click','#edit_post',function(e){
@@ -394,24 +454,28 @@
                         if(data.status==400){
                             alert(data.message)
                         }else{
-                            console.log("sfasdfasdf")
                             $('#editPostCaption').val(data.post.caption);
                             $('#edit_post_id').val(data.post.id);
 
-                            var filesdb = data.post.media ? JSON.parse(data.post.media) : [];
+                            var filesdb =data.post.media ? JSON.parse(data.post.media) : [];
                             // var filesAmount=files.length;
                             var storedFilesdb = filesdb;
-                            // console.log(storedFilesdb
+                            // console.log(storedFilesdb)
 
 
                             filesdb.forEach(function(f) {
                                 fileExtension = f.replace(/^.*\./, '');
-                                if (fileExtension=='jpg'||'png'||'jpeg') {
-                                    var html = "<div class='addpost-preview'><iconify-icon icon='akar-icons:cross' data-file='" + f + "' class='delete-preview-db-icon'></iconify-icon><img src='storage/post/"+f+"' data-file='" + f + "' class='selFile' title='Click to remove'></div>";
+                                console.log(fileExtension);
+                                if(fileExtension=='mp4') {
+                                    var html="<div class='addpost-preview'>\
+                                        <iconify-icon icon='akar-icons:cross' data-file='" + f + "' class='delete-preview-edit-input-icon'></iconify-icon>\
+                                        <video controls><source src='storage/post/" + f + "' data-file='" + f+ "' class='selFile' title='Click to remove'>" + f + "<br clear=\"left\"/>\
+                                        <video>\
+                                    </div>"
                                     $(".editpost-photo-video-imgpreview-container").append(html);
 
-                                }else if(fileExtension=='mp4'){
-                                    var html = "<div class='editpost-preview'><iconify-icon icon='akar-icons:cross' data-file='" + f.name + "' class='delete-preview-db-icon'></iconify-icon><video controls><source src='storage/post/"+f+"' data-file='" + f.name + "' class='selFile' title='Click to remove'>" + f+ "<br clear=\"left\"/><video></div>";
+                                }else{
+                                    var html = "<div class='addpost-preview'><iconify-icon icon='akar-icons:cross' data-file='" + f + "' class='delete-preview-db-icon'></iconify-icon><img src='storage/post/"+f+"' data-file='" + f + "' class='selFile' title='Click to remove'></div>";
                                     $(".editpost-photo-video-imgpreview-container").append(html);
                                 }
 
@@ -430,9 +494,8 @@
                                 $(this).parent().remove();
                             }
 
-                            $('#edit_form').on('submit',function(e){
+                            $('#edit_form').submit(function(e){
                                 e.preventDefault();
-
                                 $('#editPostModal'). modal('hide');
 
                             var fileUpload=$('#editPostInput');
@@ -447,10 +510,11 @@
                                 if((parseInt(fileUpload.get(0).files.length))+storedFilesdb.length > 5){
                                     Swal.fire({
                                                 text: "You can only upload a maximum of 5 files",
-                                                confirmButtonColor: '#3CDD57',
-                                                timer: 5000
+                                                timer: 5000,
+                                                icon: 'warning',
                                             });
                                 }else{
+                                    e.preventDefault();
 
                                     var url="{{route('post.update')}}";
                                     let formData = new FormData(edit_form);
@@ -487,14 +551,24 @@
                                             cache: false,
                                             contentType: false,
                                             success:function(data){
-                                            Swal.fire({
+                                                if(data.ban){
+                                                    Swal.fire({
+                                                        text: data.ban,
+                                                        timer: 5000,
+                                                        timerProgressBar: true,
+                                                        icon: 'error',
+                                                    })
+                                                }else{
+                                                    Swal.fire({
                                                         text: data.success,
-                                                        confirmButtonColor: '#3CDD57',
-                                                        timer: 5000
+                                                        timer: 5000,
+                                                        timerProgressBar: true,
+                                                        icon: 'success',
                                                     }).then(() => {
                                                         window.location.reload()
-                                        })
-                                                    }
+                                                    })
+                                                }
+                                                }
                                         });
                                 }
 
@@ -510,7 +584,7 @@
                             //                 success:function(data){
                             //                    Swal.fire({
                             //                             text: data.success,
-                            //                             confirmButtonColor: '#3CDD57',
+                            //
                             //                             timer: 5000
                             //                         }).then(() => {
                             //                             window.location.reload()
@@ -525,6 +599,7 @@
                 })
 
         })
+
 
         $(document).on('click', '#AddFriend', function(e) {
                 e.preventDefault();
@@ -559,6 +634,7 @@
                                 popup: 'animate__animated animate__fadeOutUp'
                             },
                         showCancelButton: true,
+                        timerProgressBar: true,
                         confirmButtonText: 'Yes',
                         cancelButtonText: 'No',
 
@@ -798,8 +874,9 @@
                 if (parseInt($fileUpload.get(0).files.length)>5){
                     Swal.fire({
                         text: "You can only upload a maximum of 5 files",
-                        confirmButtonColor: '#3CDD57',
-                        timer: 5000
+                        timerProgressBar: true,
+                        timer: 5000,
+                        icon: 'warning',
                     });
                 }
                 else{
@@ -830,14 +907,24 @@
                                 cache: false,
                                 contentType: false,
                             success:function(data){
+                            if(data.message){
+                                Swal.fire({
+                                            text: data.message,
+                                            timerProgressBar: true,
+                                            timer: 5000,
+                                            icon: 'success',
+                                        }).then(() => {
+                                            window.location.reload()
+                                        })
+                            }else{
+                                Swal.fire({
+                                            text: data.ban,
+                                            timerProgressBar: true,
+                                            timer: 5000,
+                                            icon: 'error',
+                                        })
+                            }
 
-                               Swal.fire({
-                                        text: data.message,
-                                        confirmButtonColor: '#3CDD57',
-                                        timer: 5000
-                                    }).then(() => {
-                                        window.location.reload()
-                        })
                             }
                     });
 

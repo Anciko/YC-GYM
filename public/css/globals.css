@@ -640,6 +640,7 @@ z-index: 20;
 .nav-icon{
     font-size: 30px;
     cursor: pointer;
+    color: var(--customer-text-color);
 }
 
 .nav-profile-img{
@@ -899,10 +900,15 @@ transition: max-height 0.6s ease-out;
     overflow-y: auto;
 }
 
+.notis-box-notis-container a{
+    width: 100%;
+}
+
 .notis-box-noti-row{
     padding: 5px 10px;
     border-bottom:1px solid var(--customer-primary-soft-color);
     /* border-radius: 5px; */
+    /* width: 100%; */
 }
 
 .notis-box-noti-row span{

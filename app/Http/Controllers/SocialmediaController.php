@@ -88,11 +88,36 @@ class SocialmediaController extends Controller
 
     public function post_update(Request $request)
     {
-
         $input = $request->all();
 
         $edit_post=Post::findOrFail($input['edit_post_id']);
-        $edit_post->caption=$input['caption'];
+        $caption=$input['caption'];
+
+        $banwords=DB::table('ban_words')->select('ban_word_english','ban_word_myanmar','ban_word_myanglish')->get();
+
+        if($caption){
+            foreach($banwords as $b){
+                $e_banword=$b->ban_word_english;
+                $m_banword=$b->ban_word_myanmar;
+                $em_banword=$b->ban_word_myanglish;
+
+                 if (str_contains($caption,$e_banword)) {
+                     // Alert::warning('Warning', 'Ban Ban Ban');
+                     //return redirect()->back();
+                     return response()->json([
+                         'ban'=>'You used our banned words!',
+                     ]);
+                 }elseif (str_contains($caption,$m_banword)){
+                     return response()->json([
+                         'ban'=>'You used our banned words!',
+                     ]);
+                 }elseif (str_contains($caption,$em_banword)){
+                     return response()->json([
+                         'ban'=>'You used our banned words!',
+                     ]);
+                 }
+             }
+        }
 
             if($input['totalImages']!=0 && $input['oldimg']==null) {
                 $images=$input['editPostInput'];
@@ -134,6 +159,7 @@ class SocialmediaController extends Controller
                 $result=array_merge($old_images, $new_images);
                 $edit_post->media=json_encode($result);
             }
+            $edit_post->caption=$caption;
             $edit_post->update();
 
         return response()->json([
@@ -402,15 +428,15 @@ class SocialmediaController extends Controller
                 // Alert::warning('Warning', 'Ban Ban Ban');
                 //return redirect()->back();
                 return response()->json([
-                    'message'=>'Ban Ban Ban',
+                    'ban'=>'You used our banned words!',
                 ]);
             }elseif (str_contains($caption,$m_banword)){
                 return response()->json([
-                    'message'=>'Ban Ban Ban',
+                    'ban'=>'You used our banned words!',
                 ]);
             }elseif (str_contains($caption,$em_banword)){
                 return response()->json([
-                    'message'=>'Ban Ban Ban',
+                    'ban'=>'You used our banned words!',
                 ]);
             }
         }
