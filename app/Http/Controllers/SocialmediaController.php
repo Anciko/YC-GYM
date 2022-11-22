@@ -53,9 +53,10 @@ class SocialmediaController extends Controller
         //$posts=Post::orderBy('created_at','DESC')->with('user')->paginate(10);
         return view('customer.socialmedia',compact('posts','left_friends'));
     }
-    public function socialmedia_profile($id)
+    public function socialmedia_profile($id )
     {
         //dd($id);
+        $auth = Auth()->user()->id;
         $user = User::where('id',$id)->first();
         $posts=Post::where('user_id',$id)
                     ->orderBy('created_at','DESC')
@@ -80,17 +81,19 @@ class SocialmediaController extends Controller
             $friends=User::whereIn('id',$n)
                         ->where('id','!=',$user->id)
                         ->paginate(6);
-
-        return view('customer.socialmedia_profile',compact('user','posts','friends'));
+        $friend = DB::select("SELECT * FROM `friendships` WHERE (receiver_id = $auth or sender_id = $auth )
+                        AND (receiver_id = $id or sender_id = $id)");
+        return view('customer.socialmedia_profile',compact('user','posts','friends','friend'));
     }
 
     public function post_update(Request $request)
     {
+
         $input = $request->all();
 
         $edit_post=Post::findOrFail($input['edit_post_id']);
         $edit_post->caption=$input['caption'];
-dd($input['oldimg']);
+
             if($input['totalImages']!=0 && $input['oldimg']==null) {
                 $images=$input['editPostInput'];
                 foreach($images as $file)
@@ -104,16 +107,19 @@ dd($input['oldimg']);
 
             }elseif($input['oldimg']!=null && $input['totalImages']==0){
 
-                $imgData[] = $input['oldimg'];
+                $imgData = $input['oldimg'];
 
-                $edit_post->media =$imgData;
+                $myArray = explode(',', $imgData);
+
+                $edit_post->media =json_encode($myArray);
 
             }elseif($input['oldimg']==null && $input['totalImages']==0){
                 $edit_post->media=null;
 
             }else{
-                $oldimgData[] = $input['oldimg'];
-                $old_images =$oldimgData;
+                $oldimgData= $input['oldimg'];
+                $myArray_data = explode(',', $oldimgData);
+                $old_images =$myArray_data;
 
                 $images=$input['editPostInput'];
 
@@ -124,12 +130,10 @@ dd($input['oldimg']);
                     $file->storeAs('/public/post/', $name);
                     $imgData[] = $name;
                     $new_images =$imgData;
-
                 }
                 $result=array_merge($old_images, $new_images);
                 $edit_post->media=json_encode($result);
             }
-
             $edit_post->update();
 
         return response()->json([

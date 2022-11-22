@@ -55,7 +55,7 @@ class SocialMediaController extends Controller
             $fri_noti->receiver_id = $id;
             $fri_noti->notification_status = 1;
             $fri_noti->save();
-            $pusher->trigger('friend_request.'.$id , 'friendRequest', $data);
+            $pusher->trigger('friend_request.'.$id , 'friendRequest', $fri_noti);
             return response()
                 ->json([
                     'data'=>$data
@@ -112,7 +112,7 @@ class SocialMediaController extends Controller
             $fri_noti->notification_status = 1;
             $fri_noti->save();
 
-            $pusher->trigger('friend_request.'.$request->id , 'friendRequest', $data);
+            $pusher->trigger('friend_request.'.$request->id , 'friendRequest', $fri_noti);
             return response()->json([
                 'message' => 'Accepted Success!'
             ]);
@@ -143,7 +143,6 @@ class SocialMediaController extends Controller
     {
         $auth = Auth()->user()->id;
         $user = User::where('id',$request->id)->first();
-        $auth = Auth()->user()->id;
         $user = User::where('id',$request->id)->first();
         $friend_status = DB::select("SELECT * FROM `friendships` WHERE (receiver_id = $auth or sender_id = $auth )
         AND (receiver_id = $request->id or sender_id = $request->id)");
@@ -157,6 +156,18 @@ class SocialMediaController extends Controller
         $notification=Notification::where('receiver_id',auth()->user()->id)->paginate(10);
         return response()->json([
             'notification' => $notification
+        ]);
+    }
+    public function viewFriendRequestNoti(Request $request){
+        $auth = Auth()->user()->id;
+        DB::table('notifications')->where('id',$request->noti_id)->update(['notification_status' => 2]);
+        $user = User::where('id',$request->id)->first();
+        Friendship::where('sender_id',auth()->user()->id)->orWhere('receiver_id',auth()->user()->id)->first();
+        DB::select("SELECT * FROM `friendships` WHERE (receiver_id = $auth or sender_id = $auth )
+        AND (receiver_id = $request->id or sender_id = $request->id)");
+        return response()->json([
+            'user' => $user,
+            
         ]);
     }
 }
