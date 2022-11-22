@@ -42,6 +42,11 @@ class User extends Authenticatable
                     ->withTimestamps();
     }
 
+    public function profile()
+    {
+        return $this->hasOne(Profile::class, 'user_id', 'id');
+    }
+
     public function tainer_groups()
     {
         return $this->belongsToMany(TrainingGroup::class,'training_users')
@@ -57,11 +62,6 @@ class User extends Authenticatable
         return $this->hasMany(WaterTracked::class,'user_id');
     }
 
-    /**
-     * Get all of the comments for the User
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
     public function posts()
     {
         return $this->hasMany(Post::class, 'user_id', 'id');
