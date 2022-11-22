@@ -294,6 +294,13 @@
     flex-wrap: wrap;
 }
 
+.editpost-photo-video-imgpreview-container{
+    margin-top: 10px;
+    display: flex;
+    gap: 0 5px;
+    flex-wrap: wrap;
+}
+
 .addpost-preview{
     width: 100px;
     height: 100px;

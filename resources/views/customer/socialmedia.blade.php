@@ -53,7 +53,9 @@
           <h1 class="modal-title fs-5" id="exampleModalLabel">Edit Post</h1>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
-        <form class="modal-body" id="edit_form">
+        <form class="modal-body" id="edit_form" enctype= multipart/form-data>
+
+
         {{-- <form class="modal-body" method="POST" action="{{route('post.store')}}" enctype= multipart/form-data>
             @csrf
             @method('POST') --}}
@@ -83,8 +85,9 @@
 
 
             </div>
-            <button type="submit" class="customer-primary-btn addpost-submit-btn">Update</button>
-            {{-- <button type="submit" class="customer-primary-btn addpost-submit-btn">Post</button> --}}
+            {{-- <input type="submit" class="customer-primary-btn addpost-submit-btn" value="Update"> --}}
+            {{-- <button type="button" class="customer-primary-btn addpost-submit-btn "  id="editpost-submit-btn">Update</button> --}}
+            <button type="submit" class="customer-primary-btn addpost-submit-btn">Post</button>
         </form>
 
       </div>
@@ -474,13 +477,14 @@
                         if(data.status==400){
                             alert(data.message)
                         }else{
+                            console.log("sfasdfasdf")
                             $('#editPostCaption').val(data.post.caption);
                             $('#edit_post_id').val(data.post.id);
 
-                            var filesdb =JSON.parse(data.post.media);
+                            var filesdb = data.post.media ? JSON.parse(data.post.media) : [];
                             // var filesAmount=files.length;
                             var storedFilesdb = filesdb;
-                            // console.log(storedFilesdb)
+                            // console.log(storedFilesdb
 
 
                             filesdb.forEach(function(f) {
@@ -509,8 +513,9 @@
                                 $(this).parent().remove();
                             }
 
-                            $('#edit_form').submit(function(e){
+                            $('#edit_form').on('submit',function(e){
                                 e.preventDefault();
+
                                 $('#editPostModal'). modal('hide');
 
                             var fileUpload=$('#editPostInput');
@@ -529,7 +534,6 @@
                                                 timer: 5000
                                             });
                                 }else{
-                                    e.preventDefault();
 
                                     var url="{{route('post.update')}}";
                                     let formData = new FormData(edit_form);

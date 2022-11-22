@@ -86,11 +86,12 @@ class SocialmediaController extends Controller
 
     public function post_update(Request $request)
     {
+        
         $input = $request->all();
 
         $edit_post=Post::findOrFail($input['edit_post_id']);
         $edit_post->caption=$input['caption'];
-dd($input['oldimg']);
+
             if($input['totalImages']!=0 && $input['oldimg']==null) {
                 $images=$input['editPostInput'];
                 foreach($images as $file)
@@ -104,16 +105,19 @@ dd($input['oldimg']);
 
             }elseif($input['oldimg']!=null && $input['totalImages']==0){
 
-                $imgData[] = $input['oldimg'];
+                $imgData = $input['oldimg'];
 
-                $edit_post->media =$imgData;
+                $myArray = explode(',', $imgData);
+
+                $edit_post->media =json_encode($myArray);
 
             }elseif($input['oldimg']==null && $input['totalImages']==0){
                 $edit_post->media=null;
 
             }else{
-                $oldimgData[] = $input['oldimg'];
-                $old_images =$oldimgData;
+                $oldimgData= $input['oldimg'];
+                $myArray_data = explode(',', $oldimgData);
+                $old_images =$myArray_data;
 
                 $images=$input['editPostInput'];
 
@@ -124,12 +128,10 @@ dd($input['oldimg']);
                     $file->storeAs('/public/post/', $name);
                     $imgData[] = $name;
                     $new_images =$imgData;
-
                 }
                 $result=array_merge($old_images, $new_images);
                 $edit_post->media=json_encode($result);
             }
-
             $edit_post->update();
 
         return response()->json([
