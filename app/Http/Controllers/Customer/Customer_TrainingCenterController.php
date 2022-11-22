@@ -221,11 +221,11 @@ class Customer_TrainingCenterController extends Controller
             $extension = $file->extension();
             $name = rand().".".$extension;
             $file->storeAs('/public/post/', $name);
-            $imgData[] = $name;
+            $imgData = $name;
 
         }
         $profile=new Profile();
-        $profile->cover_photo=json_encode($imgData);
+        $profile->cover_photo=$imgData;
         $profile->user_id=auth()->user()->id;
         $profile->save();
 

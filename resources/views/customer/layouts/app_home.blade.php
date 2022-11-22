@@ -301,6 +301,18 @@
     <script>
     $(document).ready(function() {
         //image slider start
+        console.log($(".image-slider"))
+
+        $.each($(".ul-image-slider"),function(){
+            console.log($(this).children('li').length)
+
+            $(this).children('li:first').addClass("active-img")
+        })
+        $.each($(".img-slider-thumbnails ul"),function(){
+            console.log($(this).children('li').length)
+
+            $(this).children('li:first').addClass("active")
+        })
         $(function(){
 
         $('.img-slider-thumbnails li').click(function(){
@@ -323,7 +335,7 @@
 
             });
 
-    });
+        });
 
     var width = $('#image-slider').width();
     console.log(width)
