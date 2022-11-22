@@ -233,10 +233,36 @@ class Customer_TrainingCenterController extends Controller
         return redirect()->back();
     }
 
+    public function profile_update_profile_img(Request $request)
+    {
+        dd($request->profile_image);
+        
+        if($request->hasFile('profile_image')){
+            $file = $request->file('profile_image');
+            $extension = $file->extension();
+            $name = rand().".".$extension;
+            $file->storeAs('/public/post/', $name);
+            $imgData = $name;
+
+        }
+        $profile=new Profile();
+        $profile->profile_image=$imgData;
+        $profile->user_id=auth()->user()->id;
+        $profile->save();
+
+        Alert::success('Success', 'Profile Photo Updated Successfully');
+        return redirect()->back();
+    }
+
 
     public function profile()
     {
         $user_id = auth()->user()->id;
+
+        $user_profile=Profile::where('user_id',$user_id)
+                                ->orderBy('created_at','DESC')
+                                ->first();
+
         $current_date = Carbon::now('Asia/Yangon')->toDateString();
         $year=Carbon::now()->subYear(10)->format("Y");
         $current_year=Carbon::now()->format("Y");
@@ -293,7 +319,7 @@ class Customer_TrainingCenterController extends Controller
             }
         }
 
-        return view('customer.training_center.profile', compact('year','workouts', 'workout_date', 'cal_sum', 'time_min', 'time_sec', 'weight_history', 'newDate'));
+        return view('customer.training_center.profile', compact('user_profile','year','workouts', 'workout_date', 'cal_sum', 'time_min', 'time_sec', 'weight_history', 'newDate'));
     }
 
     public function year_filter($year)
