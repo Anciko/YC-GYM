@@ -7,18 +7,18 @@
     <div class="customer-cover-photo-container">
         <img class="customer-cover-photo" src="">
         <div class="customer-cover-change-btns-container">
-            <form method="POST" action="{{route('customer-profile-cover.update')}}">
+            <form method="POST" action="{{route('customer-profile-cover.update')}}" enctype="multipart/form-data">
                 @csrf
                 @method('POST')
                 <button type="submit" class="customer-primary-btn">Confirm</button>
 
             <button type="button" class="customer-secondary-btn customer-cover-change-cancel-btn">Cancel</button>
         </div>
-        <label class="customer-cover-img-change-btn">
-            <input type="file" class="customer-cover-img-change-input" name="cover">
-            <iconify-icon icon="cil:pen" class="customer-cover-img-change-icon"></iconify-icon>
-        </label>
-        </form>
+            <label class="customer-cover-img-change-btn">
+                <input type="file" class="customer-cover-img-change-input" name="cover">
+                <iconify-icon icon="cil:pen" class="customer-cover-img-change-icon"></iconify-icon>
+            </label>
+            </form>
         <form class="personal_detail customer-personal-details-form" method="POST" action="{{route('customer-profile-name.update')}}">
             @csrf
             @method('POST')

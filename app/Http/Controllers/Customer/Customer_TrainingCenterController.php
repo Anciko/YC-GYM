@@ -215,21 +215,20 @@ class Customer_TrainingCenterController extends Controller
 
     public function profile_update_cover(Request $request)
     {
-        dd($request->all());
-        $profile=new Profile();
-        if($request->file('cover')){
-            $file = $request->file('cover');
 
+        if($request->hasFile('cover')){
+            $file = $request->file('cover');
             $extension = $file->extension();
             $name = rand().".".$extension;
             $file->storeAs('/public/post/', $name);
             $imgData[] = $name;
-            $profile->cover_photo=$imgData;
 
         }
-
+        $profile=new Profile();
+        $profile->cover_photo=json_encode($imgData);
         $profile->user_id=auth()->user()->id;
         $profile->save();
+
         Alert::success('Success', 'Cover Photo Updated Successfully');
         return redirect()->back();
     }

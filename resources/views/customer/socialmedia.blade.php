@@ -3,219 +3,6 @@
 @section('content')
 @include('sweetalert::alert')
 
-<div class="modal fade" id="addPostModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h1 class="modal-title fs-5" id="exampleModalLabel">Create A Post</h1>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <form class="modal-body" id="form">
-        {{-- <form class="modal-body" method="POST" action="{{route('post.store')}}" enctype= multipart/form-data>
-            @csrf
-            @method('POST') --}}
-          <div class="addpost-caption">
-            <p>Post Caption</p>
-            <textarea placeholder="Caption goes here..." name="caption" id="addPostCaption" class="addpost-caption-input"></textarea>
-          </div>
-
-          <div class="addpost-photovideo">
-
-            <span class="selectImage">
-
-                <div class="addpost-photovideo-btn">
-                    <iconify-icon icon="akar-icons:circle-plus" class="addpst-photovideo-btn-icon"></iconify-icon>
-                    <p>Photo/Video</p>
-                    <input type="file" id="addPostInput" name="addPostInput[]" multiple enctype="multipart/form-data">
-                </div>
-
-                <button class="addpost-photovideo-clear-btn" type="button" onclick="clearAddPost()">Clear</button>
-
-            </span>
-
-            <div class="addpost-photo-video-imgpreview-container">
-            </div>
-
-
-            </div>
-            <button type="submit" class="customer-primary-btn addpost-submit-btn" id="">Post</button>
-            {{-- <button type="submit" class="customer-primary-btn addpost-submit-btn">Post</button> --}}
-        </form>
-
-      </div>
-    </div>
-</div>
-
-<div class="modal fade" id="editPostModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h1 class="modal-title fs-5" id="exampleModalLabel">Edit Post</h1>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <form class="modal-body" id="edit_form" enctype= multipart/form-data>
-
-
-        {{-- <form class="modal-body" method="POST" action="{{route('post.store')}}" enctype= multipart/form-data>
-            @csrf
-            @method('POST') --}}
-            <input type="hidden" id="edit_post_id">
-
-          <div class="addpost-caption">
-            <p>Post Caption</p>
-            <textarea placeholder="Caption goes here..." name="caption" id="editPostCaption" class="addpost-caption-input"></textarea>
-          </div>
-
-          <div class="addpost-photovideo">
-
-            <span class="selectImage">
-
-                <div class="addpost-photovideo-btn">
-                    <iconify-icon icon="akar-icons:circle-plus" class="addpst-photovideo-btn-icon"></iconify-icon>
-                    <p>Photo/Video</p>
-                    <input type="file" id="editPostInput" name="editPostInput[]" multiple enctype="multipart/form-data">
-                </div>
-
-                <button class="addpost-photovideo-clear-btn" type="button" onclick="clearAddPost()">Clear</button>
-
-            </span>
-
-            <div class="editpost-photo-video-imgpreview-container">
-            </div>
-
-
-            </div>
-            {{-- <input type="submit" class="customer-primary-btn addpost-submit-btn" value="Update"> --}}
-            {{-- <button type="button" class="customer-primary-btn addpost-submit-btn "  id="editpost-submit-btn">Update</button> --}}
-            <button type="submit" class="customer-primary-btn addpost-submit-btn">Update</button>
-        </form>
-
-      </div>
-    </div>
-</div>
-    <button class="social-media-addpost-btn customer-primary-btn margin-top" data-bs-toggle="modal" data-bs-target="#addPostModal">
-        <iconify-icon icon="akar-icons:circle-plus" class="addpost-icon"></iconify-icon>
-        <p>Add Post</p>
-    </button>
-
-    <div class="social-media-left-container-trigger">
-        Friends
-        <iconify-icon icon="bi:arrow-right" class="arrow-icon"></iconify-icon>
-    </div>
-
-    <div class="social-media-overlay"></div>
-
-    <div class="social-media-parent-container">
-        <div class="social-media-left-container">
-            <div class="social-media-left-search-container">
-                <input type="text" id ="search">
-                <iconify-icon icon="akar-icons:search" class="search-icon"></iconify-icon>
-            </div>
-            <div class="cancel">
-            <a href="#" class="customer-secondary-btn cancel" >Cancel</a>
-            </div>
-            <div class="social-media-left-infos-container">
-                <div class="social-media-left-friends-container">
-                    <div class="social-media-left-container-header">
-                        <p>Friends</p>
-                        <a href="#">See All <iconify-icon icon="bi:arrow-right" class="arrow-icon"></iconify-icon></a>
-                    </div>
-
-                    <div class="social-media-left-friends-rows-container">
-                        @forelse ($left_friends as $friend)
-                        <a href="{{route('socialmedia.profile',$friend->id)}}" class="social-media-left-friends-row">
-                            <img src="{{asset('img/customer/imgs/user_default.jpg')}}">
-                            <p>{{$friend->name}}</p>
-                        </a>
-                        @empty
-                        <p class="text-secondary p-1">No Friend</p>
-                        @endforelse
-                    </div>
-                </div>
-
-                <div class="social-media-left-messages-container">
-                    <div class="social-media-left-container-header">
-                        <p>Messages</p>
-                        <a href="#">See All <iconify-icon icon="bi:arrow-right" class="arrow-icon"></iconify-icon></a>
-                    </div>
-
-                    <div class="social-media-left-messages-rows-container">
-                        <a href="#" class="social-media-left-messages-row">
-                            <img src="{{asset('img/customer/imgs/user_default.jpg')}}">
-                            <p>
-                                Friend Name<br>
-                                <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Dui hendrerit potenti pellentesque tellus urna bibendum mollis. </span>
-                            </p>
-                        </a>
-                        <a href="#" class="social-media-left-messages-row">
-                            <img src="{{asset('img/customer/imgs/user_default.jpg')}}">
-                            <p>
-                                Friend Name<br>
-                                <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Dui hendrerit potenti pellentesque tellus urna bibendum mollis. </span>
-                            </p>
-                        </a>
-                        <a href="#" class="social-media-left-messages-row">
-                            <img src="{{asset('img/customer/imgs/user_default.jpg')}}">
-                            <p>
-                                Friend Name<br>
-                                <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Dui hendrerit potenti pellentesque tellus urna bibendum mollis. </span>
-                            </p>
-                        </a>
-                        <a href="#" class="social-media-left-messages-row">
-                            <img src="{{asset('img/customer/imgs/user_default.jpg')}}">
-                            <p>
-                                Friend Name<br>
-                                <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Dui hendrerit potenti pellentesque tellus urna bibendum mollis. </span>
-                            </p>
-                        </a>
-                    </div>
-                </div>
-
-                <div class="social-media-left-gpmessages-container">
-                    <div class="social-media-left-container-header">
-                        <p>Group Messages</p>
-                        <a href="#">See All <iconify-icon icon="bi:arrow-right" class="arrow-icon"></iconify-icon></a>
-                    </div>
-
-                    <div class="social-media-left-gpmessages-rows-container">
-                        <a href="#" class="social-media-left-gpmessages-row">
-                            <img src="{{asset('img/customer/imgs/user_default.jpg')}}">
-                            <p>
-                                Group Name<br>
-                                <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Dui hendrerit potenti pellentesque tellus urna bibendum mollis. </span>
-                            </p>
-                        </a>
-                        <a href="#" class="social-media-left-gpmessages-row">
-                            <img src="{{asset('img/customer/imgs/user_default.jpg')}}">
-                            <p>
-                                Group Name<br>
-                                <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Dui hendrerit potenti pellentesque tellus urna bibendum mollis. </span>
-                            </p>
-                        </a>
-                        <a href="#" class="social-media-left-gpmessages-row">
-                            <img src="{{asset('img/customer/imgs/user_default.jpg')}}">
-                            <p>
-                                Group Name<br>
-                                <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Dui hendrerit potenti pellentesque tellus urna bibendum mollis. </span>
-                            </p>
-                        </a>
-                        <a href="#" class="social-media-left-gpmessages-row">
-                            <img src="{{asset('img/customer/imgs/user_default.jpg')}}">
-                            <p>
-                                Group Name<br>
-                                <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Dui hendrerit potenti pellentesque tellus urna bibendum mollis. </span>
-                            </p>
-                        </a>
-                    </div>
-                </div>
-            </div>
-
-            <div class="social-media-left-searched-items-container">
-
-            </div>
-
-        </div>
-
         <div class="social-media-right-container">
             <div class="social-media-posts-parent-container">
                 @foreach ($posts as $post)
@@ -385,10 +172,10 @@
 
             </div>
         </div>
-    </div>
+
 @endsection
 @push('scripts')
-<script>
+{{-- <script>
     $(document).ready(function() {
         $(".cancel").hide();
         $( ".social-media-left-search-container input" ).focus(function() {
@@ -477,14 +264,13 @@
                         if(data.status==400){
                             alert(data.message)
                         }else{
-                            console.log("sfasdfasdf")
                             $('#editPostCaption').val(data.post.caption);
                             $('#edit_post_id').val(data.post.id);
 
-                            var filesdb = data.post.media ? JSON.parse(data.post.media) : [];
+                            var filesdb =JSON.parse(data.post.media);
                             // var filesAmount=files.length;
                             var storedFilesdb = filesdb;
-                            // console.log(storedFilesdb
+                            // console.log(storedFilesdb)
 
 
                             filesdb.forEach(function(f) {
@@ -518,9 +304,8 @@
                                 $(this).parent().remove();
                             }
 
-                            $('#edit_form').on('submit',function(e){
+                            $('#edit_form').submit(function(e){
                                 e.preventDefault();
-
                                 $('#editPostModal'). modal('hide');
 
                             var fileUpload=$('#editPostInput');
@@ -539,6 +324,7 @@
                                                 timer: 5000
                                             });
                                 }else{
+                                    e.preventDefault();
 
                                     var url="{{route('post.update')}}";
                                     let formData = new FormData(edit_form);
@@ -1107,5 +893,5 @@
         document.getElementById('addPostInput').files = dt.files;
         $(".addpost-photo-video-imgpreview-container").empty();
     }
-</script>
+</script> --}}
 @endpush
