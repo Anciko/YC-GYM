@@ -2,182 +2,6 @@
 
 @section('content')
 @include('sweetalert::alert')
-
-<div class="modal fade" id="addPostModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h1 class="modal-title fs-5" id="exampleModalLabel">Create A Post</h1>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        {{-- <form method="post" class="modal-body" enctype= multipart/form-data>
-            @csrf --}}
-        <form class="modal-body" method="POST" action="{{route('post.store')}}" enctype= multipart/form-data>
-            @csrf
-            @method('POST')
-          <div class="addpost-caption">
-            <p>Post Caption</p>
-            <textarea placeholder="Caption goes here..." name="caption" id="addPostCaption" class="addpost-caption-input"></textarea>
-          </div>
-
-          <div class="addpost-photovideo">
-
-            <span class="selectImage">
-
-                <div class="addpost-photovideo-btn">
-                    <iconify-icon icon="akar-icons:circle-plus" class="addpst-photovideo-btn-icon"></iconify-icon>
-                    <p>Photo/Video</p>
-                    <input type="file" id="addPostInput" name="addPostInput[]" multiple enctype="multipart/form-data">
-                </div>
-
-                <button class="addpost-photovideo-clear-btn" type="button" onclick="clearAddPost()">Clear</button>
-
-            </span>
-
-            <div class="addpost-photo-video-imgpreview-container">
-            </div>
-
-
-            </div>
-            <button type="submit" class="customer-primary-btn">Post</button>
-            {{-- <button type="submit" class="customer-primary-btn addpost-submit-btn">Post</button> --}}
-        </form>
-
-      </div>
-    </div>
-</div>
-
-    <button class="social-media-addpost-btn customer-primary-btn margin-top" data-bs-toggle="modal" data-bs-target="#addPostModal">
-        <iconify-icon icon="akar-icons:circle-plus" class="addpost-icon"></iconify-icon>
-        <p>Add Post</p>
-    </button>
-
-    <div class="social-media-left-container-trigger">
-        Friends
-        <iconify-icon icon="bi:arrow-right" class="arrow-icon"></iconify-icon>
-    </div>
-
-    <div class="social-media-overlay"></div>
-
-    <div class="social-media-parent-container">
-        <div class="social-media-left-container">
-            <div class="social-media-left-search-container">
-                <input type="text" id ="search">
-                <iconify-icon icon="akar-icons:search" class="search-icon"></iconify-icon>
-            </div>
-            <div class="cancel">
-            <a href="#" class="customer-secondary-btn cancel" >Cancel</a>
-            </div>
-            <div class="social-media-left-infos-container">
-                <div class="social-media-left-friends-container">
-                    <div class="social-media-left-container-header">
-                        <p>Friends</p>
-                        <a href="#">See All <iconify-icon icon="bi:arrow-right" class="arrow-icon"></iconify-icon></a>
-                    </div>
-
-                    <div class="social-media-left-friends-rows-container">
-                        <a href="#" class="social-media-left-friends-row">
-                            <img src="{{asset('img/customer/imgs/user_default.jpg')}}">
-                            <p>Friend Name</p>
-                        </a>
-                        <a href="#" class="social-media-left-friends-row">
-                            <img src="{{asset('img/customer/imgs/user_default.jpg')}}">
-                            <p>Friend Name</p>
-                        </a>
-                        <a href="#" class="social-media-left-friends-row">
-                            <img src="{{asset('img/customer/imgs/user_default.jpg')}}">
-                            <p>Friend Name</p>
-                        </a>
-                        <a href="#" class="social-media-left-friends-row">
-                            <img src="{{asset('img/customer/imgs/user_default.jpg')}}">
-                            <p>Friend Name</p>
-                        </a>
-                    </div>
-                </div>
-
-                <div class="social-media-left-messages-container">
-                    <div class="social-media-left-container-header">
-                        <p>Messages</p>
-                        <a href="#">See All <iconify-icon icon="bi:arrow-right" class="arrow-icon"></iconify-icon></a>
-                    </div>
-
-                    <div class="social-media-left-messages-rows-container">
-                        <a href="#" class="social-media-left-messages-row">
-                            <img src="{{asset('img/customer/imgs/user_default.jpg')}}">
-                            <p>
-                                Friend Name<br>
-                                <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Dui hendrerit potenti pellentesque tellus urna bibendum mollis. </span>
-                            </p>
-                        </a>
-                        <a href="#" class="social-media-left-messages-row">
-                            <img src="{{asset('img/customer/imgs/user_default.jpg')}}">
-                            <p>
-                                Friend Name<br>
-                                <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Dui hendrerit potenti pellentesque tellus urna bibendum mollis. </span>
-                            </p>
-                        </a>
-                        <a href="#" class="social-media-left-messages-row">
-                            <img src="{{asset('img/customer/imgs/user_default.jpg')}}">
-                            <p>
-                                Friend Name<br>
-                                <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Dui hendrerit potenti pellentesque tellus urna bibendum mollis. </span>
-                            </p>
-                        </a>
-                        <a href="#" class="social-media-left-messages-row">
-                            <img src="{{asset('img/customer/imgs/user_default.jpg')}}">
-                            <p>
-                                Friend Name<br>
-                                <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Dui hendrerit potenti pellentesque tellus urna bibendum mollis. </span>
-                            </p>
-                        </a>
-                    </div>
-                </div>
-
-                <div class="social-media-left-gpmessages-container">
-                    <div class="social-media-left-container-header">
-                        <p>Group Messages</p>
-                        <a href="#">See All <iconify-icon icon="bi:arrow-right" class="arrow-icon"></iconify-icon></a>
-                    </div>
-
-                    <div class="social-media-left-gpmessages-rows-container">
-                        <a href="#" class="social-media-left-gpmessages-row">
-                            <img src="{{asset('img/customer/imgs/user_default.jpg')}}">
-                            <p>
-                                Group Name<br>
-                                <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Dui hendrerit potenti pellentesque tellus urna bibendum mollis. </span>
-                            </p>
-                        </a>
-                        <a href="#" class="social-media-left-gpmessages-row">
-                            <img src="{{asset('img/customer/imgs/user_default.jpg')}}">
-                            <p>
-                                Group Name<br>
-                                <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Dui hendrerit potenti pellentesque tellus urna bibendum mollis. </span>
-                            </p>
-                        </a>
-                        <a href="#" class="social-media-left-gpmessages-row">
-                            <img src="{{asset('img/customer/imgs/user_default.jpg')}}">
-                            <p>
-                                Group Name<br>
-                                <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Dui hendrerit potenti pellentesque tellus urna bibendum mollis. </span>
-                            </p>
-                        </a>
-                        <a href="#" class="social-media-left-gpmessages-row">
-                            <img src="{{asset('img/customer/imgs/user_default.jpg')}}">
-                            <p>
-                                Group Name<br>
-                                <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Dui hendrerit potenti pellentesque tellus urna bibendum mollis. </span>
-                            </p>
-                        </a>
-                    </div>
-                </div>
-            </div>
-
-            <div class="social-media-left-searched-items-container">
-
-            </div>
-
-        </div>
-
         <div class="social-media-right-container">
             <div class="social-media-posts-parent-container">
                 <div class="social-media-post-container">
@@ -487,7 +311,7 @@
                 </div>
             </div>
         </div>
-    </div>
+
 @endsection
 @push('scripts')
 <script>
@@ -601,25 +425,27 @@
                                 for(let i = 0; i < res.users.length; i++){
                                     var status = ''
                                 for(let f = 0; f < res.friends.length; f++){
+
+                                    console.log(auth_id)
+                                    if(status === "profile"){
                                     id = res.users[i].id;
                                     var url = "{{ route('socialmedia_profile', [':id']) }}";
                                     url = url.replace(':id', id);
-                                    console.log(auth_id)
-
-                                    if(res.users[i].id === res.friends[f].receiver_id &&
+                                 htmlView += `
+                                            <a href=`+url+` class = "profiles">
+                                                <p>`+res.users[i].name+`</p>
+                                            </a>
+                                            <a href=`+url+` class="customer-secondary-btn "
+                                            >View Profile</a>
+                                            `
+                                    }
+                                    else if(res.users[i].id === res.friends[f].receiver_id &&
                                     res.friends[f].sender_id === auth_id &&
                                     res.friends[f].friend_status === 1 ){
                                         console.log(res.users[i].name,'sender request')
                                         status = 'sender request'
                                         break
-                                        // return
-                                        // htmlView += `
-                                        //     <a href=`+url+` class = "profiles">
-                                        //         <p>`+res.users[i].name+`</p>
-                                        //     </a>
-                                        //     <a href="?id=` + res.users[i].id+`" class="customer-secondary-btn cancel-request-btn"
-                                        //     id = "cancelRequest">Cancel Request</a>
-                                        //     `
+
                                     }
                                     else if(
                                     res.users[i].id === res.friends[f].sender_id &&
@@ -629,27 +455,13 @@
                                         console.log(res.users[i].name,'receiver request')
                                         status = 'receiver request'
                                         break
-                                        // return
-                                        // htmlView += `
-                                        //     <a href=`+url+` class = "profiles">
-                                        //         <p>`+res.users[i].name+`</p>
-                                        //     </a>
-                                        //     <a href="?id=` + res.users[i].id+`" class="customer-secondary-btn cancel-request-btn"
-                                        //     id = "cancelRequest">Response</a>
-                                        //     `
+
                                     }
                                     else if (res.users[i].id === auth_id){
                                         console.log(res.users[i].name,'profile')
                                         status = "profile"
                                         break
-                                        // return
-                                        // htmlView += `
-                                        //     <a href=`+url+` class = "profiles">
-                                        //         <p>`+res.users[i].name+`</p>
-                                        //     </a>
-                                        //     <a href=`+url+` class="customer-secondary-btn "
-                                        //     >View Profile</a>
-                                        //     `
+
                                     }
                                     else if (res.users[i].id === res.friends[f].receiver_id &&
                                     res.friends[f].sender_id === auth_id &&
@@ -658,13 +470,7 @@
                                         console.log(res.users[i].name,'sender view profile')
                                         status = "sender view profile"
                                         break
-                                        // return
-                                        // htmlView += `
-                                        //     <a href= `+url+` class = "profiles">
-                                        //         <p>`+res.users[i].name+`</p>
-                                        //     </a>
-                                        //     <a href="?id=` + res.users[i].id+`" class="customer-secondary-btn add-friend-btn">Friend</a>
-                                        //     `
+
                                     }
                                     else if (
                                     res.users[i].id === res.friends[f].sender_id &&
@@ -674,28 +480,31 @@
                                         console.log(res.users[i].name,'receiver view profile')
                                         status = "receiver view profile"
                                         break
-                                        // return
-                                        // htmlView += `
-                                        //     <a href= `+url+` class = "profiles">
-                                        //         <p>`+res.users[i].name+`</p>
-                                        //     </a>
-                                        //     <a href="?id=` + res.users[i].id+`" class="customer-secondary-btn add-friend-btn">Friend</a>
-                                        //   `
+
                                     }
                                     else{
                                         status="add fri"
                                         console.log(res.users[i].name,'add fri')
-                                    //     htmlView += `
-                                    //         <a href=`+url+` class = "profiles">
-                                    //             <p>`+res.users[i].name+`</p>
-                                    //         </a>
-                                    //         <a href="?id=` + res.users[i].id+`" class="customer-secondary-btn add-friend-btn" id = "AddFriend">Add</a>
-                                    // `
                                     }
-
                             }
 
-                            if(status === 'sender request'){
+                            if(status === 'profile'){
+                                    id = res.users[i].id;
+                                    var url = "{{ route('socialmedia_profile', [':id']) }}";
+                                    url = url.replace(':id', id);
+                                htmlView += `
+                                            <a href=`+url+` class = "profiles">
+                                                <p>`+res.users[i].name+`</p>
+                                            </a>
+                                            <a href=`+url+` class="customer-secondary-btn"
+                                            >View Profile</a>
+                                            `
+                            }
+
+                            else if(status === 'sender request'){
+                                    id = res.users[i].id;
+                                    var url = "{{ route('socialmedia_profile', [':id']) }}";
+                                    url = url.replace(':id', id);
                                 htmlView += `
                                             <a href=`+url+` class = "profiles">
                                                 <p>`+res.users[i].name+`</p>
@@ -706,6 +515,9 @@
                             }
 
                             else if(status === 'receiver request'){
+                                    id = res.users[i].id;
+                                    var url = "{{ route('socialmedia_profile', [':id']) }}";
+                                    url = url.replace(':id', id);
                                htmlView += `
                                             <a href=`+url+` class = "profiles">
                                                 <p>`+res.users[i].name+`</p>
@@ -713,18 +525,10 @@
                                             <a href=`+url+` class="customer-secondary-btn">Response</a>
                                             `
                             }
-
-                            else if(status === "profile"){
-                                 htmlView += `
-                                            <a href=`+url+` class = "profiles">
-                                                <p>`+res.users[i].name+`</p>
-                                            </a>
-                                            <a href=`+url+` class="customer-secondary-btn "
-                                            >View Profile</a>
-                                            `
-                            }
-
                             else if(status === "sender view profile"){
+                                    id = res.users[i].id;
+                                    var url = "{{ route('socialmedia_profile', [':id']) }}";
+                                    url = url.replace(':id', id);
                                 htmlView += `
                                             <a href= `+url+` class = "profiles">
                                                 <p>`+res.users[i].name+`</p>
@@ -733,6 +537,9 @@
                                           `
                             }
                             else if(status === "receiver view profile"){
+                                    id = res.users[i].id;
+                                    var url = "{{ route('socialmedia_profile', [':id']) }}";
+                                    url = url.replace(':id', id);
                                 htmlView += `
                                             <a href= `+url+` class = "profiles">
                                                 <p>`+res.users[i].name+`</p>
@@ -741,6 +548,9 @@
                                           `
                             }
                             else{
+                                    id = res.users[i].id;
+                                    var url = "{{ route('socialmedia_profile', [':id']) }}";
+                                    url = url.replace(':id', id);
                                     htmlView += `
                                             <a href=`+url+` class = "profiles">
                                                 <p>`+res.users[i].name+`</p>

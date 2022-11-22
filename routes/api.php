@@ -4,10 +4,11 @@ use Illuminate\Http\Request;
 use App\Models\TrainingGroup;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\V1\AuthController;
-use App\Http\Controllers\Api\V1\CustomerProfileController;
+use App\Http\Controllers\Api\V1\SocialMediaController;
 use App\Http\Controllers\Api\V1\TrainingGroupController;
-use App\Http\Controllers\Api\V1\TrainingManagementController;
 use App\Http\Controllers\Trainer\TrainerGroupController;
+use App\Http\Controllers\Api\V1\CustomerProfileController;
+use App\Http\Controllers\Api\V1\TrainingManagementController;
 use App\Http\Controllers\Trainer\TrainerManagementConntroller;
 
 /*
@@ -115,6 +116,18 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     //Group chat for mobile
     Route::post('chat/sendmessage/{id}', [TrainingManagementController::class, 'sendmessage']);
     Route::get('chat/showmessage/{id}', [TrainingManagementController::class, 'chatshow']);
+
+
+    //social media
+    Route::post('search_users', [SocialMediaController::class, 'search_users']); //search users
+    Route::post('add_friend', [SocialMediaController::class, 'add_friend']); //add friends
+    Route::post('unfriend', [SocialMediaController::class, 'unfriend']); //un friends
+    Route::post('cancelRequest', [SocialmediaController::class, 'cancelRequest'])->name('cancelRequest'); // cancel request
+    Route::post('declineRequest', [SocialmediaController::class, 'declineRequest'])->name('declineRequest'); //
+    Route::post('confirmRequest', [SocialmediaController::class, 'confirmRequest'])->name('confirmRequest');//
+    Route::post('socialmedia_profile', [SocialmediaController::class, 'socialmedia_profile'])->name('socialmedia_profile');//
+
+    Route::get('notification', [SocialmediaController::class, 'notification']);
 });
 
 Route::get('test', [AuthController::class, 'test']);
