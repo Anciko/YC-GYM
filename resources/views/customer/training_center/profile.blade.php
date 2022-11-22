@@ -5,7 +5,7 @@
 
 <div class="customer-profile-parent-container">
     <div class="customer-cover-photo-container">
-        <img class="customer-cover-photo" src="">
+        <img class="customer-cover-photo" src="{{asset('storage/post/',auth()->user()->profiles->profile_image)}}">
         {{-- <h1>{{auth()->user()->profiles->id}}</h1> --}}
         {{-- src="{{asset('storage/post/',auth()->user()->profiles->profile_image)}}" --}}
         <div class="customer-cover-change-btns-container">

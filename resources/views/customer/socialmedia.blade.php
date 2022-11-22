@@ -83,10 +83,17 @@
                                 <ul class="ul-image-slider">
 
                                     <?php foreach (json_decode($post->media)as $m){?>
-
-                                    <li >
-                                        <img src="{{asset('storage/post/'.$m) }}" alt="" />
-                                    </li>
+                                        @if (pathinfo($m, PATHINFO_EXTENSION) == 'mp4')
+                                        <li>
+                                            <video controls>
+                                                <source src="{{asset('storage/post/'.$m) }}">
+                                            </video>
+                                        </li>
+                                        @else
+                                            <li>
+                                                <img src="{{asset('storage/post/'.$m) }}" alt="" />
+                                            </li>
+                                        @endif
 
                                     <?php }?>
                                 </ul>
@@ -97,11 +104,19 @@
                                 <ul>
                                     {{-- <li class="active"><img src="https://40.media.tumblr.com/tumblr_m92vwz7XLZ1qf4jqio1_540.jpg" alt="" /></li> --}}
                                     <?php foreach (json_decode($post->media)as $m){?>
-                                        <li >
-                                            <img src="{{asset('storage/post/'.$m) }}">
+                                        @if (pathinfo($m, PATHINFO_EXTENSION) == 'mp4')
+                                        <li>
+                                            <video>
+                                                <source src="{{asset('storage/post/'.$m) }}">
+                                            </video>
                                         </li>
+                                        @else
+                                            <li>
+                                                <img src="{{asset('storage/post/'.$m) }}" alt="" />
+                                            </li>
+                                        @endif
 
-                                        <?php }?>
+                                    <?php }?>
 
                                 </ul>
                             </div>
