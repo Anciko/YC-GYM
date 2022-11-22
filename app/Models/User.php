@@ -43,9 +43,9 @@ class User extends Authenticatable
                     ->withTimestamps();
     }
 
-    public function profile()
+    public function profiles()
     {
-        return $this->hasOne(Profile::class, 'user_id', 'id');
+        return $this->hasMany(Profile::class, 'user_id', 'id');
     }
 
     public function tainer_groups()
