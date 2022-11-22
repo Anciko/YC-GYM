@@ -65,6 +65,93 @@
                       <h1 class="modal-title fs-5" id="exampleModalLabel">Create A Post</h1>
                       <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
+                    <form class="modal-body" id="form">
+                    {{-- <form class="modal-body" method="POST" action="{{route('post.store')}}" enctype= multipart/form-data>
+                        @csrf
+                        @method('POST') --}}
+                      <div class="addpost-caption">
+                        <p>Post Caption</p>
+                        <textarea placeholder="Caption goes here..." name="caption" id="addPostCaption" class="addpost-caption-input"></textarea>
+                      </div>
+
+                      <div class="addpost-photovideo">
+
+                        <span class="selectImage">
+
+                            <div class="addpost-photovideo-btn">
+                                <iconify-icon icon="akar-icons:circle-plus" class="addpst-photovideo-btn-icon"></iconify-icon>
+                                <p>Photo/Video</p>
+                                <input type="file" id="addPostInput" name="addPostInput[]" multiple enctype="multipart/form-data">
+                            </div>
+
+                            <button class="addpost-photovideo-clear-btn" type="button" onclick="clearAddPost()">Clear</button>
+
+                        </span>
+
+                        <div class="addpost-photo-video-imgpreview-container">
+                        </div>
+
+
+                        </div>
+                        <button type="submit" class="customer-primary-btn addpost-submit-btn" id="">Post</button>
+                        {{-- <button type="submit" class="customer-primary-btn addpost-submit-btn">Post</button> --}}
+                    </form>
+
+                  </div>
+                </div>
+            </div>
+
+            <div class="modal fade" id="editPostModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h1 class="modal-title fs-5" id="exampleModalLabel">Edit Post</h1>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <form class="modal-body" id="edit_form">
+                    {{-- <form class="modal-body" method="POST" action="{{route('post.store')}}" enctype= multipart/form-data>
+                        @csrf
+                        @method('POST') --}}
+                        <input type="hidden" id="edit_post_id">
+
+                      <div class="addpost-caption">
+                        <p>Post Caption</p>
+                        <textarea placeholder="Caption goes here..." name="caption" id="editPostCaption" class="addpost-caption-input"></textarea>
+                      </div>
+
+                      <div class="addpost-photovideo">
+
+                        <span class="selectImage">
+
+                            <div class="addpost-photovideo-btn">
+                                <iconify-icon icon="akar-icons:circle-plus" class="addpst-photovideo-btn-icon"></iconify-icon>
+                                <p>Photo/Video</p>
+                                <input type="file" id="editPostInput" name="editPostInput[]" multiple enctype="multipart/form-data">
+                            </div>
+
+                            <button class="addpost-photovideo-clear-btn" type="button" onclick="clearAddPost()">Clear</button>
+
+                        </span>
+
+                        <div class="editpost-photo-video-imgpreview-container">
+                        </div>
+
+
+                        </div>
+                        <button type="submit" class="customer-primary-btn addpost-submit-btn">Update</button>
+                        {{-- <button type="submit" class="customer-primary-btn addpost-submit-btn">Post</button> --}}
+                    </form>
+
+                  </div>
+                </div>
+            </div>
+            <div class="modal fade" id="addPostModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h1 class="modal-title fs-5" id="exampleModalLabel">Create A Post</h1>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
                     {{-- <form method="post" class="modal-body" enctype= multipart/form-data>
                         @csrf --}}
                     <form class="modal-body" method="POST" action="{{route('post.store')}}" enctype= multipart/form-data>
@@ -120,7 +207,7 @@
                         <iconify-icon icon="akar-icons:search" class="search-icon"></iconify-icon>
                     </div>
                     <div class="cancel">
-                        <a href="#" class="customer-secondary-btn cancel" >Cancel</a>
+                    <a href="#" class="customer-secondary-btn cancel" >Cancel</a>
                     </div>
                     <div class="social-media-left-infos-container">
                         <div class="social-media-left-friends-container">
@@ -130,22 +217,14 @@
                             </div>
 
                             <div class="social-media-left-friends-rows-container">
-                                <a href="#" class="social-media-left-friends-row">
+                                @forelse ($left_friends as $friend)
+                                <a href="{{route('socialmedia.profile',$friend->id)}}" class="social-media-left-friends-row">
                                     <img src="{{asset('img/customer/imgs/user_default.jpg')}}">
-                                    <p>Friend Name</p>
+                                    <p>{{$friend->name}}</p>
                                 </a>
-                                <a href="#" class="social-media-left-friends-row">
-                                    <img src="{{asset('img/customer/imgs/user_default.jpg')}}">
-                                    <p>Friend Name</p>
-                                </a>
-                                <a href="#" class="social-media-left-friends-row">
-                                    <img src="{{asset('img/customer/imgs/user_default.jpg')}}">
-                                    <p>Friend Name</p>
-                                </a>
-                                <a href="#" class="social-media-left-friends-row">
-                                    <img src="{{asset('img/customer/imgs/user_default.jpg')}}">
-                                    <p>Friend Name</p>
-                                </a>
+                                @empty
+                                <p class="text-secondary p-1">No Friend</p>
+                                @endforelse
                             </div>
                         </div>
 
@@ -225,9 +304,11 @@
                             </div>
                         </div>
                     </div>
+
                     <div class="social-media-left-searched-items-container">
 
                     </div>
+
                 </div>
 
                 @yield('content')
@@ -277,8 +358,7 @@
                 $.notify(data, "success",{ position:"left" });
                 });
          })
-    </script>
-    <script>
+
         $(document).ready(function() {
             $(".cancel").hide();
             $( ".social-media-left-search-container input" ).focus(function() {
@@ -531,6 +611,224 @@
 
 
 
+            // $('.social-media-post-header-icon').click(function(){
+            //     $(this).next().toggle()
+            // })
+
+            // $(".social-media-left-container-trigger").click(function(){
+            //     $('.social-media-left-container').toggleClass("social-media-left-container-open")
+            //     $('.social-media-overlay').toggle()
+            //     $(".social-media-left-container-trigger .arrow-icon").toggleClass("rotate-arrow")
+            // })
+
+
+        })
+
+        $(document).ready(function() {
+
+            $(document).on('click', '#delete_post', function(e){
+                e.preventDefault();
+                var id = $(this).data('id');
+                Swal.fire({
+                            text: "Are you sure to delete post?",
+                            showClass: {
+                                    popup: 'animate__animated animate__fadeInDown'
+                                },
+                                hideClass: {
+                                    popup: 'animate__animated animate__fadeOutUp'
+                                },
+                            showCancelButton: true,
+                            confirmButtonText: 'Yes',
+                            cancelButtonText: 'No',
+
+                            }).then((willDelete) => {
+                                var add_url = "{{ route('post.destroy', [':id']) }}";
+                                add_url = add_url.replace(':id', id);
+
+                                $.ajaxSetup({
+                                        headers: {
+                                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                                        }
+                                    });
+                                $.ajax({
+                                    method: "POST",
+                                    url: add_url,
+                                    datatype: "json",
+                                    success: function(data) {
+                                        window.location.reload();
+                                        // Swal.fire({
+                                        //             text: data.success,
+                                        //             showClass: {
+                                        //                     popup: 'animate__animated animate__fadeInDown'
+                                        //                 },
+                                        //                 hideClass: {
+                                        //                     popup: 'animate__animated animate__fadeOutUp'
+                                        //                 },
+                                        //             }).then(() => {
+                                        //     window.location.reload()
+                                        // })
+                                    }
+                                    })
+                            })
+            })
+
+            $(document).on('click','#edit_post',function(e){
+                e.preventDefault();
+                $(".editpost-photo-video-imgpreview-container").empty();
+
+                dtEdit.clearData()
+                document.getElementById('editPostInput').files = dtEdit.files;
+                var id = $(this).data('id');
+
+                $('#editPostModal').modal('show');
+                var add_url = "{{ route('post.edit', [':id']) }}";
+                add_url = add_url.replace(':id', id);
+
+                $.ajaxSetup({
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        }
+                    });
+                $.ajax({
+                        method: "POST",
+                        url: add_url,
+                        datatype: "json",
+                        success: function(data) {
+                            if(data.status==400){
+                                alert(data.message)
+                            }else{
+                                $('#editPostCaption').val(data.post.caption);
+                                $('#edit_post_id').val(data.post.id);
+
+                                var filesdb =JSON.parse(data.post.media);
+                                // var filesAmount=files.length;
+                                var storedFilesdb = filesdb;
+                                // console.log(storedFilesdb)
+
+
+                                filesdb.forEach(function(f) {
+                                    fileExtension = f.replace(/^.*\./, '');
+                                    if (fileExtension=='jpg'||'png'||'jpeg') {
+                                        var html = "<div class='addpost-preview'><iconify-icon icon='akar-icons:cross' data-file='" + f + "' class='delete-preview-db-icon'></iconify-icon><img src='storage/post/"+f+"' data-file='" + f + "' class='selFile' title='Click to remove'></div>";
+                                        $(".editpost-photo-video-imgpreview-container").append(html);
+
+                                    }else if(fileExtension=='mp4'){
+                                        var html = "<div class='editpost-preview'><iconify-icon icon='akar-icons:cross' data-file='" + f.name + "' class='delete-preview-db-icon'></iconify-icon><video controls><source src='storage/post/"+f+"' data-file='" + f.name + "' class='selFile' title='Click to remove'>" + f+ "<br clear=\"left\"/><video></div>";
+                                        $(".editpost-photo-video-imgpreview-container").append(html);
+                                    }
+
+                                });
+
+                                $("body").on("click", ".delete-preview-db-icon", removeFiledb);
+
+                                function removeFiledb(){
+                                    var file = $(this).data('file')
+                                    storedFilesdb = storedFilesdb.filter((item) => {
+                                        return file !== item
+                                    })
+                                    console.log(storedFilesdb)
+
+
+                                    $(this).parent().remove();
+                                }
+
+                                $('#edit_form').submit(function(e){
+                                    e.preventDefault();
+                                    $('#editPostModal'). modal('hide');
+
+                                var fileUpload=$('#editPostInput');
+                                console.log(storedFilesdb.length );
+                                console.log(parseInt(fileUpload.get(0).files.length) );
+                                console.log(storedFilesdb);
+                                console.log(fileUpload.get(0).files);
+
+                                if(!$('#editPostCaption').val() && (parseInt(fileUpload.get(0).files.length) + storedFilesdb.length) === 0){
+                                    alert("Cannot post!!")
+                                }else{
+                                    if((parseInt(fileUpload.get(0).files.length))+storedFilesdb.length > 5){
+                                        Swal.fire({
+                                                    text: "You can only upload a maximum of 5 files",
+                                                    confirmButtonColor: '#3CDD57',
+                                                    timer: 5000
+                                                });
+                                    }else{
+                                        e.preventDefault();
+
+                                        var url="{{route('post.update')}}";
+                                        let formData = new FormData(edit_form);
+                                        var oldimg=storedFilesdb;
+                                        var edit_post_id=$('#edit_post_id').val();
+                                        var caption=$('#editPostCaption').val();
+
+                                        const totalImages = $("#editPostInput")[0].files.length;
+                                        let images = $("#editPostInput")[0];
+
+                                        // for (let i = 0; i < totalImages; i++) {
+                                            formData.append('images', images);
+                                        // }
+                                        formData.append('totalImages', totalImages);
+                                        formData.append('caption', caption);
+                                        formData.append('oldimg', storedFilesdb);
+                                        formData.append('edit_post_id', edit_post_id);
+
+                                        for (const value of formData.values()) {
+                                            console.log(value);
+                                        }
+
+                                        $.ajaxSetup({
+                                                    headers: {
+                                                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                                                    }
+                                                });
+
+                                        $.ajax({
+                                                type:'POST',
+                                                url:url,
+                                                data: formData,
+                                                processData: false,
+                                                cache: false,
+                                                contentType: false,
+                                                success:function(data){
+                                                Swal.fire({
+                                                            text: data.success,
+                                                            confirmButtonColor: '#3CDD57',
+                                                            timer: 5000
+                                                        }).then(() => {
+                                                            window.location.reload()
+                                            })
+                                                        }
+                                            });
+                                    }
+
+                                }
+                                // var data={
+                                //             'caption':$('#editPostCaption').val(),
+                                //             'post_id':$('#edit_post_id').val()
+                                //         }
+                                // $.ajax({
+                                //                 type:'POST',
+                                //                 url:url,
+                                //                 data: data,
+                                //                 success:function(data){
+                                //                    Swal.fire({
+                                //                             text: data.success,
+                                //                             confirmButtonColor: '#3CDD57',
+                                //                             timer: 5000
+                                //                         }).then(() => {
+                                //                             window.location.reload()
+                                //             })
+                                //                 }
+                                //     });
+                            })
+
+                            }
+
+                        }
+                    })
+
+            })
+
+
             $('.social-media-post-header-icon').click(function(){
                 $(this).next().toggle()
             })
@@ -541,59 +839,81 @@
                 $(".social-media-left-container-trigger .arrow-icon").toggleClass("rotate-arrow")
             })
 
-            $('.addpost-submit-btn').click(function(e){
+            $('#form').submit(function(e){
                 e.preventDefault();
+                $('#addPostModal'). modal('hide');
                 var caption=$('#addPostCaption').val();
 
                 var url="{{route('post.store')}}";
-                var $fileUpload=$('#addPostInput').val();
+                var $fileUpload=$('#addPostInput');
 
-                // if(!$('.addpost-caption-input').val() && parseInt($fileUpload.get(0).files.length) === 0){
-                //     alert("Cannot post!!")
-                // }else{
-                //     // console.log(parseInt($fileUpload.get(0).files.length))
-                //     if (parseInt($fileUpload.get(0).files.length)>5){
-                //         alert("You can only upload a maximum of 5 files");
-                //     }else{
-                    let image_upload = new FormData();
-                    let TotalImages = $('#addPostInput')[0].files.length;  //Total Images
-                    let images = $('#addPostInput')[0].files;
-
-                    for (let i = 0; i < TotalImages; i++) {
-                        image_upload.append('images' + i, images[i]);
+                if(!$('.addpost-caption-input').val() && parseInt($fileUpload.get(0).files.length) === 0){
+                    alert("Cannot post!!")
+                }
+                else{
+                    if (parseInt($fileUpload.get(0).files.length)>5){
+                        Swal.fire({
+                            text: "You can only upload a maximum of 5 files",
+                            confirmButtonColor: '#3CDD57',
+                            timer: 5000
+                        });
                     }
-                    image_upload.append('TotalImages', TotalImages);
-                    console.log(image_upload);
+                    else{
+                        e.preventDefault();
+                        let formData = new FormData(form);
 
-                                //
-                        // $.ajaxSetup({
-                        //                 headers: {
-                        //                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                        //                 }
-                        //             });
-                        //  $.ajax({
-                        //         type: "POST",
-                        //         _token: $('meta[name="csrf-token"]').attr('content'),
-                        //         url: url,
-                        //         data:image_upload,
-                        //         contentType: false,
-                        //         processData: false,
-                        //         success: function(data) {
+                        const totalImages = $("#addPostInput")[0].files.length;
+                        let images = $("#addPostInput")[0];
 
-                        //         }
-                        //     });
-                    //}
-                //}
+                        for (let i = 0; i < totalImages; i++) {
+                            formData.append('images' + i, images.files[i]);
+                        }
+                        formData.append('totalImages', totalImages);
 
+                        var caption=$('#addPostCaption').val();
+
+                        $.ajaxSetup({
+                            headers: {
+                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                            }
+                        });
+
+                        $.ajax({
+                                type:'POST',
+                                url:"{{route('post.store')}}",
+                                data: formData,
+                                    processData: false,
+                                    cache: false,
+                                    contentType: false,
+                                success:function(data){
+
+                                   Swal.fire({
+                                            text: data.message,
+                                            confirmButtonColor: '#3CDD57',
+                                            timer: 5000
+                                        }).then(() => {
+                                            window.location.reload()
+                            })
+                                }
+                        });
+
+                    }
+                }
 
             })
 
+
+
             $("#addPostInput").on("change", handleFileSelect);
+            $("#editPostInput").on("change", handleFileSelectEdit);
 
             selDiv = $(".addpost-photo-video-imgpreview-container");
 
+            console.log(selDiv);
 
             $("body").on("click", ".delete-preview-icon", removeFile);
+            $("body").on("click", ".delete-preview-edit-input-icon", removeFileFromEditInput);
+
 
 
             console.log($("#selectFilesM").length);
@@ -601,8 +921,11 @@
 
 
         var selDiv = "";
+
         var storedFiles = [];
+        var storedFilesEdit = [];
         const dt = new DataTransfer();
+        const dtEdit = new DataTransfer();
 
         function handleFileSelect(e) {
 
@@ -610,9 +933,11 @@
             console.log(files)
 
             var filesArr = Array.prototype.slice.call(files);
+
             var device = $(e.target).data("device");
+
             filesArr.forEach(function(f) {
-                console.log(f)
+                console.log(f);
                 if (f.type.match("image.*")) {
                     storedFiles.push(f);
 
@@ -649,7 +974,57 @@
             });
 
             document.getElementById('addPostInput').files = dt.files;
-            console.log(document.getElementById('addPostInput').files)
+            console.log(document.getElementById('addPostInput').files+" Add Post Input")
+
+        }
+        function handleFileSelectEdit(e) {
+
+            var files = e.target.files;
+            console.log(files)
+
+            var filesArr = Array.prototype.slice.call(files);
+
+            var device = $(e.target).data("device");
+
+            filesArr.forEach(function(f) {
+
+                if (f.type.match("image.*")) {
+                    storedFilesEdit.push(f);
+
+                    var reader = new FileReader();
+                    reader.onload = function(e) {
+                    var html = "<div class='addpost-preview'><iconify-icon icon='akar-icons:cross' data-file='" + f.name + "' class='delete-preview-edit-input-icon'></iconify-icon><img src=\"" + e.target.result + "\" data-file='" + f.name + "' class='selFile' title='Click to remove'></div>";
+
+                    if (device == "mobile") {
+                        $("#selectedFilesM").append(html);
+                    } else {
+                        $(".editpost-photo-video-imgpreview-container").append(html);
+                    }
+                    }
+                    reader.readAsDataURL(f);
+                    dtEdit.items.add(f);
+                }else if(f.type.match("video.*")){
+                    storedFilesEdit.push(f);
+
+                    var reader = new FileReader();
+                    reader.onload = function(e) {
+                    var html = "<div class='addpost-preview'><iconify-icon icon='akar-icons:cross' data-file='" + f.name + "' class='delete-preview-edit-input-icon'></iconify-icon><video controls><source src=\"" + e.target.result + "\" data-file='" + f.name + "' class='selFile' title='Click to remove'>" + f.name + "<br clear=\"left\"/><video></div>";
+
+                    if (device == "mobile") {
+                        $("#selectedFilesM").append(html);
+                    } else {
+                        $(".editpost-photo-video-imgpreview-container").append(html);
+                    }
+                    }
+                    reader.readAsDataURL(f);
+                    dtEdit.items.add(f);
+                }
+
+
+            });
+
+            document.getElementById('editPostInput').files = dtEdit.files;
+            console.log(document.getElementById('editPostInput').files+" Edit Post Input")
 
         }
 
@@ -671,6 +1046,28 @@
             }
             $(this).parent().remove();
         }
+        function removeFileFromEditInput(e) {
+            var file = $(this).data("file");
+            var names = [];
+            for(let i = 0; i < dtEdit.items.length; i++){
+                if(file === dtEdit.items[i].getAsFile().name){
+                    dtEdit.items.remove(i);
+                }
+            }
+            document.getElementById('editPostInput').files = dtEdit.files;
+
+            for (var i = 0; i < storedFilesEdit.length; i++) {
+                if (storedFilesEdit[i].name === file) {
+                storedFilesEdit.splice(i, 1);
+                break;
+                }
+            }
+            $(this).parent().remove();
+        }
+
+
+
+
 
         function clearAddPost(){
             storedFiles = []
