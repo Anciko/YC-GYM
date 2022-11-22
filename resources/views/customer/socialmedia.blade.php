@@ -87,7 +87,7 @@
             </div>
             {{-- <input type="submit" class="customer-primary-btn addpost-submit-btn" value="Update"> --}}
             {{-- <button type="button" class="customer-primary-btn addpost-submit-btn "  id="editpost-submit-btn">Update</button> --}}
-            <button type="submit" class="customer-primary-btn addpost-submit-btn">Post</button>
+            <button type="submit" class="customer-primary-btn addpost-submit-btn">Update</button>
         </form>
 
       </div>
@@ -489,12 +489,17 @@
 
                             filesdb.forEach(function(f) {
                                 fileExtension = f.replace(/^.*\./, '');
-                                if (fileExtension=='jpg'||'png'||'jpeg') {
-                                    var html = "<div class='addpost-preview'><iconify-icon icon='akar-icons:cross' data-file='" + f + "' class='delete-preview-db-icon'></iconify-icon><img src='storage/post/"+f+"' data-file='" + f + "' class='selFile' title='Click to remove'></div>";
+                                console.log(fileExtension);
+                                if(fileExtension=='mp4') {
+                                    var html="<div class='addpost-preview'>\
+                                        <iconify-icon icon='akar-icons:cross' data-file='" + f + "' class='delete-preview-edit-input-icon'></iconify-icon>\
+                                        <video controls><source src='storage/post/" + f + "' data-file='" + f+ "' class='selFile' title='Click to remove'>" + f + "<br clear=\"left\"/>\
+                                        <video>\
+                                    </div>"
                                     $(".editpost-photo-video-imgpreview-container").append(html);
 
-                                }else if(fileExtension=='mp4'){
-                                    var html = "<div class='editpost-preview'><iconify-icon icon='akar-icons:cross' data-file='" + f.name + "' class='delete-preview-db-icon'></iconify-icon><video controls><source src='storage/post/"+f+"' data-file='" + f.name + "' class='selFile' title='Click to remove'>" + f+ "<br clear=\"left\"/><video></div>";
+                                }else{
+                                    var html = "<div class='addpost-preview'><iconify-icon icon='akar-icons:cross' data-file='" + f + "' class='delete-preview-db-icon'></iconify-icon><img src='storage/post/"+f+"' data-file='" + f + "' class='selFile' title='Click to remove'></div>";
                                     $(".editpost-photo-video-imgpreview-container").append(html);
                                 }
 

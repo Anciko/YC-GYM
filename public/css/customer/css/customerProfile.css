@@ -927,6 +927,7 @@ border-radius: 50%;
     top: 40px;
     right: 0;
     display: none;
+    z-index: 10;
 }
 
 .post-action{

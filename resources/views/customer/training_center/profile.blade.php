@@ -5,7 +5,7 @@
 
 <div class="customer-profile-parent-container">
     <div class="customer-cover-photo-container">
-        <img class="customer-cover-photo" src="{{asset('image/trainer2.jpg')}}">
+        <img class="customer-cover-photo" src="">
         <div class="customer-cover-change-btns-container">
             <form method="POST" action="{{route('customer-profile-cover.update')}}">
                 @csrf
