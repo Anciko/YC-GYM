@@ -150,11 +150,45 @@
 
 
                 <div class="social-media-profile-content-container">
+                    <div id = "addFriclass">
+                        <button class="customer-primary-btn add-friend-btn">
+                            <iconify-icon icon="akar-icons:circle-plus" class="add-friend-icon"></iconify-icon>
+                            <p>Add Friends</p>
+                        </button>
+                    {{-- @foreach($friend_status as $fri) --}}
+                    {{-- @if(auth()->user()->id == $user->id )
+                    <button class="customer-primary-btn add-friend-btn">
+                        <iconify-icon icon="akar-icons:circle-plus" class="add-friend-icon"></iconify-icon>
+                        <p>Myself</p>
+                    </button>
+                    @endif
+                    @if($friend_status != null)
+                    @elseif($friend_status->sender_id == auth()->user()->id || $friend_status->receiver_id == auth()->user()->id  )
+                    <button class="customer-primary-btn add-friend-btn">
+                        <iconify-icon icon="akar-icons:circle-plus" class="add-friend-icon"></iconify-icon>
+                        <p>Myself</p>
+                    </button>
+                      @elseif($friend_status->friend_status == 2  )
+                        <button class="customer-primary-btn add-friend-btn">
+                            <iconify-icon icon="akar-icons:circle-plus" class="add-friend-icon"></iconify-icon>
+                            <p>Friends</p>
+                        </button>
+                    @elseif ($friend_status->friend_status == 1 )
+                        <button class="customer-primary-btn add-friend-btn">
+                            <iconify-icon icon="akar-icons:circle-plus" class="add-friend-icon"></iconify-icon>
+                            <p>Cancel Request</p>
+                        </button>
+
+                    @else
                     <button class="customer-primary-btn add-friend-btn">
                         <iconify-icon icon="akar-icons:circle-plus" class="add-friend-icon"></iconify-icon>
                         <p>Add Friend</p>
                     </button>
 
+
+                     @endif --}}
+                     {{-- @endforeach --}}
+                    <div>
                     <div class="social-media-profile-username-container">
                         <span class="social-media-profile-username">{{$user->name}}</span><br>
                         {{-- <span class="social-media-profile-userID">(User ID: 1234567890)</span><br> --}}

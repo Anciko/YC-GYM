@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Models\Post;
 use App\Models\Payment;
+use App\Models\Friendship;
 use App\Models\TrainingUser;
 use App\Models\TrainingGroup;
 use Laravel\Sanctum\HasApiTokens;
@@ -84,6 +85,17 @@ class User extends Authenticatable
     public function notifri(){
         return $this->hasMany(Notification::class,'receiver_id');
     }
+    public function friendship(){
+    return $this->belongsTo(Friendship::class);
+    }
+    // public function Sender(){
+    //     return $this->hasMany(Friendship::class,'receiver_id');
+    // }
+
+    // public function Receiver(){
+    //     return $this->hasMany(Friendship::class,'sender_id');
+    // }
+
 
 //   public function member()
 //   {

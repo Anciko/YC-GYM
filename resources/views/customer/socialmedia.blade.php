@@ -686,7 +686,7 @@
                         }
                         // table row with ajax
                         function table_post_row(res){
-                        var sender_id = {{auth()->user()->id}}
+                        var auth_id = {{auth()->user()->id}}
                         let htmlView = '';
                             if(res.users.length <= 0){
                                 htmlView+= `
@@ -695,36 +695,155 @@
                             }
 
                                 for(let i = 0; i < res.users.length; i++){
+                                    var status = ''
+                                for(let f = 0; f < res.friends.length; f++){
                                     id = res.users[i].id;
                                     var url = "{{ route('socialmedia_profile', [':id']) }}";
                                     url = url.replace(':id', id);
+                                    console.log(auth_id)
 
-                                    if(res.users[i].friend_status == 1 && res.users[i].sender_id == sender_id){
-                                        htmlView += `
+                                    if(res.users[i].id === res.friends[f].receiver_id &&
+                                    res.friends[f].sender_id === auth_id &&
+                                    res.friends[f].friend_status === 1 ){
+                                        console.log(res.users[i].name,'sender request')
+                                        status = 'sender request'
+                                        break
+                                        // return
+                                        // htmlView += `
+                                        //     <a href=`+url+` class = "profiles">
+                                        //         <p>`+res.users[i].name+`</p>
+                                        //     </a>
+                                        //     <a href="?id=` + res.users[i].id+`" class="customer-secondary-btn cancel-request-btn"
+                                        //     id = "cancelRequest">Cancel Request</a>
+                                        //     `
+                                    }
+                                    else if(
+                                    res.users[i].id === res.friends[f].sender_id &&
+                                    res.friends[f].receiver_id === auth_id &&
+                                    res.friends[f].friend_status === 1
+                                    ){
+                                        console.log(res.users[i].name,'receiver request')
+                                        status = 'receiver request'
+                                        break
+                                        // return
+                                        // htmlView += `
+                                        //     <a href=`+url+` class = "profiles">
+                                        //         <p>`+res.users[i].name+`</p>
+                                        //     </a>
+                                        //     <a href="?id=` + res.users[i].id+`" class="customer-secondary-btn cancel-request-btn"
+                                        //     id = "cancelRequest">Response</a>
+                                        //     `
+                                    }
+                                    else if (res.users[i].id === auth_id){
+                                        console.log(res.users[i].name,'profile')
+                                        status = "profile"
+                                        break
+                                        // return
+                                        // htmlView += `
+                                        //     <a href=`+url+` class = "profiles">
+                                        //         <p>`+res.users[i].name+`</p>
+                                        //     </a>
+                                        //     <a href=`+url+` class="customer-secondary-btn "
+                                        //     >View Profile</a>
+                                        //     `
+                                    }
+                                    else if (res.users[i].id === res.friends[f].receiver_id &&
+                                    res.friends[f].sender_id === auth_id &&
+                                    res.friends[f].friend_status === 2
+                                    ){
+                                        console.log(res.users[i].name,'sender view profile')
+                                        status = "sender view profile"
+                                        break
+                                        // return
+                                        // htmlView += `
+                                        //     <a href= `+url+` class = "profiles">
+                                        //         <p>`+res.users[i].name+`</p>
+                                        //     </a>
+                                        //     <a href="?id=` + res.users[i].id+`" class="customer-secondary-btn add-friend-btn">Friend</a>
+                                        //     `
+                                    }
+                                    else if (
+                                    res.users[i].id === res.friends[f].sender_id &&
+                                    res.friends[f].receiver_id === auth_id &&
+                                    res.friends[f].friend_status === 2
+                                    ){
+                                        console.log(res.users[i].name,'receiver view profile')
+                                        status = "receiver view profile"
+                                        break
+                                        // return
+                                        // htmlView += `
+                                        //     <a href= `+url+` class = "profiles">
+                                        //         <p>`+res.users[i].name+`</p>
+                                        //     </a>
+                                        //     <a href="?id=` + res.users[i].id+`" class="customer-secondary-btn add-friend-btn">Friend</a>
+                                        //   `
+                                    }
+                                    else{
+                                        status="add fri"
+                                        console.log(res.users[i].name,'add fri')
+                                    //     htmlView += `
+                                    //         <a href=`+url+` class = "profiles">
+                                    //             <p>`+res.users[i].name+`</p>
+                                    //         </a>
+                                    //         <a href="?id=` + res.users[i].id+`" class="customer-secondary-btn add-friend-btn" id = "AddFriend">Add</a>
+                                    // `
+                                    }
+
+                            }
+
+                            if(status === 'sender request'){
+                                htmlView += `
                                             <a href=`+url+` class = "profiles">
                                                 <p>`+res.users[i].name+`</p>
                                             </a>
                                             <a href="?id=` + res.users[i].id+`" class="customer-secondary-btn cancel-request-btn"
                                             id = "cancelRequest">Cancel Request</a>
                                             `
-                                    }
-                                    else if (res.users[i].friend_status == 2 && res.users[i].sender_id == sender_id){
-                                        htmlView += `
+                            }
+
+                            else if(status === 'receiver request'){
+                               htmlView += `
+                                            <a href=`+url+` class = "profiles">
+                                                <p>`+res.users[i].name+`</p>
+                                            </a>
+                                            <a href=`+url+` class="customer-secondary-btn">Response</a>
+                                            `
+                            }
+
+                            else if(status === "profile"){
+                                 htmlView += `
+                                            <a href=`+url+` class = "profiles">
+                                                <p>`+res.users[i].name+`</p>
+                                            </a>
+                                            <a href=`+url+` class="customer-secondary-btn "
+                                            >View Profile</a>
+                                            `
+                            }
+
+                            else if(status === "sender view profile"){
+                                htmlView += `
                                             <a href= `+url+` class = "profiles">
                                                 <p>`+res.users[i].name+`</p>
                                             </a>
-                                            <a href="?id=` + res.users[i].id+`" class="customer-secondary-btn add-friend-btn">Friends</a>
-                                            `
-                                    }
-                                    else{
-                                        htmlView += `
+                                            <a href=`+url+` class="customer-secondary-btn add-friend-btn">Friend</a>
+                                          `
+                            }
+                            else if(status === "receiver view profile"){
+                                htmlView += `
+                                            <a href= `+url+` class = "profiles">
+                                                <p>`+res.users[i].name+`</p>
+                                            </a>
+                                            <a href=`+url+` class="customer-secondary-btn add-friend-btn">Friend</a>
+                                          `
+                            }
+                            else{
+                                    htmlView += `
                                             <a href=`+url+` class = "profiles">
                                                 <p>`+res.users[i].name+`</p>
                                             </a>
                                             <a href="?id=` + res.users[i].id+`" class="customer-secondary-btn add-friend-btn" id = "AddFriend">Add</a>
                                     `
-                                    }
-
+                            }
                             }
 
 
