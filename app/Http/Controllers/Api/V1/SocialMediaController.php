@@ -4,12 +4,14 @@ namespace App\Http\Controllers\Api\V1;
 
 use Carbon\Carbon;
 use Pusher\Pusher;
+use App\Models\Post;
 use App\Models\User;
 use App\Models\Friendship;
 use App\Models\Notification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Storage;
 
 class SocialMediaController extends Controller
 {
@@ -167,7 +169,176 @@ class SocialMediaController extends Controller
         AND (receiver_id = $request->id or sender_id = $request->id)");
         return response()->json([
             'user' => $user,
-            
+        ]);
+    }
+
+    public function friend_request(){
+        $friend_requests=Friendship::select('sender.name','sender.id')
+            ->join('users as receiver', 'receiver.id', '=', 'friendships.receiver_id')
+            ->join('users as sender', 'sender.id', '=', 'friendships.sender_id')
+            ->where('receiver.id',auth()->user()->id)
+            ->where('friend_status',1)
+            ->get();
+            return response()->json([
+                'friend_request' =>  $friend_requests
+            ]);
+    }
+
+    public function post_store(Request $request)
+    {
+        $input = $request->all();
+        // dd($input);
+        $user=auth()->user();
+        $post = new Post();
+        if(empty($input['addPostInput'])  && $input['caption'] !=null ){
+            $caption=$input['caption'];
+        }
+        elseif(empty($input['caption']) ){
+            $caption=null;
+
+            if($input['addPostInput']) {
+                $images=$input['addPostInput'];
+              //  $filenames = $input['filenames'];
+                // for($i=0,  $i < $images , $i++){
+                //     dd("ok");
+                // }
+                foreach($images as $index=>$file)
+                {
+                    $tmp = base64_decode($file);
+                   // $file_name = $filenames[$index];
+                    Storage::disk('public')->put(
+                        'post/' . $tmp,
+                        $tmp
+                    );
+                    $imgData[] = $tmp;
+                    $post->media = json_encode($imgData);
+                }
+             }
+    }
+        else{
+            $caption=$input['caption'];
+            $images=$input['addPostInput'];
+            if($input['addPostInput']) {
+                foreach($images as $file)
+                {
+                    $extension = $file->extension();
+                    $name = rand().".".$extension;
+                    $file->storeAs('/public/post/', $name);
+                    $imgData[] = $name;
+                    $post->media = json_encode($imgData);
+                }
+             }
+        }
+        $banwords=DB::table('ban_words')->select('ban_word_english','ban_word_myanmar','ban_word_myanglish')->get();
+
+        foreach($banwords as $b){
+           $e_banword=$b->ban_word_english;
+           $m_banword=$b->ban_word_myanmar;
+           $em_banword=$b->ban_word_myanglish;
+
+            if (str_contains($caption,$e_banword)) {
+                return response()->json([
+                    'message'=>'Ban Ban Ban',
+                ]);
+            }elseif (str_contains($caption,$m_banword)){
+                return response()->json([
+                    'message'=>'Ban Ban Ban',
+                ]);
+            }elseif (str_contains($caption,$em_banword)){
+                return response()->json([
+                    'message'=>'Ban Ban Ban',
+                ]);
+            }
+        }
+
+        $post->user_id=$user->id;
+        $post->caption=$caption;
+
+        $post->save();
+        return response()->json([
+            'message'=>'Post Created Successfully',
+        ]);
+    }
+
+    public function post_destroy(Request $request)
+    {
+        Post::find($request->id)->delete($request->id);
+
+        return response()->json([
+            'success' => 'Post deleted successfully!'
+        ]);
+    }
+
+    public function post_edit(Request $request)
+    {
+        // dd("ik");
+        $post=Post::find($request->id);
+        if($post)
+        {
+            return response()->json([
+                'status'=>200,
+                'post'=>$post,
+            ]);
+        }
+        else
+        {
+            return response()->json([
+                'status'=>404,
+                'message'=>'Data Not Found',
+            ]);
+        }
+    }
+
+    public function post_update(Request $request)
+    {
+        $input = $request->all();
+        $edit_post=Post::findOrFail($input['edit_post_id']);
+        $edit_post->caption=$input['caption'];
+
+            if(empty($input['editPostInput']) && $input['oldimg']==null) {
+                $images=$input['editPostInput'];
+                foreach($images as $file)
+                {
+                    $extension = $file->extension();
+                    $name = rand().".".$extension;
+                    $file->storeAs('/public/post/', $name);
+                    $imgData[] = $name;
+                    $edit_post->media = json_encode($imgData);
+                }
+
+            }elseif($input['oldimg']!=null && $input['totalImages']==0){
+
+                $imgData = $input['oldimg'];
+
+                $myArray = explode(',', $imgData);
+
+                $edit_post->media =json_encode($myArray);
+
+            }elseif($input['oldimg']==null && $input['totalImages']==0){
+                $edit_post->media=null;
+
+            }else{
+                $oldimgData= $input['oldimg'];
+                $myArray_data = explode(',', $oldimgData);
+                $old_images =$myArray_data;
+
+                $images=$input['editPostInput'];
+
+                foreach($images as $file)
+                {
+                    $extension = $file->extension();
+                    $name = rand().".".$extension;
+                    $file->storeAs('/public/post/', $name);
+                    $imgData[] = $name;
+                    $new_images =$imgData;
+                }
+                $result=array_merge($old_images, $new_images);
+                $edit_post->media=json_encode($result);
+            }
+            $edit_post->update();
+
+        return response()->json([
+            'success' => 'Post Updated successfully!'
         ]);
     }
 }

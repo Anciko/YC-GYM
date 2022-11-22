@@ -89,15 +89,18 @@
 }
 
 .social-media-left-friends-rows-container{
-
+    display: flex;
+    flex-direction: column;
 }
 
 .social-media-left-friends-row{
     display: inline-flex;
     gap: 0 5px;
     align-items: center;
+    /* justify-content: space-between; */
     margin-bottom: 20px;
     text-decoration: none;
+    width: fit-content;
 }
 
 .social-media-left-friends-row img{
