@@ -593,14 +593,23 @@
     padding: 0 10px;
 }
 
+.social-media-profile-btns-container{
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 0 10px;
+    margin: 20px 0;
+}
+
 .add-friend-btn{
     display: flex;
     align-items: center;
-    margin-left: auto;
+    /* margin-left: auto; */
     /* margin-right: 20px; */
-    margin-top: 10px;
+    /* margin-top: 10px; */
     font-size: 14px;
     gap: 0 10px;
+    border: none;
 }
 
 .add-friend-btn p{
@@ -963,10 +972,18 @@
     text-decoration: none;
 }
 
+.social-media-left-searched-item p{
+    margin-bottom: 0;
+}
+
 .search-item-icon{
-    font-size: 30px;
+    font-size: 35px;
     color: var(--customer-text-color);
 
+}
+
+.search-item-icon:hover{
+    color: var(--customer-primary-color);
 }
 
 .social-media-searched-item{

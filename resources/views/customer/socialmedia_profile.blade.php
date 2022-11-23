@@ -22,7 +22,7 @@
 
                 <div class="social-media-profile-content-container">
 
-                    <div id = "addFriclass">
+                    <div id = "addFriclass" class="social-media-profile-btns-container">
                         @if (count($friend) < 1)
                         <button class="customer-primary-btn add-friend-btn">
                             <iconify-icon icon="akar-icons:circle-plus" class="add-friend-icon"></iconify-icon>
@@ -30,23 +30,23 @@
                         </button>
                     @elseif($user->id == auth()->user()->id)
                         <button class="customer-primary-btn add-friend-btn">
-                            <iconify-icon icon="akar-icons:circle-plus" class="add-friend-icon"></iconify-icon>
+                            <iconify-icon icon="material-symbols:person-outline" class="add-friend-icon"></iconify-icon>
                             <p>My self </p>
 
                         </button>
                     @else @foreach ($friend as $friend_status)
                     @if($friend_status->friend_status == 2  )
                         <button class="customer-primary-btn add-friend-btn">
-                            <iconify-icon icon="akar-icons:circle-plus" class="add-friend-icon"></iconify-icon>
+                            <iconify-icon icon="mdi:message-reply-outline" class="add-friend-icon"></iconify-icon>
                             <p>Message</p>
                         </button>
-                        <button class="customer-primary-btn add-friend-btn unfriend"  data-id = {{$user->id}}>
-                            <iconify-icon icon="akar-icons:circle-plus" class="add-friend-icon"></iconify-icon>
+                        <button class="customer-red-btn add-friend-btn unfriend "  data-id = {{$user->id}}>
+                            <iconify-icon icon="mdi:account-minus-outline" class="add-friend-icon"></iconify-icon>
                             <p>Unfriend</p>
                         </button>
                         @elseif ($friend_status->friend_status == 1 AND $friend_status->sender_id  === auth()->user()->id )
                         <button class="customer-primary-btn add-friend-btn">
-                            <iconify-icon icon="akar-icons:circle-plus" class="add-friend-icon"></iconify-icon>
+                            <iconify-icon icon="material-symbols:cancel-schedule-send-outline-rounded" class="add-friend-icon"></iconify-icon>
                             <p>Cancel Request</p>
                         </button>
                         @elseif ($friend_status->friend_status == 1 AND $friend_status->receiver_id  === auth()->user()->id)
@@ -67,7 +67,7 @@
                     @endforeach
                     @endif
 
-                    <div>
+                    </div>
                     <div class="social-media-profile-username-container">
                         <span class="social-media-profile-username">{{$user->name}}</span><br>
                         {{-- <span class="social-media-profile-userID">(User ID: 1234567890)</span><br> --}}
