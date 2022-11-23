@@ -151,6 +151,11 @@
             </div>
 
             <div class="customer-main-content-container">
+                <div class="social-media-header-btns-container margin-top">
+                    <a class="back-btn" href="{{route("socialmedia")}}">
+                        <iconify-icon icon="bi:arrow-left" class="back-btn-icon"></iconify-icon>
+                    </a>
+                </div>
                 <button class="social-media-addpost-btn customer-primary-btn margin-top" data-bs-toggle="modal" data-bs-target="#addPostModal">
                     <iconify-icon icon="akar-icons:circle-plus" class="addpost-icon"></iconify-icon>
                     <p>Add Post</p>
@@ -179,6 +184,7 @@
                                 </div>
 
                                 <div class="social-media-left-friends-rows-container">
+
                                     @forelse ($left_friends as $friend)
                                     <a href="{{route('socialmedia.profile',$friend->id)}}" class="social-media-left-friends-row">
                                         <img src="{{asset('img/customer/imgs/user_default.jpg')}}">
@@ -188,7 +194,9 @@
                                     <p class="text-secondary p-1">No Friend</p>
                                     @endforelse
                                 </div>
+
                             </div>
+
 
                             <div class="social-media-left-messages-container">
                                 <div class="social-media-left-container-header">
@@ -1099,8 +1107,19 @@
         document.getElementById('addPostInput').files = dt.files;
         $(".addpost-photo-video-imgpreview-container").empty();
     }
-</script>
 
+</script>
+<script>
+    $(document).ready(function(){
+        console.log("heeeee");
+        $('.nav-icon').click(function(){
+                $('.notis-box-container').toggle()
+            })
+    })
+</script>
+@push('scripts')
+
+@endpush
 
   </body>
 </html>
