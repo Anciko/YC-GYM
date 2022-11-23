@@ -767,15 +767,16 @@ border-radius: 50%;
     color: var(--customer-text-color);
 }
 
-.customer-profile-friends-header a{
+.customer-profile-friends-header span{
     display: flex;
     align-items: center;
     gap: 0 5px;
     color: var(--customer-text-color);
     text-decoration: none;
+    cursor: pointer;
 }
 
-.customer-profile-friends-header a:hover{
+.customer-profile-friends-header span:hover{
     color: var(--customer-primary-color);
 }
 
@@ -1006,6 +1007,10 @@ border-radius: 50%;
     overflow-y: scroll;
 }
 
+.social-media-photos-container p{
+    color: var(--customer-text-color);
+}
+
 .social-media-photo{
     width: 80px;
     height: 80px;
@@ -1180,6 +1185,76 @@ border-radius: 50%;
     padding: 10px 30px;
 }
 
+.social-media-fris-search{
+    height: 35px;
+    width: 300px;
+    position: relative;
+    margin: auto;
+    margin-bottom: 20px;
+}
+
+.social-media-fris-search input{
+    height: 100%;
+    width: 100%;
+    border-radius: 5px;
+    font-size: 14px;
+    /* border: none; */
+}
+
+.social-media-fris-search .search-icon{
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    right: 10px;
+    font-size: 20px;
+}
+
+.social-media-fris-list-container{
+    height: 740px;
+    overflow-y: scroll;
+}
+
+.social-media-fris-fri-row{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.social-media-fris-fri-img{
+    display: flex;
+    align-items: center;
+    gap: 0 5px;
+}
+
+.social-media-fris-fri-img img{
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 5px;
+}
+
+.social-media-fris-fri-img p{
+    margin-bottom: 0;
+    font-size: 14px;
+    color: var(--customer-text-color);
+}
+
+.social-media-fris-fri-btns-container{
+    display: flex;
+    align-items: center;
+    gap: 10px ;
+}
+
+.social-media-fris-fri-btns-container .customer-primary-btn{
+    font-size: 14px;
+}
+
+.social-media-fris-fri-btns-container .customer-red-btn{
+    border: none;
+    font-size: 14px;
+}
+
 
 @media screen and (max-width:1000px){
     .customer-personal-details-form{
@@ -1310,6 +1385,24 @@ border-radius: 50%;
 
     .customer-profile-save-cancel-container{
         flex-direction: column;
+    }
+
+    .social-media-fris-fri-row{
+        margin-bottom: 30px;
+    }
+
+    .social-media-fris-fri-img img{
+        width: 70px;
+        height: 70px;
+    }
+
+    .social-media-fris-search{
+        width: 250px;
+    }
+
+    .social-media-fris-fri-btns-container{
+        flex-direction: column;
+        margin-right: 5px;
     }
 }
 
