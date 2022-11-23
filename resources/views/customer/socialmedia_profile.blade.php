@@ -102,6 +102,8 @@
                         </div>
                     </div>
 
+                    <a href="#" class="social-media-profile-photos-link">Photos</a>
+
                     <div class="social-media-profile-posts-parent-container">
                         <p>Post & Activities</p>
 

@@ -1494,6 +1494,18 @@ ul{
   	margin-left:0px;
 }
 
+.social-media-profile-photos-link{
+    padding: 10px;
+    background-color: var(--customer-primary-soft-color);
+    border-radius: 5px;
+    display: block;
+    width: fit-content;
+    text-decoration: none;
+    color: var(--customer-text-color);
+    margin: 20px 0;
+
+}
+
 
 @media screen and (max-width:1000px){
 

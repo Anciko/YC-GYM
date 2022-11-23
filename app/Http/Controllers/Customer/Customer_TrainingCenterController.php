@@ -43,6 +43,80 @@ class Customer_TrainingCenterController extends Controller
         return view('customer.training_center.index', compact('workout_plan', 'tc_workouts'));
     }
 
+    public function profile()
+    {
+        $user_id = auth()->user()->id;
+
+        $user_profile_cover=Profile::select('cover_photo')
+                                ->where('user_id',$user_id)
+                                ->where('profile_image','')
+                                ->orderBy('created_at','DESC')
+                                ->first();
+
+        $user_profile_image=Profile::select('profile_image')
+                                ->where('user_id',$user_id)
+                                ->where('cover_photo','')
+                                ->orderBy('created_at','DESC')
+                                ->first();
+
+        $current_date = Carbon::now('Asia/Yangon')->toDateString();
+        $year=Carbon::now()->subYear(10)->format("Y");
+        $current_year=Carbon::now()->format("Y");
+
+        $workouts = DB::table('personal_work_out_infos')
+            ->where('user_id', $user_id)
+            ->where('date', $current_date)
+            ->join('workouts', 'workouts.id', 'personal_work_out_infos.workout_id')
+            ->get();
+
+        $workout_date = DB::table('personal_work_out_infos')
+            ->select('date')
+            ->where('user_id', $user_id)
+            ->get();
+
+        $weight_history = DB::table('weight_histories')
+            ->where('user_id', $user_id)
+            ->whereYear('date',$current_year)
+            ->orderBy('date', 'ASC')
+            ->get();
+
+        if (sizeof($weight_history) == 1) {
+            $weight_date = DB::table('weight_histories')
+                ->select('date')
+                ->where('user_id', $user_id)
+                ->first();
+
+            $newDate =\Carbon\Carbon::parse($weight_date->date)->addMonth(1)->format("j F, Y");
+        }elseif(sizeof($weight_history) >1){
+            $weight_date=DB::table('weight_histories')
+                            ->where('user_id',$user_id)
+                            ->orderBy('date','DESC')
+                            ->first();
+
+            $newDate =\Carbon\Carbon::parse($weight_date->date)->addMonth(1)->format("j F, Y");
+        }else{
+            $weight_date=null;
+            $newDate=null;
+        }
+
+        $cal_sum = 0;
+        $time_sum = 0;
+        $time_min = 0;
+        $time_sec = 0;
+        foreach ($workouts as $s) {
+            $cal_sum += $s->calories;
+            $time_sum += $s->time;
+            if ($time_sum >= 60) {
+                $time_min = floor($time_sum / 60);
+                $time_sec = $time_sum % 60;
+            } else {
+                $time_min = 0;
+                $time_sec = $time_sum;
+            }
+        }
+
+        return view('customer.training_center.profile', compact('user_profile_cover','user_profile_image','year','workouts', 'workout_date', 'cal_sum', 'time_min', 'time_sec', 'weight_history', 'newDate'));
+    }
     public function member_plan()
     {
         $members = Member::orderBy('price', 'ASC')->get();
@@ -233,67 +307,23 @@ class Customer_TrainingCenterController extends Controller
         return redirect()->back();
     }
 
-
-    public function profile()
+    public function profile_update_profile_img(Request $request)
     {
-        $user_id = auth()->user()->id;
-        $current_date = Carbon::now('Asia/Yangon')->toDateString();
-        $year=Carbon::now()->subYear(10)->format("Y");
-        $current_year=Carbon::now()->format("Y");
+        if($request->hasFile('profile_image')){
+            $file = $request->file('profile_image');
+            $extension = $file->extension();
+            $name = rand().".".$extension;
+            $file->storeAs('/public/post/', $name);
+            $imgData = $name;
 
-        $workouts = DB::table('personal_work_out_infos')
-            ->where('user_id', $user_id)
-            ->where('date', $current_date)
-            ->join('workouts', 'workouts.id', 'personal_work_out_infos.workout_id')
-            ->get();
-
-        $workout_date = DB::table('personal_work_out_infos')
-            ->select('date')
-            ->where('user_id', $user_id)
-            ->get();
-
-        $weight_history = DB::table('weight_histories')
-            ->where('user_id', $user_id)
-            ->whereYear('date',$current_year)
-            ->orderBy('date', 'ASC')
-            ->get();
-
-        if (sizeof($weight_history) == 1) {
-            $weight_date = DB::table('weight_histories')
-                ->select('date')
-                ->where('user_id', $user_id)
-                ->first();
-
-            $newDate =\Carbon\Carbon::parse($weight_date->date)->addMonth(1)->format("j F, Y");
-        }elseif(sizeof($weight_history) >1){
-            $weight_date=DB::table('weight_histories')
-                            ->where('user_id',$user_id)
-                            ->orderBy('date','DESC')
-                            ->first();
-
-            $newDate =\Carbon\Carbon::parse($weight_date->date)->addMonth(1)->format("j F, Y");
-        }else{
-            $weight_date=null;
-            $newDate=null;
         }
+        $profile=new Profile();
+        $profile->profile_image=$imgData;
+        $profile->user_id=auth()->user()->id;
+        $profile->save();
 
-        $cal_sum = 0;
-        $time_sum = 0;
-        $time_min = 0;
-        $time_sec = 0;
-        foreach ($workouts as $s) {
-            $cal_sum += $s->calories;
-            $time_sum += $s->time;
-            if ($time_sum >= 60) {
-                $time_min = floor($time_sum / 60);
-                $time_sec = $time_sum % 60;
-            } else {
-                $time_min = 0;
-                $time_sec = $time_sum;
-            }
-        }
-
-        return view('customer.training_center.profile', compact('year','workouts', 'workout_date', 'cal_sum', 'time_min', 'time_sec', 'weight_history', 'newDate'));
+        Alert::success('Success', 'Profile Photo Updated Successfully');
+        return redirect()->back();
     }
 
     public function year_filter($year)

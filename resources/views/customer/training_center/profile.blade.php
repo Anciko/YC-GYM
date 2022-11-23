@@ -5,7 +5,7 @@
 
 <div class="customer-profile-parent-container">
     <div class="customer-cover-photo-container">
-        <img class="customer-cover-photo" src="">
+        <img class="customer-cover-photo" src="{{asset('storage/post/'.$user_profile_cover->cover_photo)}}">
         {{-- <h1>{{auth()->user()->profiles->id}}</h1> --}}
         {{-- src="{{asset('storage/post/',auth()->user()->profiles->profile_image)}}" --}}
         <div class="customer-cover-change-btns-container">
@@ -21,22 +21,30 @@
                 <iconify-icon icon="cil:pen" class="customer-cover-img-change-icon"></iconify-icon>
             </label>
             </form>
-        <form class="personal_detail customer-personal-details-form" method="POST" action="{{route('customer-profile-name.update')}}">
-            @csrf
-            @method('POST')
+        <div class="personal_detail customer-personal-details-form">
             <div class="customer-profile-img-name-container">
-                <div class="customer-profile-img-container">
-                    <img class="customer-profile-img" src="{{asset('img/user.jpg')}}">
-
-                    <label class="customer-profile-img-change-btn">
-                        <input type="file" class="customer-profile-img-change-input">
-                        <iconify-icon icon="cil:pen" class="customer-profile-img-change-icon"></iconify-icon>
-                    </label>
-                </div>
-                <div class="customer-profile-change-btns-container">
-                    <button type="button" class="customer-primary-btn">Confirm</button>
-                    <button type="button" class="customer-secondary-btn customer-profile-change-cancel-btn">Cancel</button>
-                </div>
+                <form method="POST" action="{{route('customer-profile-img.update')}}" enctype="multipart/form-data">
+                    @csrf
+                    @method('POST')
+                    <div class="customer-profile-img-container">
+                        @if($user_profile_image->profile_image==null)
+                            <img class="customer-profile-img" src="{{asset('img/user.jpg')}}">
+                        @else
+                        <img class="customer-profile-img" src="{{asset('storage/post/'.$user_profile_image->profile_image)}}">
+                        @endif
+                        <label class="customer-profile-img-change-btn">
+                            <input type="file" name="profile_image" class="customer-profile-img-change-input">
+                            <iconify-icon icon="cil:pen" class="customer-profile-img-change-icon"></iconify-icon>
+                        </label>
+                    </div>
+                    <div class="customer-profile-change-btns-container">
+                        <button type="submit" class="customer-primary-btn">Confirm</button>
+                        <button type="button" class="customer-secondary-btn customer-profile-change-cancel-btn">Cancel</button>
+                    </div>
+                </form>
+                <form class="personal_detail customer-personal-details-form" method="POST" action="{{route('customer-profile-name.update')}}">
+                    @csrf
+                    @method('POST')
                 <div class="customer-profile-name-container">
                     <p id="name">{{auth()->user()->name}}</p>
                     <input type="text" value="{{auth()->user()->name}}" class="name" name="name">
@@ -49,8 +57,9 @@
                     <button type="submit" class="customer-primary-btn customer-name-calculate-btn">Save</button>
                     <button type="button" class="customer-secondary-btn customer-name-calculate-btn" id="customer_name_cancel">Cancel</button>
                 </div>
+                </form>
             </div>
-        </form>
+        </div>
     </div>
 
     <form class="customer-bio-form">
@@ -345,145 +354,222 @@
     </div>
 
     <div class="customer-profile-socialmedia-container">
-        <div class="customer-profile-friends-parent-container">
-            <div class="customer-profile-friends-header">
-                <p>1200 Friends</p>
-                <a href="#">
-                    See All
-                    <iconify-icon icon="bi:arrow-right" class="arrow-icon"></iconify-icon>
-                </a>
+        <div class="customer-profile-social-media-default-container">
+            <div class="customer-profile-friends-parent-container">
+                <div class="customer-profile-friends-header">
+                    <p>1200 Friends</p>
+                    <a href="#">
+                        See All
+                        <iconify-icon icon="bi:arrow-right" class="arrow-icon"></iconify-icon>
+                    </a>
+                </div>
+
+                <div class="customer-profile-friends-container">
+                    <div class="customer-profile-friend">
+                        <img src="{{asset('image/trainer2.jpg')}}">
+                        <p>User Name</p>
+                    </div>
+                    <div class="customer-profile-friend">
+                        <img src="{{asset('image/trainer2.jpg')}}">
+                        <p>User Name</p>
+                    </div>
+                    <div class="customer-profile-friend">
+                        <img src="{{asset('image/trainer2.jpg')}}">
+                        <p>User Name</p>
+                    </div>
+                    <div class="customer-profile-friend">
+                        <img src="{{asset('image/trainer2.jpg')}}">
+                        <p>User Name</p>
+                    </div>
+                    <div class="customer-profile-friend">
+                        <img src="{{asset('image/trainer2.jpg')}}">
+                        <p>User Name</p>
+                    </div>
+                    <div class="customer-profile-friend">
+                        <img src="{{asset('image/trainer2.jpg')}}">
+                        <p>User Name</p>
+                    </div>
+                </div>
+
+                <p href="#" class="social-media-profile-photos-link">Photos</p>
             </div>
 
-            <div class="customer-profile-friends-container">
-                <div class="customer-profile-friend">
-                    <img src="{{asset('image/trainer2.jpg')}}">
-                    <p>User Name</p>
+            <div class="customer-profile-posts-parent-container">
+                <p>Post & Activities</p>
+                <div class="customer-post-container">
+                    <div class="customer-post-header">
+                        <div class="customer-post-name-container">
+                            <img src="{{asset('image/trainer2.jpg')}}">
+                            <div class="customer-post-name">
+                                <p>User Name</p>
+                                <span>19 Sep 2022, 11:02 AM</span>
+                            </div>
+                        </div>
+
+                        <iconify-icon icon="bi:three-dots-vertical" class="customer-post-header-icon"></iconify-icon>
+
+                        <div class="post-actions-container" >
+                            <div class="post-action">
+                                <iconify-icon icon="bi:save" class="post-action-icon"></iconify-icon>
+                                <p>Save</p>
+                            </div>
+
+                            <div class="post-action">
+                                <iconify-icon icon="material-symbols:report-outline" class="post-action-icon"></iconify-icon>
+                                <p>Report</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="customer-content-container">
+                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Dui hendrerit potenti pellentesque tellus urna bibendum mollis.</p>
+
+                    </div>
+
+                    <div class="customer-post-footer-container">
+                        <div class="customer-post-like-container">
+                            <iconify-icon icon="akar-icons:heart" class="like-icon"></iconify-icon>
+                            <p><span>1.1k</span> Likes</p>
+                        </div>
+                        <div class="customer-post-comment-container">
+                            <iconify-icon icon="bi:chat-right" class="comment-icon"></iconify-icon>
+                            <p><span>50</span> Comments</p>
+                        </div>
+                    </div>
                 </div>
-                <div class="customer-profile-friend">
-                    <img src="{{asset('image/trainer2.jpg')}}">
-                    <p>User Name</p>
-                </div>
-                <div class="customer-profile-friend">
-                    <img src="{{asset('image/trainer2.jpg')}}">
-                    <p>User Name</p>
-                </div>
-                <div class="customer-profile-friend">
-                    <img src="{{asset('image/trainer2.jpg')}}">
-                    <p>User Name</p>
-                </div>
-                <div class="customer-profile-friend">
-                    <img src="{{asset('image/trainer2.jpg')}}">
-                    <p>User Name</p>
-                </div>
-                <div class="customer-profile-friend">
-                    <img src="{{asset('image/trainer2.jpg')}}">
-                    <p>User Name</p>
+                <div class="customer-post-container">
+                    <div class="customer-post-header">
+                        <div class="customer-post-name-container">
+                            <img src="{{asset('image/trainer2.jpg')}}">
+                            <div class="customer-post-name">
+                                <p>User Name</p>
+                                <span>19 Sep 2022, 11:02 AM</span>
+                            </div>
+
+
+                        </div>
+
+                        <iconify-icon icon="bi:three-dots-vertical" class="customer-post-header-icon"></iconify-icon>
+                        <div class="post-actions-container">
+                            <div class="post-action">
+                                <iconify-icon icon="bi:save" class="post-action-icon"></iconify-icon>
+                                <p>Save</p>
+                            </div>
+
+                            <div class="post-action">
+                                <iconify-icon icon="material-symbols:report-outline" class="post-action-icon"></iconify-icon>
+                                <p>Report</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="customer-content-container">
+                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Dui hendrerit potenti pellentesque tellus urna bibendum mollis.</p>
+                        <div class="customer-media-container">
+                            <div class="customer-media">
+                                <img src="{{asset('image/trainer2.jpg')}}">
+                            </div>
+                            <div class="customer-media">
+                                <img src="{{asset('image/trainer2.jpg')}}">
+                            </div>
+                            <div class="customer-media">
+                                <img src="{{asset('image/trainer2.jpg')}}">
+                            </div>
+                            <div class="customer-media">
+                                <img src="{{asset('image/trainer2.jpg')}}">
+                            </div>
+                            <div class="customer-media">
+                                <img src="{{asset('image/trainer2.jpg')}}">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="customer-post-footer-container">
+                        <div class="customer-post-like-container">
+                            <iconify-icon icon="akar-icons:heart" class="like-icon"></iconify-icon>
+                            <p><span>1.1k</span> Likes</p>
+                        </div>
+                        <div class="customer-post-comment-container">
+                            <iconify-icon icon="bi:chat-right" class="comment-icon"></iconify-icon>
+                            <p><span>50</span> Comments</p>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <div class="customer-profile-posts-parent-container">
-            <p>Post & Activities</p>
-            <div class="customer-post-container">
-                <div class="customer-post-header">
-                    <div class="customer-post-name-container">
-                        <img src="{{asset('image/trainer2.jpg')}}">
-                        <div class="customer-post-name">
-                            <p>User Name</p>
-                            <span>19 Sep 2022, 11:02 AM</span>
-                        </div>
-                    </div>
+        <div class="customer-profile-social-media-photoes-container">
+            <p class="customer-profile-social-media-photoes-back">
+                <iconify-icon icon="material-symbols:arrow-back"></iconify-icon>
+                Go Back</p>
+            <div class="social-media-photos-tabs-container">
+                <p class="social-media-photos-tab social-media-profiles-tab">Profile Photos</p>
+                <p class="social-media-photos-tab social-media-covers-tab">Cover Photos</p>
+            </div>
 
-                    <iconify-icon icon="bi:three-dots-vertical" class="customer-post-header-icon"></iconify-icon>
-
-                    <div class="post-actions-container" >
-                        <div class="post-action">
-                            <iconify-icon icon="bi:save" class="post-action-icon"></iconify-icon>
-                            <p>Save</p>
-                        </div>
-
-                        <div class="post-action">
-                            <iconify-icon icon="material-symbols:report-outline" class="post-action-icon"></iconify-icon>
-                            <p>Report</p>
-                        </div>
-                    </div>
+            <div class="social-media-photos-container social-media-profiles-container">
+                <div class="social-media-photo">
+                    <img src="../imgs/pexels-andrea-piacquadio-3768916 (1).jpg">
                 </div>
-
-                <div class="customer-content-container">
-                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Dui hendrerit potenti pellentesque tellus urna bibendum mollis.</p>
-
+                <div class="social-media-photo">
+                    <img src="../imgs/pexels-andrea-piacquadio-3768916 (1).jpg">
                 </div>
-
-                <div class="customer-post-footer-container">
-                    <div class="customer-post-like-container">
-                        <iconify-icon icon="akar-icons:heart" class="like-icon"></iconify-icon>
-                        <p><span>1.1k</span> Likes</p>
-                    </div>
-                    <div class="customer-post-comment-container">
-                        <iconify-icon icon="bi:chat-right" class="comment-icon"></iconify-icon>
-                        <p><span>50</span> Comments</p>
-                    </div>
+                <div class="social-media-photo">
+                    <img src="../imgs/pexels-andrea-piacquadio-3768916 (1).jpg">
+                </div>
+                <div class="social-media-photo">
+                    <img src="../imgs/pexels-andrea-piacquadio-3768916 (1).jpg">
+                </div>
+                <div class="social-media-photo">
+                    <img src="../imgs/pexels-andrea-piacquadio-3768916 (1).jpg">
+                </div>
+                <div class="social-media-photo">
+                    <img src="../imgs/pexels-andrea-piacquadio-3768916 (1).jpg">
+                </div>
+                <div class="social-media-photo">
+                    <img src="../imgs/pexels-andrea-piacquadio-3768916 (1).jpg">
+                </div>
+                <div class="social-media-photo">
+                    <img src="../imgs/pexels-andrea-piacquadio-3768916 (1).jpg">
+                </div>
+                <div class="social-media-photo">
+                    <img src="../imgs/pexels-andrea-piacquadio-3768916 (1).jpg">
+                </div>
+                <div class="social-media-photo">
+                    <img src="../imgs/pexels-andrea-piacquadio-3768916 (1).jpg">
                 </div>
             </div>
-            <div class="customer-post-container">
-                <div class="customer-post-header">
-                    <div class="customer-post-name-container">
-                        <img src="{{asset('image/trainer2.jpg')}}">
-                        <div class="customer-post-name">
-                            <p>User Name</p>
-                            <span>19 Sep 2022, 11:02 AM</span>
-                        </div>
 
-
-                    </div>
-
-                    <iconify-icon icon="bi:three-dots-vertical" class="customer-post-header-icon"></iconify-icon>
-                    <div class="post-actions-container">
-                        <div class="post-action">
-                            <iconify-icon icon="bi:save" class="post-action-icon"></iconify-icon>
-                            <p>Save</p>
-                        </div>
-
-                        <div class="post-action">
-                            <iconify-icon icon="material-symbols:report-outline" class="post-action-icon"></iconify-icon>
-                            <p>Report</p>
-                        </div>
-                    </div>
+            <div class="social-media-photos-container social-media-covers-container">
+                <div class="social-media-photo">
+                    <img src="../imgs/trainer1.jpg">
+                </div>
+                <div class="social-media-photo">
+                    <img src="../imgs/trainer1.jpg">
+                </div>
+                <div class="social-media-photo">
+                    <img src="../imgs/trainer1.jpg">
+                </div>
+                <div class="social-media-photo">
+                    <img src="../imgs/trainer1.jpg">
+                </div>
+                <div class="social-media-photo">
+                    <img src="../imgs/trainer1.jpg">
+                </div>
+                <div class="social-media-photo">
+                    <img src="../imgs/trainer1.jpg">
+                </div>
+                <div class="social-media-photo">
+                    <img src="../imgs/trainer1.jpg">
+                </div>
+                <div class="social-media-photo">
+                    <img src="../imgs/trainer1.jpg">
                 </div>
 
-                <div class="customer-content-container">
-                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Dui hendrerit potenti pellentesque tellus urna bibendum mollis.</p>
-                    <div class="customer-media-container">
-                        <div class="customer-media">
-                            <img src="{{asset('image/trainer2.jpg')}}">
-                        </div>
-                        <div class="customer-media">
-                            <img src="{{asset('image/trainer2.jpg')}}">
-                        </div>
-                        <div class="customer-media">
-                            <img src="{{asset('image/trainer2.jpg')}}">
-                        </div>
-                        <div class="customer-media">
-                            <img src="{{asset('image/trainer2.jpg')}}">
-                        </div>
-                        <div class="customer-media">
-                            <img src="{{asset('image/trainer2.jpg')}}">
-                        </div>
-                    </div>
-                </div>
-
-                <div class="customer-post-footer-container">
-                    <div class="customer-post-like-container">
-                        <iconify-icon icon="akar-icons:heart" class="like-icon"></iconify-icon>
-                        <p><span>1.1k</span> Likes</p>
-                    </div>
-                    <div class="customer-post-comment-container">
-                        <iconify-icon icon="bi:chat-right" class="comment-icon"></iconify-icon>
-                        <p><span>50</span> Comments</p>
-                    </div>
-                </div>
             </div>
+
         </div>
+
     </div>
 
     <div class="customer-profile-shop-container">
@@ -496,6 +582,8 @@
 @push('scripts')
 @hasanyrole('Platinum|Diamond|Gym Member|Gold|Ruby|Ruby Premium')
 <script>
+
+
             let myChart=null;
             function linechart(data){
             var weight_history=data;
@@ -1401,6 +1489,38 @@
 @endhasanyrole
 <script>
     $( document ).ready(function() {
+        $(".customer-profile-social-media-photoes-container").hide()
+        $(".social-media-profile-photos-link").click(function(){
+            $(".customer-profile-social-media-photoes-container").show()
+            $(".customer-profile-social-media-default-container").hide()
+        })
+
+        $(".customer-profile-social-media-photoes-back").click(function(){
+            $(".customer-profile-social-media-photoes-container").hide()
+            $(".customer-profile-social-media-default-container").show()
+        })
+
+        $(".social-media-profiles-tab").addClass("social-media-photos-tab-active")
+
+            $(".social-media-covers-container").hide()
+
+            $(".social-media-profiles-tab").click(function(){
+                $(".social-media-covers-container").hide()
+                $(".social-media-profiles-container").show()
+
+                $(".social-media-profiles-tab").addClass("social-media-photos-tab-active")
+                $(".social-media-covers-tab").removeClass("social-media-photos-tab-active")
+
+            })
+
+            $(".social-media-covers-tab").click(function(){
+                $(".social-media-covers-container").show()
+                $(".social-media-profiles-container").hide()
+
+                $(".social-media-profiles-tab").removeClass("social-media-photos-tab-active")
+                $(".social-media-covers-tab").addClass("social-media-photos-tab-active")
+
+            })
 
         $(".name").hide();
         $('.customer-name-calculate-btn').hide();
