@@ -89,6 +89,7 @@ margin: 10px;
     height: 100px;
     border-radius: 50%;
     position: relative;
+    margin: auto;
 }
 
 .customer-profile-img-container img{
@@ -766,15 +767,16 @@ border-radius: 50%;
     color: var(--customer-text-color);
 }
 
-.customer-profile-friends-header a{
+.customer-profile-friends-header span{
     display: flex;
     align-items: center;
     gap: 0 5px;
     color: var(--customer-text-color);
     text-decoration: none;
+    cursor: pointer;
 }
 
-.customer-profile-friends-header a:hover{
+.customer-profile-friends-header span:hover{
     color: var(--customer-primary-color);
 }
 
@@ -783,7 +785,8 @@ border-radius: 50%;
     align-items: center;
     gap: 10px 10px;
     margin-top: 20px;
-    justify-content: space-around;
+    /* justify-content: space-around; */
+    flex-wrap: wrap;
 }
 
 .customer-profile-friend{
@@ -958,6 +961,7 @@ border-radius: 50%;
     display: block;
     margin: 20px 0;
     padding-bottom: 20px;
+    color: var(--customer-text-color);
 }
 
 .social-media-profile-photos-link{
@@ -984,6 +988,7 @@ border-radius: 50%;
     padding-bottom: 10px;
     border-bottom: 1px solid var(--customer-text-color);
     cursor: pointer;
+    color: var(--customer-text-color);
 }
 
 .social-media-photos-tab-active{
@@ -1002,6 +1007,10 @@ border-radius: 50%;
     overflow-y: scroll;
 }
 
+.social-media-photos-container p{
+    color: var(--customer-text-color);
+}
+
 .social-media-photo{
     width: 80px;
     height: 80px;
@@ -1018,6 +1027,232 @@ border-radius: 50%;
     color: var(--customer-primary-color);
     margin: 20px 0;
     cursor: pointer;
+}
+
+.addpost-caption{
+    margin-bottom: 20px;
+}
+
+.addpost-caption textarea{
+    width: 100%;
+    height: 200px;
+    resize: none;
+    border: 2px solid var(--customer-primary-color);
+    border-radius: 5px;
+}
+
+.addpost-photovideo{
+    width:100%;
+    display:flex;
+    flex-direction: column;
+    /* flex-flow:column wrap; */
+    /* justify-content:center; */
+    margin-top: 20px;
+}
+
+  .preview{
+    border:none;
+    width:100px;
+    height:100px;
+    border: none;
+    object-fit: cover;
+  }
+
+  .selectImage{
+    /* width:35%; */
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  #myfile{
+    /* width: 25%; */
+    /* border:none; */
+  }
+
+  .addpost-photovideo-btn {
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+    border: 2px solid black;
+    display: flex;
+    align-items: center;
+    padding: 10px 20px;
+    border-radius: 5px;
+  }
+
+  .addpost-photovideo-btn p{
+    margin-bottom: 0;
+    cursor: pointer;
+    margin-left: 10px;
+  }
+
+  .addpost-photovideo-btn input{
+    position: absolute;
+    /* font-size: 50px; */
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    right: 0;
+    top: 0;
+    cursor: pointer;
+  }
+
+  .addpost-photovideo-btn-icon{
+    font-size: 20px;
+  }
+
+  .addpost-photovideo-clear-btn{
+    padding: 10px 20px;
+    border-radius: 5px;
+    border: 2px solid black;
+    background-color: white;
+  }
+
+.addpost-photo-video-imgpreview-container{
+    margin-top: 10px;
+    display: flex;
+    gap: 0 5px;
+    flex-wrap: wrap;
+}
+
+.editpost-photo-video-imgpreview-container{
+    margin-top: 10px;
+    display: flex;
+    gap: 0 5px;
+    flex-wrap: wrap;
+}
+
+.addpost-preview{
+    width: 100px;
+    height: 100px;
+    position: relative;
+}
+
+.editpost-preview{
+    width: 100px;
+    height: 100px;
+    position: relative;
+}
+
+.addpost-preview img, .addpost-preview video{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.delete-preview-icon{
+    position: absolute;
+    top: 0;
+    right: 0;
+    font-size: 15px;
+    color: white;
+    background-color: red;
+    cursor: pointer;
+    padding: 5px;
+    border-radius: 3px;
+    z-index: 2;
+}
+.delete-preview-db-icon{
+    position: absolute;
+    top: 0;
+    right: 0;
+    font-size: 15px;
+    color: white;
+    background-color: red;
+    cursor: pointer;
+    padding: 5px;
+    border-radius: 3px;
+    z-index: 2;
+}
+.delete-preview-edit-input-icon{
+    position: absolute;
+    top: 0;
+    right: 0;
+    font-size: 15px;
+    color: white;
+    background-color: red;
+    cursor: pointer;
+    padding: 5px;
+    border-radius: 3px;
+    z-index: 2;
+}
+
+.addpost-submit-btn{
+    display: block;
+    margin: auto;
+    margin-top: 20px;
+    padding: 10px 30px;
+}
+
+.social-media-fris-search{
+    height: 35px;
+    width: 300px;
+    position: relative;
+    margin: auto;
+    margin-bottom: 20px;
+}
+
+.social-media-fris-search input{
+    height: 100%;
+    width: 100%;
+    border-radius: 5px;
+    font-size: 14px;
+    /* border: none; */
+}
+
+.social-media-fris-search .search-icon{
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    right: 10px;
+    font-size: 20px;
+}
+
+.social-media-fris-list-container{
+    height: 740px;
+    overflow-y: scroll;
+}
+
+.social-media-fris-fri-row{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.social-media-fris-fri-img{
+    display: flex;
+    align-items: center;
+    gap: 0 5px;
+}
+
+.social-media-fris-fri-img img{
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 5px;
+}
+
+.social-media-fris-fri-img p{
+    margin-bottom: 0;
+    font-size: 14px;
+    color: var(--customer-text-color);
+}
+
+.social-media-fris-fri-btns-container{
+    display: flex;
+    align-items: center;
+    gap: 10px ;
+}
+
+.social-media-fris-fri-btns-container .customer-primary-btn{
+    font-size: 14px;
+}
+
+.social-media-fris-fri-btns-container .customer-red-btn{
+    border: none;
+    font-size: 14px;
 }
 
 
@@ -1150,6 +1385,24 @@ border-radius: 50%;
 
     .customer-profile-save-cancel-container{
         flex-direction: column;
+    }
+
+    .social-media-fris-fri-row{
+        margin-bottom: 30px;
+    }
+
+    .social-media-fris-fri-img img{
+        width: 70px;
+        height: 70px;
+    }
+
+    .social-media-fris-search{
+        width: 250px;
+    }
+
+    .social-media-fris-fri-btns-container{
+        flex-direction: column;
+        margin-right: 5px;
     }
 }
 

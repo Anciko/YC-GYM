@@ -155,11 +155,12 @@
                     <a class="back-btn" href="{{route("socialmedia")}}">
                         <iconify-icon icon="bi:arrow-left" class="back-btn-icon"></iconify-icon>
                     </a>
+                    <button class="social-media-addpost-btn customer-primary-btn" data-bs-toggle="modal" data-bs-target="#addPostModal">
+                        <iconify-icon icon="akar-icons:circle-plus" class="addpost-icon"></iconify-icon>
+                        <p>Add Post</p>
+                    </button>
                 </div>
-                <button class="social-media-addpost-btn customer-primary-btn margin-top" data-bs-toggle="modal" data-bs-target="#addPostModal">
-                    <iconify-icon icon="akar-icons:circle-plus" class="addpost-icon"></iconify-icon>
-                    <p>Add Post</p>
-                </button>
+
                 <div class="social-media-left-container-trigger">
                     Friends
                     <iconify-icon icon="bi:arrow-right" class="arrow-icon"></iconify-icon>
@@ -169,12 +170,14 @@
 
                 <div class="social-media-parent-container">
                     <div class="social-media-left-container">
-                        <div class="social-media-left-search-container">
-                            <input type="text" id ="search">
-                            <iconify-icon icon="akar-icons:search" class="search-icon"></iconify-icon>
-                        </div>
-                        <div class="cancel">
-                        <a href="#" class="customer-secondary-btn cancel" >Cancel</a>
+                        <div class="social-media-left-search-cancel-container">
+                            <div class="social-media-left-search-container">
+                                <input type="text" id ="search">
+                                <iconify-icon icon="akar-icons:search" class="search-icon"></iconify-icon>
+                            </div>
+                            <div class="cancel">
+                            <p class="customer-secondary-btn cancel" >Cancel</p>
+                            </div>
                         </div>
                         <div class="social-media-left-infos-container">
                             <div class="social-media-left-friends-container">
@@ -189,7 +192,7 @@
                                     <a  href="{{route('socialmedia.profile',$friend->id)}}" class="social-media-left-friends-row">
                                         <img src="{{asset('img/customer/imgs/user_default.jpg')}}">
                                         <p>{{$friend->name}}</p>
-                                    </a>
+                                    </a><br>
                                     @empty
                                     <p class="text-secondary p-1">No Friend</p>
                                     @endforelse
@@ -308,6 +311,7 @@
 
     <script>
     $(document).ready(function() {
+
         //image slider start
         console.log($(".image-slider"))
 
@@ -791,55 +795,67 @@
 
                             if(status === 'sender request'){
                                 htmlView += `
+                                            <div class="social-media-left-searched-item">
                                             <a href=`+url+` class = "profiles">
                                                 <p>`+res.users[i].name+`</p>
                                             </a>
-                                            <a href="?id=` + res.users[i].id+`" class="customer-secondary-btn cancel-request-btn"
-                                            id = "cancelRequest">Cancel Request</a>
+                                            <a href="?id=` + res.users[i].id+`" class="cancel-request-btn"
+                                            id = "cancelRequest"><iconify-icon icon="material-symbols:cancel-schedule-send-outline" class="search-item-icon"></iconify-icon></a>
+                                            </div>
                                             `
                             }
 
                             else if(status === 'receiver request'){
                                htmlView += `
+                                            <div class="social-media-left-searched-item">
                                             <a href=`+url+` class = "profiles">
                                                 <p>`+res.users[i].name+`</p>
                                             </a>
-                                            <a href=`+url+` class="customer-secondary-btn">Response</a>
+                                            <a href=`+url+`><iconify-icon icon="mdi:account-question-outline" class="search-item-icon"></iconify-icon></a>
+                                            </div>
                                             `
                             }
 
                             else if(status === "profile"){
                                  htmlView += `
+                                            <div class="social-media-left-searched-item">
                                             <a href=`+url+` class = "profiles">
                                                 <p>`+res.users[i].name+`</p>
                                             </a>
-                                            <a href=`+url+` class="customer-secondary-btn "
-                                            >View Profile</a>
+                                            <a href=`+url+`
+                                            ><iconify-icon icon="ion:people-sharp" class="search-item-icon"></iconify-icon></a>
+                                            </div>
                                             `
                             }
 
                             else if(status === "sender view profile"){
                                 htmlView += `
+                                            <div class="social-media-left-searched-item">
                                             <a href= `+url+` class = "profiles">
                                                 <p>`+res.users[i].name+`</p>
                                             </a>
-                                            <a href=`+url+` class="customer-secondary-btn add-friend-btn">Friend</a>
+                                            <a href=`+url+` ><iconify-icon icon="ion:people-sharp" class="search-item-icon"></iconify-icon></a>
+                                            </div>
                                           `
                             }
                             else if(status === "receiver view profile"){
                                 htmlView += `
+                                            <div class="social-media-left-searched-item">
                                             <a href= `+url+` class = "profiles">
                                                 <p>`+res.users[i].name+`</p>
                                             </a>
-                                            <a href=`+url+` class="customer-secondary-btn add-friend-btn">Friend</a>
+                                            <a href=`+url+`><iconify-icon icon="ion:people-sharp" class="search-item-icon"></iconify-icon></a>
+                                            </div>
                                           `
                             }
                             else{
                                     htmlView += `
+                                            <div class="social-media-left-searched-item">
                                             <a href=`+url+` class = "profiles">
                                                 <p>`+res.users[i].name+`</p>
                                             </a>
-                                            <a href="?id=` + res.users[i].id+`" class="customer-secondary-btn add-friend-btn" id = "AddFriend">Add</a>
+                                            <a href="?id=` + res.users[i].id+`"  id = "AddFriend"><iconify-icon icon="bi:person-add" class="search-item-icon"></iconify-icon></a>
+                                            </div>
                                     `
                             }
                             }
@@ -1096,9 +1112,6 @@
         }
         $(this).parent().remove();
     }
-
-
-
 
 
     function clearAddPost(){

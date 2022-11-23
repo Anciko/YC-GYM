@@ -4,8 +4,10 @@ namespace App\Http\Controllers\Customer;
 
 use Carbon\Carbon;
 use App\Models\Meal;
+use App\Models\Post;
 use App\Models\User;
 use App\Models\Member;
+use App\Models\Profile;
 use App\Models\Workout;
 use App\Models\MealPlan;
 use App\Models\WaterTracked;
@@ -15,7 +17,6 @@ use App\Models\PersonalMealInfo;
 use Illuminate\Support\Facades\DB;
 use App\Models\PersonalWorkOutInfo;
 use App\Http\Controllers\Controller;
-use App\Models\Profile;
 use RealRashid\SweetAlert\Facades\Alert;
 
 class Customer_TrainingCenterController extends Controller
@@ -47,6 +48,33 @@ class Customer_TrainingCenterController extends Controller
     {
         $user_id = auth()->user()->id;
 
+        $friends=DB::table('friendships')
+                    ->where('friend_status',2)
+                    ->where(function($query) use ($user_id){
+                        $query->where('sender_id',$user_id)
+                            ->orWhere('receiver_id',$user_id);
+                    })
+                    ->get(['sender_id','receiver_id'])->toArray();
+
+        if(!empty($friends)){
+            $n= array();
+            foreach($friends as $friend){
+                    $f=(array)$friend;
+                    array_push($n, $f['sender_id'],$f['receiver_id']);
+            }
+        }else{
+            $n= array();
+        }
+        $posts=Post::where('user_id',$user_id)
+                    ->orderBy('created_at','DESC')
+                    ->with('user')
+                    ->paginate(30);
+
+        $user_friends=User::whereIn('id',$n)
+                        ->where('id','!=',$user_id)
+                        ->paginate(6);
+
+
         $user_profile_cover=Profile::select('cover_photo')
                                 ->where('user_id',$user_id)
                                 ->where('profile_image','')
@@ -58,6 +86,19 @@ class Customer_TrainingCenterController extends Controller
                                 ->where('cover_photo','')
                                 ->orderBy('created_at','DESC')
                                 ->first();
+
+      
+        if($user_profile_cover==null){
+            $user_profile_cover=null;
+        }else{
+            $user_profile_cover=$user_profile_cover;
+        }
+
+        if($user_profile_image==null){
+            $user_profile_image=null;
+        }else{
+            $user_profile_image=$user_profile_image;
+        }
 
         $current_date = Carbon::now('Asia/Yangon')->toDateString();
         $year=Carbon::now()->subYear(10)->format("Y");
@@ -115,7 +156,7 @@ class Customer_TrainingCenterController extends Controller
             }
         }
 
-        return view('customer.training_center.profile', compact('user_profile_cover','user_profile_image','year','workouts', 'workout_date', 'cal_sum', 'time_min', 'time_sec', 'weight_history', 'newDate'));
+        return view('customer.training_center.profile', compact('posts','user_friends','user_profile_cover','user_profile_image','year','workouts', 'workout_date', 'cal_sum', 'time_min', 'time_sec', 'weight_history', 'newDate'));
     }
     public function member_plan()
     {

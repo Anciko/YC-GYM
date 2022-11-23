@@ -106,6 +106,10 @@
     flex-direction: column;
 }
 
+.social-media-left-friends-rows-container > p{
+    color: var(--customer-text-color);
+}
+
 .social-media-left-friends-row{
     display: inline-flex;
     gap: 0 5px;
@@ -596,14 +600,27 @@
     padding: 0 10px;
 }
 
+.social-media-profile-btns-container{
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap:10px;
+    margin: 20px 0;
+}
+
 .add-friend-btn{
     display: flex;
     align-items: center;
-    margin-left: auto;
+    /* margin-left: auto; */
     /* margin-right: 20px; */
-    margin-top: 10px;
+    /* margin-top: 10px; */
     font-size: 14px;
     gap: 0 10px;
+    border: none;
+}
+
+.add-friend-icon{
+    font-size: 16px;
 }
 
 .add-friend-btn p{
@@ -662,7 +679,8 @@
     align-items: center;
     gap: 10px 10px;
     margin-top: 20px;
-    justify-content: space-around;
+    /* justify-content: space-around; */
+    flex-wrap: wrap;
 }
 
 .social-media-profile-friend{
@@ -966,10 +984,18 @@
     text-decoration: none;
 }
 
+.social-media-left-searched-item p{
+    margin-bottom: 0;
+}
+
 .search-item-icon{
-    font-size: 30px;
+    font-size: 35px;
     color: var(--customer-text-color);
 
+}
+
+.search-item-icon:hover{
+    color: var(--customer-primary-color);
 }
 
 .social-media-searched-item{
@@ -1688,6 +1714,12 @@ ul{
 
     #image-slider ul{
         height: 300px;
+    }
+
+    .social-media-profile-btns-container{
+        /* flex-direction: column;
+        align-items: flex-end; */
+        margin-top: 60px;
     }
 
 }
