@@ -18,8 +18,6 @@
                                 </a>
                                 <span>{{ \Carbon\Carbon::parse($post->created_at)->format('d M Y , g:i A')}}</span>
                             </div>
-
-
                         </div>
 
                         <iconify-icon icon="bi:three-dots-vertical" class="social-media-post-header-icon"></iconify-icon>
