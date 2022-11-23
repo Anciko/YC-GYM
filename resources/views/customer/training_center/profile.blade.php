@@ -415,8 +415,19 @@
                 <div class="customer-profile-friends-container">
                     @foreach ($user_friends as $friend)
                     <div class="customer-profile-friend">
-                        <img src="{{asset('image/trainer2.jpg')}}">
+                        <?php $image=$friend->profiles()->where('cover_photo','')->orderBy('created_at','desc')->first() ?>
+                        @if($image==null)
+                        <a href="{{route('socialmedia.profile',$friend->id)}}" style="text-decoration:none">
+                        <img src="{{asset('img/customer/imgs/user_default.jpg')}}">
+                        </a>
+                        @else
+                        <a href="{{route('socialmedia.profile',$friend->id)}}" style="text-decoration:none">
+                        <img src="{{asset('storage/post/'.$image->profile_image)}}">
+                        </a>
+                        @endif
+                        <a href="{{route('socialmedia.profile',$friend->id)}}" style="text-decoration:none">
                         <p>{{$friend->name}}</p>
+                        </a>
                     </div>
                     @endforeach
                 </div>
@@ -546,7 +557,6 @@
 @push('scripts')
 @hasanyrole('Platinum|Diamond|Gym Member|Gold|Ruby|Ruby Premium')
 <script>
-
 
             let myChart=null;
             function linechart(data){
@@ -794,8 +804,6 @@
                             </div>
                         </div>`
                         ))}
-
-
                     `)
 
                     }
@@ -1162,6 +1170,7 @@
 
 
     });
+
 
     function workout_7days(){
 
@@ -1632,6 +1641,9 @@
             $(this).next().toggle()
         })
         ///EditPost
+        $("#editPostInput").on("change", handleFileSelectEdit);
+
+
         var storedFilesEdit = [];
         const dtEdit = new DataTransfer();
 
@@ -1676,35 +1688,35 @@
                             }
                             reader.readAsDataURL(f);
                             dtEdit.items.add(f);
+
         }
 
         function removeFileFromEditInput(e) {
-        var file = $(this).data("file");
-        var names = [];
-        for(let i = 0; i < dtEdit.items.length; i++){
-            if(file === dtEdit.items[i].getAsFile().name){
-                dtEdit.items.remove(i);
+            var file = $(this).data("file");
+            var names = [];
+            for(let i = 0; i < dtEdit.items.length; i++){
+                if(file === dtEdit.items[i].getAsFile().name){
+                    dtEdit.items.remove(i);
+                }
             }
-        }
-        document.getElementById('editPostInput').files = dtEdit.files;
+            document.getElementById('editPostInput').files = dtEdit.files;
 
-        for (var i = 0; i < storedFilesEdit.length; i++) {
-            if (storedFilesEdit[i].name === file) {
-            storedFilesEdit.splice(i, 1);
-            break;
+            for (var i = 0; i < storedFilesEdit.length; i++) {
+                if (storedFilesEdit[i].name === file) {
+                storedFilesEdit.splice(i, 1);
+                break;
+                }
             }
+            $(this).parent().remove();
         }
-        $(this).parent().remove();
-    }
+
 
 
 });
 
-document.getElementById('editPostInput').files = dtEdit.files;
-console.log(document.getElementById('editPostInput').files+" Edit Post Input")
+        document.getElementById('editPostInput').files = dtEdit.files;
 
 }
-
         $(document).on('click','#edit_post',function(e){
             e.preventDefault();
             $(".editpost-photo-video-imgpreview-container").empty();
@@ -1746,15 +1758,13 @@ console.log(document.getElementById('editPostInput').files+" Edit Post Input")
                                     var html="<div class='addpost-preview'>\
                                         <iconify-icon icon='akar-icons:cross' data-file='" + f + "' class='delete-preview-db-icon'></iconify-icon>\
                                         <video controls><source src='storage/post/" + f + "' data-file='" + f+ "' class='selFile' title='Click to remove'>" + f + "<br clear=\"left\"/>\
-                                        <video>\
-                                    </div>"
+                                        <video></div>"
                                     $(".editpost-photo-video-imgpreview-container").append(html);
 
                                 }else{
                                     var html = "<div class='addpost-preview'><iconify-icon icon='akar-icons:cross' data-file='" + f + "' class='delete-preview-db-icon'></iconify-icon><img src='storage/post/"+f+"' data-file='" + f + "' class='selFile' title='Click to remove'></div>";
                                     $(".editpost-photo-video-imgpreview-container").append(html);
                                 }
-
                             });
 
                             $("body").on("click", ".delete-preview-db-icon", removeFiledb);
@@ -1853,6 +1863,41 @@ console.log(document.getElementById('editPostInput').files+" Edit Post Input")
 
                     }
                 })
+
+        })
+
+        $(document).on('click', '#delete_post', function(e){
+
+            e.preventDefault();
+            var id = $(this).data('id');
+            Swal.fire({
+                        text: 'Are you sure to delete this post?',
+                        timerProgressBar: true,
+                        showCloseButton: true,
+                        showCancelButton: true,
+                        icon: 'warning',
+                    }).then((result) => {
+                    if (result.isConfirmed) {
+                        var add_url = "{{ route('post.destroy', [':id']) }}";
+                            add_url = add_url.replace(':id', id);
+
+                            $.ajaxSetup({
+                                    headers: {
+                                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                                    }
+                                });
+                            $.ajax({
+                                    method: "POST",
+                                    url: add_url,
+                                    datatype: "json",
+                                    success: function(data) {
+                                        window.location.reload();
+                                    }
+                                })
+                    }else{
+
+                    }
+                    })
 
         })
 

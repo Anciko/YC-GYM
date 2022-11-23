@@ -79,7 +79,7 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
         // Route::post('/testing/store', [SocialmediaController::class, 'post_store'])->name('testing.store');
 
         Route::get('customer/personal_infos', [CustomerRegisterController::class, 'personal_info'])->name('customer-personal_infos');
-        Route::get('customer/profile', [Customer_TrainingCenterController::class, 'profile'])->name('customer-profile');
+        Route::get('/profile', [Customer_TrainingCenterController::class, 'profile'])->name('customer-profile');
         Route::post('customer/profile/update', [Customer_TrainingCenterController::class, 'profile_update'])->name('customer-profile.update');
         Route::post('customer/profile/name/update', [Customer_TrainingCenterController::class, 'profile_update_name'])->name('customer-profile-name.update');
         Route::post('customer/profile/cover/update', [Customer_TrainingCenterController::class, 'profile_update_cover'])->name('customer-profile-cover.update');
@@ -91,6 +91,7 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
 
         //Social Media
         Route::get('/socialmedia_profile/{id}', [SocialmediaController::class, 'socialmedia_profile'])->name('socialmedia_profile');
+        Route::get('/socialmedia/profile/photos/', [SocialmediaController::class, 'socialmedia_profile_photos'])->name('socialmedia_profile_photos');
 
         Route::post('search_users', [SocialmediaController::class, 'showUser'])->name('search_users');
         Route::get('/addUser/{id}', [SocialmediaController::class, 'addUser'])->name('addUser');

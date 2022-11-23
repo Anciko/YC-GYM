@@ -354,33 +354,33 @@
     var width = $('#image-slider').width();
     console.log(width)
 
-    function nextImage(newIndex, parent){
-        parent.find('li').eq(newIndex).addClass('next-img').css('left', width).animate({left: 0},600);
-        parent.find('li.active-img').removeClass('active-img').css('left', '0').animate({left: '-100%'},600);
-        parent.find('li.next-img').attr('class', 'active-img');
-    }
-    function prevImage(newIndex, parent){
-        parent.find('li').eq(newIndex).addClass('next-img').css('left', -width).animate({left: 0},600);
-        parent.find('li.active-img').removeClass('active-img').css('left', '0').animate({left: '100%'},600);
-        parent.find('li.next-img').attr('class', 'active-img');
-    }
+        function nextImage(newIndex, parent){
+            parent.find('li').eq(newIndex).addClass('next-img').css('left', width).animate({left: 0},600);
+            parent.find('li.active-img').removeClass('active-img').css('left', '0').animate({left: '-100%'},600);
+            parent.find('li.next-img').attr('class', 'active-img');
+        }
+        function prevImage(newIndex, parent){
+            parent.find('li').eq(newIndex).addClass('next-img').css('left', -width).animate({left: 0},600);
+            parent.find('li.active-img').removeClass('active-img').css('left', '0').animate({left: '100%'},600);
+            parent.find('li.next-img').attr('class', 'active-img');
+        }
 
-    /* Thumbails */
-    // var ThumbailsWidth = ($('#image-slider').width() - 18.5)/7;
-    // $('#thumbnail li').find('img').css('width', ThumbailsWidth);
+        /* Thumbails */
+        // var ThumbailsWidth = ($('#image-slider').width() - 18.5)/7;
+        // $('#thumbnail li').find('img').css('width', ThumbailsWidth);
 
-    $('.social-media-media-slider').hide()
+        $('.social-media-media-slider').hide()
 
-    $(".social-media-media-container").click(function(){
+        $(".social-media-media-container").click(function(){
 
-        $(this).siblings(".social-media-media-slider").show()
-        $(this).hide()
-    })
+            $(this).siblings(".social-media-media-slider").show()
+            $(this).hide()
+        })
 
-    $(".slider-close-icon").click(function(){
-        $(this).closest('.social-media-media-slider').hide()
-        $(this).closest('.social-media-media-slider').siblings('.social-media-media-container').show()
-    })
+        $(".slider-close-icon").click(function(){
+            $(this).closest('.social-media-media-slider').hide()
+            $(this).closest('.social-media-media-slider').siblings('.social-media-media-container').show()
+        })
         //image slider end
 
 
@@ -1130,9 +1130,7 @@
             })
     })
 </script>
-@push('scripts')
-
-@endpush
+@stack('scripts')
 
   </body>
 </html>
