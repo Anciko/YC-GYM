@@ -106,6 +106,10 @@
     flex-direction: column;
 }
 
+.social-media-left-friends-rows-container > p{
+    color: var(--customer-text-color);
+}
+
 .social-media-left-friends-row{
     display: inline-flex;
     gap: 0 5px;

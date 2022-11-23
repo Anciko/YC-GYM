@@ -1007,6 +1007,10 @@ border-radius: 50%;
     overflow-y: scroll;
 }
 
+.social-media-photos-container p{
+    color: var(--customer-text-color);
+}
+
 .social-media-photo{
     width: 80px;
     height: 80px;
