@@ -53,7 +53,7 @@ class SocialmediaController extends Controller
         //$posts=Post::orderBy('created_at','DESC')->with('user')->paginate(10);
         return view('customer.socialmedia',compact('posts'));
     }
-    public function socialmedia_profile($id )
+    public function socialmedia_profile($id)
     {
         //dd($id);
         $auth = Auth()->user()->id;
@@ -78,12 +78,58 @@ class SocialmediaController extends Controller
                     $f=(array)$friend;
                     array_push($n, $f['sender_id'],$f['receiver_id']);
             }
-        $friends=User::whereIn('id',$n)
+        $friends=User::select('users.name','users.id')
+                         ->whereIn('id',$n)
                         ->where('id','!=',$user->id)
                         ->paginate(6);
         $friend = DB::select("SELECT * FROM `friendships` WHERE (receiver_id = $auth or sender_id = $auth )
                         AND (receiver_id = $id or sender_id = $id)");
         return view('customer.socialmedia_profile',compact('user','posts','friends','friend'));
+    }
+
+
+    public function social_media_profile(Request $request)
+    {
+        if(!empty($request->noti_id)){
+           $noti =  DB::table('notifications')->where('id',$request->noti_id)->update(['notification_status' => 2]);
+        }
+
+        $id = $request->id;
+        $auth = Auth()->user()->id;
+        $user = User::where('id',$id)->first();
+        $posts=Post::where('user_id',$id)
+                    ->orderBy('created_at','DESC')
+                    ->with('user')
+                    ->paginate(30);
+
+        $friendships=DB::table('friendships')
+                    ->where('friend_status',2)
+                    ->where(function($query) use ($id){
+                        $query->where('sender_id',$id)
+                            ->orWhere('receiver_id',$id);
+                    })
+                    ->join('users as sender','sender.id','friendships.sender_id')
+                    ->join('users as receiver','receiver.id','friendships.receiver_id')
+                    ->get(['sender_id','receiver_id'])->toArray();
+                    //dd($friends);
+        $n= array();
+        foreach($friendships as $friend){
+                    $f=(array)$friend;
+                    array_push($n, $f['sender_id'],$f['receiver_id']);
+            }
+        $friends=User::select('users.name','users.id')
+                         ->whereIn('id',$n)
+                        ->where('id','!=',$user->id)
+                        ->paginate(6);
+        $friend = DB::select("SELECT * FROM `friendships` WHERE (receiver_id = $auth or sender_id = $auth )
+                        AND (receiver_id = $id or sender_id = $id)");
+        return response()->json([
+            'user' => $user,
+            'friend_status' => $friend,
+            'friends' => $friends,
+            'posts' => $posts
+       ]);
+        // return view('customer.socialmedia_profile',compact('user','posts','friends','friend'));
     }
 
     public function post_update(Request $request)
@@ -221,28 +267,18 @@ class SocialmediaController extends Controller
     }
 
     public function showUser(Request $request){
-
-        // if($request->keyword != ''){
-        //     $users =  User::select('users.name','friendships.receiver_id','friendships.friend_status',
-        //     'users.id','friendships.sender_id')
-        //                     ->leftJoin('friendships','users.id','friendships.sender_id')
-        //                     ->where('name','LIKE','%'.$request->keyword.'%')
-        //                     ->orWhere('phone','LIKE','%'.$request->keyword.'%')->get();
-        // }
         $users = User::where('name','LIKE','%'.$request->keyword.'%')
                         ->orWhere('phone','LIKE','%'.$request->keyword.'%')->get();
-
-
-
-            $friends=DB::table('friendships')
+        $friends=DB::table('friendships')
                         ->get();
-
-        //    $array =  array_push($users, ['friends'=> $friends]);
         return response()->json([
             'users' => $users,
             'friends' => $friends,
-            // 'array' => $array
          ]);
+    }
+
+    public function friendsList(){
+        return view('customer.friendlist');
     }
 
     public function notification_center(){

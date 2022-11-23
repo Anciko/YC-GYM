@@ -67,7 +67,7 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
     Route::middleware('auth')->group(function () {
 
         //Social Media
-        Route::get('/socialmedia_profile/{$id}', [SocialmediaController::class, 'socialmedia_profile'])->name('socialmedia.profile');
+    Route::get('/socialmedia_profile/{id}', [SocialmediaController::class, 'socialmedia_profile'])->name('socialmedia.profile');
         Route::get('/socialmedia', [SocialmediaController::class, 'index'])->name('socialmedia');
         Route::post('/socialmedia', [SocialmediaController::class, 'post_store'])->name('post.store');
 
@@ -90,9 +90,13 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
         Route::get('/home', [App\Http\Controllers\HomeController::class, 'home'])->name('social_media');
 
         //Social Media
-        Route::get('/socialmedia_profile/{id}', [SocialmediaController::class, 'socialmedia_profile'])->name('socialmedia_profile');
+        Route::post('/social_media_profile', [SocialmediaController::class, 'social_media_profile'])->name('social_media_profile');
+
 
         Route::post('search_users', [SocialmediaController::class, 'showUser'])->name('search_users');
+
+        Route::get('/friendsList', [SocialmediaController::class, 'friendsList'])->name('friendsList');
+
         Route::get('/addUser/{id}', [SocialmediaController::class, 'addUser'])->name('addUser');
 
         Route::get('/unfriend/{id}', [SocialmediaController::class, 'unfriend'])->name('unfriend');

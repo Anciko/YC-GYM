@@ -186,7 +186,7 @@
                                 <div class="social-media-left-friends-rows-container">
 
                                     @forelse ($left_friends as $friend)
-                                    <a href="{{route('socialmedia.profile',$friend->id)}}" class="social-media-left-friends-row">
+                                    <a  href="{{route('socialmedia.profile',$friend->id)}}" class="social-media-left-friends-row">
                                         <img src="{{asset('img/customer/imgs/user_default.jpg')}}">
                                         <p>{{$friend->name}}</p>
                                     </a>
@@ -696,8 +696,8 @@
                                     var status = ''
                                 for(let f = 0; f < res.friends.length; f++){
                                     id = res.users[i].id;
-                                    var url = "{{ route('socialmedia_profile', [':id']) }}";
-                                    url = url.replace(':id', id);
+                                    var url = "{{ route('socialmedia.profile', [':id']) }}";
+                                    url = url.replace(':id',id);
                                     console.log(auth_id)
 
                                     if(res.users[i].id === res.friends[f].receiver_id &&
@@ -1109,17 +1109,48 @@
     }
 
 </script>
+
 <script>
     $(document).ready(function(){
-        console.log("heeeee");
         $('.nav-icon').click(function(){
                 $('.notis-box-container').toggle()
             })
+
+        $(document).on('click', '.accept', function(e) {
+                e.preventDefault();
+                alert("okk")
+                var url = new URL(this.href);
+                var id = url.searchParams.get("id");
+                 console.log(id,"noti_id");
+                var sender_id = $(this).attr("id");
+                console.log(sender_id , "rererer");
+                var social_url = "{{ route('socialmedia.profile', [':id']) }}";
+                social_url = social_url.replace(':id', sender_id);
+
+                var url = "{{ route('social_media_profile') }}";
+                $(".add-member-btn").attr('href','');
+                $.ajaxSetup({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    }
+                });
+                    $.ajax({
+                        type: "POST",
+                        url: url,
+                        datatype: "json",
+                        data : {
+                            id : sender_id,
+                            noti_id : id
+                    },
+                        success: function(data) {
+                            console.log(data)
+                            window.location.href = social_url
+                        }
+                    })
+                });
     })
 </script>
-@push('scripts')
 
-@endpush
 
   </body>
 </html>

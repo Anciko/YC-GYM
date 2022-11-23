@@ -101,7 +101,14 @@
                     <?php if($count == 10) break; ?>
 
                        @if($noti->notification_status == 1)
-                    <a href = "{{route('viewFriendRequestNoti',[$noti->sender_id,$noti->id])}}">
+                    {{-- <a href = "{{route('viewFriendRequestNoti',[$noti->sender_id,$noti->id])}}">
+                        <div class="notis-box-noti-row notis-box-unread-noti">
+                            <span>{{$noti->created_at->diffForHumans()}}
+                            </span>
+                            <p>{{$noti->description}}</p>
+                        </div>
+                    </a> --}}
+                    <a href ="?id={{$noti->id}}"  class = "accept" id = {{$noti->sender_id}}>
                         <div class="notis-box-noti-row notis-box-unread-noti">
                             <span>{{$noti->created_at->diffForHumans()}}
                             </span>
@@ -109,7 +116,7 @@
                         </div>
                     </a>
                         @else
-                    <a href = "{{route('viewFriendRequestNoti',[$noti->sender_id,$noti->id])}}">
+                    <a href ="?id={{$noti->id}}"  class = "accept" id = {{$noti->sender_id}}>
                         <div class="notis-box-noti-row ">
                             <span>{{$noti->created_at->diffForHumans()}}</span>
                             <p>{{$noti->description}}</p>
@@ -122,14 +129,5 @@
 
             </div>
         </div>
-
-
-
-
     </div>
 </div>
-
-<script>
-
-
-</script>
