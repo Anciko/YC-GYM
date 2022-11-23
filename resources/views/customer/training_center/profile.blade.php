@@ -3,6 +3,50 @@
 @section('content')
 @include('sweetalert::alert')
 
+<div class="modal fade" id="editPostModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="exampleModalLabel">Edit Post</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <form class="modal-body" id="edit_form" enctype= multipart/form-data>
+
+            <input type="hidden" id="edit_post_id">
+
+          <div class="addpost-caption">
+            <p>Post Caption</p>
+            <textarea placeholder="Caption goes here..." name="caption" id="editPostCaption" class="addpost-caption-input"></textarea>
+          </div>
+
+          <div class="addpost-photovideo">
+
+            <span class="selectImage">
+
+                <div class="addpost-photovideo-btn">
+                    <iconify-icon icon="akar-icons:circle-plus" class="addpst-photovideo-btn-icon"></iconify-icon>
+                    <p>Photo/Video</p>
+                    <input type="file" id="editPostInput" name="editPostInput[]" multiple enctype="multipart/form-data">
+                </div>
+
+                <button class="addpost-photovideo-clear-btn" type="button" onclick="clearAddPost()">Clear</button>
+
+            </span>
+
+            <div class="editpost-photo-video-imgpreview-container">
+            </div>
+
+
+            </div>
+            {{-- <input type="submit" class="customer-primary-btn addpost-submit-btn" value="Update"> --}}
+            {{-- <button type="button" class="customer-primary-btn addpost-submit-btn "  id="editpost-submit-btn">Update</button> --}}
+            <button type="submit" class="customer-primary-btn addpost-submit-btn">Post</button>
+        </form>
+
+      </div>
+    </div>
+</div>
+
 <div class="customer-profile-parent-container">
     <div class="customer-cover-photo-container">
         @if($user_profile_cover==null)
@@ -382,64 +426,72 @@
 
             <div class="customer-profile-posts-parent-container">
                 <p>Post & Activities</p>
-                <div class="customer-post-container">
-                    <div class="customer-post-header">
-                        <div class="customer-post-name-container">
-                            <img src="{{asset('image/trainer2.jpg')}}">
-                            <div class="customer-post-name">
-                                <p>User Name</p>
-                                <span>19 Sep 2022, 11:02 AM</span>
+                @foreach ($posts as $post)
+                    <div class="customer-post-container">
+                        <div class="customer-post-header">
+                            <div class="customer-post-name-container">
+                                <img src="{{asset('image/trainer2.jpg')}}">
+                                <div class="customer-post-name">
+                                    <p>{{$post->user->name}}</p>
+                                    <span>{{ \Carbon\Carbon::parse($post->created_at)->format('d M Y , g:i A')}}</span>
+                                </div>
                             </div>
 
-
+                            <iconify-icon icon="bi:three-dots-vertical" class="customer-post-header-icon"></iconify-icon>
+                            <div class="post-actions-container">
+                                <div class="post-action">
+                                    <iconify-icon icon="bi:save" class="post-action-icon"></iconify-icon>
+                                    <p>Save</p>
+                                </div>
+                                <a id="edit_post" data-id="{{$post->id}}" data-bs-toggle="modal" >
+                                    <div class="post-action">
+                                        <iconify-icon icon="bi:edit" class="post-action-icon"></iconify-icon>
+                                        <p>Edit</p>
+                                    </div>
+                                </a>
+                                <a id="delete_post" data-id="{{$post->id}}">
+                                    <div class="post-action">
+                                    <iconify-icon icon="bi:delete" class="post-action-icon"></iconify-icon>
+                                    <p>Delete</p>
+                                    </div>
+                                </a>
+                            </div>
                         </div>
 
-                        <iconify-icon icon="bi:three-dots-vertical" class="customer-post-header-icon"></iconify-icon>
-                        <div class="post-actions-container">
-                            <div class="post-action">
-                                <iconify-icon icon="bi:save" class="post-action-icon"></iconify-icon>
-                                <p>Save</p>
+                        <div class="customer-content-container">
+                            @if ($post->media==null)
+                            <p>{{$post->caption}}</p>
+                            @else
+                            <p>{{$post->caption}}</p>
+                            <div class="customer-media-container">
+                                <?php foreach (json_decode($post->media)as $m){?>
+                                    <div class="customer-media">
+                                    @if (pathinfo($m, PATHINFO_EXTENSION) == 'mp4')
+                                    <video controls>
+                                        <source src="{{asset('storage/post/'.$m) }}">
+                                    </video>
+                                    @else
+                                        <img src="{{asset('storage/post/'.$m) }}">
+                                    @endif
+                                </div>
+                                <?php }?>
                             </div>
+                            @endif
+                        </div>
 
-                            <div class="post-action">
-                                <iconify-icon icon="material-symbols:report-outline" class="post-action-icon"></iconify-icon>
-                                <p>Report</p>
+                        <div class="customer-post-footer-container">
+                            <div class="customer-post-like-container">
+                                <iconify-icon icon="akar-icons:heart" class="like-icon"></iconify-icon>
+                                <p><span>1.1k</span> Likes</p>
+                            </div>
+                            <div class="customer-post-comment-container">
+                                <iconify-icon icon="bi:chat-right" class="comment-icon"></iconify-icon>
+                                <p><span>50</span> Comments</p>
                             </div>
                         </div>
                     </div>
+                @endforeach
 
-                    <div class="customer-content-container">
-                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Dui hendrerit potenti pellentesque tellus urna bibendum mollis.</p>
-                        <div class="customer-media-container">
-                            <div class="customer-media">
-                                <img src="{{asset('image/trainer2.jpg')}}">
-                            </div>
-                            <div class="customer-media">
-                                <img src="{{asset('image/trainer2.jpg')}}">
-                            </div>
-                            <div class="customer-media">
-                                <img src="{{asset('image/trainer2.jpg')}}">
-                            </div>
-                            <div class="customer-media">
-                                <img src="{{asset('image/trainer2.jpg')}}">
-                            </div>
-                            <div class="customer-media">
-                                <img src="{{asset('image/trainer2.jpg')}}">
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="customer-post-footer-container">
-                        <div class="customer-post-like-container">
-                            <iconify-icon icon="akar-icons:heart" class="like-icon"></iconify-icon>
-                            <p><span>1.1k</span> Likes</p>
-                        </div>
-                        <div class="customer-post-comment-container">
-                            <iconify-icon icon="bi:chat-right" class="comment-icon"></iconify-icon>
-                            <p><span>50</span> Comments</p>
-                        </div>
-                    </div>
-                </div>
             </div>
         </div>
 
@@ -1611,6 +1663,230 @@
 
         $('.customer-post-header-icon').click(function(){
             $(this).next().toggle()
+        })
+        ///EditPost
+        var storedFilesEdit = [];
+        const dtEdit = new DataTransfer();
+
+        function handleFileSelectEdit(e) {
+
+                    var files = e.target.files;
+                    console.log(files)
+
+                    var filesArr = Array.prototype.slice.call(files);
+
+                    var device = $(e.target).data("device");
+
+                    filesArr.forEach(function(f) {
+
+                        if (f.type.match("image.*")) {
+                            storedFilesEdit.push(f);
+
+                            var reader = new FileReader();
+                            reader.onload = function(e) {
+                            var html = "<div class='addpost-preview'><iconify-icon icon='akar-icons:cross' data-file='" + f.name + "' class='delete-preview-edit-input-icon'></iconify-icon><img src=\"" + e.target.result + "\" data-file='" + f.name + "' class='selFile' title='Click to remove'></div>";
+
+                            if (device == "mobile") {
+                                $("#selectedFilesM").append(html);
+                            } else {
+                                $(".editpost-photo-video-imgpreview-container").append(html);
+                            }
+                            }
+                            reader.readAsDataURL(f);
+                            dtEdit.items.add(f);
+                        }else if(f.type.match("video.*")){
+                            storedFilesEdit.push(f);
+
+                            var reader = new FileReader();
+                            reader.onload = function(e) {
+                            var html = "<div class='addpost-preview'><iconify-icon icon='akar-icons:cross' data-file='" + f.name + "' class='delete-preview-edit-input-icon'></iconify-icon><video controls><source src=\"" + e.target.result + "\" data-file='" + f.name + "' class='selFile' title='Click to remove'>" + f.name + "<br clear=\"left\"/><video></div>";
+
+                            if (device == "mobile") {
+                                $("#selectedFilesM").append(html);
+                            } else {
+                                $(".editpost-photo-video-imgpreview-container").append(html);
+                            }
+                            }
+                            reader.readAsDataURL(f);
+                            dtEdit.items.add(f);
+        }
+
+        function removeFileFromEditInput(e) {
+        var file = $(this).data("file");
+        var names = [];
+        for(let i = 0; i < dtEdit.items.length; i++){
+            if(file === dtEdit.items[i].getAsFile().name){
+                dtEdit.items.remove(i);
+            }
+        }
+        document.getElementById('editPostInput').files = dtEdit.files;
+
+        for (var i = 0; i < storedFilesEdit.length; i++) {
+            if (storedFilesEdit[i].name === file) {
+            storedFilesEdit.splice(i, 1);
+            break;
+            }
+        }
+        $(this).parent().remove();
+    }
+
+
+});
+
+document.getElementById('editPostInput').files = dtEdit.files;
+console.log(document.getElementById('editPostInput').files+" Edit Post Input")
+
+}
+
+        $(document).on('click','#edit_post',function(e){
+            e.preventDefault();
+            $(".editpost-photo-video-imgpreview-container").empty();
+
+            dtEdit.clearData()
+            document.getElementById('editPostInput').files = dtEdit.files;
+            var id = $(this).data('id');
+
+            $('#editPostModal').modal('show');
+            var add_url = "{{ route('post.edit', [':id']) }}";
+            add_url = add_url.replace(':id', id);
+
+            $.ajaxSetup({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    }
+                });
+            $.ajax({
+                    method: "POST",
+                    url: add_url,
+                    datatype: "json",
+                    success: function(data) {
+                        if(data.status==400){
+                            alert(data.message)
+                        }else{
+                            $('#editPostCaption').val(data.post.caption);
+                            $('#edit_post_id').val(data.post.id);
+
+                            var filesdb =data.post.media ? JSON.parse(data.post.media) : [];
+                            // var filesAmount=files.length;
+                            var storedFilesdb = filesdb;
+                            // console.log(storedFilesdb)
+
+
+                            filesdb.forEach(function(f) {
+                                fileExtension = f.replace(/^.*\./, '');
+                                console.log(fileExtension);
+                                if(fileExtension=='mp4') {
+                                    var html="<div class='addpost-preview'>\
+                                        <iconify-icon icon='akar-icons:cross' data-file='" + f + "' class='delete-preview-db-icon'></iconify-icon>\
+                                        <video controls><source src='storage/post/" + f + "' data-file='" + f+ "' class='selFile' title='Click to remove'>" + f + "<br clear=\"left\"/>\
+                                        <video>\
+                                    </div>"
+                                    $(".editpost-photo-video-imgpreview-container").append(html);
+
+                                }else{
+                                    var html = "<div class='addpost-preview'><iconify-icon icon='akar-icons:cross' data-file='" + f + "' class='delete-preview-db-icon'></iconify-icon><img src='storage/post/"+f+"' data-file='" + f + "' class='selFile' title='Click to remove'></div>";
+                                    $(".editpost-photo-video-imgpreview-container").append(html);
+                                }
+
+                            });
+
+                            $("body").on("click", ".delete-preview-db-icon", removeFiledb);
+
+                            function removeFiledb(){
+                                var file = $(this).data('file')
+                                storedFilesdb = storedFilesdb.filter((item) => {
+                                    return file !== item
+                                })
+
+                                $(this).parent().remove();
+                            }
+
+                            $('#edit_form').submit(function(e){
+                                e.preventDefault();
+                                $('#editPostModal'). modal('hide');
+
+                            var fileUpload=$('#editPostInput');
+                            console.log(storedFilesdb.length );
+                            console.log(parseInt(fileUpload.get(0).files.length) );
+                            console.log(storedFilesdb);
+                            console.log(fileUpload.get(0).files);
+
+                            if(!$('#editPostCaption').val() && (parseInt(fileUpload.get(0).files.length) + storedFilesdb.length) === 0){
+                                alert("Cannot post!!")
+                            }else{
+                                if((parseInt(fileUpload.get(0).files.length))+storedFilesdb.length > 5){
+                                    Swal.fire({
+                                                text: "You can only upload a maximum of 5 files",
+                                                timer: 5000,
+                                                icon: 'warning',
+                                            });
+                                }else{
+                                    e.preventDefault();
+
+                                    var url="{{route('post.update')}}";
+                                    let formData = new FormData(edit_form);
+                                    var oldimg=storedFilesdb;
+                                    var edit_post_id=$('#edit_post_id').val();
+                                    var caption=$('#editPostCaption').val();
+
+                                    const totalImages = $("#editPostInput")[0].files.length;
+                                    let images = $("#editPostInput")[0];
+
+                                    // for (let i = 0; i < totalImages; i++) {
+                                        formData.append('images', images);
+                                    // }
+                                    formData.append('totalImages', totalImages);
+                                    formData.append('caption', caption);
+                                    formData.append('oldimg', storedFilesdb);
+                                    formData.append('edit_post_id', edit_post_id);
+
+                                    for (const value of formData.values()) {
+                                        console.log(value);
+                                    }
+
+                                    $.ajaxSetup({
+                                                headers: {
+                                                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                                                }
+                                            });
+
+                                    $.ajax({
+                                            type:'POST',
+                                            url:url,
+                                            data: formData,
+                                            processData: false,
+                                            cache: false,
+                                            contentType: false,
+                                            success:function(data){
+                                                if(data.ban){
+                                                    Swal.fire({
+                                                        text: data.ban,
+                                                        timer: 5000,
+                                                        timerProgressBar: true,
+                                                        icon: 'error',
+                                                    })
+                                                }else{
+                                                    Swal.fire({
+                                                        text: data.success,
+                                                        timer: 5000,
+                                                        timerProgressBar: true,
+                                                        icon: 'success',
+                                                    }).then(() => {
+                                                        window.location.reload()
+                                                    })
+                                                }
+                                                }
+                                        });
+                                }
+
+                            }
+                        })
+
+                        }
+
+                    }
+                })
+
         })
 
     });
