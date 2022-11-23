@@ -308,14 +308,16 @@
 
             $(this).children('li:first').addClass("active-img")
         })
+
         $.each($(".img-slider-thumbnails ul"),function(){
             console.log($(this).children('li').length)
 
             $(this).children('li:first').addClass("active")
         })
+
         $(function(){
 
-        $('.img-slider-thumbnails li').click(function(){
+            $('.img-slider-thumbnails li').click(function(){
             var thisIndex = $(this).index()
             // console.log(thisIndex,$(this).siblings("li.active").index())
             if($(this).siblings(".active").index() === -1){
@@ -461,7 +463,7 @@
                                 console.log(fileExtension);
                                 if(fileExtension=='mp4') {
                                     var html="<div class='addpost-preview'>\
-                                        <iconify-icon icon='akar-icons:cross' data-file='" + f + "' class='delete-preview-edit-input-icon'></iconify-icon>\
+                                        <iconify-icon icon='akar-icons:cross' data-file='" + f + "' class='delete-preview-db-icon'></iconify-icon>\
                                         <video controls><source src='storage/post/" + f + "' data-file='" + f+ "' class='selFile' title='Click to remove'>" + f + "<br clear=\"left\"/>\
                                         <video>\
                                     </div>"
@@ -481,8 +483,6 @@
                                 storedFilesdb = storedFilesdb.filter((item) => {
                                     return file !== item
                                 })
-                                console.log(storedFilesdb)
-
 
                                 $(this).parent().remove();
                             }

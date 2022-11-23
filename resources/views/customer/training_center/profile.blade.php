@@ -5,7 +5,7 @@
 
 <div class="customer-profile-parent-container">
     <div class="customer-cover-photo-container">
-        <img class="customer-cover-photo" src="{{asset('storage/post/'.$user_profile->cover_photo)}}">
+        <img class="customer-cover-photo" src="{{asset('storage/post/'.$user_profile_cover->cover_photo)}}">
         {{-- <h1>{{auth()->user()->profiles->id}}</h1> --}}
         {{-- src="{{asset('storage/post/',auth()->user()->profiles->profile_image)}}" --}}
         <div class="customer-cover-change-btns-container">
@@ -27,8 +27,11 @@
                     @csrf
                     @method('POST')
                     <div class="customer-profile-img-container">
-                        <img class="customer-profile-img" src="{{asset('img/user.jpg')}}">
-
+                        @if($user_profile_image->profile_image==null)
+                            <img class="customer-profile-img" src="{{asset('img/user.jpg')}}">
+                        @else
+                        <img class="customer-profile-img" src="{{asset('storage/post/'.$user_profile_image->profile_image)}}">
+                        @endif
                         <label class="customer-profile-img-change-btn">
                             <input type="file" name="profile_image" class="customer-profile-img-change-input">
                             <iconify-icon icon="cil:pen" class="customer-profile-img-change-icon"></iconify-icon>
