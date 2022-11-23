@@ -5,7 +5,11 @@
 
 <div class="customer-profile-parent-container">
     <div class="customer-cover-photo-container">
+        @if($user_profile_cover==null)
+        <img class="customer-cover-photo" src="{{asset('image/trainer2.jpg')}}">
+        @else
         <img class="customer-cover-photo" src="{{asset('storage/post/'.$user_profile_cover->cover_photo)}}">
+        @endif
         {{-- <h1>{{auth()->user()->profiles->id}}</h1> --}}
         {{-- src="{{asset('storage/post/',auth()->user()->profiles->profile_image)}}" --}}
         <div class="customer-cover-change-btns-container">
@@ -27,7 +31,7 @@
                     @csrf
                     @method('POST')
                     <div class="customer-profile-img-container">
-                        @if($user_profile_image->profile_image==null)
+                        @if($user_profile_image==null)
                             <img class="customer-profile-img" src="{{asset('img/user.jpg')}}">
                         @else
                         <img class="customer-profile-img" src="{{asset('storage/post/'.$user_profile_image->profile_image)}}">
@@ -378,15 +382,16 @@
 
             <div class="customer-profile-posts-parent-container">
                 <p>Post & Activities</p>
-                @foreach ($posts as $post)
                 <div class="customer-post-container">
                     <div class="customer-post-header">
                         <div class="customer-post-name-container">
                             <img src="{{asset('image/trainer2.jpg')}}">
                             <div class="customer-post-name">
-                                <p>{{$post->user->name}}</p>
-                                <span>{{ \Carbon\Carbon::parse($post->created_at)->format('d M Y , g:i A')}}</span>
+                                <p>User Name</p>
+                                <span>19 Sep 2022, 11:02 AM</span>
                             </div>
+
+
                         </div>
 
                         <iconify-icon icon="bi:three-dots-vertical" class="customer-post-header-icon"></iconify-icon>
@@ -400,18 +405,6 @@
                                 <iconify-icon icon="material-symbols:report-outline" class="post-action-icon"></iconify-icon>
                                 <p>Report</p>
                             </div>
-                            <a id="edit_post" data-id="{{$post->id}}" data-bs-toggle="modal" >
-                                <div class="post-action">
-                                    <iconify-icon icon="bi:edit" class="post-action-icon"></iconify-icon>
-                                    <p>Edit</p>
-                                </div>
-                            </a>
-                            <a id="delete_post" data-id="{{$post->id}}">
-                                <div class="post-action">
-                                <iconify-icon icon="bi:delete" class="post-action-icon"></iconify-icon>
-                                <p>Delete</p>
-                                </div>
-                            </a>
                         </div>
                     </div>
 
@@ -447,8 +440,6 @@
                         </div>
                     </div>
                 </div>
-                @endforeach
-
             </div>
         </div>
 

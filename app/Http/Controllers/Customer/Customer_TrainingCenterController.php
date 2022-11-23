@@ -86,6 +86,17 @@ class Customer_TrainingCenterController extends Controller
                                 ->where('cover_photo','')
                                 ->orderBy('created_at','DESC')
                                 ->first();
+        if($user_profile_cover==null){
+            $user_profile_cover=null;
+        }else{
+            $user_profile_cover=$user_profile_cover;
+        }
+
+        if($user_profile_image==null){
+            $user_profile_image=null;
+        }else{
+            $user_profile_image=$user_profile_image;
+        }
 
         $current_date = Carbon::now('Asia/Yangon')->toDateString();
         $year=Carbon::now()->subYear(10)->format("Y");

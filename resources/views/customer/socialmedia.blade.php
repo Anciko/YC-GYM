@@ -18,6 +18,8 @@
                                 </a>
                                 <span>{{ \Carbon\Carbon::parse($post->created_at)->format('d M Y , g:i A')}}</span>
                             </div>
+
+
                         </div>
 
                         <iconify-icon icon="bi:three-dots-vertical" class="social-media-post-header-icon"></iconify-icon>
@@ -46,11 +48,13 @@
                                 <p>Delete</p>
                                 </div>
                             </a>
+                        @else
+                        <div class="post-action">
+                            <iconify-icon icon="material-symbols:report-outline" class="post-action-icon"></iconify-icon>
+                            <p>Report</p>
+                        </div>
                         @endif
-                            <div class="post-action">
-                                <iconify-icon icon="material-symbols:report-outline" class="post-action-icon"></iconify-icon>
-                                <p>Report</p>
-                            </div>
+
                         </div>
                     </div>
                     <div class="social-media-content-container">
