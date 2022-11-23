@@ -46,7 +46,7 @@
                         <button type="button" class="customer-secondary-btn customer-profile-change-cancel-btn">Cancel</button>
                     </div>
                 </form>
-                <form class="personal_detail customer-personal-details-form" method="POST" action="{{route('customer-profile-name.update')}}">
+                <form class="" method="POST" action="{{route('customer-profile-name.update')}}">
                     @csrf
                     @method('POST')
                 <div class="customer-profile-name-container">
@@ -55,11 +55,11 @@
 
                     <span>(User ID: {{auth()->user()->member_code}})</span>
                     <iconify-icon icon="cil:pen" class="change-name-icon" id="name_edit_pen"></iconify-icon>
-                </div>
 
-                <div class="customer-change-name-btns-container">
-                    <button type="submit" class="customer-primary-btn customer-name-calculate-btn">Save</button>
-                    <button type="button" class="customer-secondary-btn customer-name-calculate-btn" id="customer_name_cancel">Cancel</button>
+                    <div class="customer-change-name-btns-container">
+                        <button type="submit" class="customer-primary-btn customer-name-calculate-btn">Save</button>
+                        <button type="button" class="customer-secondary-btn customer-name-calculate-btn" id="customer_name_cancel">Cancel</button>
+                    </div>
                 </div>
                 </form>
             </div>
