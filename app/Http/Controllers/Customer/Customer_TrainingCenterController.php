@@ -86,6 +86,8 @@ class Customer_TrainingCenterController extends Controller
                                 ->where('cover_photo','')
                                 ->orderBy('created_at','DESC')
                                 ->first();
+
+      
         if($user_profile_cover==null){
             $user_profile_cover=null;
         }else{
