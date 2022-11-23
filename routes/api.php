@@ -122,10 +122,10 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::post('search_users', [SocialMediaController::class, 'search_users']); //search users
     Route::post('add_friend', [SocialMediaController::class, 'add_friend']); //add friends
     Route::post('unfriend', [SocialMediaController::class, 'unfriend']); //un friends
-    Route::post('cancelRequest', [SocialmediaController::class, 'cancelRequest'])->name('cancelRequest'); // cancel request
-    Route::post('declineRequest', [SocialmediaController::class, 'declineRequest'])->name('declineRequest'); //
-    Route::post('confirmRequest', [SocialmediaController::class, 'confirmRequest'])->name('confirmRequest');//
-    Route::post('socialmedia_profile', [SocialmediaController::class, 'socialmedia_profile'])->name('socialmedia_profile');//
+    Route::post('cancelRequest', [SocialmediaController::class, 'cancelRequest']); // cancel request
+    Route::post('declineRequest', [SocialmediaController::class, 'declineRequest']); //
+    Route::post('confirmRequest', [SocialmediaController::class, 'confirmRequest']);//
+    Route::post('socialmedia_profile', [SocialmediaController::class, 'socialmedia_profile']);//
 
     Route::get('notification', [SocialmediaController::class, 'notification']);
     Route::post('/viewFriendRequestNoti', [SocialmediaController::class, 'viewFriendRequestNoti'])->name('viewFriendRequestNoti');
@@ -136,6 +136,8 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::post('post_delete', [SocialmediaController::class, 'post_destroy']);
     Route::post('post_edit', [SocialmediaController::class, 'post_edit']);
     Route::post('post_update', [SocialmediaController::class, 'post_update']);
+
+
 });
 
 Route::get('test', [AuthController::class, 'test']);

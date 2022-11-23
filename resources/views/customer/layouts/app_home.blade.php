@@ -184,6 +184,7 @@
                                 </div>
 
                                 <div class="social-media-left-friends-rows-container">
+
                                     @forelse ($left_friends as $friend)
                                     <a href="{{route('socialmedia.profile',$friend->id)}}" class="social-media-left-friends-row">
                                         <img src="{{asset('img/customer/imgs/user_default.jpg')}}">

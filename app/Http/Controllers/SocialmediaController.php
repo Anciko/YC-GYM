@@ -45,13 +45,13 @@ class SocialmediaController extends Controller
                     ->with('user')
                     ->paginate(30);
         }
-        $left_friends=User::whereIn('id',$n)
-                        ->where('id','!=',$user->id)
-                        ->paginate(6);
+        // $left_friends=User::whereIn('id',$n)
+        //                 ->where('id','!=',$user->id)
+        //                 ->paginate(6);
 
                         //dd($left_friends);
         //$posts=Post::orderBy('created_at','DESC')->with('user')->paginate(10);
-        return view('customer.socialmedia',compact('posts','left_friends'));
+        return view('customer.socialmedia',compact('posts'));
     }
     public function socialmedia_profile($id )
     {
