@@ -18,8 +18,6 @@
                                 </a>
                                 <span>{{ \Carbon\Carbon::parse($post->created_at)->format('d M Y , g:i A')}}</span>
                             </div>
-
-
                         </div>
 
                         <iconify-icon icon="bi:three-dots-vertical" class="social-media-post-header-icon"></iconify-icon>
@@ -80,8 +78,6 @@
                             <iconify-icon icon="akar-icons:cross" class="slider-close-icon"></iconify-icon>
 
                             <div id="image-slider" class="image-slider">
-                                <!-- <iconify-icon icon="dashicons:arrow-left-alt2" class="image-slider-left-icon"></iconify-icon>
-                                <iconify-icon icon="dashicons:arrow-right-alt2" class="image-slider-right-icon"></iconify-icon> -->
                                 <ul class="ul-image-slider">
 
                                     <?php foreach (json_decode($post->media)as $m){?>

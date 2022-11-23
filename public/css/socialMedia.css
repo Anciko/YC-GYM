@@ -1532,6 +1532,47 @@ ul{
 
 }
 
+.social-media-photos-tabs-container{
+    display: flex;
+    align-items: center;
+}
+
+.social-media-photos-tab{
+    flex: 1;
+    text-align: center;
+    margin-bottom: 0;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--customer-text-color);
+    cursor: pointer;
+}
+
+.social-media-photos-tab-active{
+    font-weight: 600;
+    color: var(--customer-primary-color);
+    border-bottom: 3px solid var(--customer-primary-color);
+}
+
+.social-media-photos-container{
+    display: flex;
+    align-content: flex-start;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 20px;
+    height:800px;
+    overflow-y: scroll;
+}
+
+.social-media-photo{
+    width: 80px;
+    height: 80px;
+}
+
+.social-media-photo img{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
 
 @media screen and (max-width:1000px){
 

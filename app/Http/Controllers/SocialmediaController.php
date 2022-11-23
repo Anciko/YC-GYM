@@ -129,7 +129,11 @@ class SocialmediaController extends Controller
             'friends' => $friends,
             'posts' => $posts
        ]);
+    }
         // return view('customer.socialmedia_profile',compact('user','posts','friends','friend'));
+    public function socialmedia_profile_photos()
+    {
+        return view('customer.socialmedia_profile_photo');
     }
 
     public function post_update(Request $request)
