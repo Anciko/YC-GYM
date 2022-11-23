@@ -97,7 +97,7 @@
                     <p id="name">{{auth()->user()->name}}</p>
                     <input type="text" value="{{auth()->user()->name}}" class="name" name="name">
 
-                    <span>(User ID: {{auth()->user()->member_code}})</span>
+                    {{-- <span>(User ID: {{auth()->user()->member_code}})</span> --}}
                     <iconify-icon icon="cil:pen" class="change-name-icon" id="name_edit_pen"></iconify-icon>
 
                     <div class="customer-change-name-btns-container">
@@ -505,64 +505,31 @@
             </div>
 
             <div class="social-media-photos-container social-media-profiles-container">
-                <div class="social-media-photo">
-                    <img src="../imgs/pexels-andrea-piacquadio-3768916 (1).jpg">
-                </div>
-                <div class="social-media-photo">
-                    <img src="../imgs/pexels-andrea-piacquadio-3768916 (1).jpg">
-                </div>
-                <div class="social-media-photo">
-                    <img src="../imgs/pexels-andrea-piacquadio-3768916 (1).jpg">
-                </div>
-                <div class="social-media-photo">
-                    <img src="../imgs/pexels-andrea-piacquadio-3768916 (1).jpg">
-                </div>
-                <div class="social-media-photo">
-                    <img src="../imgs/pexels-andrea-piacquadio-3768916 (1).jpg">
-                </div>
-                <div class="social-media-photo">
-                    <img src="../imgs/pexels-andrea-piacquadio-3768916 (1).jpg">
-                </div>
-                <div class="social-media-photo">
-                    <img src="../imgs/pexels-andrea-piacquadio-3768916 (1).jpg">
-                </div>
-                <div class="social-media-photo">
-                    <img src="../imgs/pexels-andrea-piacquadio-3768916 (1).jpg">
-                </div>
-                <div class="social-media-photo">
-                    <img src="../imgs/pexels-andrea-piacquadio-3768916 (1).jpg">
-                </div>
-                <div class="social-media-photo">
-                    <img src="../imgs/pexels-andrea-piacquadio-3768916 (1).jpg">
-                </div>
+                @forelse (auth()->user()->profiles as $profile)
+                    @if ($profile->cover_photo)
+
+                    @else
+                        <div class="social-media-photo">
+                            <img src="{{asset('storage/post/'.$profile->profile_image)}}">
+                        </div>
+                    @endif
+                @empty
+                <p>No Profile Photo</p>
+                @endforelse
             </div>
 
             <div class="social-media-photos-container social-media-covers-container">
-                <div class="social-media-photo">
-                    <img src="../imgs/trainer1.jpg">
-                </div>
-                <div class="social-media-photo">
-                    <img src="../imgs/trainer1.jpg">
-                </div>
-                <div class="social-media-photo">
-                    <img src="../imgs/trainer1.jpg">
-                </div>
-                <div class="social-media-photo">
-                    <img src="../imgs/trainer1.jpg">
-                </div>
-                <div class="social-media-photo">
-                    <img src="../imgs/trainer1.jpg">
-                </div>
-                <div class="social-media-photo">
-                    <img src="../imgs/trainer1.jpg">
-                </div>
-                <div class="social-media-photo">
-                    <img src="../imgs/trainer1.jpg">
-                </div>
-                <div class="social-media-photo">
-                    <img src="../imgs/trainer1.jpg">
-                </div>
+                @forelse (auth()->user()->profiles as $profile)
+                    @if ($profile->profile_image)
+                    @else
+                        <div class="social-media-photo">
+                            <img src="{{asset('storage/post/'.$profile->cover_photo)}}">
+                        </div>
+                    @endif
 
+                @empty
+                <p>No Cover Photo</p>
+                @endforelse
             </div>
 
         </div>
