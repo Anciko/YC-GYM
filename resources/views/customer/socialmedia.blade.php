@@ -38,13 +38,13 @@
 
                             <a id="edit_post" data-id="{{$post->id}}" data-bs-toggle="modal" >
                                 <div class="post-action">
-                                    <iconify-icon icon="bi:edit" class="post-action-icon"></iconify-icon>
+                                    <iconify-icon icon="material-symbols:edit" class="post-action-icon"></iconify-icon>
                                     <p>Edit</p>
                                 </div>
                             </a>
                             <a id="delete_post" data-id="{{$post->id}}">
                                 <div class="post-action">
-                                <iconify-icon icon="bi:delete" class="post-action-icon"></iconify-icon>
+                                <iconify-icon icon="material-symbols:delete-forever-outline-rounded" class="post-action-icon"></iconify-icon>
                                 <p>Delete</p>
                                 </div>
                             </a>
@@ -142,7 +142,7 @@
                     </div>
                 </div>
                 @endforeach
-                
+
             </div>
         </div>
 

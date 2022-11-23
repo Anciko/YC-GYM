@@ -90,7 +90,7 @@
                         <button type="button" class="customer-secondary-btn customer-profile-change-cancel-btn">Cancel</button>
                     </div>
                 </form>
-                <form class="personal_detail customer-personal-details-form" method="POST" action="{{route('customer-profile-name.update')}}">
+                <form class="" method="POST" action="{{route('customer-profile-name.update')}}">
                     @csrf
                     @method('POST')
                 <div class="customer-profile-name-container">
@@ -99,11 +99,11 @@
 
                     {{-- <span>(User ID: {{auth()->user()->member_code}})</span> --}}
                     <iconify-icon icon="cil:pen" class="change-name-icon" id="name_edit_pen"></iconify-icon>
-                </div>
 
-                <div class="customer-change-name-btns-container">
-                    <button type="submit" class="customer-primary-btn customer-name-calculate-btn">Save</button>
-                    <button type="button" class="customer-secondary-btn customer-name-calculate-btn" id="customer_name_cancel">Cancel</button>
+                    <div class="customer-change-name-btns-container">
+                        <button type="submit" class="customer-primary-btn customer-name-calculate-btn">Save</button>
+                        <button type="button" class="customer-secondary-btn customer-name-calculate-btn" id="customer_name_cancel">Cancel</button>
+                    </div>
                 </div>
                 </form>
             </div>
@@ -445,13 +445,13 @@
                                 </div>
                                 <a id="edit_post" data-id="{{$post->id}}" data-bs-toggle="modal" >
                                     <div class="post-action">
-                                        <iconify-icon icon="bi:edit" class="post-action-icon"></iconify-icon>
+                                        <iconify-icon icon="material-symbols:edit" class="post-action-icon"></iconify-icon>
                                         <p>Edit</p>
                                     </div>
                                 </a>
                                 <a id="delete_post" data-id="{{$post->id}}">
                                     <div class="post-action">
-                                    <iconify-icon icon="bi:delete" class="post-action-icon"></iconify-icon>
+                                    <iconify-icon icon="material-symbols:delete-forever-outline-rounded" class="post-action-icon"></iconify-icon>
                                     <p>Delete</p>
                                     </div>
                                 </a>

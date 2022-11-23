@@ -155,11 +155,12 @@
                     <a class="back-btn" href="{{route("socialmedia")}}">
                         <iconify-icon icon="bi:arrow-left" class="back-btn-icon"></iconify-icon>
                     </a>
+                    <button class="social-media-addpost-btn customer-primary-btn" data-bs-toggle="modal" data-bs-target="#addPostModal">
+                        <iconify-icon icon="akar-icons:circle-plus" class="addpost-icon"></iconify-icon>
+                        <p>Add Post</p>
+                    </button>
                 </div>
-                <button class="social-media-addpost-btn customer-primary-btn margin-top" data-bs-toggle="modal" data-bs-target="#addPostModal">
-                    <iconify-icon icon="akar-icons:circle-plus" class="addpost-icon"></iconify-icon>
-                    <p>Add Post</p>
-                </button>
+
                 <div class="social-media-left-container-trigger">
                     Friends
                     <iconify-icon icon="bi:arrow-right" class="arrow-icon"></iconify-icon>
