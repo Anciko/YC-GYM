@@ -406,10 +406,10 @@
             <div class="customer-profile-friends-parent-container">
                 <div class="customer-profile-friends-header">
                     <p>1200 Friends</p>
-                    <a href="#">
+                    <span class="customer-profile-see-all-fris-btn">
                         See All
                         <iconify-icon icon="bi:arrow-right" class="arrow-icon"></iconify-icon>
-                    </a>
+                    </span>
                 </div>
 
                 <div class="customer-profile-friends-container">
@@ -565,6 +565,108 @@
 
             </div>
 
+        </div>
+
+        <div class="customer-profile-social-media-fris-container">
+            <p class="customer-profile-social-media-photoes-back">
+                <iconify-icon icon="material-symbols:arrow-back"></iconify-icon>
+                Go Back</p>
+            <div class="social-media-fris-search">
+                <input type="text" placeholder="Search your friends">
+                <iconify-icon icon="akar-icons:search" class="search-icon"></iconify-icon>
+           </div>
+
+           <div class="social-media-fris-list-container">
+            <div class="social-media-fris-fri-row">
+                <div class="social-media-fris-fri-img">
+                    <img src="../imgs/trainer2.jpg">
+                    <p>Friend Name</p>
+                </div>
+
+                <div class="social-media-fris-fri-btns-container">
+                    <a href="#" class="customer-primary-btn">Message</a>
+                    <button class="customer-red-btn">Remove</button>
+                </div>
+            </div>
+            <div class="social-media-fris-fri-row">
+                <div class="social-media-fris-fri-img">
+                    <img src="../imgs/trainer2.jpg">
+                    <p>Friend Name</p>
+                </div>
+
+                <div class="social-media-fris-fri-btns-container">
+                    <a href="#" class="customer-primary-btn">Message</a>
+                    <button class="customer-red-btn">Remove</button>
+                </div>
+            </div>
+            <div class="social-media-fris-fri-row">
+                <div class="social-media-fris-fri-img">
+                    <img src="../imgs/trainer2.jpg">
+                    <p>Friend Name</p>
+                </div>
+
+                <div class="social-media-fris-fri-btns-container">
+                    <a href="#" class="customer-primary-btn">Message</a>
+                    <button class="customer-red-btn">Remove</button>
+                </div>
+            </div>
+            <div class="social-media-fris-fri-row">
+                <div class="social-media-fris-fri-img">
+                    <img src="../imgs/trainer2.jpg">
+                    <p>Friend Name</p>
+                </div>
+
+                <div class="social-media-fris-fri-btns-container">
+                    <a href="#" class="customer-primary-btn">Message</a>
+                    <button class="customer-red-btn">Remove</button>
+                </div>
+            </div>
+            <div class="social-media-fris-fri-row">
+                <div class="social-media-fris-fri-img">
+                    <img src="../imgs/trainer2.jpg">
+                    <p>Friend Name</p>
+                </div>
+
+                <div class="social-media-fris-fri-btns-container">
+                    <a href="#" class="customer-primary-btn">Message</a>
+                    <button class="customer-red-btn">Remove</button>
+                </div>
+            </div>
+            <div class="social-media-fris-fri-row">
+                <div class="social-media-fris-fri-img">
+                    <img src="../imgs/trainer2.jpg">
+                    <p>Friend Name</p>
+                </div>
+
+                <div class="social-media-fris-fri-btns-container">
+                    <a href="#" class="customer-primary-btn">Message</a>
+                    <button class="customer-red-btn">Remove</button>
+                </div>
+            </div>
+            <div class="social-media-fris-fri-row">
+                <div class="social-media-fris-fri-img">
+                    <img src="../imgs/trainer2.jpg">
+                    <p>Friend Name</p>
+                </div>
+
+                <div class="social-media-fris-fri-btns-container">
+                    <a href="#" class="customer-primary-btn">Message</a>
+                    <button class="customer-red-btn">Remove</button>
+                </div>
+            </div>
+            <div class="social-media-fris-fri-row">
+                <div class="social-media-fris-fri-img">
+                    <img src="../imgs/trainer2.jpg">
+                    <p>Friend Name Friend Name Friend Name</p>
+                </div>
+
+                <div class="social-media-fris-fri-btns-container">
+                    <a href="#" class="customer-primary-btn">Message</a>
+                    <button class="customer-red-btn">Remove</button>
+                </div>
+            </div>
+
+           </div>
         </div>
 
     </div>
@@ -1487,13 +1589,21 @@
 <script>
     $( document ).ready(function() {
         $(".customer-profile-social-media-photoes-container").hide()
+        $(".customer-profile-social-media-fris-container").hide()
         $(".social-media-profile-photos-link").click(function(){
             $(".customer-profile-social-media-photoes-container").show()
             $(".customer-profile-social-media-default-container").hide()
+            $(".customer-profile-social-media-fris-container").hide()
+        })
+        $(".customer-profile-see-all-fris-btn").click(function(){
+            $(".customer-profile-social-media-photoes-container").hide()
+            $(".customer-profile-social-media-default-container").hide()
+            $(".customer-profile-social-media-fris-container").show()
         })
 
         $(".customer-profile-social-media-photoes-back").click(function(){
             $(".customer-profile-social-media-photoes-container").hide()
+            $(".customer-profile-social-media-fris-container").hide()
             $(".customer-profile-social-media-default-container").show()
         })
 
