@@ -45,13 +45,13 @@ class SocialmediaController extends Controller
                     ->with('user')
                     ->paginate(30);
         }
-        $left_friends=User::whereIn('id',$n)
-                        ->where('id','!=',$user->id)
-                        ->paginate(6);
+        // $left_friends=User::whereIn('id',$n)
+        //                 ->where('id','!=',$user->id)
+        //                 ->paginate(6);
 
                         //dd($left_friends);
         //$posts=Post::orderBy('created_at','DESC')->with('user')->paginate(10);
-        return view('customer.socialmedia',compact('posts','left_friends'));
+        return view('customer.socialmedia',compact('posts'));
     }
     public function socialmedia_profile($id )
     {
@@ -78,7 +78,7 @@ class SocialmediaController extends Controller
                     $f=(array)$friend;
                     array_push($n, $f['sender_id'],$f['receiver_id']);
             }
-            $friends=User::whereIn('id',$n)
+        $friends=User::whereIn('id',$n)
                         ->where('id','!=',$user->id)
                         ->paginate(6);
         $friend = DB::select("SELECT * FROM `friendships` WHERE (receiver_id = $auth or sender_id = $auth )
@@ -188,12 +188,36 @@ class SocialmediaController extends Controller
 
     public function viewFriendRequestNoti(Request $request){
         $auth = Auth()->user()->id;
+        $id = $request->id;
+        $posts=Post::where('user_id',$id)
+                    ->orderBy('created_at','DESC')
+                    ->with('user')
+                    ->paginate(30);
         DB::table('notifications')->where('id',$request->noti_id)->update(['notification_status' => 2]);
         $user = User::where('id',$request->id)->first();
+        $friendships=DB::table('friendships')
+        ->where('friend_status',2)
+        ->where(function($query) use ($id){
+            $query->where('sender_id',$id)
+                ->orWhere('receiver_id',$id);
+        })
+        ->join('users as sender','sender.id','friendships.sender_id')
+        ->join('users as receiver','receiver.id','friendships.receiver_id')
+        ->get(['sender_id','receiver_id'])->toArray();
+        //dd($friends);
+        $n= array();
+        foreach($friendships as $friend){
+                $f=(array)$friend;
+                array_push($n, $f['sender_id'],$f['receiver_id']);
+        }
+        $friends=User::whereIn('id',$n)
+                    ->where('id','!=',$user->id)
+                    ->paginate(6);
+
         $friend_status = Friendship::where('sender_id',auth()->user()->id)->orWhere('receiver_id',auth()->user()->id)->first();
         $friend = DB::select("SELECT * FROM `friendships` WHERE (receiver_id = $auth or sender_id = $auth )
         AND (receiver_id = $request->id or sender_id = $request->id)");
-        return view('customer.socialmedia_profile',compact('user','friend_status','friend'));
+        return view('customer.socialmedia_profile',compact('user','friend_status','friend','friends','posts'));
     }
 
     public function showUser(Request $request){

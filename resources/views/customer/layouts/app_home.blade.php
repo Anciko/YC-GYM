@@ -151,6 +151,11 @@
             </div>
 
             <div class="customer-main-content-container">
+                <div class="social-media-header-btns-container margin-top">
+                    <a class="back-btn" href="{{route("socialmedia")}}">
+                        <iconify-icon icon="bi:arrow-left" class="back-btn-icon"></iconify-icon>
+                    </a>
+                </div>
                 <button class="social-media-addpost-btn customer-primary-btn margin-top" data-bs-toggle="modal" data-bs-target="#addPostModal">
                     <iconify-icon icon="akar-icons:circle-plus" class="addpost-icon"></iconify-icon>
                     <p>Add Post</p>
@@ -181,6 +186,7 @@
                                 </div>
 
                                 <div class="social-media-left-friends-rows-container">
+
                                     @forelse ($left_friends as $friend)
                                     <a href="{{route('socialmedia.profile',$friend->id)}}" class="social-media-left-friends-row">
                                         <img src="{{asset('img/customer/imgs/user_default.jpg')}}">
@@ -190,7 +196,9 @@
                                     <p class="text-secondary p-1">No Friend</p>
                                     @endforelse
                                 </div>
+
                             </div>
+
 
                             <div class="social-media-left-messages-container">
                                 <div class="social-media-left-container-header">
@@ -311,14 +319,16 @@
 
             $(this).children('li:first').addClass("active-img")
         })
+
         $.each($(".img-slider-thumbnails ul"),function(){
             console.log($(this).children('li').length)
 
             $(this).children('li:first').addClass("active")
         })
+
         $(function(){
 
-        $('.img-slider-thumbnails li').click(function(){
+            $('.img-slider-thumbnails li').click(function(){
             var thisIndex = $(this).index()
             // console.log(thisIndex,$(this).siblings("li.active").index())
             if($(this).siblings(".active").index() === -1){
@@ -464,7 +474,7 @@
                                 console.log(fileExtension);
                                 if(fileExtension=='mp4') {
                                     var html="<div class='addpost-preview'>\
-                                        <iconify-icon icon='akar-icons:cross' data-file='" + f + "' class='delete-preview-edit-input-icon'></iconify-icon>\
+                                        <iconify-icon icon='akar-icons:cross' data-file='" + f + "' class='delete-preview-db-icon'></iconify-icon>\
                                         <video controls><source src='storage/post/" + f + "' data-file='" + f+ "' class='selFile' title='Click to remove'>" + f + "<br clear=\"left\"/>\
                                         <video>\
                                     </div>"
@@ -484,8 +494,6 @@
                                 storedFilesdb = storedFilesdb.filter((item) => {
                                     return file !== item
                                 })
-                                console.log(storedFilesdb)
-
 
                                 $(this).parent().remove();
                             }
@@ -1114,8 +1122,19 @@
         document.getElementById('addPostInput').files = dt.files;
         $(".addpost-photo-video-imgpreview-container").empty();
     }
-</script>
 
+</script>
+<script>
+    $(document).ready(function(){
+        console.log("heeeee");
+        $('.nav-icon').click(function(){
+                $('.notis-box-container').toggle()
+            })
+    })
+</script>
+@push('scripts')
+
+@endpush
 
   </body>
 </html>

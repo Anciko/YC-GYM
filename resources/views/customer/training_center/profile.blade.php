@@ -5,7 +5,7 @@
 
 <div class="customer-profile-parent-container">
     <div class="customer-cover-photo-container">
-        <img class="customer-cover-photo" src="{{asset('storage/post/',auth()->user()->profiles->profile_image)}}">
+        <img class="customer-cover-photo" src="{{asset('storage/post/'.$user_profile_cover->cover_photo)}}">
         {{-- <h1>{{auth()->user()->profiles->id}}</h1> --}}
         {{-- src="{{asset('storage/post/',auth()->user()->profiles->profile_image)}}" --}}
         <div class="customer-cover-change-btns-container">
@@ -21,22 +21,30 @@
                 <iconify-icon icon="cil:pen" class="customer-cover-img-change-icon"></iconify-icon>
             </label>
             </form>
-        <form class="personal_detail customer-personal-details-form" method="POST" action="{{route('customer-profile-name.update')}}">
-            @csrf
-            @method('POST')
+        <div class="personal_detail customer-personal-details-form">
             <div class="customer-profile-img-name-container">
-                <div class="customer-profile-img-container">
-                    <img class="customer-profile-img" src="{{asset('img/user.jpg')}}">
-
-                    <label class="customer-profile-img-change-btn">
-                        <input type="file" class="customer-profile-img-change-input">
-                        <iconify-icon icon="cil:pen" class="customer-profile-img-change-icon"></iconify-icon>
-                    </label>
-                </div>
-                <div class="customer-profile-change-btns-container">
-                    <button type="button" class="customer-primary-btn">Confirm</button>
-                    <button type="button" class="customer-secondary-btn customer-profile-change-cancel-btn">Cancel</button>
-                </div>
+                <form method="POST" action="{{route('customer-profile-img.update')}}" enctype="multipart/form-data">
+                    @csrf
+                    @method('POST')
+                    <div class="customer-profile-img-container">
+                        @if($user_profile_image->profile_image==null)
+                            <img class="customer-profile-img" src="{{asset('img/user.jpg')}}">
+                        @else
+                        <img class="customer-profile-img" src="{{asset('storage/post/'.$user_profile_image->profile_image)}}">
+                        @endif
+                        <label class="customer-profile-img-change-btn">
+                            <input type="file" name="profile_image" class="customer-profile-img-change-input">
+                            <iconify-icon icon="cil:pen" class="customer-profile-img-change-icon"></iconify-icon>
+                        </label>
+                    </div>
+                    <div class="customer-profile-change-btns-container">
+                        <button type="submit" class="customer-primary-btn">Confirm</button>
+                        <button type="button" class="customer-secondary-btn customer-profile-change-cancel-btn">Cancel</button>
+                    </div>
+                </form>
+                <form class="personal_detail customer-personal-details-form" method="POST" action="{{route('customer-profile-name.update')}}">
+                    @csrf
+                    @method('POST')
                 <div class="customer-profile-name-container">
                     <p id="name">{{auth()->user()->name}}</p>
                     <input type="text" value="{{auth()->user()->name}}" class="name" name="name">
@@ -49,8 +57,9 @@
                     <button type="submit" class="customer-primary-btn customer-name-calculate-btn">Save</button>
                     <button type="button" class="customer-secondary-btn customer-name-calculate-btn" id="customer_name_cancel">Cancel</button>
                 </div>
+                </form>
             </div>
-        </form>
+        </div>
     </div>
 
     <form class="customer-bio-form">
