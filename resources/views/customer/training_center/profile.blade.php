@@ -5,7 +5,11 @@
 
 <div class="customer-profile-parent-container">
     <div class="customer-cover-photo-container">
+        @if($user_profile_cover==null)
+        <img class="customer-cover-photo" src="{{asset('image/trainer2.jpg')}}">
+        @else
         <img class="customer-cover-photo" src="{{asset('storage/post/'.$user_profile_cover->cover_photo)}}">
+        @endif
         {{-- <h1>{{auth()->user()->profiles->id}}</h1> --}}
         {{-- src="{{asset('storage/post/',auth()->user()->profiles->profile_image)}}" --}}
         <div class="customer-cover-change-btns-container">
@@ -27,7 +31,7 @@
                     @csrf
                     @method('POST')
                     <div class="customer-profile-img-container">
-                        @if($user_profile_image->profile_image==null)
+                        @if($user_profile_image==null)
                             <img class="customer-profile-img" src="{{asset('img/user.jpg')}}">
                         @else
                         <img class="customer-profile-img" src="{{asset('storage/post/'.$user_profile_image->profile_image)}}">
@@ -365,30 +369,12 @@
                 </div>
 
                 <div class="customer-profile-friends-container">
+                    @foreach ($user_friends as $friend)
                     <div class="customer-profile-friend">
                         <img src="{{asset('image/trainer2.jpg')}}">
-                        <p>User Name</p>
+                        <p>{{$friend->name}}</p>
                     </div>
-                    <div class="customer-profile-friend">
-                        <img src="{{asset('image/trainer2.jpg')}}">
-                        <p>User Name</p>
-                    </div>
-                    <div class="customer-profile-friend">
-                        <img src="{{asset('image/trainer2.jpg')}}">
-                        <p>User Name</p>
-                    </div>
-                    <div class="customer-profile-friend">
-                        <img src="{{asset('image/trainer2.jpg')}}">
-                        <p>User Name</p>
-                    </div>
-                    <div class="customer-profile-friend">
-                        <img src="{{asset('image/trainer2.jpg')}}">
-                        <p>User Name</p>
-                    </div>
-                    <div class="customer-profile-friend">
-                        <img src="{{asset('image/trainer2.jpg')}}">
-                        <p>User Name</p>
-                    </div>
+                    @endforeach
                 </div>
 
                 <p href="#" class="social-media-profile-photos-link">Photos</p>
@@ -396,47 +382,6 @@
 
             <div class="customer-profile-posts-parent-container">
                 <p>Post & Activities</p>
-                <div class="customer-post-container">
-                    <div class="customer-post-header">
-                        <div class="customer-post-name-container">
-                            <img src="{{asset('image/trainer2.jpg')}}">
-                            <div class="customer-post-name">
-                                <p>User Name</p>
-                                <span>19 Sep 2022, 11:02 AM</span>
-                            </div>
-                        </div>
-
-                        <iconify-icon icon="bi:three-dots-vertical" class="customer-post-header-icon"></iconify-icon>
-
-                        <div class="post-actions-container" >
-                            <div class="post-action">
-                                <iconify-icon icon="bi:save" class="post-action-icon"></iconify-icon>
-                                <p>Save</p>
-                            </div>
-
-                            <div class="post-action">
-                                <iconify-icon icon="material-symbols:report-outline" class="post-action-icon"></iconify-icon>
-                                <p>Report</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="customer-content-container">
-                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Dui hendrerit potenti pellentesque tellus urna bibendum mollis.</p>
-
-                    </div>
-
-                    <div class="customer-post-footer-container">
-                        <div class="customer-post-like-container">
-                            <iconify-icon icon="akar-icons:heart" class="like-icon"></iconify-icon>
-                            <p><span>1.1k</span> Likes</p>
-                        </div>
-                        <div class="customer-post-comment-container">
-                            <iconify-icon icon="bi:chat-right" class="comment-icon"></iconify-icon>
-                            <p><span>50</span> Comments</p>
-                        </div>
-                    </div>
-                </div>
                 <div class="customer-post-container">
                     <div class="customer-post-header">
                         <div class="customer-post-name-container">

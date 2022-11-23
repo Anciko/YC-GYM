@@ -48,11 +48,13 @@
                                 <p>Delete</p>
                                 </div>
                             </a>
+                        @else
+                        <div class="post-action">
+                            <iconify-icon icon="material-symbols:report-outline" class="post-action-icon"></iconify-icon>
+                            <p>Report</p>
+                        </div>
                         @endif
-                            <div class="post-action">
-                                <iconify-icon icon="material-symbols:report-outline" class="post-action-icon"></iconify-icon>
-                                <p>Report</p>
-                            </div>
+
                         </div>
                     </div>
                     <div class="social-media-content-container">
