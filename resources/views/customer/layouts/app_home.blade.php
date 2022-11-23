@@ -1114,9 +1114,6 @@
     }
 
 
-
-
-
     function clearAddPost(){
         storedFiles = []
         dt.clearData()
