@@ -94,7 +94,35 @@ class SocialmediaController extends Controller
         if($used_id==$id){
             return redirect()->route('customer-profile');
         }else{
-            return 'other profile';
+            $auth = Auth()->user()->id;
+            $user = User::where('id',$id)->first();
+            $posts=Post::where('user_id',$id)
+                        ->orderBy('created_at','DESC')
+                        ->with('user')
+                        ->paginate(30);
+
+            $friendships=DB::table('friendships')
+                        ->where('friend_status',2)
+                        ->where(function($query) use ($id){
+                            $query->where('sender_id',$id)
+                                ->orWhere('receiver_id',$id);
+                        })
+                        ->join('users as sender','sender.id','friendships.sender_id')
+                        ->join('users as receiver','receiver.id','friendships.receiver_id')
+                        ->get(['sender_id','receiver_id'])->toArray();
+                        //dd($friends);
+            $n= array();
+            foreach($friendships as $friend){
+                        $f=(array)$friend;
+                        array_push($n, $f['sender_id'],$f['receiver_id']);
+                }
+            $friends=User::select('users.name','users.id')
+                            ->whereIn('id',$n)
+                            ->where('id','!=',$user->id)
+                            ->paginate(6);
+            $friend = DB::select("SELECT * FROM `friendships` WHERE (receiver_id = $auth or sender_id = $auth )
+                            AND (receiver_id = $id or sender_id = $id)");
+            return view('customer.socialmedia_profile',compact('user','posts','friends','friend'));
         }
     }
 

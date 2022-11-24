@@ -408,7 +408,11 @@
         <div class="customer-profile-social-media-default-container">
             <div class="customer-profile-friends-parent-container">
                 <div class="customer-profile-friends-header">
-                    <p>1200 Friends</p>
+                    @if (count($user_friends)>1)
+                    <p>{{count($user_friends)}} Friends</p>
+                    @else
+                    <p>{{count($user_friends)}} Friend</p>
+                    @endif
                     <span class="customer-profile-see-all-fris-btn">
                         See All
                         <iconify-icon icon="bi:arrow-right" class="arrow-icon"></iconify-icon>
@@ -418,7 +422,7 @@
                 <div class="customer-profile-friends-container">
                     @foreach ($user_friends as $friend)
                     <div class="customer-profile-friend">
-                        <?php $image=$friend->profiles()->where('cover_photo','')->orderBy('created_at','desc')->first() ?>
+                        <?php $image=$friend->profiles()->where('cover_photo',null)->orderBy('created_at','desc')->first() ?>
                         @if($image==null)
                         <a href="{{route('socialmedia.profile',$friend->id)}}" style="text-decoration:none">
                         <img src="{{asset('img/customer/imgs/user_default.jpg')}}">
