@@ -49,6 +49,7 @@
 
 <div class="customer-profile-parent-container">
     <div class="customer-cover-photo-container">
+
         @if($user_profile_cover==null)
         <img class="customer-cover-photo" src="{{asset('image/trainer2.jpg')}}">
         @else
@@ -110,14 +111,16 @@
         </div>
     </div>
 
-    <form class="customer-bio-form">
+    <form class="customer-bio-form" method="POST" action="{{route('customer-profile-bio.update')}}">
+        @csrf
+        @method('POST')
         <div class="customer-bio-text">
-            <p>Here’s a bio to describe you. Here’s a bio to describe you. Here’s a bio to describe you. Here’s a bio to describe you</p>
-            <input type="text" >
+            <p>{{auth()->user()->bio}}</p>
+            <input type="text" name="bio">
             <iconify-icon icon="cil:pen" class="customer-bio-change-icon"></iconify-icon>
         </div>
         <div class="customer-bio-btns-container">
-            <button type="button" class="customer-primary-btn">Confirm</button>
+            <button type="submit" class="customer-primary-btn">Confirm</button>
             <button type="button" class="customer-secondary-btn customer-bio-change-cancel-btn">Cancel</button>
         </div>
     </form>

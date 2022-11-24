@@ -84,6 +84,7 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
 
         Route::post('customer/profile/update', [Customer_TrainingCenterController::class, 'profile_update'])->name('customer-profile.update');
         Route::post('customer/profile/name/update', [Customer_TrainingCenterController::class, 'profile_update_name'])->name('customer-profile-name.update');
+        Route::post('customer/profile/bio/update', [Customer_TrainingCenterController::class, 'profile_update_bio'])->name('customer-profile-bio.update');
         Route::post('customer/profile/cover/update', [Customer_TrainingCenterController::class, 'profile_update_cover'])->name('customer-profile-cover.update');
 
         Route::post('customer/profile/image/update', [Customer_TrainingCenterController::class, 'profile_update_profile_img'])->name('customer-profile-img.update');
