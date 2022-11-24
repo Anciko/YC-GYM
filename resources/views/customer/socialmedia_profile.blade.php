@@ -101,9 +101,12 @@
                             @endforelse
                         </div>
                     </div>
-
-                    <a href="{{route('socialmedia_profile_photos')}}" class="social-media-profile-photos-link">Photos</a>
-
+                    <form action="{{route('socialmedia_profile_photos')}}" method="POST">
+                        @csrf
+                        <input type="hidden" value={{$user->id}} name="user_id">
+                        <button type="submit" class="social-media-profile-photos-link">Photos</button>
+                        {{-- <a href="{{route('socialmedia_profile_photos')}}" class="social-media-profile-photos-link">Photos</a> --}}
+                    </form>
                     <div class="social-media-profile-posts-parent-container">
                         <p>Post & Activities</p>
 

@@ -67,7 +67,7 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
     Route::middleware('auth')->group(function () {
 
         //Social Media
-    Route::get('/socialmedia_profile/{id}', [SocialmediaController::class, 'socialmedia_profile'])->name('socialmedia.profile');
+        // Route::get('/socialmedia_profile/{id}', [SocialmediaController::class, 'socialmedia_profile'])->name('socialmedia.profile');
         Route::get('/socialmedia', [SocialmediaController::class, 'index'])->name('socialmedia');
         Route::post('/socialmedia', [SocialmediaController::class, 'post_store'])->name('post.store');
 
@@ -79,7 +79,9 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
         // Route::post('/testing/store', [SocialmediaController::class, 'post_store'])->name('testing.store');
 
         Route::get('customer/personal_infos', [CustomerRegisterController::class, 'personal_info'])->name('customer-personal_infos');
+
         Route::get('/profile', [Customer_TrainingCenterController::class, 'profile'])->name('customer-profile');
+
         Route::post('customer/profile/update', [Customer_TrainingCenterController::class, 'profile_update'])->name('customer-profile.update');
         Route::post('customer/profile/name/update', [Customer_TrainingCenterController::class, 'profile_update_name'])->name('customer-profile-name.update');
         Route::post('customer/profile/cover/update', [Customer_TrainingCenterController::class, 'profile_update_cover'])->name('customer-profile-cover.update');
@@ -90,10 +92,12 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
         Route::get('/home', [App\Http\Controllers\HomeController::class, 'home'])->name('social_media');
 
         //Social Media
-        Route::post('/social_media_profile', [SocialmediaController::class, 'social_media_profile'])->name('social_media_profile');
 
+        Route::get('/socialmedia/profile/{id}', [SocialmediaController::class, 'profile'])->name('socialmedia.profile');
 
-        Route::get('/socialmedia/profile/photos/', [SocialmediaController::class, 'socialmedia_profile_photos'])->name('socialmedia_profile_photos');
+        Route::post('/socialmedia_profile', [SocialmediaController::class, 'social_media_profile'])->name('social_media_profile');
+
+        Route::post('/socialmedia/profile/photos/', [SocialmediaController::class, 'socialmedia_profile_photos'])->name('socialmedia_profile_photos');
 
         Route::post('search_users', [SocialmediaController::class, 'showUser'])->name('search_users');
 

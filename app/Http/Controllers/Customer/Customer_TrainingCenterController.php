@@ -48,6 +48,8 @@ class Customer_TrainingCenterController extends Controller
     {
         $user_id = auth()->user()->id;
 
+        $user=User::findOrFail($user_id);
+
         $friends=DB::table('friendships')
                     ->where('friend_status',2)
                     ->where(function($query) use ($user_id){
@@ -87,7 +89,7 @@ class Customer_TrainingCenterController extends Controller
                                 ->orderBy('created_at','DESC')
                                 ->first();
 
-      
+
         if($user_profile_cover==null){
             $user_profile_cover=null;
         }else{
@@ -156,7 +158,7 @@ class Customer_TrainingCenterController extends Controller
             }
         }
 
-        return view('customer.training_center.profile', compact('posts','user_friends','user_profile_cover','user_profile_image','year','workouts', 'workout_date', 'cal_sum', 'time_min', 'time_sec', 'weight_history', 'newDate'));
+        return view('customer.training_center.profile', compact('user','posts','user_friends','user_profile_cover','user_profile_image','year','workouts', 'workout_date', 'cal_sum', 'time_min', 'time_sec', 'weight_history', 'newDate'));
     }
     public function member_plan()
     {
