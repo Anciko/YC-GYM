@@ -351,6 +351,10 @@ class SocialmediaController extends Controller
     }
 
     public function friendsList(){
+        $auth = Auth()->user()->id;
+
+        $last_row = Profile::where('user_id',3)->orderBy('id', 'DESC')->first();
+        dd($last_row);
         return view('customer.friendlist');
     }
 

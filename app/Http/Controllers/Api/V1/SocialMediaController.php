@@ -206,6 +206,7 @@ class SocialMediaController extends Controller
         //    ->whereIn('users.id',$n)
         //    ->where('users.id','!=',$user->id)
         //    ->get();
+        $last_row = DB::table('profiles')->where('user_id',$auth)->latest('id')->first();
         $friends = DB::select("SELECT u.name,u.id,f.date FROM friendships f LEFT JOIN users u on (u.id = f.sender_id or u.id = f.receiver_id)
         WHERE (receiver_id = $id or sender_id = $id ) and u.id != $id and f.friend_status = 2");
         $friend_status = DB::select("SELECT * FROM `friendships` WHERE (receiver_id = $auth or sender_id = $auth )
