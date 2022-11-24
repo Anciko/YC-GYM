@@ -79,13 +79,13 @@ class Customer_TrainingCenterController extends Controller
 
         $user_profile_cover=Profile::select('cover_photo')
                                 ->where('user_id',$user_id)
-                                ->where('profile_image','')
+                                ->where('profile_image',null)
                                 ->orderBy('created_at','DESC')
                                 ->first();
 
         $user_profile_image=Profile::select('profile_image')
                                 ->where('user_id',$user_id)
-                                ->where('cover_photo','')
+                                ->where('cover_photo',null)
                                 ->orderBy('created_at','DESC')
                                 ->first();
 
@@ -327,6 +327,16 @@ class Customer_TrainingCenterController extends Controller
         $user->name=$request->name;
         $user->update();
         Alert::success('Success', 'Name Updated Successfully');
+        return redirect()->back();
+    }
+
+    public function profile_update_bio(Request $request)
+    {
+        $user_id=auth()->user()->id;
+        $user=User::findOrFail($user_id);
+        $user->bio=$request->bio;
+        $user->update();
+        Alert::success('Success', 'Bio Updated Successfully');
         return redirect()->back();
     }
 
