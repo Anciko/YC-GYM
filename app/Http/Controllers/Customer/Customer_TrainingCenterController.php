@@ -87,7 +87,7 @@ class Customer_TrainingCenterController extends Controller
                                 ->orderBy('created_at','DESC')
                                 ->first();
 
-      
+
         if($user_profile_cover==null){
             $user_profile_cover=null;
         }else{
@@ -278,9 +278,9 @@ class Customer_TrainingCenterController extends Controller
 
     public function profile_update(Request $request)
     {
-       $user_id=auth()->user()->id;
-       $current_date = Carbon::now('Asia/Yangon')->toDateString();
-       $user=User::findOrFail($user_id);
+        $user_id=auth()->user()->id;
+        $current_date = Carbon::now('Asia/Yangon')->toDateString();
+        $user=User::findOrFail($user_id);
         $user->weight=$request->weight;
         $user->neck=$request->neck;
         $user->hip=$request->hip;

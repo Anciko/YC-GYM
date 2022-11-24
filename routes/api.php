@@ -120,7 +120,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
 
     //social media
     Route::post('search_users', [SocialMediaController::class, 'search_users']); //search users
-    Route::post('add_friend', [SocialMediaController::class, 'add_friend']); //add friends
+    Route::post('add_friend', [SocialMediaController::class, 'add_friends']); //add friends
     Route::post('unfriend', [SocialMediaController::class, 'unfriend']); //un friends
     Route::post('cancelRequest', [SocialmediaController::class, 'cancelRequest']); // cancel request
     Route::post('declineRequest', [SocialmediaController::class, 'declineRequest']); //
@@ -137,6 +137,9 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::post('post_delete', [SocialmediaController::class, 'post_destroy']);
     Route::post('post_edit', [SocialmediaController::class, 'post_edit']);
     Route::post('post_update', [SocialmediaController::class, 'post_update']);
+
+    Route::post('profile/cover/update', [SocialmediaController::class, 'profile_update_cover']);
+    Route::post('profile/image/update', [SocialmediaController::class, 'profile_update_profile_img']);
 
 
 });

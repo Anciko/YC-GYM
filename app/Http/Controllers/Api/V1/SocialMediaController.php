@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use Pusher\Pusher;
 use App\Models\Post;
 use App\Models\User;
+use App\Models\Profile;
 use App\Models\Friendship;
 use App\Models\Notification;
 use Illuminate\Http\Request;
@@ -343,6 +344,9 @@ class SocialMediaController extends Controller
     {
         // dd("ik");
         $post=Post::find($request->id);
+        foreach($post->media as $media){
+
+        }
         if($post)
         {
             return response()->json([
@@ -441,5 +445,35 @@ class SocialMediaController extends Controller
         return response()->json([
             'message'=>'Post Update Successfully',
         ]);
+    }
+
+    public function profile_update_cover(Request $request)
+    {
+            $tmp = $request->cover;
+            $file = base64_decode($tmp);
+            $image_name = $request->name;
+            Storage::disk('local')->put(
+                'public/post/' . $image_name,
+                $file
+            );
+            $profile=new Profile();
+            $profile->cover_photo=$image_name;
+            $profile->user_id=auth()->user()->id;
+            $profile->save();
+    }
+
+    public function profile_update_profile_img(Request $request)
+    {
+        $tmp = $request->profile;
+        $file = base64_decode($tmp);
+        $image_name = $request->name;
+        Storage::disk('local')->put(
+            'public/post/' . $image_name,
+            $file
+        );
+        $profile=new Profile();
+        $profile->profile_image=$image_name;
+        $profile->user_id=auth()->user()->id;
+        $profile->save();
     }
 }

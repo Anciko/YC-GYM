@@ -4,9 +4,9 @@ namespace App\Http\Controllers;
 
 use Carbon\Carbon;
 use Pusher\Pusher;
-use App\Models\BanWord;
 use App\Models\Post;
 use App\Models\User;
+use App\Models\BanWord;
 use App\Models\Friendship;
 use App\Models\NotiFriends;
 use App\Models\Notification;
@@ -45,6 +45,9 @@ class SocialmediaController extends Controller
                     ->with('user')
                     ->paginate(30);
         }
+        // $post=Post::find(1);
+
+        // dd(json_decode(json_encode($post->media)));
         // $left_friends=User::whereIn('id',$n)
         //                 ->where('id','!=',$user->id)
         //                 ->paginate(6);
@@ -313,45 +316,41 @@ class SocialmediaController extends Controller
     public function addUser(Request $request)
     {
         // dd("ok");
-            $id = $request->id;
-            $user_id = auth()->user()->id;
-            $sender = User::where('id',$user_id)->first();
+        $id = $request->id;
+        $user_id = auth()->user()->id;
+        $sender = User::where('id',$user_id)->first();
 
-            $friendship = new Friendship();
-            $friendship->sender_id=$user_id;
-            $friendship->receiver_id=$id;
-            $friendship->date =  Carbon::Now()->toDateTimeString();
-            $friendship->friend_status = 1;
-            $friendship->save();
+        $friendship = new Friendship();
+        $friendship->sender_id=$user_id;
+        $friendship->receiver_id=$id;
+        $friendship->date = Carbon::Now()->toDateString();
+        $friendship->friend_status = 1;
+        $friendship->save();
 
-
-
-            $options = array(
+        $options = array(
             'cluster' => env('PUSHER_APP_CLUSTER'),
             'encrypted' => true
-            );
-            $pusher = new Pusher(
+        );
+        $pusher = new Pusher(
             env('PUSHER_APP_KEY'),
             env('PUSHER_APP_SECRET'),
             env('PUSHER_APP_ID'),
             $options
-            );
+        );
 
-            $data = $sender->name . ' send you a friend request!';
-
-            $fri_noti = new Notification();
-            $fri_noti->description = $data;
-            $fri_noti->date = Carbon::Now()->toDateTimeString();
-            $fri_noti->sender_id = $user_id;
-            $fri_noti->receiver_id = $id;
-            $fri_noti->notification_status = 1;
-            $fri_noti->save();
-
-            $pusher->trigger('friend_request.'.$id , 'friendRequest', $data);
-            return response()
-                ->json([
-                    'data'=>$data
-            ]);
+        $data = $sender->name . ' send you a friend request!';
+        $fri_noti = new Notification();
+        $fri_noti->description = $data;
+        $fri_noti->date = Carbon::Now()->toDateTimeString();
+        $fri_noti->sender_id = $user_id;
+        $fri_noti->receiver_id = $id;
+        $fri_noti->notification_status = 1;
+        $fri_noti->save();
+        $pusher->trigger('friend_request.'.$id , 'friendRequest', $data);
+        return response()
+            ->json([
+                'data'=>$data
+        ]);
     }
     public function unfriend(Request $request){
         $friend_ship_delete_receiver = Friendship::where('sender_id',auth()->user()->id)
