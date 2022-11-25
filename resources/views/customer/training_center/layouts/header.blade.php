@@ -60,7 +60,7 @@
                             <img class="nav-profile-img" src="{{asset('storage/post/'.$profile->profile_image)}}"/>
                         @endif
                         <i class="icon-arrow"></i>
-                        <p class="customer-dropdown-name">{{auth()->user()->name}}</p>
+                        {{-- <p class="customer-dropdown-name">{{auth()->user()->name}}</p> --}}
                     </a>
                     <ul class="customer-dropdown-menu">
                         <li><a href="{{route('customer-profile')}}">Profile</a></li>
