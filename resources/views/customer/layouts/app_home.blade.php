@@ -190,7 +190,7 @@
                                                 <img class="nav-profile-img" src="{{asset('storage/post/'.$profile->profile_image)}}"/>
                                             @endif
                                         <p>{{$friend->name}}</p>
-                                    </a><br>
+                                    </a>
                                     @empty
                                     <p class="text-secondary p-1">No Friend</p>
                                     @endforelse
