@@ -202,14 +202,22 @@ class SocialMediaController extends Controller
                     $f=(array)$friend;
                     array_push($n, $f['sender_id'],$f['receiver_id']);
             }
-        // $friends=User::select('users.name','users.id')
-        //    ->whereIn('users.id',$n)
-        //    ->where('users.id','!=',$user->id)
-        //    ->get();
-        $friends = DB::select("SELECT u.name,u.id,f.date FROM friendships f LEFT JOIN users u on (u.id = f.sender_id or u.id = f.receiver_id)
-        WHERE (receiver_id = $id or sender_id = $id ) and u.id != $id and f.friend_status = 2");
-        $friend_status = DB::select("SELECT * FROM `friendships` WHERE (receiver_id = $auth or sender_id = $auth )
-        AND (receiver_id = $request->id or sender_id = $request->id)");
+
+        $friends = User::select('users.id','users.name','friendships.date','profiles.profile_image')
+        ->leftjoin('friendships', function ($join) {
+              $join->on('friendships.receiver_id', '=', 'users.id')
+        ->orOn('friendships.sender_id', '=', 'users.id');})
+        ->leftJoin('profiles','profiles.id','users.profile_id')
+        ->where('friendships.friend_status',2)
+        ->where('users.id','!=',$id)
+        ->where('friendships.receiver_id',$id)
+        ->orWhere('friendships.sender_id',$id)
+        ->whereIn('users.id',$n)
+        ->orderBy('users.id', 'desc')->take(6)->get()->toArray();
+
+            $friend_status = DB::select("SELECT * FROM `friendships` WHERE (receiver_id = $auth or sender_id = $auth )
+            AND (receiver_id = $request->id or sender_id = $request->id)");
+
         return response()->json([
              'user' => $user,
              'friend_status' => $friend_status,
@@ -218,12 +226,52 @@ class SocialMediaController extends Controller
         ]);
     }
 
+    public function friends(Request $request){
+        $id = $request->id;
+        $friendships=DB::table('friendships')
+        ->where('friend_status',2)
+        ->where(function($query) use ($id){
+            $query->where('sender_id',$id)
+                ->orWhere('receiver_id',$id);
+        })
+        ->join('users as sender','sender.id','friendships.sender_id')
+        ->join('users as receiver','receiver.id','friendships.receiver_id')
+        ->get(['sender_id','receiver_id'])->toArray();
+        //dd($friends);
+        $n= array();
+            foreach($friendships as $friend){
+                    $f=(array)$friend;
+                    array_push($n, $f['sender_id'],$f['receiver_id']);
+            }
+
+        $friends = User::select('users.id','users.name','friendships.date','profiles.profile_image')
+        ->leftjoin('friendships', function ($join) {
+              $join->on('friendships.receiver_id', '=', 'users.id')
+        ->orOn('friendships.sender_id', '=', 'users.id');})
+        ->leftJoin('profiles','profiles.id','users.profile_id')
+        ->where('friendships.friend_status',2)
+        ->where('users.id','!=',$id)
+        ->where('friendships.receiver_id',$id)
+        ->orWhere('friendships.sender_id',$id)
+        ->whereIn('users.id',$n)
+        ->paginate(3)->toArray();
+        return response()->json([
+           'friends' => $friends
+       ]);
+    }
+
     public function notification(){
-        $notification=Notification::where('receiver_id',auth()->user()->id)->paginate(10);
+
+         $notification=Notification::select('users.id as user_id','users.name','notifications.*','profiles.profile_image')
+            ->leftJoin('users','notifications.sender_id', '=', 'users.id')
+            ->leftJoin('profiles','profiles.id','users.profile_id')
+            ->where('receiver_id',auth()->user()->id)
+            ->paginate(10);
         return response()->json([
             'notification' => $notification
         ]);
     }
+
     public function viewFriendRequestNoti(Request $request){
         $auth = Auth()->user()->id;
         DB::table('notifications')->where('id',$request->noti_id)->update(['notification_status' => 2]);
@@ -237,12 +285,51 @@ class SocialMediaController extends Controller
     }
 
     public function friend_request(){
-        $friend_requests=Friendship::select('sender.name','sender.id')
-            ->join('users as receiver', 'receiver.id', '=', 'friendships.receiver_id')
-            ->join('users as sender', 'sender.id', '=', 'friendships.sender_id')
-            ->where('receiver.id',auth()->user()->id)
-            ->where('friend_status',1)
-            ->get();
+
+        $auth = Auth()->user()->id;
+
+        $friend_request =DB::table('friendships')
+        ->where('friend_status',1)
+        ->where(function($query) use ($auth){
+            $query->where('sender_id',$auth)
+                ->orWhere('receiver_id',$auth);
+        })
+        ->join('users as sender','sender.id','friendships.sender_id')
+        ->join('users as receiver','receiver.id','friendships.receiver_id')
+        ->get(['sender_id','receiver_id'])->toArray();
+
+        // dd($friend_request);
+        $request= array();
+            foreach($friend_request as $req){
+                    $r=(array)$req;
+                    array_push($request, $r['sender_id'],$r['receiver_id']);
+            }
+        $request_profile_id = DB::table('profiles')
+            ->groupBy('user_id')
+            ->select(DB::raw('max(id) as id'))
+            ->where('cover_photo',null)
+            ->whereIn('user_id',$request)
+            ->get()
+            ->pluck('id')->toArray();
+
+            if(empty($request_profile_id)){
+                $friend_requests = DB::select("SELECT u.name,u.id,f.date,p.profile_image FROM friendships f
+                LEFT JOIN users u
+                on (u.id = f.sender_id)
+                LEFT JOIN profiles p on p.user_id = u.id
+                where  (receiver_id = $auth)
+                and f.friend_status = 1");
+            }
+            else{
+                $ids = join(",",$request_profile_id);
+                $friend_requests = DB::select("SELECT u.name,u.id,f.date,p.profile_image FROM friendships f
+                LEFT JOIN users u
+                on (u.id = f.sender_id)
+                LEFT JOIN profiles p on p.user_id = u.id
+                and p.id IN ($ids)
+                where  (receiver_id = $auth)
+                and f.friend_status = 1");
+            }
             return response()->json([
                 'friend_request' =>  $friend_requests
             ]);
@@ -363,60 +450,76 @@ class SocialMediaController extends Controller
         }
     }
 
-
-
-
     public function post_update(Request $request)
     {
         $input = $request->all();
+        // return $request->all();
         $edit_post=Post::findOrFail($input['edit_post_id']);
         $edit_post->caption=$input['caption'];
 
         if(empty($input['addPostInput'])  && $input['caption'] !=null ){
             $caption=$input['caption'];
+            $updateFilenames = $input['filenames'];
+            $edit_post->media = json_encode($updateFilenames);
         }
         elseif($input['caption']== null){
             $caption=null;
-
             if($input['addPostInput']) {
 
                 $images=$input['addPostInput'];
-                $filenames = $input['filenames'];
+
+                $updateFilenames = $input['filenames'];
+                $newFilenames = $input['newFileNames'];
+
                 foreach($images as $index=>$file)
                 {
 
                     $tmp = base64_decode($file);
-                    $file_name = $filenames[$index];
+
+                    $file_name = $newFilenames[$index];
                     Storage::disk('public')->put(
                         'post/' . $file_name,
                         $tmp
                     );
-                     $imgData[] = $file_name;
-                     $edit_post->media = json_encode($imgData);
+                    //  $imgData[] = $tmp;
+                    //  $edit_post->media = json_encode($imgData);
                 }
+                $edit_post->media = json_encode($updateFilenames);
              }
 
     }
 
+    elseif($input['addPostInput'] == null && $input['caption'] ==null){
+        $caption=$input['caption'];
+        $updateFilenames = $input['filenames'];
+        $edit_post->media = json_encode($updateFilenames);
+    }
         else{
             $caption=$input['caption'];
             $images=$input['addPostInput'];
             if($input['addPostInput']) {
 
                 $images=$input['addPostInput'];
-                $filenames = $input['filenames'];
+
+                $updateFilenames = $input['filenames'];
+                $newFilenames = $input['newFileNames'];
+
                 foreach($images as $index=>$file)
                 {
+
                     $tmp = base64_decode($file);
-                    $file_name = $filenames[$index];
+
+                    $file_name = $newFilenames[$index];
                     Storage::disk('public')->put(
                         'post/' . $file_name,
                         $tmp
                     );
-                     $imgData[] = $file_name;
-                     $edit_post->media = json_encode($imgData);
+                    //  $imgData[] = $tmp;
+                    //  $edit_post->media = json_encode($imgData);
                 }
+                $edit_post->media = json_encode($updateFilenames);
              }
+
         }
         $banwords=DB::table('ban_words')->select('ban_word_english','ban_word_myanmar','ban_word_myanglish')->get();
 
@@ -460,6 +563,9 @@ class SocialMediaController extends Controller
             $profile->cover_photo=$image_name;
             $profile->user_id=auth()->user()->id;
             $profile->save();
+            return response()->json([
+                'message'=>'Success',
+            ]);
     }
 
     public function profile_update_profile_img(Request $request)
@@ -475,5 +581,23 @@ class SocialMediaController extends Controller
         $profile->profile_image=$image_name;
         $profile->user_id=auth()->user()->id;
         $profile->save();
+
+        $user = User::findOrFail(auth()->user()->id);
+        $user->profile_id = $profile->id;
+        $user->update();
+        return response()->json([
+            'message'=>'Success',
+        ]);
     }
+
+    public function profile_update_bio(Request $request)
+    {
+        $user_id=auth()->user()->id;
+        $user=User::findOrFail($user_id);
+        $user->bio=$request->bio;
+        return response()->json([
+            'message'=>'Success',
+        ]);
+    }
+
 }

@@ -127,11 +127,14 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::post('confirmRequest', [SocialmediaController::class, 'confirmRequest']);//
     Route::post('socialmedia_profile', [SocialmediaController::class, 'socialmedia_profile']);//
 
+    Route::post('friends', [SocialmediaController::class, 'friends']);//
+
     Route::get('notification', [SocialmediaController::class, 'notification']);
+
     Route::post('/viewFriendRequestNoti', [SocialmediaController::class, 'viewFriendRequestNoti'])->name('viewFriendRequestNoti');
 
-    Route::get('/friend_request', [SocialmediaController::class, 'friend_request']);
-    Route::get('/newFeeds', [SocialmediaController::class, 'newFeeds']);
+    Route::get('friend_request', [SocialmediaController::class, 'friend_request']);
+    Route::get('newFeeds', [SocialmediaController::class, 'newFeeds']);
 
     Route::post('post_create', [SocialmediaController::class, 'post_store']);
     Route::post('post_delete', [SocialmediaController::class, 'post_destroy']);
@@ -140,7 +143,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
 
     Route::post('profile/cover/update', [SocialmediaController::class, 'profile_update_cover']);
     Route::post('profile/image/update', [SocialmediaController::class, 'profile_update_profile_img']);
-
+    Route::post('profile/bio/update', [SocialmediaController::class, 'profile_update_bio']);
 
 });
 
