@@ -453,54 +453,73 @@ class SocialMediaController extends Controller
     public function post_update(Request $request)
     {
         $input = $request->all();
+        // return $request->all();
         $edit_post=Post::findOrFail($input['edit_post_id']);
         $edit_post->caption=$input['caption'];
 
         if(empty($input['addPostInput'])  && $input['caption'] !=null ){
             $caption=$input['caption'];
+            $updateFilenames = $input['filenames'];
+            $edit_post->media = json_encode($updateFilenames);
         }
         elseif($input['caption']== null){
             $caption=null;
-
             if($input['addPostInput']) {
 
                 $images=$input['addPostInput'];
-                $filenames = $input['filenames'];
+
+                $updateFilenames = $input['filenames'];
+                $newFilenames = $input['newFileNames'];
+
                 foreach($images as $index=>$file)
                 {
 
                     $tmp = base64_decode($file);
-                    $file_name = $filenames[$index];
+
+                    $file_name = $newFilenames[$index];
                     Storage::disk('public')->put(
                         'post/' . $file_name,
                         $tmp
                     );
-                     $imgData[] = $file_name;
-                     $edit_post->media = json_encode($imgData);
+                    //  $imgData[] = $tmp;
+                    //  $edit_post->media = json_encode($imgData);
                 }
+                $edit_post->media = json_encode($updateFilenames);
              }
 
     }
 
+    elseif($input['addPostInput'] == null && $input['caption'] ==null){
+        $caption=$input['caption'];
+        $updateFilenames = $input['filenames'];
+        $edit_post->media = json_encode($updateFilenames);
+    }
         else{
             $caption=$input['caption'];
             $images=$input['addPostInput'];
             if($input['addPostInput']) {
 
                 $images=$input['addPostInput'];
-                $filenames = $input['filenames'];
+
+                $updateFilenames = $input['filenames'];
+                $newFilenames = $input['newFileNames'];
+
                 foreach($images as $index=>$file)
                 {
+
                     $tmp = base64_decode($file);
-                    $file_name = $filenames[$index];
+
+                    $file_name = $newFilenames[$index];
                     Storage::disk('public')->put(
                         'post/' . $file_name,
                         $tmp
                     );
-                     $imgData[] = $file_name;
-                     $edit_post->media = json_encode($imgData);
+                    //  $imgData[] = $tmp;
+                    //  $edit_post->media = json_encode($imgData);
                 }
+                $edit_post->media = json_encode($updateFilenames);
              }
+
         }
         $banwords=DB::table('ban_words')->select('ban_word_english','ban_word_myanmar','ban_word_myanglish')->get();
 
