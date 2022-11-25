@@ -3,6 +3,15 @@
 @section('content')
 @include('sweetalert::alert')
 
+<!-- The Image Modal -->
+<div id="modal01" class="modal-image" onclick="this.style.display='none'">
+    <span class="close-image">&times;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+    <div class="modal-content-image">
+      <img id="img01" style="max-width:100%">
+    </div>
+  </div>
+<!-- End Image Modal -->
+
 <div class="social-media-right-container">
     <p style="text-align:center">{{$user->name}}'s Photos</p>
     <div class="social-media-photos-tabs-container">
@@ -16,7 +25,8 @@
 
             @else
                 <div class="social-media-photo">
-                    <img src="{{asset('storage/post/'.$profile->profile_image)}}">
+                    <img src="{{asset('storage/post/'.$profile->profile_image)}}" style="max-width:100%;cursor:pointer"
+                    onclick="onClick(this)" class="modal-hover-opacity">
                 </div>
             @endif
         @empty
@@ -31,7 +41,8 @@
 
         @else
             <div class="social-media-photo">
-                <img src="{{asset('storage/post/'.$cover->cover_photo)}}">
+                <img src="{{asset('storage/post/'.$cover->cover_photo)}}" style="max-width:100%;cursor:pointer"
+                onclick="onClick(this)" class="modal-hover-opacity">
             </div>
         @endif
         @empty
@@ -44,7 +55,6 @@
 @push('scripts')
 
 <script>
-    console.log("sdfsdfdf")
     $(document).ready(function() {
         $('.social-media-post-header-icon').click(function(){
             $(this).next().toggle()
@@ -73,6 +83,11 @@
 
         })
     })
+
+    function onClick(element) {
+        document.getElementById("img01").src = element.src;
+        document.getElementById("modal01").style.display = "block";
+    }
 </script>
 
 @endpush

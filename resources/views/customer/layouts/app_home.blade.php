@@ -349,8 +349,8 @@
 
         });
 
-    var width = $('#image-slider').width();
-    console.log(width)
+        var width = $('#image-slider').width();
+        console.log(width)
 
         function nextImage(newIndex, parent){
             parent.find('li').eq(newIndex).addClass('next-img').css('left', width).animate({left: 0},600);
@@ -433,162 +433,6 @@
                     })
 
         })
-
-        $(document).on('click','#edit_post',function(e){
-            e.preventDefault();
-            $(".editpost-photo-video-imgpreview-container").empty();
-
-            dtEdit.clearData()
-            document.getElementById('editPostInput').files = dtEdit.files;
-            var id = $(this).data('id');
-
-            $('#editPostModal').modal('show');
-            var add_url = "{{ route('post.edit', [':id']) }}";
-            add_url = add_url.replace(':id', id);
-
-            $.ajaxSetup({
-                    headers: {
-                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                    }
-                });
-            $.ajax({
-                    method: "POST",
-                    url: add_url,
-                    datatype: "json",
-                    success: function(data) {
-                        if(data.status==400){
-                            alert(data.message)
-                        }else{
-                            $('#editPostCaption').val(data.post.caption);
-                            $('#edit_post_id').val(data.post.id);
-
-                            var filesdb =data.post.media ? JSON.parse(data.post.media) : [];
-                            // var filesAmount=files.length;
-                            var storedFilesdb = filesdb;
-                            // console.log(storedFilesdb)
-
-
-                            filesdb.forEach(function(f) {
-                                fileExtension = f.replace(/^.*\./, '');
-                                console.log(fileExtension);
-                                if(fileExtension=='mp4') {
-                                    var html="<div class='addpost-preview'>\
-                                        <iconify-icon icon='akar-icons:cross' data-file='" + f + "' class='delete-preview-db-icon'></iconify-icon>\
-                                        <video controls><source src='storage/post/" + f + "' data-file='" + f+ "' class='selFile' title='Click to remove'>" + f + "<br clear=\"left\"/>\
-                                        <video>\
-                                    </div>"
-                                    $(".editpost-photo-video-imgpreview-container").append(html);
-
-                                }else{
-                                    var html = "<div class='addpost-preview'><iconify-icon icon='akar-icons:cross' data-file='" + f + "' class='delete-preview-db-icon'></iconify-icon><img src='storage/post/"+f+"' data-file='" + f + "' class='selFile' title='Click to remove'></div>";
-                                    $(".editpost-photo-video-imgpreview-container").append(html);
-                                }
-
-                            });
-
-                            $("body").on("click", ".delete-preview-db-icon", removeFiledb);
-
-                            function removeFiledb(){
-                                var file = $(this).data('file')
-                                storedFilesdb = storedFilesdb.filter((item) => {
-                                    return file !== item
-                                })
-
-                                $(this).parent().remove();
-                            }
-
-                            $(".addpost-photovideo-clear-btn").click(function(){
-                                storedFilesdb = []
-                            })
-
-                            $('#edit_form').submit(function(e){
-                                e.preventDefault();
-                                $('#editPostModal'). modal('hide');
-
-                            var fileUpload=$('#editPostInput');
-                            console.log(storedFilesdb.length );
-                            console.log(parseInt(fileUpload.get(0).files.length) );
-                            console.log(storedFilesdb);
-                            console.log(fileUpload.get(0).files);
-
-                            if(!$('#editPostCaption').val() && (parseInt(fileUpload.get(0).files.length) + storedFilesdb.length) === 0){
-                                alert("Cannot post!!")
-                            }else{
-                                if((parseInt(fileUpload.get(0).files.length))+storedFilesdb.length > 5){
-                                    Swal.fire({
-                                                text: "You can only upload a maximum of 5 files",
-                                                timer: 5000,
-                                                icon: 'warning',
-                                            });
-                                }else{
-                                    e.preventDefault();
-
-                                    var url="{{route('post.update')}}";
-                                    let formData = new FormData(edit_form);
-                                    var oldimg=storedFilesdb;
-                                    var edit_post_id=$('#edit_post_id').val();
-                                    var caption=$('#editPostCaption').val();
-
-                                    const totalImages = $("#editPostInput")[0].files.length;
-                                    let images = $("#editPostInput")[0];
-
-                                    // for (let i = 0; i < totalImages; i++) {
-                                        formData.append('images', images);
-                                    // }
-                                    formData.append('totalImages', totalImages);
-                                    formData.append('caption', caption);
-                                    formData.append('oldimg', storedFilesdb);
-                                    formData.append('edit_post_id', edit_post_id);
-
-                                    for (const value of formData.values()) {
-                                        console.log(value);
-                                    }
-
-                                    $.ajaxSetup({
-                                                headers: {
-                                                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                                                }
-                                            });
-
-                                    $.ajax({
-                                            type:'POST',
-                                            url:url,
-                                            data: formData,
-                                            processData: false,
-                                            cache: false,
-                                            contentType: false,
-                                            success:function(data){
-                                                if(data.ban){
-                                                    Swal.fire({
-                                                        text: data.ban,
-                                                        timer: 5000,
-                                                        timerProgressBar: true,
-                                                        icon: 'error',
-                                                    })
-                                                }else{
-                                                    Swal.fire({
-                                                        text: data.success,
-                                                        timer: 5000,
-                                                        timerProgressBar: true,
-                                                        icon: 'success',
-                                                    }).then(() => {
-                                                        window.location.reload()
-                                                    })
-                                                }
-                                                }
-                                        });
-                                }
-
-                            }
-                        })
-
-                        }
-
-                    }
-                })
-
-        })
-
 
         $(document).on('click', '#AddFriend', function(e) {
                 e.preventDefault();
@@ -860,6 +704,7 @@
             $(".social-media-left-container-trigger .arrow-icon").toggleClass("rotate-arrow")
         })
 
+
         $('#form').submit(function(e){
             e.preventDefault();
             $('#addPostModal'). modal('hide');
@@ -934,9 +779,163 @@
 
         })
 
+        $(document).on('click','#edit_post',function(e){
+            e.preventDefault();
+            $(".editpost-photo-video-imgpreview-container").empty();
 
+            dtEdit.clearData()
+            document.getElementById('editPostInput').files = dtEdit.files;
+            var id = $(this).data('id');
+
+            $('#editPostModal').modal('show');
+            var add_url = "{{ route('post.edit', [':id']) }}";
+            add_url = add_url.replace(':id', id);
+
+            $.ajaxSetup({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    }
+                });
+            $.ajax({
+                    method: "POST",
+                    url: add_url,
+                    datatype: "json",
+                    success: function(data) {
+                        if(data.status==400){
+                            alert(data.message)
+                        }else{
+                            $('#editPostCaption').val(data.post.caption);
+                            $('#edit_post_id').val(data.post.id);
+
+                            var filesdb =data.post.media ? JSON.parse(data.post.media) : [];
+                            // var filesAmount=files.length;
+                            var storedFilesdb = filesdb;
+                            // console.log(storedFilesdb)
+
+
+                            filesdb.forEach(function(f) {
+                                fileExtension = f.replace(/^.*\./, '');
+                                console.log(fileExtension);
+                                if(fileExtension=='mp4') {
+                                    var html="<div class='addpost-preview'>\
+                                        <iconify-icon icon='akar-icons:cross' data-file='" + f + "' class='delete-preview-db-icon'></iconify-icon>\
+                                        <video controls><source src='storage/post/" + f + "' data-file='" + f+ "' class='selFile' title='Click to remove'>" + f + "<br clear=\"left\"/>\
+                                        <video>\
+                                    </div>"
+                                    $(".editpost-photo-video-imgpreview-container").append(html);
+
+                                }else{
+                                    var html = "<div class='addpost-preview'><iconify-icon icon='akar-icons:cross' data-file='" + f + "' class='delete-preview-db-icon'></iconify-icon><img src='storage/post/"+f+"' data-file='" + f + "' class='selFile' title='Click to remove'></div>";
+                                    $(".editpost-photo-video-imgpreview-container").append(html);
+                                }
+
+                            });
+
+                            $("body").on("click", ".delete-preview-db-icon", removeFiledb);
+
+                            function removeFiledb(){
+                                var file = $(this).data('file')
+                                storedFilesdb = storedFilesdb.filter((item) => {
+                                    return file !== item
+                                })
+
+                                $(this).parent().remove();
+                            }
+
+                            $(".addpost-photovideo-clear-btn").click(function(){
+                                storedFilesdb = []
+                            })
+
+                            $('#edit_form').submit(function(e){
+                                e.preventDefault();
+                                $('#editPostModal'). modal('hide');
+
+                            var fileUpload=$('#editPostInput');
+                            console.log(storedFilesdb.length );
+                            console.log(parseInt(fileUpload.get(0).files.length) );
+                            console.log(storedFilesdb);
+                            console.log(fileUpload.get(0).files);
+
+                            if(!$('#editPostCaption').val() && (parseInt(fileUpload.get(0).files.length) + storedFilesdb.length) === 0){
+                                alert("Cannot post!!")
+                            }else{
+                                if((parseInt(fileUpload.get(0).files.length))+storedFilesdb.length > 5){
+                                    Swal.fire({
+                                                text: "You can only upload a maximum of 5 files",
+                                                timer: 5000,
+                                                icon: 'warning',
+                                            });
+                                }else{
+                                    e.preventDefault();
+
+                                    var url="{{route('post.update')}}";
+                                    let formData = new FormData(edit_form);
+                                    var oldimg=storedFilesdb;
+                                    var edit_post_id=$('#edit_post_id').val();
+                                    var caption=$('#editPostCaption').val();
+
+                                    const totalImages = $("#editPostInput")[0].files.length;
+                                    let images = $("#editPostInput")[0];
+
+                                    // for (let i = 0; i < totalImages; i++) {
+                                        formData.append('images', images);
+                                    // }
+                                    formData.append('totalImages', totalImages);
+                                    formData.append('caption', caption);
+                                    formData.append('oldimg', storedFilesdb);
+                                    formData.append('edit_post_id', edit_post_id);
+
+                                    for (const value of formData.values()) {
+                                        console.log(value);
+                                    }
+
+                                    $.ajaxSetup({
+                                                headers: {
+                                                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                                                }
+                                            });
+
+                                    $.ajax({
+                                            type:'POST',
+                                            url:url,
+                                            data: formData,
+                                            processData: false,
+                                            cache: false,
+                                            contentType: false,
+                                            success:function(data){
+                                                if(data.ban){
+                                                    Swal.fire({
+                                                        text: data.ban,
+                                                        timer: 5000,
+                                                        timerProgressBar: true,
+                                                        icon: 'error',
+                                                    })
+                                                }else{
+                                                    Swal.fire({
+                                                        text: data.success,
+                                                        timer: 5000,
+                                                        timerProgressBar: true,
+                                                        icon: 'success',
+                                                    }).then(() => {
+                                                        window.location.reload()
+                                                    })
+                                                }
+                                                }
+                                        });
+                                }
+
+                            }
+                        })
+
+                        }
+
+                    }
+                })
+
+        })
 
         $("#addPostInput").on("change", handleFileSelect);
+
         $("#editPostInput").on("change", handleFileSelectEdit);
 
         selDiv = $(".addpost-photo-video-imgpreview-container");
@@ -945,8 +944,6 @@
 
         $("body").on("click", ".delete-preview-icon", removeFile);
         $("body").on("click", ".delete-preview-edit-input-icon", removeFileFromEditInput);
-
-
 
         console.log($("#selectFilesM").length);
     });
@@ -1009,6 +1006,7 @@
         console.log(document.getElementById('addPostInput').files+" Add Post Input")
 
     }
+
     function handleFileSelectEdit(e) {
 
         var files = e.target.files;
