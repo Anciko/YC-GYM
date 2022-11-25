@@ -80,9 +80,10 @@ class SocialmediaController extends Controller
                     array_push($n, $f['sender_id'],$f['receiver_id']);
             }
         $friends=User::select('users.name','users.id')
-                         ->whereIn('id',$n)
+                        ->whereIn('id',$n)
                         ->where('id','!=',$user->id)
                         ->paginate(6);
+
         $friend = DB::select("SELECT * FROM `friendships` WHERE (receiver_id = $auth or sender_id = $auth )
                         AND (receiver_id = $id or sender_id = $id)");
         return view('customer.socialmedia_profile',compact('user','posts','friends','friend'));
@@ -178,13 +179,13 @@ class SocialmediaController extends Controller
 
         $user_profile_cover=Profile::select('cover_photo')
                                 ->where('user_id',$user_id)
-                                ->where('profile_image','')
+                                ->where('profile_image',null)
                                 ->orderBy('created_at','DESC')
                                 ->get();
 
         $user_profile_image=Profile::select('profile_image')
                                 ->where('user_id',$user_id)
-                                ->where('cover_photo','')
+                                ->where('cover_photo',null)
                                 ->orderBy('created_at','DESC')
                                 ->get();
 

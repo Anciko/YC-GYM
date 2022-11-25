@@ -10,7 +10,12 @@
                     <div class="social-media-post-header">
                         <div class="social-media-post-name-container">
                             <a href="{{route('socialmedia.profile',$post->user_id)}}" style="text-decoration:none">
-                            <img src="{{asset('img/customer/imgs/user_default.jpg')}}">
+                                <?php $profile=$post->user->profiles->where('cover_photo',null)->sortByDesc('created_at')->first() ?>
+                                @if ($profile==null)
+                                    <img class="nav-profile-img" src="{{asset('img/customer/imgs/user_default.jpg')}}"/>
+                                @else
+                                    <img class="nav-profile-img" src="{{asset('storage/post/'.$profile->profile_image)}}"/>
+                                @endif
                             </a>
                             <div class="social-media-post-name">
                                 <a href="{{route('socialmedia.profile',$post->user_id)}}" style="text-decoration:none">

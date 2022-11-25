@@ -277,6 +277,27 @@ input[type=number] {
 
 }
 
+.profile-back-btn{
+    padding: 2px 15px 0px 15px;
+    background-color: var(--customer-primary-color);
+    border: none;
+    border-radius: 5px;
+    transition: all 0.2s ease-in-out;
+    display: inline-block;
+    cursor: pointer;
+    margin-top: 120px;
+}
+
+.profile-back-btn:hover{
+    background-color: var(--customer-primary-color-hover);
+}
+
+.profile-back-btn-icon{
+    font-size: 20px;
+    color: white;
+
+}
+
 .margin-top{
     margin-top: 140px;
 }

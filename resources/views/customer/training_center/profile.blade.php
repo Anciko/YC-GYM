@@ -29,7 +29,7 @@
                     <input type="file" id="editPostInput" name="editPostInput[]" multiple enctype="multipart/form-data">
                 </div>
 
-                <button class="addpost-photovideo-clear-btn" type="button" onclick="clearAddPost()">Clear</button>
+                <button class="addpost-photovideo-clear-btn" type="button" onclick="clearEditPost()">Clear</button>
 
             </span>
 
@@ -46,12 +46,15 @@
       </div>
     </div>
 </div>
+    <a class="back-btn" href="{{route("socialmedia")}}">
+        <iconify-icon icon="bi:arrow-left" class="back-btn-icon"></iconify-icon>
+    </a>
 
 <div class="customer-profile-parent-container">
     <div class="customer-cover-photo-container">
 
         @if($user_profile_cover==null)
-        <img class="customer-cover-photo" src="{{asset('image/trainer2.jpg')}}">
+        <img class="customer-cover-photo" src="{{asset('image/cover.jpg')}}">
         @else
         <img class="customer-cover-photo" src="{{asset('storage/post/'.$user_profile_cover->cover_photo)}}">
         @endif
@@ -115,9 +118,13 @@
         @csrf
         @method('POST')
         <div class="customer-bio-text">
+            @if (auth()->user()->bio==null)
+                <p class="text-secondary" >No Bio Here</p>
+            @else
             <p>{{auth()->user()->bio}}</p>
-            <input type="text" name="bio">
-            <iconify-icon icon="cil:pen" class="customer-bio-change-icon"></iconify-icon>
+            @endif
+            <input type="text" name="bio" id="bio" value="{{auth()->user()->bio}}">
+            <iconify-icon icon="cil:pen" class="customer-bio-change-icon" id={{auth()->user()->id}}></iconify-icon>
         </div>
         <div class="customer-bio-btns-container">
             <button type="submit" class="customer-primary-btn">Confirm</button>
@@ -142,7 +149,7 @@
     <div class="customer-profile-training-center-container">
         @if(count(auth()->user()->roles)==0)
         {{-- <div class="customer-profile-personaldetails-parent-container"> --}}
-        <p class="customer-notraining-message">
+        <p class="customer-notraining-message text-secondary">
             You don't have training center information.Please fill information
             <a href="{{route('customer-personal_infos')}}">Training Center</a>
         </p>
@@ -357,7 +364,7 @@
             <div class="customer-post-container">
                 <div class="customer-post-header">
                     <div class="customer-post-name-container">
-                        <img src="{{asset('image/trainer2.jpg')}}">
+                        <img src="{{asset('image/cover.jpg')}}">
                         <div class="customer-post-name">
                             <p>User Name</p>
                             <span>19 Sep 2022, 11:02 AM</span>
@@ -420,7 +427,7 @@
                 </div>
 
                 <div class="customer-profile-friends-container">
-                    @foreach ($user_friends as $friend)
+                    @forelse ($user_friends as $friend)
                     <div class="customer-profile-friend">
                         <?php $image=$friend->profiles()->where('cover_photo',null)->orderBy('created_at','desc')->first() ?>
                         @if($image==null)
@@ -436,7 +443,9 @@
                         <p>{{$friend->name}}</p>
                         </a>
                     </div>
-                    @endforeach
+                    @empty
+                        <p class="text-secondary p-1">No Friend</p>
+                    @endforelse
                 </div>
 
                 <p href="#" class="social-media-profile-photos-link">Photos</p>
@@ -448,7 +457,12 @@
                     <div class="customer-post-container">
                         <div class="customer-post-header">
                             <div class="customer-post-name-container">
-                                <img src="{{asset('image/trainer2.jpg')}}">
+                                <?php $profile=auth()->user()->profiles->where('cover_photo',null)->sortByDesc('created_at')->first() ?>
+                                @if ($profile==null)
+                                    <img class="nav-profile-img" src="{{asset('img/customer/imgs/user_default.jpg')}}"/>
+                                @else
+                                    <img class="nav-profile-img" src="{{asset('storage/post/'.$profile->profile_image)}}"/>
+                                @endif
                                 <div class="customer-post-name">
                                     <p>{{$post->user->name}}</p>
                                     <span>{{ \Carbon\Carbon::parse($post->created_at)->format('d M Y , g:i A')}}</span>
@@ -564,7 +578,7 @@
            <div class="social-media-fris-list-container">
             <div class="social-media-fris-fri-row">
                 <div class="social-media-fris-fri-img">
-                    <img src="../imgs/trainer2.jpg">
+                    <img src="../imgs/cover.jpg">
                     <p>Friend Name</p>
                 </div>
 
@@ -575,7 +589,7 @@
             </div>
             <div class="social-media-fris-fri-row">
                 <div class="social-media-fris-fri-img">
-                    <img src="../imgs/trainer2.jpg">
+                    <img src="../imgs/cover.jpg">
                     <p>Friend Name</p>
                 </div>
 
@@ -586,7 +600,7 @@
             </div>
             <div class="social-media-fris-fri-row">
                 <div class="social-media-fris-fri-img">
-                    <img src="../imgs/trainer2.jpg">
+                    <img src="../imgs/cover.jpg">
                     <p>Friend Name</p>
                 </div>
 
@@ -597,7 +611,7 @@
             </div>
             <div class="social-media-fris-fri-row">
                 <div class="social-media-fris-fri-img">
-                    <img src="../imgs/trainer2.jpg">
+                    <img src="../imgs/cover.jpg">
                     <p>Friend Name</p>
                 </div>
 
@@ -608,7 +622,7 @@
             </div>
             <div class="social-media-fris-fri-row">
                 <div class="social-media-fris-fri-img">
-                    <img src="../imgs/trainer2.jpg">
+                    <img src="../imgs/cover.jpg">
                     <p>Friend Name</p>
                 </div>
 
@@ -619,7 +633,7 @@
             </div>
             <div class="social-media-fris-fri-row">
                 <div class="social-media-fris-fri-img">
-                    <img src="../imgs/trainer2.jpg">
+                    <img src="../imgs/cover.jpg">
                     <p>Friend Name</p>
                 </div>
 
@@ -630,7 +644,7 @@
             </div>
             <div class="social-media-fris-fri-row">
                 <div class="social-media-fris-fri-img">
-                    <img src="../imgs/trainer2.jpg">
+                    <img src="../imgs/cover.jpg">
                     <p>Friend Name</p>
                 </div>
 
@@ -641,7 +655,7 @@
             </div>
             <div class="social-media-fris-fri-row">
                 <div class="social-media-fris-fri-img">
-                    <img src="../imgs/trainer2.jpg">
+                    <img src="../imgs/cover.jpg">
                     <p>Friend Name Friend Name Friend Name</p>
                 </div>
 
@@ -1670,7 +1684,7 @@
             }else{
                 coverImgInput.value = ""
                 // profileImg.removeAttribute("src")
-                coverImg.setAttribute('src',"{{asset('image/trainer2.jpg')}}");
+                coverImg.setAttribute('src',"{{asset('image/cover.jpg')}}");
                 $('.customer-cover-change-btns-container').hide()
             }
 
@@ -1694,7 +1708,7 @@
         $(".customer-cover-change-cancel-btn").click(function(){
             coverImgInput.value = ""
             // profileImg.removeAttribute("src")
-            coverImg.setAttribute('src',"{{asset('image/trainer2.jpg')}}");
+            coverImg.setAttribute('src',"{{asset('image/cover.jpg')}}");
             $('.customer-cover-change-btns-container').hide()
         })
 
@@ -1706,6 +1720,9 @@
             $('.customer-bio-btns-container').show()
 
             $('.customer-bio-form p').hide()
+
+
+
         })
 
         $(".customer-bio-change-cancel-btn").click(function(){
@@ -1808,6 +1825,14 @@
 
         }
 
+        function clearEditPost(){
+                storedFilesEdit = []
+                dtEdit.clearData()
+                document.getElementById('editPostInput').files = dtEdit.files;
+                $(".editpost-photo-video-imgpreview-container").empty();
+
+            }
+
         function removeFileFromEditInput(e) {
             var file = $(this).data("file");
             var names = [];
@@ -1885,6 +1910,7 @@
                             });
 
                             $("body").on("click", ".delete-preview-db-icon", removeFiledb);
+                            $("body").on("click", ".delete-preview-edit-input-icon", removeFileFromEditInput);
 
                             function removeFiledb(){
                                 var file = $(this).data('file')
@@ -1894,6 +1920,10 @@
 
                                 $(this).parent().remove();
                             }
+
+                            $(".addpost-photovideo-clear-btn").click(function(){
+                                storedFilesdb = []
+                            })
 
                             $('#edit_form').submit(function(e){
                                 e.preventDefault();
