@@ -49,9 +49,18 @@
             <div class="customer-dropdown-container">
                 <ul>
                     <li class="customer-dropdown">
+
                     <a href="#" data-toggle="dropdown">
-                        <img class="nav-profile-img" src="{{asset('img/user.jpg')}}"/>
+                        <?php
+                        $profile=auth()->user()->profiles->where('cover_photo',null)->sortByDesc('created_at')->first()
+                        ?>
+                        @if ($profile==null)
+                            <img class="nav-profile-img" src="{{asset('img/user.jpg')}}"/>
+                        @else
+                            <img class="nav-profile-img" src="{{asset('storage/post/'.$profile->profile_image)}}"/>
+                        @endif
                         <i class="icon-arrow"></i>
+                        <p class="customer-dropdown-name">{{auth()->user()->name}}</p>
                     </a>
                     <ul class="customer-dropdown-menu">
                         <li><a href="{{route('customer-profile')}}">Profile</a></li>
@@ -110,16 +119,22 @@
                     </a> --}}
                     <a href ="?id={{$noti->id}}"  class = "accept" id = {{$noti->sender_id}}>
                         <div class="notis-box-noti-row notis-box-unread-noti">
-                            <span>{{$noti->created_at->diffForHumans()}}
-                            </span>
-                            <p>{{$noti->description}}</p>
+                            <img src="{{asset('img/avatar.png')}}">
+                            <div class="notis-box-noti-row-detail">
+                                <span>{{$noti->created_at->diffForHumans()}}
+                                </span>
+                                <p>{{$noti->description}}</p>
+                            </div>
                         </div>
                     </a>
                         @else
                     <a href ="?id={{$noti->id}}"  class = "accept" id = {{$noti->sender_id}}>
                         <div class="notis-box-noti-row ">
-                            <span>{{$noti->created_at->diffForHumans()}}</span>
-                            <p>{{$noti->description}}</p>
+                            <img src="{{asset('img/avatar.png')}}">
+                            <div class="notis-box-noti-row-detail">
+                                <span>{{$noti->created_at->diffForHumans()}}</span>
+                                <p>{{$noti->description}}</p>
+                            </div>
                         </div>
                     </a>
                         @endif

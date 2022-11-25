@@ -13,9 +13,21 @@
         <div class="social-media-right-container social-media-right-container-nopadding">
             <div class="social-media-profile-parent-container">
                 <div class="social-media-profile-bgimg-container">
-                    <img src="https://images.pexels.com/photos/949131/pexels-photo-949131.jpeg?auto=compress&cs=tinysrgb&w=1600">
+                    <?php $profile_cover=$user->profiles->where('profile_image',null)->sortByDesc('created_at')->first() ?>
+                    @if ($profile_cover==null)
+                        <img src="{{asset('img/customer/imgs/cover.jpg')}}">
+                    @else
+                        <img class="nav-profile-img" src="{{asset('storage/post/'.$profile_cover->cover_photo)}}"/>
+                    @endif
                     <div class="social-media-profile-profileimg-container">
-                        <img src="{{asset('img/customer/imgs/user_default.jpg')}}">
+                        <?php
+                        $profile=$user->profiles->where('cover_photo',null)->sortByDesc('created_at')->first();?>
+                        @if ($profile==null)
+                            <img src="{{asset('img/customer/imgs/user_default.jpg')}}">
+                        @else
+                            <img class="nav-profile-img" src="{{asset('storage/post/'.$profile->profile_image)}}"/>
+                        @endif
+
                     </div>
                 </div>
 
@@ -61,8 +73,6 @@
                             </a>
                         </div>
                         </div>
-
-
                     @endif
                     @endforeach
                     @endif
@@ -71,7 +81,9 @@
                     <div class="social-media-profile-username-container">
                         <span class="social-media-profile-username">{{$user->name}}</span><br>
                         {{-- <span class="social-media-profile-userID">(User ID: 1234567890)</span><br> --}}
-                        <span class="social-media-profile-description">Lorem ipsum dolor sit amet, consectetur adipiscing elit.Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span>
+                        <span class="social-media-profile-description">
+                            {{$user->bio}}
+                        </span>
                     </div>
 
                     <div class="social-media-profile-friends-parent-container">
@@ -90,15 +102,22 @@
                         <div class="social-media-profile-friends-container">
                             @forelse ($friends as $friend)
                             <div class="social-media-profile-friend">
+                                <?php $image=$friend->profiles()->where('cover_photo',null)->orderBy('created_at','desc')->first() ?>
+                                @if($image==null)
                                 <a href="{{route('socialmedia.profile',$friend->id)}}" style="text-decoration:none">
                                 <img src="{{asset('img/customer/imgs/user_default.jpg')}}">
-
+                                @else
+                                <a href="{{route('socialmedia.profile',$friend->id)}}" style="text-decoration:none">
+                                <img src="{{asset('storage/post/'.$image->profile_image)}}">
+                                </a>
+                                @endif
                                 <p>{{$friend->name}}</p>
                             </a>
                             </div>
                             @empty
                             <p class="text-secondary p-1">No Friend</p>
                             @endforelse
+
                         </div>
                     </div>
                     <form action="{{route('socialmedia_profile_photos')}}" method="POST">
@@ -115,7 +134,11 @@
                                 <div class="social-media-post-header">
                                     <div class="social-media-post-name-container">
                                         <a href="{{route('socialmedia.profile',$post->user_id)}}" style="text-decoration:none">
-                                        <img src="{{asset('img/customer/imgs/user_default.jpg')}}">
+                                        @if ($profile==null)
+                                            <img src="{{asset('img/customer/imgs/user_default.jpg')}}">
+                                        @else
+                                            <img class="nav-profile-img" src="{{asset('storage/post/'.$profile->profile_image)}}"/>
+                                        @endif
                                         </a>
                                         <div class="social-media-post-name">
                                             <a href="{{route('socialmedia.profile',$post->user_id)}}" style="text-decoration:none">
@@ -133,13 +156,6 @@
                                             <iconify-icon icon="bi:save" class="post-action-icon"></iconify-icon>
                                             <p>Save</p>
                                         </div>
-
-                                        <div class="post-action">
-                                            <iconify-icon icon="bi:delete" class="post-action-icon"></iconify-icon>
-                                            <p>Delete</p>
-                                        </div>
-
-
                                         <div class="post-action">
                                             <iconify-icon icon="material-symbols:report-outline" class="post-action-icon"></iconify-icon>
                                             <p>Report</p>
@@ -215,7 +231,6 @@
         //         })
         //         });
 
-
                 $(document).on('click', '.unfriend', function(e) {
                 e.preventDefault();
                 alert("ok");
@@ -236,11 +251,6 @@
                 });
     });
 
-    $( document ).ready(function() {
-    $('.social-media-post-header-icon').click(function(){
-            $(this).next().toggle()
-        })
-    })
 </script>
 
 @endpush

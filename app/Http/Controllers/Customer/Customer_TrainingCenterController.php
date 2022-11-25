@@ -340,6 +340,7 @@ class Customer_TrainingCenterController extends Controller
         return redirect()->back();
     }
 
+   
     public function profile_update_cover(Request $request)
     {
 

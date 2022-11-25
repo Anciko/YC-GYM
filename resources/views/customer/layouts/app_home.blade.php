@@ -124,7 +124,7 @@
                                 <input type="file" id="editPostInput" name="editPostInput[]" multiple enctype="multipart/form-data">
                             </div>
 
-                            <button class="addpost-photovideo-clear-btn" type="button" onclick="clearAddPost()">Clear</button>
+                            <button class="addpost-photovideo-clear-btn" type="button" onclick="clearEditPost()">Clear</button>
 
                         </span>
 
@@ -182,9 +182,15 @@
 
                                     @forelse ($left_friends as $friend)
                                     <a  href="{{route('socialmedia.profile',$friend->id)}}" class="social-media-left-friends-row">
-                                        <img src="{{asset('img/customer/imgs/user_default.jpg')}}">
+                                        <?php $profile=$friend->profiles->where('cover_photo',null)->sortByDesc('created_at')->first() ?>
+
+                                            @if ($profile==null)
+                                                <img class="nav-profile-img" src="{{asset('img/customer/imgs/user_default.jpg')}}"/>
+                                            @else
+                                                <img class="nav-profile-img" src="{{asset('storage/post/'.$profile->profile_image)}}"/>
+                                            @endif
                                         <p>{{$friend->name}}</p>
-                                    </a><br>
+                                    </a>
                                     @empty
                                     <p class="text-secondary p-1">No Friend</p>
                                     @endforelse
@@ -491,6 +497,10 @@
                                 $(this).parent().remove();
                             }
 
+                            $(".addpost-photovideo-clear-btn").click(function(){
+                                storedFilesdb = []
+                            })
+
                             $('#edit_form').submit(function(e){
                                 e.preventDefault();
                                 $('#editPostModal'). modal('hide');
@@ -570,24 +580,6 @@
                                 }
 
                             }
-                            // var data={
-                            //             'caption':$('#editPostCaption').val(),
-                            //             'post_id':$('#edit_post_id').val()
-                            //         }
-                            // $.ajax({
-                            //                 type:'POST',
-                            //                 url:url,
-                            //                 data: data,
-                            //                 success:function(data){
-                            //                    Swal.fire({
-                            //                             text: data.success,
-                            //
-                            //                             timer: 5000
-                            //                         }).then(() => {
-                            //                             window.location.reload()
-                            //             })
-                            //                 }
-                            //     });
                         })
 
                         }
@@ -1111,6 +1103,14 @@
         dt.clearData()
         document.getElementById('addPostInput').files = dt.files;
         $(".addpost-photo-video-imgpreview-container").empty();
+    }
+
+    function clearEditPost(){
+        storedFilesEdit = []
+        dtEdit.clearData()
+        document.getElementById('editPostInput').files = dtEdit.files;
+        $(".editpost-photo-video-imgpreview-container").empty();
+
     }
 
 </script>
