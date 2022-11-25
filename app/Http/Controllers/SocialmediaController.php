@@ -321,9 +321,94 @@ class SocialmediaController extends Controller
 
     public function friendsList(){
         $auth = Auth()->user()->id;
+        $id = 2;
+        $friendships=DB::table('friendships')
+        ->where('friend_status',2)
+        ->where(function($query) use ($id){
+            $query->where('sender_id',$id)
+                ->orWhere('receiver_id',$id);
+        })
+        ->join('users as sender','sender.id','friendships.sender_id')
+        ->join('users as receiver','receiver.id','friendships.receiver_id')
+        ->get(['sender_id','receiver_id'])->toArray();
 
-        $last_row = Profile::where('user_id',3)->orderBy('id', 'DESC')->first();
-        dd($last_row);
+        $n= array();
+            foreach($friendships as $friend){
+                    $f=(array)$friend;
+                    array_push($n, $f['sender_id'],$f['receiver_id']);
+            }
+
+        $last_profile =
+        Profile::whereIn('user_id',$n)->where('cover_photo',null)->groupBy('user_id')->orderBy('created_at','DESC')->get()->toArray();
+
+        $friend_request =DB::table('friendships')
+        ->where('friend_status',1)
+        ->where(function($query) use ($auth){
+            $query->where('sender_id',$auth)
+                ->orWhere('receiver_id',$auth);
+        })
+        ->join('users as sender','sender.id','friendships.sender_id')
+        ->join('users as receiver','receiver.id','friendships.receiver_id')
+        ->get(['sender_id','receiver_id'])->toArray();
+        // dd($friend_request);
+        $request= array();
+            foreach($friend_request as $req){
+                    $r=(array)$req;
+                    array_push($request, $r['sender_id'],$r['receiver_id']);
+            }
+
+        $profile_id = DB::table('profiles')
+        ->groupBy('user_id')
+        ->select(DB::raw('max(id) as id'))
+        ->where('cover_photo',null)
+        ->whereIn('user_id',$n)
+        ->get()
+        ->pluck('id')->toArray();
+
+        $request_profile_id = DB::table('profiles')
+        ->groupBy('user_id')
+        ->select(DB::raw('max(id) as id'))
+        ->where('cover_photo',null)
+        ->whereIn('user_id',$request)
+        ->get()
+        ->pluck('id')->toArray();
+
+            $friends = User::select('users.name','users.id','profiles.profile_image','friendships.date','friendships.id as friendships','profiles.id as profiles')
+            ->leftjoin('friendships', function ($join) {
+             $join->on('friendships.receiver_id', '=', 'users.id')
+             ->orOn('friendships.sender_id', '=', 'users.id');})
+             ->leftjoin('profiles', function ($join_profile) {
+                $join_profile->on('users.id', '=','profiles.user_id')
+                ->on('friendships.receiver_id', '=', 'profiles.user_id')
+                ->orOn('friendships.sender_id', '=', 'profiles.user_id');})
+            ->where('receiver_id',$id)
+            ->orWhere('sender_id',$id)
+            ->where('users.id','!=',$id)
+            ->where('friendships.friend_status',2)
+            ->where('cover_photo',null)
+            ->whereIn('profiles.id',$profile_id)
+            ->get()->toArray();
+
+            // $profiles_id = implode(',', $profile_id);
+            $ids = join(",",$profile_id);
+            // dd($ids);
+            $friends = DB::select("SELECT u.name,u.id,f.date,p.profile_image FROM friendships f LEFT JOIN users u
+            on (u.id = f.sender_id or u.id = f.receiver_id)
+            LEFT JOIN profiles p on p.user_id = u.id
+            WHERE  (receiver_id = $id or sender_id = $id )
+            and p.id IN ($ids)
+            and u.id != $id and f.friend_status = 2");
+
+        $friend_requests=Friendship::select('sender.name','sender.id')
+        ->join('users as receiver', 'receiver.id', '=', 'friendships.receiver_id')
+        ->join('users as sender', 'sender.id', '=', 'friendships.sender_id')
+        ->leftJoin('profiles','sender.id','profiles.user_id')
+        ->whereIn('profiles.id',$request_profile_id)
+        ->where('receiver.id',auth()->user()->id)
+        ->where('friend_status',1)
+        ->get()->toArray();
+
+        dd($friends);
         return view('customer.friendlist');
     }
 

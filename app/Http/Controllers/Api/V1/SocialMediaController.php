@@ -202,15 +202,24 @@ class SocialMediaController extends Controller
                     $f=(array)$friend;
                     array_push($n, $f['sender_id'],$f['receiver_id']);
             }
-        // $friends=User::select('users.name','users.id')
-        //    ->whereIn('users.id',$n)
-        //    ->where('users.id','!=',$user->id)
-        //    ->get();
-        $last_row = DB::table('profiles')->where('user_id',$auth)->latest('id')->first();
-        $friends = DB::select("SELECT u.name,u.id,f.date FROM friendships f LEFT JOIN users u on (u.id = f.sender_id or u.id = f.receiver_id)
-        WHERE (receiver_id = $id or sender_id = $id ) and u.id != $id and f.friend_status = 2");
-        $friend_status = DB::select("SELECT * FROM `friendships` WHERE (receiver_id = $auth or sender_id = $auth )
-        AND (receiver_id = $request->id or sender_id = $request->id)");
+            $profile_id = DB::table('profiles')
+            ->groupBy('user_id')
+            ->select(DB::raw('max(id) as id'))
+            ->where('cover_photo',null)
+            ->get()
+            ->pluck('id')->toArray();
+            $ids = join(",",$profile_id);
+            // dd($ids);
+            $friends = DB::select("SELECT u.name,u.id,f.date,p.profile_image FROM friendships f LEFT JOIN users u
+            on (u.id = f.sender_id or u.id = f.receiver_id)
+            LEFT JOIN profiles p on p.user_id = u.id
+            WHERE  (receiver_id = $id or sender_id = $id )
+            and p.id IN ($ids)
+            and u.id != $id and f.friend_status = 2");
+
+            $friend_status = DB::select("SELECT * FROM `friendships` WHERE (receiver_id = $auth or sender_id = $auth )
+            AND (receiver_id = $request->id or sender_id = $request->id)");
+
         return response()->json([
              'user' => $user,
              'friend_status' => $friend_status,
