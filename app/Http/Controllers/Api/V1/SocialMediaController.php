@@ -180,7 +180,31 @@ class SocialMediaController extends Controller
         $auth = Auth()->user()->id;
         $id = $request->id;
 
-        $user = User::where('id',$id)->first();
+        $profile = DB::table('profiles')
+        ->groupBy('user_id')
+        ->select(DB::raw('max(id) as id'))
+        ->where('profiles.profile_image',null)
+        ->where('user_id',$id)
+        ->get()
+        ->pluck('id');
+        $cover = DB::table('users')
+        ->select('profiles.cover_photo')
+        ->leftjoin('profiles', 'profiles.user_id', '=', 'users.id')
+        ->whereIn('profiles.id',$profile)
+        ->where('users.id',$id)
+        ->get();
+
+        $profile = DB::table('users')
+        ->select('users.id','users.name','profiles.profile_image','profiles.cover_photo')
+        ->leftjoin('profiles', 'profiles.id', '=', 'users.profile_id')
+        ->where('users.id',$id)
+        ->get()->toArray();
+
+        foreach($profile as $value){
+            foreach($cover as $cover_index ){
+                $value->cover_photo = $cover_index->cover_photo;
+            }
+        }
 
         $posts=Post::where('user_id',$id)
         ->orderBy('created_at','DESC')
@@ -219,7 +243,7 @@ class SocialMediaController extends Controller
             AND (receiver_id = $request->id or sender_id = $request->id)");
 
         return response()->json([
-             'user' => $user,
+             'user' => $profile,
              'friend_status' => $friend_status,
             'friends' => $friends,
              'posts' => $posts

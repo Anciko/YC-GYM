@@ -361,6 +361,39 @@ class SocialmediaController extends Controller
         ->join('users as receiver','receiver.id','friendships.receiver_id')
         ->get(['sender_id','receiver_id'])->toArray();
 
+        $profile = DB::table('profiles')
+        ->groupBy('user_id')
+        ->select(DB::raw('max(id) as id'))
+        ->where('profiles.profile_image',null)
+        ->where('user_id',$id)
+        ->get()
+        ->pluck('id');
+        $cover = DB::table('users')
+        ->select('profiles.cover_photo')
+        ->leftjoin('profiles', 'profiles.user_id', '=', 'users.id')
+        ->whereIn('profiles.id',$profile)
+        ->where('users.id',$id)
+        ->get();
+
+        $profile = DB::table('users')
+        ->select('users.id','users.name','profiles.profile_image')
+        ->leftjoin('profiles', 'profiles.id', '=', 'users.profile_id')
+        ->where('users.id',$id)
+        ->get()->toArray();
+
+        foreach($profile as $value){
+            foreach($cover as $cover_index ){
+                $value->cover_photo = $cover_index->cover_photo;
+            }
+        }
+
+        $posts=Post::select('users.name','profiles.profile_image','posts.*')
+        ->where('posts.user_id',$id)
+        ->leftJoin('users','users.id','posts.user_id')
+        ->leftJoin('profiles','users.profile_id','profiles.id')
+        ->orderBy('posts.created_at','DESC')
+        ->paginate(30);
+     dd($posts)->toArray();
 
         $n= array();
             foreach($friendships as $friend){
@@ -469,7 +502,7 @@ class SocialmediaController extends Controller
             ->leftJoin('profiles','profiles.id','users.profile_id')
             ->where('receiver_id',auth()->user()->id)
             ->get()->toArray();
-            dd($notification);
+           // dd($notification);
 
             $noti_reqs= array();
             foreach($notification as $req){
