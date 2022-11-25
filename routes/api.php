@@ -140,7 +140,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
 
     Route::post('profile/cover/update', [SocialmediaController::class, 'profile_update_cover']);
     Route::post('profile/image/update', [SocialmediaController::class, 'profile_update_profile_img']);
-
+    Route::post('profile/bio/update', [SocialmediaController::class, 'profile_update_bio']);
 
 });
 

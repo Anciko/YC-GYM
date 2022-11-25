@@ -340,7 +340,7 @@ class Customer_TrainingCenterController extends Controller
         return redirect()->back();
     }
 
-   
+
     public function profile_update_cover(Request $request)
     {
 
@@ -356,6 +356,8 @@ class Customer_TrainingCenterController extends Controller
         $profile->cover_photo=$imgData;
         $profile->user_id=auth()->user()->id;
         $profile->save();
+
+
 
         Alert::success('Success', 'Cover Photo Updated Successfully');
         return redirect()->back();
@@ -375,6 +377,11 @@ class Customer_TrainingCenterController extends Controller
         $profile->profile_image=$imgData;
         $profile->user_id=auth()->user()->id;
         $profile->save();
+
+
+        $user = User::findOrFail(auth()->user()->id);
+        $user->profile_id = $profile->id;
+        $user->update();
 
         Alert::success('Success', 'Profile Photo Updated Successfully');
         return redirect()->back();
