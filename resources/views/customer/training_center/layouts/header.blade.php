@@ -110,16 +110,22 @@
                     </a> --}}
                     <a href ="?id={{$noti->id}}"  class = "accept" id = {{$noti->sender_id}}>
                         <div class="notis-box-noti-row notis-box-unread-noti">
-                            <span>{{$noti->created_at->diffForHumans()}}
-                            </span>
-                            <p>{{$noti->description}}</p>
+                            <img src="{{asset('img/avatar.png')}}">
+                            <div class="notis-box-noti-row-detail">
+                                <span>{{$noti->created_at->diffForHumans()}}
+                                </span>
+                                <p>{{$noti->description}}</p>
+                            </div>
                         </div>
                     </a>
                         @else
                     <a href ="?id={{$noti->id}}"  class = "accept" id = {{$noti->sender_id}}>
                         <div class="notis-box-noti-row ">
-                            <span>{{$noti->created_at->diffForHumans()}}</span>
-                            <p>{{$noti->description}}</p>
+                            <img src="{{asset('img/avatar.png')}}">
+                            <div class="notis-box-noti-row-detail">
+                                <span>{{$noti->created_at->diffForHumans()}}</span>
+                                <p>{{$noti->description}}</p>
+                            </div>
                         </div>
                     </a>
                         @endif
