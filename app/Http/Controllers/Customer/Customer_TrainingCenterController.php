@@ -48,6 +48,8 @@ class Customer_TrainingCenterController extends Controller
     {
         $user_id = auth()->user()->id;
 
+        $user=User::findOrFail($user_id);
+
         $friends=DB::table('friendships')
                     ->where('friend_status',2)
                     ->where(function($query) use ($user_id){
@@ -77,17 +79,17 @@ class Customer_TrainingCenterController extends Controller
 
         $user_profile_cover=Profile::select('cover_photo')
                                 ->where('user_id',$user_id)
-                                ->where('profile_image','')
+                                ->where('profile_image',null)
                                 ->orderBy('created_at','DESC')
                                 ->first();
 
         $user_profile_image=Profile::select('profile_image')
                                 ->where('user_id',$user_id)
-                                ->where('cover_photo','')
+                                ->where('cover_photo',null)
                                 ->orderBy('created_at','DESC')
                                 ->first();
 
-      
+
         if($user_profile_cover==null){
             $user_profile_cover=null;
         }else{
@@ -156,7 +158,7 @@ class Customer_TrainingCenterController extends Controller
             }
         }
 
-        return view('customer.training_center.profile', compact('posts','user_friends','user_profile_cover','user_profile_image','year','workouts', 'workout_date', 'cal_sum', 'time_min', 'time_sec', 'weight_history', 'newDate'));
+        return view('customer.training_center.profile', compact('user','posts','user_friends','user_profile_cover','user_profile_image','year','workouts', 'workout_date', 'cal_sum', 'time_min', 'time_sec', 'weight_history', 'newDate'));
     }
     public function member_plan()
     {
@@ -278,9 +280,9 @@ class Customer_TrainingCenterController extends Controller
 
     public function profile_update(Request $request)
     {
-       $user_id=auth()->user()->id;
-       $current_date = Carbon::now('Asia/Yangon')->toDateString();
-       $user=User::findOrFail($user_id);
+        $user_id=auth()->user()->id;
+        $current_date = Carbon::now('Asia/Yangon')->toDateString();
+        $user=User::findOrFail($user_id);
         $user->weight=$request->weight;
         $user->neck=$request->neck;
         $user->hip=$request->hip;
@@ -325,6 +327,16 @@ class Customer_TrainingCenterController extends Controller
         $user->name=$request->name;
         $user->update();
         Alert::success('Success', 'Name Updated Successfully');
+        return redirect()->back();
+    }
+
+    public function profile_update_bio(Request $request)
+    {
+        $user_id=auth()->user()->id;
+        $user=User::findOrFail($user_id);
+        $user->bio=$request->bio;
+        $user->update();
+        Alert::success('Success', 'Bio Updated Successfully');
         return redirect()->back();
     }
 

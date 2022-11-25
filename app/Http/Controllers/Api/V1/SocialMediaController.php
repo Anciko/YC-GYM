@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use Pusher\Pusher;
 use App\Models\Post;
 use App\Models\User;
+use App\Models\Profile;
 use App\Models\Friendship;
 use App\Models\Notification;
 use Illuminate\Http\Request;
@@ -16,7 +17,39 @@ use Illuminate\Support\Facades\Storage;
 class SocialMediaController extends Controller
 {
     //for user search
+    public function newFeeds(){
+    $user=auth()->user();
+    $user_id=$user->id;
+    $friends=DB::table('friendships')
+                ->where('friend_status',2)
+                ->where(function($query) use ($user_id){
+                    $query->where('sender_id',$user_id)
+                        ->orWhere('receiver_id',$user_id);
+                })
+                ->get(['sender_id','receiver_id'])->toArray();
 
+    if(!empty($friends)){
+        $n= array();
+        foreach($friends as $friend){
+                $f=(array)$friend;
+                array_push($n, $f['sender_id'],$f['receiver_id']);
+        }
+        $posts=Post::whereIn('user_id',$n)
+                    ->orderBy('created_at','DESC')
+                    ->with('user')
+                    ->paginate(30);
+    }else{
+        $n= array();
+        $posts=Post::where('user_id',$user->id)
+                ->orderBy('created_at','DESC')
+                ->with('user')
+                ->paginate(30);
+    }
+    return response()
+    ->json([
+        'data'=>$posts
+    ]);
+    }
     public function search_users(Request $request){
         $users = User::where('name','LIKE','%'.$request->keyword.'%')
                         ->orWhere('phone','LIKE','%'.$request->keyword.'%')->get();
@@ -141,11 +174,14 @@ class SocialMediaController extends Controller
             'message' => 'Declined Success!'
         ]);
     }
+
     public function socialmedia_profile(Request $request)
     {
         $auth = Auth()->user()->id;
         $id = $request->id;
+
         $user = User::where('id',$id)->first();
+
         $posts=Post::where('user_id',$id)
         ->orderBy('created_at','DESC')
         ->with('user')
@@ -166,16 +202,19 @@ class SocialMediaController extends Controller
                     $f=(array)$friend;
                     array_push($n, $f['sender_id'],$f['receiver_id']);
             }
-        $friends=User::whereIn('id',$n)
-            ->where('id','!=',$user->id)
-            ->get();
+        // $friends=User::select('users.name','users.id')
+        //    ->whereIn('users.id',$n)
+        //    ->where('users.id','!=',$user->id)
+        //    ->get();
+        $friends = DB::select("SELECT u.name,u.id,f.date FROM friendships f LEFT JOIN users u on (u.id = f.sender_id or u.id = f.receiver_id)
+        WHERE (receiver_id = $id or sender_id = $id ) and u.id != $id and f.friend_status = 2");
         $friend_status = DB::select("SELECT * FROM `friendships` WHERE (receiver_id = $auth or sender_id = $auth )
         AND (receiver_id = $request->id or sender_id = $request->id)");
         return response()->json([
-            'user' => $user,
-            'friend_status' => $friend_status,
+             'user' => $user,
+             'friend_status' => $friend_status,
             'friends' => $friends,
-            'posts' => $posts
+             'posts' => $posts
         ]);
     }
 
@@ -305,6 +344,9 @@ class SocialMediaController extends Controller
     {
         // dd("ik");
         $post=Post::find($request->id);
+        foreach($post->media as $media){
+
+        }
         if($post)
         {
             return response()->json([
@@ -403,5 +445,35 @@ class SocialMediaController extends Controller
         return response()->json([
             'message'=>'Post Update Successfully',
         ]);
+    }
+
+    public function profile_update_cover(Request $request)
+    {
+            $tmp = $request->cover;
+            $file = base64_decode($tmp);
+            $image_name = $request->name;
+            Storage::disk('local')->put(
+                'public/post/' . $image_name,
+                $file
+            );
+            $profile=new Profile();
+            $profile->cover_photo=$image_name;
+            $profile->user_id=auth()->user()->id;
+            $profile->save();
+    }
+
+    public function profile_update_profile_img(Request $request)
+    {
+        $tmp = $request->profile;
+        $file = base64_decode($tmp);
+        $image_name = $request->name;
+        Storage::disk('local')->put(
+            'public/post/' . $image_name,
+            $file
+        );
+        $profile=new Profile();
+        $profile->profile_image=$image_name;
+        $profile->user_id=auth()->user()->id;
+        $profile->save();
     }
 }

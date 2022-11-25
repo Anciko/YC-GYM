@@ -4,9 +4,10 @@ namespace App\Http\Controllers;
 
 use Carbon\Carbon;
 use Pusher\Pusher;
-use App\Models\BanWord;
 use App\Models\Post;
 use App\Models\User;
+use App\Models\BanWord;
+use App\Models\Profile;
 use App\Models\Friendship;
 use App\Models\NotiFriends;
 use App\Models\Notification;
@@ -53,7 +54,7 @@ class SocialmediaController extends Controller
         //$posts=Post::orderBy('created_at','DESC')->with('user')->paginate(10);
         return view('customer.socialmedia',compact('posts'));
     }
-    public function socialmedia_profile($id )
+    public function socialmedia_profile($id)
     {
         //dd($id);
         $auth = Auth()->user()->id;
@@ -78,12 +79,127 @@ class SocialmediaController extends Controller
                     $f=(array)$friend;
                     array_push($n, $f['sender_id'],$f['receiver_id']);
             }
-        $friends=User::whereIn('id',$n)
+        $friends=User::select('users.name','users.id')
+                         ->whereIn('id',$n)
                         ->where('id','!=',$user->id)
                         ->paginate(6);
         $friend = DB::select("SELECT * FROM `friendships` WHERE (receiver_id = $auth or sender_id = $auth )
                         AND (receiver_id = $id or sender_id = $id)");
         return view('customer.socialmedia_profile',compact('user','posts','friends','friend'));
+    }
+
+    public function profile(Request $request,$id)
+    {
+        $used_id=auth()->user()->id;
+        if($used_id==$id){
+            return redirect()->route('customer-profile');
+        }else{
+            $auth = Auth()->user()->id;
+            $user = User::where('id',$id)->first();
+            $posts=Post::where('user_id',$id)
+                        ->orderBy('created_at','DESC')
+                        ->with('user')
+                        ->paginate(30);
+
+            $friendships=DB::table('friendships')
+                        ->where('friend_status',2)
+                        ->where(function($query) use ($id){
+                            $query->where('sender_id',$id)
+                                ->orWhere('receiver_id',$id);
+                        })
+                        ->join('users as sender','sender.id','friendships.sender_id')
+                        ->join('users as receiver','receiver.id','friendships.receiver_id')
+                        ->get(['sender_id','receiver_id'])->toArray();
+                        //dd($friends);
+            $n= array();
+            foreach($friendships as $friend){
+                        $f=(array)$friend;
+                        array_push($n, $f['sender_id'],$f['receiver_id']);
+                }
+            $friends=User::select('users.name','users.id')
+                            ->whereIn('id',$n)
+                            ->where('id','!=',$user->id)
+                            ->paginate(6);
+            $friend = DB::select("SELECT * FROM `friendships` WHERE (receiver_id = $auth or sender_id = $auth )
+                            AND (receiver_id = $id or sender_id = $id)");
+            return view('customer.socialmedia_profile',compact('user','posts','friends','friend'));
+        }
+    }
+
+    public function social_media_profile(Request $request)
+    {
+        if(!empty($request->noti_id)){
+           $noti =  DB::table('notifications')->where('id',$request->noti_id)->update(['notification_status' => 2]);
+        }
+
+        $id = $request->id;
+        $auth = Auth()->user()->id;
+        $user = User::where('id',$id)->first();
+        $posts=Post::where('user_id',$id)
+                    ->orderBy('created_at','DESC')
+                    ->with('user')
+                    ->paginate(30);
+
+        $friendships=DB::table('friendships')
+                    ->where('friend_status',2)
+                    ->where(function($query) use ($id){
+                        $query->where('sender_id',$id)
+                            ->orWhere('receiver_id',$id);
+                    })
+                    ->join('users as sender','sender.id','friendships.sender_id')
+                    ->join('users as receiver','receiver.id','friendships.receiver_id')
+                    ->get(['sender_id','receiver_id'])->toArray();
+                    //dd($friends);
+        $n= array();
+        foreach($friendships as $friend){
+                    $f=(array)$friend;
+                    array_push($n, $f['sender_id'],$f['receiver_id']);
+            }
+        $friends=User::select('users.name','users.id')
+                         ->whereIn('id',$n)
+                        ->where('id','!=',$user->id)
+                        ->paginate(6);
+        $friend = DB::select("SELECT * FROM `friendships` WHERE (receiver_id = $auth or sender_id = $auth )
+                        AND (receiver_id = $id or sender_id = $id)");
+        return response()->json([
+            'user' => $user,
+            'friend_status' => $friend,
+            'friends' => $friends,
+            'posts' => $posts
+       ]);
+    }
+        // return view('customer.socialmedia_profile',compact('user','posts','friends','friend'));
+
+    public function socialmedia_profile_photos(Request $request)
+    {
+        $user_id=$request->user_id;
+
+        $user=User::findOrFail($user_id);
+
+        $user_profile_cover=Profile::select('cover_photo')
+                                ->where('user_id',$user_id)
+                                ->where('profile_image','')
+                                ->orderBy('created_at','DESC')
+                                ->get();
+
+        $user_profile_image=Profile::select('profile_image')
+                                ->where('user_id',$user_id)
+                                ->where('cover_photo','')
+                                ->orderBy('created_at','DESC')
+                                ->get();
+
+        if($user_profile_cover==null){
+            $user_profile_cover=null;
+        }else{
+            $user_profile_cover=$user_profile_cover;
+        }
+
+        if($user_profile_image==null){
+            $user_profile_image=null;
+        }else{
+            $user_profile_image=$user_profile_image;
+        }
+        return view('customer.socialmedia_profile_photo',compact('user','user_id','user_profile_image','user_profile_cover'));
     }
 
     public function post_update(Request $request)
@@ -221,28 +337,18 @@ class SocialmediaController extends Controller
     }
 
     public function showUser(Request $request){
-
-        // if($request->keyword != ''){
-        //     $users =  User::select('users.name','friendships.receiver_id','friendships.friend_status',
-        //     'users.id','friendships.sender_id')
-        //                     ->leftJoin('friendships','users.id','friendships.sender_id')
-        //                     ->where('name','LIKE','%'.$request->keyword.'%')
-        //                     ->orWhere('phone','LIKE','%'.$request->keyword.'%')->get();
-        // }
         $users = User::where('name','LIKE','%'.$request->keyword.'%')
                         ->orWhere('phone','LIKE','%'.$request->keyword.'%')->get();
-
-
-
-            $friends=DB::table('friendships')
+        $friends=DB::table('friendships')
                         ->get();
-
-        //    $array =  array_push($users, ['friends'=> $friends]);
         return response()->json([
             'users' => $users,
             'friends' => $friends,
-            // 'array' => $array
          ]);
+    }
+
+    public function friendsList(){
+        return view('customer.friendlist');
     }
 
     public function notification_center(){

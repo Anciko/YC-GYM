@@ -6,9 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-
-
-
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 
@@ -53,11 +50,6 @@
 
         <div class="nav-overlay">
         </div>
-
-    <!-- </div> -->
-        {{-- <div style="margin-top:300px;"> @foreach($infos as $user )
-            {{$user->name}}
-            @endforeach </div> --}}
 
             <div class="modal fade" id="addPostModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered">
@@ -189,7 +181,7 @@
                                 <div class="social-media-left-friends-rows-container">
 
                                     @forelse ($left_friends as $friend)
-                                    <a href="{{route('socialmedia.profile',$friend->id)}}" class="social-media-left-friends-row">
+                                    <a  href="{{route('socialmedia.profile',$friend->id)}}" class="social-media-left-friends-row">
                                         <img src="{{asset('img/customer/imgs/user_default.jpg')}}">
                                         <p>{{$friend->name}}</p>
                                     </a>
@@ -354,33 +346,33 @@
     var width = $('#image-slider').width();
     console.log(width)
 
-    function nextImage(newIndex, parent){
-        parent.find('li').eq(newIndex).addClass('next-img').css('left', width).animate({left: 0},600);
-        parent.find('li.active-img').removeClass('active-img').css('left', '0').animate({left: '-100%'},600);
-        parent.find('li.next-img').attr('class', 'active-img');
-    }
-    function prevImage(newIndex, parent){
-        parent.find('li').eq(newIndex).addClass('next-img').css('left', -width).animate({left: 0},600);
-        parent.find('li.active-img').removeClass('active-img').css('left', '0').animate({left: '100%'},600);
-        parent.find('li.next-img').attr('class', 'active-img');
-    }
+        function nextImage(newIndex, parent){
+            parent.find('li').eq(newIndex).addClass('next-img').css('left', width).animate({left: 0},600);
+            parent.find('li.active-img').removeClass('active-img').css('left', '0').animate({left: '-100%'},600);
+            parent.find('li.next-img').attr('class', 'active-img');
+        }
+        function prevImage(newIndex, parent){
+            parent.find('li').eq(newIndex).addClass('next-img').css('left', -width).animate({left: 0},600);
+            parent.find('li.active-img').removeClass('active-img').css('left', '0').animate({left: '100%'},600);
+            parent.find('li.next-img').attr('class', 'active-img');
+        }
 
-    /* Thumbails */
-    // var ThumbailsWidth = ($('#image-slider').width() - 18.5)/7;
-    // $('#thumbnail li').find('img').css('width', ThumbailsWidth);
+        /* Thumbails */
+        // var ThumbailsWidth = ($('#image-slider').width() - 18.5)/7;
+        // $('#thumbnail li').find('img').css('width', ThumbailsWidth);
 
-    $('.social-media-media-slider').hide()
+        $('.social-media-media-slider').hide()
 
-    $(".social-media-media-container").click(function(){
+        $(".social-media-media-container").click(function(){
 
-        $(this).siblings(".social-media-media-slider").show()
-        $(this).hide()
-    })
+            $(this).siblings(".social-media-media-slider").show()
+            $(this).hide()
+        })
 
-    $(".slider-close-icon").click(function(){
-        $(this).closest('.social-media-media-slider').hide()
-        $(this).closest('.social-media-media-slider').siblings('.social-media-media-container').show()
-    })
+        $(".slider-close-icon").click(function(){
+            $(this).closest('.social-media-media-slider').hide()
+            $(this).closest('.social-media-media-slider').siblings('.social-media-media-container').show()
+        })
         //image slider end
 
 
@@ -700,8 +692,8 @@
                                     var status = ''
                                 for(let f = 0; f < res.friends.length; f++){
                                     id = res.users[i].id;
-                                    var url = "{{ route('socialmedia_profile', [':id']) }}";
-                                    url = url.replace(':id', id);
+                                    var url = "{{ route('socialmedia.profile', [':id']) }}";
+                                    url = url.replace(':id',id);
                                     console.log(auth_id)
 
                                     if(res.users[i].id === res.friends[f].receiver_id &&
@@ -1122,17 +1114,48 @@
     }
 
 </script>
+
 <script>
     $(document).ready(function(){
-        console.log("heeeee");
         $('.nav-icon').click(function(){
                 $('.notis-box-container').toggle()
             })
+
+        $(document).on('click', '.accept', function(e) {
+                e.preventDefault();
+                alert("okk")
+                var url = new URL(this.href);
+                var id = url.searchParams.get("id");
+                 console.log(id,"noti_id");
+                var sender_id = $(this).attr("id");
+                console.log(sender_id , "rererer");
+                var social_url = "{{ route('socialmedia.profile', [':id']) }}";
+                social_url = social_url.replace(':id', sender_id);
+
+                var url = "{{ route('social_media_profile') }}";
+                $(".add-member-btn").attr('href','');
+                $.ajaxSetup({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    }
+                });
+                    $.ajax({
+                        type: "POST",
+                        url: url,
+                        datatype: "json",
+                        data : {
+                            id : sender_id,
+                            noti_id : id
+                    },
+                        success: function(data) {
+                            console.log(data)
+                            window.location.href = social_url
+                        }
+                    })
+                });
     })
 </script>
-@push('scripts')
-
-@endpush
+@stack('scripts')
 
   </body>
 </html>

@@ -19,7 +19,6 @@
                     </div>
                 </div>
 
-
                 <div class="social-media-profile-content-container">
 
                     <div id = "addFriclass" class="social-media-profile-btns-container">
@@ -28,13 +27,14 @@
                             <iconify-icon icon="akar-icons:circle-plus" class="add-friend-icon"></iconify-icon>
                             <p>Add friend</p>
                         </button>
-                    @elseif($user->id == auth()->user()->id)
-                        <button class="customer-primary-btn add-friend-btn">
-                            <iconify-icon icon="material-symbols:person-outline" class="add-friend-icon"></iconify-icon>
-                            <p>My self </p>
+                        @elseif($user->id == auth()->user()->id)
+                            <button class="customer-primary-btn add-friend-btn">
+                                <iconify-icon icon="material-symbols:person-outline" class="add-friend-icon"></iconify-icon>
+                                <p>My self </p>
 
-                        </button>
-                    @else @foreach ($friend as $friend_status)
+                            </button>
+                        @else
+                    @foreach ($friend as $friend_status)
                     @if($friend_status->friend_status == 2  )
                         <button class="customer-primary-btn add-friend-btn">
                             <iconify-icon icon="mdi:message-reply-outline" class="add-friend-icon"></iconify-icon>
@@ -101,9 +101,12 @@
                             @endforelse
                         </div>
                     </div>
-
-                    <a href="#" class="social-media-profile-photos-link">Photos</a>
-
+                    <form action="{{route('socialmedia_profile_photos')}}" method="POST">
+                        @csrf
+                        <input type="hidden" value={{$user->id}} name="user_id">
+                        <button type="submit" class="social-media-profile-photos-link">Photos</button>
+                        {{-- <a href="{{route('socialmedia_profile_photos')}}" class="social-media-profile-photos-link">Photos</a> --}}
+                    </form>
                     <div class="social-media-profile-posts-parent-container">
                         <p>Post & Activities</p>
 
