@@ -192,7 +192,7 @@
                                     <a href="{{route('socialmedia.profile',$friend->id)}}" class="social-media-left-friends-row">
                                         <img src="{{asset('img/customer/imgs/user_default.jpg')}}">
                                         <p>{{$friend->name}}</p>
-                                    </a><br>
+                                    </a>
                                     @empty
                                     <p class="text-secondary p-1">No Friend</p>
                                     @endforelse
