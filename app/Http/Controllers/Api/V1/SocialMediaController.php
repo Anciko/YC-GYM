@@ -198,7 +198,7 @@ class SocialMediaController extends Controller
         ->get();
 
         $profile = DB::table('users')
-        ->select('users.id','users.name','profiles.profile_image','profiles.cover_photo')
+        ->select('users.id','users.name','users.bio','profiles.profile_image','profiles.cover_photo')
         ->leftjoin('profiles', 'profiles.id', '=', 'users.profile_id')
         ->where('users.id',$id)
         ->get();

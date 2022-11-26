@@ -372,7 +372,20 @@ class SocialmediaController extends Controller
                     $f=(array)$friend;
                     array_push($n, $f['sender_id'],$f['receiver_id']);
             }
-
+        if($request->keyword != null){
+            $friends = User::select('users.id','users.name','friendships.date','profiles.profile_image')
+            ->leftjoin('friendships', function ($join) {
+                  $join->on('friendships.receiver_id', '=', 'users.id')
+            ->orOn('friendships.sender_id', '=', 'users.id');})
+            ->leftJoin('profiles','profiles.id','users.profile_id')
+            ->where('friendships.friend_status',2)
+            ->where('users.id','!=',$id)
+            ->where('friendships.receiver_id',$id)
+            ->orWhere('friendships.sender_id',$id)
+            ->whereIn('users.id',$n)
+            ->where('users.name','LIKE','%'.$request->keyword.'%')
+            ->paginate(3)->toArray();
+        }
         $friends = User::select('users.id','users.name','friendships.date','profiles.profile_image')
         ->leftjoin('friendships', function ($join) {
               $join->on('friendships.receiver_id', '=', 'users.id')

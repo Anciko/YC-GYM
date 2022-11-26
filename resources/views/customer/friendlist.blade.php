@@ -11,17 +11,7 @@
     </div>
 
     <div class="social-media-fris-list-container">
-     <div class="social-media-fris-fri-row">
-         <div class="social-media-fris-fri-img">
-             <img src="../imgs/trainer2.jpg">
-             <p>Friend Name</p>
-         </div>
 
-         <div class="social-media-fris-fri-btns-container">
-             <a href="#" class="customer-primary-btn">Message</a>
-             <button class="customer-red-btn">Remove</button>
-         </div>
-     </div>
 
     </div>
  </div>
@@ -30,7 +20,59 @@
 @push('scripts')
 <script>
         $(document).ready(function() {
-            
+            $('#search').on('keyup', function(){
+                            search();
+                        });
+                        search();
+                        function search(){
+                            var keyword = $('#search').val();
+                            // console.log(keyword);
+                            var user_id = {{$user->id}};
+                            console.log();
+                            var search_url = "{{ route('friend_search',':id') }}";
+                            search_url = search_url.replace(':id', user_id);
+                            $.post(search_url,
+                            {
+                                _token: $('meta[name="csrf-token"]').attr('content'),
+                                keyword:keyword
+                            },
+                            function(data){
+                                table_post_row(data);
+                                console.log(data);
+                            });
+                        }
+                        // table row with ajax
+                        function table_post_row(res){
+                        let htmlView = '';
+                            if(res.friends.length <= 0){
+                                htmlView+= `
+                                No data found.
+                                `;
+                            }
+                            for(let i = 0; i < res.friends.length; i++){
+                                id = res.friends[i].id;
+
+                                // console.log(url);
+                                htmlView += `
+                                    <div class="social-media-fris-fri-row">
+                                        <div class="social-media-fris-fri-img">
+                                            <img src="../imgs/trainer2.jpg">
+                                            <p>`+res.friends[i].name+`</p>
+                                        </div>
+
+                                        <div class="social-media-fris-fri-btns-container">
+                                            <a href="#" class="customer-primary-btn">Message</a>
+                                            <button class="customer-red-btn">Remove</button>
+                                        </div>
+                                    </div>
+                                    `
+                            }
+                            $('.social-media-fris-list-container').html(htmlView);
+                        }
+
+
+
+
         })
 </script>
 @endpush
