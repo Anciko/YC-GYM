@@ -101,6 +101,7 @@ class SocialmediaController extends Controller
         $user=User::find(auth()->user()->id);
         if($user->profile_id==$request->profile_id){
             $user->profile_id=null;
+            $user->update();
         }
         Profile::find($request->profile_id)->delete($request->profile_id);
 

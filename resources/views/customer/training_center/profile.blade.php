@@ -68,7 +68,7 @@
 <div class="customer-profile-parent-container">
     <div class="customer-cover-photo-container">
 
-        @if($user_profile_cover==null)
+        @if($user_profile_cover==null || auth()->user()->cover_id==null)
         <img class="customer-cover-photo" src="{{asset('image/cover.jpg')}}">
         @else
         <img class="customer-cover-photo" src="{{asset('storage/post/'.$user_profile_cover->cover_photo)}}">
@@ -94,7 +94,7 @@
                     @csrf
                     @method('POST')
                     <div class="customer-profile-img-container">
-                        @if($user_profile_image==null)
+                        @if($user_profile_image==null || auth()->user()->profile_id==null)
                             <img class="customer-profile-img" src="{{asset('img/user.jpg')}}">
                         @else
                         <img class="customer-profile-img" src="{{asset('storage/post/'.$user_profile_image->profile_image)}}" >

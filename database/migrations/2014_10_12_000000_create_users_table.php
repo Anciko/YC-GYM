@@ -57,7 +57,8 @@ class CreateUsersTable extends Migration
 
             // for trainer crud
             $table->string('training_type')->nullable();
-            $table->integer('profile_id')->default(0);
+            $table->integer('profile_id')->nullable();
+            $table->integer('cover_id')->nullable();
             $table->integer('chat_id')->default(0);
             $table->integer('message_id')->default(0);
 
