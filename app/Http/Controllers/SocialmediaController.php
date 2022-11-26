@@ -393,7 +393,14 @@ class SocialmediaController extends Controller
         ->leftJoin('profiles','users.profile_id','profiles.id')
         ->orderBy('posts.created_at','DESC')
         ->paginate(30);
-     dd($posts)->toArray();
+
+
+        $cover_photo = Profile::select('cover_photo')
+        ->where('user_id',$id)->where('profile_image',null)->get();
+        $profile_photo = Profile::select('profile_image')
+        ->where('user_id',$id)->where('cover_photo',null)->get();
+
+        dd($profile_photo)->toArray();
 
         $n= array();
             foreach($friendships as $friend){

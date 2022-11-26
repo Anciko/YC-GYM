@@ -198,17 +198,19 @@ class SocialMediaController extends Controller
         ->select('users.id','users.name','profiles.profile_image','profiles.cover_photo')
         ->leftjoin('profiles', 'profiles.id', '=', 'users.profile_id')
         ->where('users.id',$id)
-        ->get()->toArray();
+        ->get();
 
         foreach($profile as $value){
             foreach($cover as $cover_index ){
                 $value->cover_photo = $cover_index->cover_photo;
             }
         }
-
-        $posts=Post::where('user_id',$id)
-        ->orderBy('created_at','DESC')
-        ->with('user')
+        // $profile = json_decode(json_encode($profile));
+        $posts=Post::select('users.name','profiles.profile_image','posts.*')
+        ->where('posts.user_id',$id)
+        ->leftJoin('users','users.id','posts.user_id')
+        ->leftJoin('profiles','users.profile_id','profiles.id')
+        ->orderBy('posts.created_at','DESC')
         ->paginate(30);
 
         $friendships=DB::table('friendships')
@@ -248,6 +250,18 @@ class SocialMediaController extends Controller
             'friends' => $friends,
              'posts' => $posts
         ]);
+    }
+
+    public function cover_profile_photo(Request $request){
+        $id = $request->id;
+        $cover_photo = Profile::select('cover_photo')
+        ->where('user_id',$id)->where('profile_image',null)->get();
+        $profile_photo = Profile::select('profile_image')
+        ->where('user_id',$id)->where('cover_photo',null)->get();
+        return response()->json([
+            'cover_photo' => $cover_photo,
+            'profile_photo' => $profile_photo,
+       ]);
     }
 
     public function friends(Request $request){
