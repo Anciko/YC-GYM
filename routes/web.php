@@ -105,7 +105,7 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
         Route::post('search_users', [SocialmediaController::class, 'showUser'])->name('search_users');
 
         Route::get('/friendsList/{id}', [SocialmediaController::class, 'friendsList'])->name('friendsList');
-        Route::post('friend/search/{id}', [TrainerManagementConntroller::class, 'friList'])
+        Route::post('friend/search/{id}', [SocialmediaController::class, 'friList'])
         ->name('friend_search');
 
         Route::get('/addUser/{id}', [SocialmediaController::class, 'addUser'])->name('addUser');

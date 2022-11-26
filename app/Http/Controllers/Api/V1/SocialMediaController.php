@@ -238,10 +238,10 @@ class SocialMediaController extends Controller
         ->orOn('friendships.sender_id', '=', 'users.id');})
         ->leftJoin('profiles','profiles.id','users.profile_id')
         ->where('friendships.friend_status',2)
-        ->where('users.id','!=',$id)
         ->where('friendships.receiver_id',$id)
         ->orWhere('friendships.sender_id',$id)
         ->whereIn('users.id',$n)
+        ->where('users.id','!=',$id)
         ->orderBy('users.id', 'desc')->take(6)->get()->toArray();
 
             $friend_status = DB::select("SELECT * FROM `friendships` WHERE (receiver_id = $auth or sender_id = $auth )
