@@ -43,21 +43,21 @@
                         }
                         // table row with ajax
                         function table_post_row(res){
+                            console.log(res.friends.data)
                         let htmlView = '';
-                            if(res.friends.length <= 0){
+                            if(res.friends.data.length <= 0){
                                 htmlView+= `
                                 No data found.
                                 `;
                             }
-                            for(let i = 0; i < res.friends.length; i++){
-                                id = res.friends[i].id;
+                            for(let i = 0; i < res.friends.data.length; i++){
+                                id = res.friends.data[i].id;
 
-                                // console.log(url);
                                 htmlView += `
                                     <div class="social-media-fris-fri-row">
                                         <div class="social-media-fris-fri-img">
                                             <img src="../imgs/trainer2.jpg">
-                                            <p>`+res.friends[i].name+`</p>
+                                            <p>`+res.friends.data[i].name+`</p>
                                         </div>
 
                                         <div class="social-media-fris-fri-btns-container">
