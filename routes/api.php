@@ -127,11 +127,13 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::post('confirmRequest', [SocialmediaController::class, 'confirmRequest']);//
     Route::post('socialmedia_profile', [SocialmediaController::class, 'socialmedia_profile']);//
 
+    Route::post('cover_profile_photo', [SocialmediaController::class, 'cover_profile_photo']);//
+
     Route::post('friends', [SocialmediaController::class, 'friends']);//
 
     Route::get('notification', [SocialmediaController::class, 'notification']);
 
-    Route::post('/viewFriendRequestNoti', [SocialmediaController::class, 'viewFriendRequestNoti'])->name('viewFriendRequestNoti');
+    Route::post('viewFriendRequestNoti', [SocialmediaController::class, 'viewFriendRequestNoti'])->name('viewFriendRequestNoti');
 
     Route::get('friend_request', [SocialmediaController::class, 'friend_request']);
     Route::get('newFeeds', [SocialmediaController::class, 'newFeeds']);

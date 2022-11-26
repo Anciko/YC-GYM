@@ -34,16 +34,19 @@ class SocialMediaController extends Controller
                 $f=(array)$friend;
                 array_push($n, $f['sender_id'],$f['receiver_id']);
         }
-        $posts=Post::whereIn('user_id',$n)
-                    ->orderBy('created_at','DESC')
-                    ->with('user')
-                    ->paginate(30);
+        $posts=Post::select('users.name','profiles.profile_image','posts.*')
+        ->whereIn('posts.user_id',$n)
+        ->leftJoin('users','users.id','posts.user_id')
+        ->leftJoin('profiles','users.profile_id','profiles.id')
+        ->orderBy('posts.created_at','DESC')
+        ->paginate(30);
     }else{
-        $n= array();
-        $posts=Post::where('user_id',$user->id)
-                ->orderBy('created_at','DESC')
-                ->with('user')
-                ->paginate(30);
+        $posts=Post::select('users.name','profiles.profile_image','posts.*')
+        ->where('posts.user_id',$user->id)
+        ->leftJoin('users','users.id','posts.user_id')
+        ->leftJoin('profiles','users.profile_id','profiles.id')
+        ->orderBy('posts.created_at','DESC')
+        ->paginate(30);
     }
     return response()
     ->json([
@@ -180,11 +183,37 @@ class SocialMediaController extends Controller
         $auth = Auth()->user()->id;
         $id = $request->id;
 
-        $user = User::where('id',$id)->first();
+        $profile = DB::table('profiles')
+        ->groupBy('user_id')
+        ->select(DB::raw('max(id) as id'))
+        ->where('profiles.profile_image',null)
+        ->where('user_id',$id)
+        ->get()
+        ->pluck('id');
+        $cover = DB::table('users')
+        ->select('profiles.cover_photo')
+        ->leftjoin('profiles', 'profiles.user_id', '=', 'users.id')
+        ->whereIn('profiles.id',$profile)
+        ->where('users.id',$id)
+        ->get();
 
-        $posts=Post::where('user_id',$id)
-        ->orderBy('created_at','DESC')
-        ->with('user')
+        $profile = DB::table('users')
+        ->select('users.id','users.name','users.bio','profiles.profile_image','profiles.cover_photo')
+        ->leftjoin('profiles', 'profiles.id', '=', 'users.profile_id')
+        ->where('users.id',$id)
+        ->get();
+
+        foreach($profile as $value){
+            foreach($cover as $cover_index ){
+                $value->cover_photo = $cover_index->cover_photo;
+            }
+        }
+        // $profile = json_decode(json_encode($profile));
+        $posts=Post::select('users.name','profiles.profile_image','posts.*')
+        ->where('posts.user_id',$id)
+        ->leftJoin('users','users.id','posts.user_id')
+        ->leftJoin('profiles','users.profile_id','profiles.id')
+        ->orderBy('posts.created_at','DESC')
         ->paginate(30);
 
         $friendships=DB::table('friendships')
@@ -204,26 +233,39 @@ class SocialMediaController extends Controller
             }
 
         $friends = User::select('users.id','users.name','friendships.date','profiles.profile_image')
-        ->leftjoin('friendships', function ($join) {
-              $join->on('friendships.receiver_id', '=', 'users.id')
-        ->orOn('friendships.sender_id', '=', 'users.id');})
-        ->leftJoin('profiles','profiles.id','users.profile_id')
-        ->where('friendships.friend_status',2)
-        ->where('users.id','!=',$id)
-        ->where('friendships.receiver_id',$id)
-        ->orWhere('friendships.sender_id',$id)
-        ->whereIn('users.id',$n)
-        ->orderBy('users.id', 'desc')->take(6)->get()->toArray();
+            ->leftjoin('friendships', function ($join) {
+                  $join->on('friendships.receiver_id', '=', 'users.id')
+            ->orOn('friendships.sender_id', '=', 'users.id');})
+            ->leftJoin('profiles','profiles.id','users.profile_id')
+            ->where('users.id','!=',$id)
+            ->where('friendships.friend_status',2)
+            ->where('friendships.receiver_id',$id)
+            ->orWhere('friendships.sender_id',$id)
+            ->whereIn('users.id',$n)
+            ->where('users.id','!=',$id)
+            ->paginate(3)->toArray();
 
             $friend_status = DB::select("SELECT * FROM `friendships` WHERE (receiver_id = $auth or sender_id = $auth )
             AND (receiver_id = $request->id or sender_id = $request->id)");
 
         return response()->json([
-             'user' => $user,
+             'user' => $profile,
              'friend_status' => $friend_status,
             'friends' => $friends,
              'posts' => $posts
         ]);
+    }
+
+    public function cover_profile_photo(Request $request){
+        $id = $request->id;
+        $cover_photo = Profile::select('cover_photo')
+        ->where('user_id',$id)->where('profile_image',null)->get();
+        $profile_photo = Profile::select('profile_image')
+        ->where('user_id',$id)->where('cover_photo',null)->get();
+        return response()->json([
+            'cover_photo' => $cover_photo,
+            'profile_photo' => $profile_photo,
+       ]);
     }
 
     public function friends(Request $request){
@@ -244,17 +286,18 @@ class SocialMediaController extends Controller
                     array_push($n, $f['sender_id'],$f['receiver_id']);
             }
 
-        $friends = User::select('users.id','users.name','friendships.date','profiles.profile_image')
-        ->leftjoin('friendships', function ($join) {
-              $join->on('friendships.receiver_id', '=', 'users.id')
-        ->orOn('friendships.sender_id', '=', 'users.id');})
-        ->leftJoin('profiles','profiles.id','users.profile_id')
-        ->where('friendships.friend_status',2)
-        ->where('users.id','!=',$id)
-        ->where('friendships.receiver_id',$id)
-        ->orWhere('friendships.sender_id',$id)
-        ->whereIn('users.id',$n)
-        ->paginate(3)->toArray();
+            $friends = User::select('users.id','users.name','friendships.date','profiles.profile_image')
+            ->leftjoin('friendships', function ($join) {
+                  $join->on('friendships.receiver_id', '=', 'users.id')
+            ->orOn('friendships.sender_id', '=', 'users.id');})
+            ->leftJoin('profiles','profiles.id','users.profile_id')
+            ->where('users.id','!=',$id)
+            ->where('friendships.friend_status',2)
+            ->where('friendships.receiver_id',$id)
+            ->orWhere('friendships.sender_id',$id)
+            ->whereIn('users.id',$n)
+            ->where('users.id','!=',$id)
+            ->paginate(3)->toArray();
         return response()->json([
            'friends' => $friends
        ]);

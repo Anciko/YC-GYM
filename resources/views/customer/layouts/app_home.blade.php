@@ -175,9 +175,8 @@
                             <div class="social-media-left-friends-container">
                                 <div class="social-media-left-container-header">
                                     <p>Friends</p>
-                                    <a href="#">See All <iconify-icon icon="bi:arrow-right" class="arrow-icon"></iconify-icon></a>
+                                    <a href="{{route('friendsList',auth()->user()->id)}}">See All <iconify-icon icon="bi:arrow-right" class="arrow-icon"></iconify-icon></a>
                                 </div>
-
                                 <div class="social-media-left-friends-rows-container">
 
                                     @forelse ($left_friends as $friend)
