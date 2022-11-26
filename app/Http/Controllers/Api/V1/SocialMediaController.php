@@ -291,10 +291,10 @@ class SocialMediaController extends Controller
         ->orOn('friendships.sender_id', '=', 'users.id');})
         ->leftJoin('profiles','profiles.id','users.profile_id')
         ->where('friendships.friend_status',2)
-        ->where('users.id','!=',$id)
         ->where('friendships.receiver_id',$id)
         ->orWhere('friendships.sender_id',$id)
         ->whereIn('users.id',$n)
+        ->where('users.id','!=',$id)
         ->paginate(3)->toArray();
         return response()->json([
            'friends' => $friends
