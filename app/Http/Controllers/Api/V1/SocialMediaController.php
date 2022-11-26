@@ -34,16 +34,19 @@ class SocialMediaController extends Controller
                 $f=(array)$friend;
                 array_push($n, $f['sender_id'],$f['receiver_id']);
         }
-        $posts=Post::whereIn('user_id',$n)
-                    ->orderBy('created_at','DESC')
-                    ->with('user')
-                    ->paginate(30);
+        $posts=Post::select('users.name','profiles.profile_image','posts.*')
+        ->whereIn('posts.user_id',$n)
+        ->leftJoin('users','users.id','posts.user_id')
+        ->leftJoin('profiles','users.profile_id','profiles.id')
+        ->orderBy('posts.created_at','DESC')
+        ->paginate(30);
     }else{
-        $n= array();
-        $posts=Post::where('user_id',$user->id)
-                ->orderBy('created_at','DESC')
-                ->with('user')
-                ->paginate(30);
+        $posts=Post::select('users.name','profiles.profile_image','posts.*')
+        ->where('posts.user_id',$user->id)
+        ->leftJoin('users','users.id','posts.user_id')
+        ->leftJoin('profiles','users.profile_id','profiles.id')
+        ->orderBy('posts.created_at','DESC')
+        ->paginate(30);
     }
     return response()
     ->json([

@@ -348,9 +348,15 @@ class SocialmediaController extends Controller
          ]);
     }
 
-    public function friendsList(){
-        $auth = Auth()->user()->id;
-        $id = 3;
+    public function friendsList(Request $request){
+        // dd($request->user_id);
+        $id = $request->id;
+        $user = User::select('id','name')->where('id',$id)->first();
+        return view('customer.friendlist',compact('user'));
+    }
+    public function friList(Request $request){
+        dd($request->id);
+        $id = $request->id;
         $friendships=DB::table('friendships')
         ->where('friend_status',2)
         ->where(function($query) use ($id){
@@ -360,88 +366,14 @@ class SocialmediaController extends Controller
         ->join('users as sender','sender.id','friendships.sender_id')
         ->join('users as receiver','receiver.id','friendships.receiver_id')
         ->get(['sender_id','receiver_id'])->toArray();
-
-        $profile = DB::table('profiles')
-        ->groupBy('user_id')
-        ->select(DB::raw('max(id) as id'))
-        ->where('profiles.profile_image',null)
-        ->where('user_id',$id)
-        ->get()
-        ->pluck('id');
-        $cover = DB::table('users')
-        ->select('profiles.cover_photo')
-        ->leftjoin('profiles', 'profiles.user_id', '=', 'users.id')
-        ->whereIn('profiles.id',$profile)
-        ->where('users.id',$id)
-        ->get();
-
-        $profile = DB::table('users')
-        ->select('users.id','users.name','profiles.profile_image')
-        ->leftjoin('profiles', 'profiles.id', '=', 'users.profile_id')
-        ->where('users.id',$id)
-        ->get()->toArray();
-
-        foreach($profile as $value){
-            foreach($cover as $cover_index ){
-                $value->cover_photo = $cover_index->cover_photo;
-            }
-        }
-
-        $posts=Post::select('users.name','profiles.profile_image','posts.*')
-        ->where('posts.user_id',$id)
-        ->leftJoin('users','users.id','posts.user_id')
-        ->leftJoin('profiles','users.profile_id','profiles.id')
-        ->orderBy('posts.created_at','DESC')
-        ->paginate(30);
-
-
-        $cover_photo = Profile::select('cover_photo')
-        ->where('user_id',$id)->where('profile_image',null)->get();
-        $profile_photo = Profile::select('profile_image')
-        ->where('user_id',$id)->where('cover_photo',null)->get();
-
-        dd($profile_photo)->toArray();
-
+        //dd($friends);
         $n= array();
             foreach($friendships as $friend){
                     $f=(array)$friend;
                     array_push($n, $f['sender_id'],$f['receiver_id']);
             }
-        // dd($n);
-        $last_profile =
-        Profile::whereIn('user_id',$n)->where('cover_photo',null)->groupBy('user_id')->orderBy('created_at','DESC')->get()->toArray();
 
-        $friend_request =DB::table('friendships')
-        ->where('friend_status',1)
-        ->where(function($query) use ($auth){
-            $query->where('sender_id',$auth)
-                ->orWhere('receiver_id',$auth);
-        })
-        ->join('users as sender','sender.id','friendships.sender_id')
-        ->join('users as receiver','receiver.id','friendships.receiver_id')
-        ->get(['sender_id','receiver_id'])->toArray();
-        // dd($friend_request);
-        $request= array();
-            foreach($friend_request as $req){
-                    $r=(array)$req;
-                    array_push($request, $r['sender_id'],$r['receiver_id']);
-            }
-
-        $profile_id = DB::table('profiles')
-        ->groupBy('user_id')
-        ->select(DB::raw('max(id) as id'))
-        ->where('cover_photo',null)
-        ->whereIn('user_id',$n)
-        ->get()
-        ->pluck('id')->toArray();
-
-        $profiles = DB::table('profiles')
-        ->select('profiles.id','profiles.user_id','profiles.profile_image')
-        ->whereIn('id',$profile_id)
-        ->get();
-
-
-        $friends = User::select('users.id','users.name','friendships.date','profiles.profile_image','friendships.id as fri')
+        $friends = User::select('users.id','users.name','friendships.date','profiles.profile_image')
         ->leftjoin('friendships', function ($join) {
               $join->on('friendships.receiver_id', '=', 'users.id')
         ->orOn('friendships.sender_id', '=', 'users.id');})
@@ -450,84 +382,12 @@ class SocialmediaController extends Controller
         ->where('users.id','!=',$id)
         ->where('friendships.receiver_id',$id)
         ->orWhere('friendships.sender_id',$id)
-        ->whereIn('profiles.id',$profile_id)
         ->whereIn('users.id',$n)
         ->paginate(3)->toArray();
 
-      //  dd($friends);
-
-
-        $request_profile_id = DB::table('profiles')
-        ->groupBy('user_id')
-        ->select(DB::raw('max(id) as id'))
-        ->where('cover_photo',null)
-        ->whereIn('user_id',$request)
-        ->get()
-        ->pluck('id')->toArray();
-
-        // dd($request,$request_profile_id );
-
-          //  $friends = User::select('users.name','users.id','friendships.date')
-            // ->leftjoin('friendships', function ($join) {
-            //  $join->on('friendships.receiver_id', '=', 'users.id')
-            //  ->orOn('friendships.sender_id', '=', 'users.id');})
-           // ->leftjoin
-           // ->leftjoin('profiles','profiles.user_id','users.id')
-           // ->whereIn('users.id',$n)
-           // ->whereIn('profiles.id',$profile_id)
-           // ->get()->toArray();
-            // dd($friends);
-            //  dd($n);
-            // dd($profile_id);
-              $items = DB::table('users')->select('users.id','users.name')
-              ->leftJoin('profiles','users.id','profiles.user_id')
-              ->whereIn('users.id',$n)
-              ->whereIn('profiles.id',$profile_id)->paginate(5);
-              //dd($items);
-            //$profiles_id = implode(',', $profile_id);
-            if(empty($request_profile_id)){
-                $friend_requests = DB::select("SELECT u.name,u.id,f.date,p.profile_image FROM friendships f
-                LEFT JOIN users u
-                on (u.id = f.sender_id)
-                LEFT JOIN profiles p on p.user_id = u.id
-                where  (receiver_id = $auth)
-                and f.friend_status = 1");
-            }
-            else{
-                 $ids = join(",",$request_profile_id);
-                $friend_requests = DB::select("SELECT u.name,u.id,f.date,p.profile_image FROM friendships f
-                LEFT JOIN users u
-                on (u.id = f.sender_id)
-                LEFT JOIN profiles p on p.user_id = u.id
-                and p.id IN ($ids)
-                where  (receiver_id = $auth)
-                and f.friend_status = 1");
-            }
-
-            $notification=Notification::select('users.id as user_id','users.name','notifications.*','profiles.profile_image')
-            ->leftJoin('users','notifications.sender_id', '=', 'users.id')
-            ->leftJoin('profiles','profiles.id','users.profile_id')
-            ->where('receiver_id',auth()->user()->id)
-            ->get()->toArray();
-           // dd($notification);
-
-            $noti_reqs= array();
-            foreach($notification as $req){
-                    $r=(array)$req;
-                    array_push($noti_reqs, $r['sender_id']);
-            }
-            $noti_profile_id = DB::table('profiles')
-            ->groupBy('user_id')
-            ->select(DB::raw('max(id) as id'))
-            ->where('cover_photo',null)
-            ->whereIn('user_id',$noti_reqs)
-            ->get()
-            ->pluck('id')->toArray();
-
-            // $noti = Notification::where('')
-            // dd($noti_profile_id);
-
-        return view('customer.friendlist');
+        return response()->json([
+           'friends' => $friends
+       ]);
     }
 
     public function notification_center(){
