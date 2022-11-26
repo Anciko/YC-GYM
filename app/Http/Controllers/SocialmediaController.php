@@ -11,6 +11,7 @@ use App\Models\Profile;
 use App\Models\Friendship;
 use App\Models\NotiFriends;
 use App\Models\Notification;
+use App\Models\UserReactPost;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use RealRashid\SweetAlert\Facades\Alert;
@@ -54,6 +55,60 @@ class SocialmediaController extends Controller
         //$posts=Post::orderBy('created_at','DESC')->with('user')->paginate(10);
         return view('customer.socialmedia',compact('posts'));
     }
+
+    public function user_react_post(Request $request)
+    {
+        $post_id=$request['post_id'];
+        $isLike=$request['isLike'] === true;
+
+        $update=false;
+        $post=Post::findOrFail($post_id);
+
+        if(!$post){
+            return null;
+        }
+        $user=auth()->user();
+        $react=$user->user_reacted_posts()->where('post_id',$post_id)->first();
+
+        if($react){
+            $already_like=true;
+            $update=true;
+                if($already_like==$isLike){
+                    $react->delete();
+                    return null;
+                }
+        }else{
+                $react=new UserReactPost();
+            }
+            $react->user_id=$user->id;
+            $react->post_id=$post_id;
+            $react->reacted_status=true;
+
+            if($update==true){
+                $react->update();
+            }else{
+                $react->save();
+            }
+            return null;
+    }
+
+    public function profile_photo_delete(Request $request)
+    {
+        // $profile=Profile::find($request->profile_id);
+        // $profile->profile_image=null;
+        // $profile->cover_photo=null;
+        // $profile->update();
+        $user=User::find(auth()->user()->id);
+        if($user->profile_id==$request->profile_id){
+            $user->profile_id=null;
+        }
+        Profile::find($request->profile_id)->delete($request->profile_id);
+
+        return response()->json([
+            'success' => 'Profile deleted successfully!'
+        ]);
+    }
+
     public function socialmedia_profile($id)
     {
         //dd($id);
