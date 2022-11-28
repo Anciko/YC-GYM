@@ -173,8 +173,6 @@ class SocialmediaController extends Controller
                 'save' => 'Saved Post Successfully',
                 ]);
         }
-
-
     }
 
     public function profile(Request $request,$id)

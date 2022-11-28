@@ -148,6 +148,8 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::post('profile/bio/update', [SocialmediaController::class, 'profile_update_bio']);
     Route::post('/profile/photo/delete', [SocialmediaController::class, 'profile_photo_delete']);
 
+    
+
 });
 
 Route::get('test', [AuthController::class, 'test']);
