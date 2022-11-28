@@ -28,17 +28,13 @@
                         <iconify-icon icon="bi:three-dots-vertical" class="social-media-post-header-icon"></iconify-icon>
 
                         <div class="post-actions-container">
-                            <div class="post-action">
-                                {{-- <a href="#"> --}}
+                            <a href="#" style="text-decoration:none" class="post_save" id="{{$post->id}}">
+                                <div class="post-action">
                                     <iconify-icon icon="bi:save" class="post-action-icon"></iconify-icon>
-                                    <p>Save</p>
-                                {{-- </a> --}}
-                            </div>
-                            {{-- <form action="{{ route('category.destroy',$post->id) }}" method="POST">
-                                @csrf
-                                @method('POST')
-                                <button type="submit">Delete</button>
-                            </form> --}}
+                                        <p class="save">Save</p>
+                                        <p class="unsave">Unsave</p>
+                                </div>
+                            </a>
                         @if ($post->user->id == auth()->user()->id)
 
                             <a id="edit_post" data-id="{{$post->id}}" data-bs-toggle="modal" >
@@ -153,6 +149,8 @@
 @push('scripts')
 <script>
     $(document).ready(function() {
+        $('.unsave').hide();
+        $('.save').show();
         $('.like').click(function(e){
             e.preventDefault();
             var isLike=e.target.previousElementSibiling == null ? true : false;
@@ -169,6 +167,47 @@
                         method: "POST",
                         url: add_url,
                         data:{ isLike : isLike , post_id: post_id }
+                    })
+
+
+        })
+
+        $('.post_save').click(function(e){
+            e.preventDefault();
+
+            var post_id=$(this).attr('id');
+            var add_url = "{{ route('socialmedia.post.save', [':post_id']) }}";
+            add_url = add_url.replace(':post_id', post_id);
+
+                    $.ajax({
+                        method: "GET",
+                        url: add_url,
+                        data:{
+                                post_id : post_id
+                            },
+                            success: function(data) {
+                                // window.location.reload();
+                                if(data.save){
+                                    Swal.fire({
+                                        text: data.save,
+                                        timerProgressBar: true,
+                                        timer: 5000,
+                                        icon: 'success',
+                                    });
+                                    $('.unsave').show();
+                                    $('.save').hide();
+                                }else{
+                                    Swal.fire({
+                                        text: data.unsave,
+                                        timerProgressBar: true,
+                                        timer: 5000,
+                                        icon: 'success',
+                                    });
+                                    $('.unsave').hide();
+                                    $('.save').show();
+                                }
+
+                            }
                     })
 
 
