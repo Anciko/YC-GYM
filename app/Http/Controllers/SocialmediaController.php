@@ -350,45 +350,13 @@ class SocialmediaController extends Controller
 
     public function friendsList(Request $request){
         //dd($request->user_id);
-        // $id = $request->id;
-        // $user = User::select('id','name')->where('id',$id)->first();
-
-        $id =3;
-        $friendships=DB::table('friendships')
-        ->where('friend_status',2)
-        ->where(function($query) use ($id){
-            $query->where('sender_id',$id)
-                ->orWhere('receiver_id',$id);
-        })
-        ->join('users as sender','sender.id','friendships.sender_id')
-        ->join('users as receiver','receiver.id','friendships.receiver_id')
-        ->get(['sender_id','receiver_id'])->toArray();
-
-        $n= array();
-            foreach($friendships as $friend){
-                    $f=(array)$friend;
-                    array_push($n, $f['sender_id'],$f['receiver_id']);
-            }
-
-        // dd($n);
-        $friends = User::select('users.id','users.name','friendships.date','profiles.profile_image')
-        ->leftjoin('friendships', function ($join) {
-              $join->on('friendships.receiver_id', '=', 'users.id')
-        ->orOn('friendships.sender_id', '=', 'users.id');})
-        ->leftJoin('profiles','profiles.id','users.profile_id')
-        ->where('users.id','!=',$id)
-        ->where('friendships.friend_status',2)
-        ->where('friendships.receiver_id',$id)
-        ->orWhere('friendships.sender_id',$id)
-        ->whereIn('users.id',$n)
-        ->where('users.id','!=',$id)
-        ->paginate(3)->toArray();
-        dd($friends);
+         $id = $request->id;
+         $user = User::select('id','name')->where('id',$id)->first();
 
         return view('customer.friendlist',compact('user'));
     }
     public function friList(Request $request){
-        // dd($request->id);
+        //dd($request->keyword);
         $id = $request->id;
         $friendships=DB::table('friendships')
         ->where('friend_status',2)
@@ -405,31 +373,38 @@ class SocialmediaController extends Controller
                     $f=(array)$friend;
                     array_push($n, $f['sender_id'],$f['receiver_id']);
             }
-        if($request->keyword != null){
+        if($request->keyword != ''){
             $friends = User::select('users.id','users.name','friendships.date','profiles.profile_image')
             ->leftjoin('friendships', function ($join) {
                   $join->on('friendships.receiver_id', '=', 'users.id')
             ->orOn('friendships.sender_id', '=', 'users.id');})
             ->leftJoin('profiles','profiles.id','users.profile_id')
+            ->where('users.name','LIKE','%'.$request->keyword.'%')
+            ->where('users.id','!=',$id)
             ->where('friendships.friend_status',2)
             ->where('friendships.receiver_id',$id)
             ->orWhere('friendships.sender_id',$id)
             ->whereIn('users.id',$n)
             ->where('users.id','!=',$id)
             ->where('users.name','LIKE','%'.$request->keyword.'%')
-            ->paginate(3)->toArray();
+            ->get();
+            // dd($friends);
+            return response()->json([
+                'friends' => $friends
+            ]);
         }
-        $friends = User::select('users.id','users.name','friendships.date','profiles.profile_image')
-        ->leftjoin('friendships', function ($join) {
-              $join->on('friendships.receiver_id', '=', 'users.id')
-        ->orOn('friendships.sender_id', '=', 'users.id');})
-        ->leftJoin('profiles','profiles.id','users.profile_id')
-        ->where('friendships.friend_status',2)
-        ->where('friendships.receiver_id',$id)
-        ->orWhere('friendships.sender_id',$id)
-        ->whereIn('users.id',$n)
-        ->where('users.id','!=',$id)
-        ->paginate(3)->toArray();
+            $friends = User::select('users.id','users.name','friendships.date','profiles.profile_image')
+            ->leftjoin('friendships', function ($join) {
+                $join->on('friendships.receiver_id', '=', 'users.id')
+            ->orOn('friendships.sender_id', '=', 'users.id');})
+            ->leftJoin('profiles','profiles.id','users.profile_id')
+            ->where('users.id','!=',$id)
+            ->where('friendships.friend_status',2)
+            ->where('friendships.receiver_id',$id)
+            ->orWhere('friendships.sender_id',$id)
+            ->whereIn('users.id',$n)
+            ->where('users.id','!=',$id)
+            ->get();
 
         return response()->json([
            'friends' => $friends
@@ -521,7 +496,10 @@ class SocialmediaController extends Controller
                                             ->where('receiver_id',$request->id)
                                             ->where('post_id',null);
         $noti_delete_sender->delete();
-        return redirect()->back();
+        return response()
+        ->json([
+            'data'=>'Success'
+        ]);
     }
 
     public function confirmRequest(Request $request){

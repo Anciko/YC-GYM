@@ -93,7 +93,7 @@
                             @else
                             <p>{{count($friends)}} Friend</p>
                             @endif
-                            <a href="#">
+                            <a href="{{route('friendsList',$user->id)}}">
                                 See All
                                 <iconify-icon icon="bi:arrow-right" class="arrow-icon"></iconify-icon>
                             </a>
@@ -144,7 +144,7 @@
                                             <a href="{{route('socialmedia.profile',$post->user_id)}}" style="text-decoration:none">
                                                 <p>{{$post->user->name}}</p>
                                             </a>
-                                            <span>{{ \Carbon\Carbon::parse($post->created_at)->format('d M Y , g:i A')}}</span>
+                                            <span>{{\Carbon\Carbon::parse($post->created_at)->format('d M Y , g:i A')}}</span>
                                         </div>
 
 
