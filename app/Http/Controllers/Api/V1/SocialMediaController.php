@@ -630,6 +630,14 @@ class SocialMediaController extends Controller
                 ]);
         }
     }
+    public function saved_post(){
+        $saved_post = UserSavedPost::select('posts.*')->leftJoin('posts','posts.id','user_saved_posts.post_id')
+                        ->where('user_saved_posts.user_id',auth()->user()->id)
+                        ->get();
+        return response()->json([
+            'save' => $saved_post
+            ]);
+    }
 
     public function profile_update_cover(Request $request)
     {

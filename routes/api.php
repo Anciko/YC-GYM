@@ -137,12 +137,12 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
 
     Route::get('friend_request', [SocialmediaController::class, 'friend_request']);
     Route::get('newFeeds', [SocialmediaController::class, 'newFeeds']);
+    Route::get('saved_post',[SocialmediaController::class, 'saved_post']);
 
     Route::post('post_create', [SocialmediaController::class, 'post_store']);
     Route::post('post_delete', [SocialmediaController::class, 'post_destroy']);
     Route::post('post_edit', [SocialmediaController::class, 'post_edit']);
     Route::post('post_update', [SocialmediaController::class, 'post_update']);
-
     Route::post('post_save', [SocialmediaController::class, 'post_save']);
 
     Route::post('profile/cover/update', [SocialmediaController::class, 'profile_update_cover']);
