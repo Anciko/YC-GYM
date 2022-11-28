@@ -606,6 +606,9 @@ class SocialMediaController extends Controller
             $profile->cover_photo=$image_name;
             $profile->user_id=auth()->user()->id;
             $profile->save();
+            $user = User::findOrFail(auth()->user()->id);
+            $user->cover_id = $profile->id;
+            $user->update();
             return response()->json([
                 'message'=>'Success',
             ]);
@@ -638,6 +641,7 @@ class SocialMediaController extends Controller
         $user_id=auth()->user()->id;
         $user=User::findOrFail($user_id);
         $user->bio=$request->bio;
+        $user->update();
         return response()->json([
             'message'=>'Success',
         ]);
