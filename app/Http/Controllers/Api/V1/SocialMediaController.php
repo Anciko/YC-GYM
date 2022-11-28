@@ -10,6 +10,7 @@ use App\Models\Profile;
 use App\Models\Friendship;
 use App\Models\Notification;
 use Illuminate\Http\Request;
+use App\Models\UserSavedPost;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Storage;
@@ -538,6 +539,9 @@ class SocialMediaController extends Controller
 
     }
 
+
+
+
     elseif($input['addPostInput'] == null && $input['caption'] ==null){
         $caption=$input['caption'];
         $updateFilenames = $input['filenames'];
@@ -597,6 +601,34 @@ class SocialMediaController extends Controller
         return response()->json([
             'message'=>'Post Update Successfully',
         ]);
+    }
+
+
+    public function post_save(Request $request)
+    {
+        $post_id=$request['post_id'];
+        $user=auth()->user();
+        $user_save_post=new UserSavedPost();
+
+        $already_save=$user->user_saved_posts()->where('post_id',$post_id)->first();
+
+        if($already_save){
+            $already_save->delete();
+            $user_save_post->update();
+
+            return response()->json([
+                'unsave' => 'Unsaved Post Successfully',
+                ]);
+        }else{
+            $user_save_post->user_id=$user->id;
+            $user_save_post->post_id=$post_id;
+            $user_save_post->saved_status=1;
+            $user_save_post->save();
+
+            return response()->json([
+                'save' => 'Saved Post Successfully',
+                ]);
+        }
     }
 
     public function profile_update_cover(Request $request)
