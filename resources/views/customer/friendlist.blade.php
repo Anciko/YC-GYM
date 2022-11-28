@@ -20,13 +20,14 @@
 @push('scripts')
 <script>
         $(document).ready(function() {
-            $('#search').on('keyup', function(){
+            $('.social-media-fris-search input').on('keyup', function(){
                             search();
-                        });
+            });
+
                         search();
                         function search(){
-                            var keyword = $('#search').val();
-                            // console.log(keyword);
+                            var keyword = $('.social-media-fris-search input').val();
+                            console.log(keyword);
                             var user_id = {{$user->id}};
                             console.log();
                             var search_url = "{{ route('friend_search',':id') }}";
@@ -38,40 +39,140 @@
                             },
                             function(data){
                                 table_post_row(data);
-                                console.log(data);
+                                console.log(data.friends);
                             });
                         }
                         // table row with ajax
                         function table_post_row(res){
-                            console.log(res.friends.data)
+                            console.log(res.friends.length)
                         let htmlView = '';
-                            if(res.friends.data.length <= 0){
+                            if(res.friends.length <= 0){
+                                console.log("no data");
                                 htmlView+= `
                                 No data found.
                                 `;
                             }
-                            for(let i = 0; i < res.friends.data.length; i++){
-                                id = res.friends.data[i].id;
-
-                                htmlView += `
+                            console.log("data");
+                            if({{auth()->user()->id}} === {{$user->id}}){
+                                for(let i = 0; i < res.friends.length; i++){
+                                id = res.friends[i].id;
+                                var url = "{{ route('socialmedia.profile', [':id']) }}";
+                                    url = url.replace(':id',id);
+                                if(res.friends[i].profile_image === null){
+                                    htmlView += `
                                     <div class="social-media-fris-fri-row">
                                         <div class="social-media-fris-fri-img">
-                                            <img src="../imgs/trainer2.jpg">
-                                            <p>`+res.friends.data[i].name+`</p>
+                                                <img src="{{asset('img/customer/imgs/user_default.jpg')}}">
+                                            <p>`+res.friends[i].name+`</p>
                                         </div>
+
 
                                         <div class="social-media-fris-fri-btns-container">
                                             <a href="#" class="customer-primary-btn">Message</a>
-                                            <button class="customer-red-btn">Remove</button>
+
+                                            <a href="?id=` + res.friends[i].id+`" class="customer-red-btn"
+                                            id = "unfriend">Remove</a>
+
+                                        </div>
+                                    </div>                                    `
+                                }
+                                else{
+                                    htmlView += `
+                                    <div class="social-media-fris-fri-row">
+                                        <div class="social-media-fris-fri-img">
+                                                <img src="{{ asset('/storage/post/${res.friends[i].profile_image}') }}">
+                                            <p>`+res.friends[i].name+`</p>
+                                        </div>
+
+
+                                        <div class="social-media-fris-fri-btns-container">
+                                            <a href="#" class="customer-primary-btn">Message</a>
+
+                                            <a href="?id=` + res.friends[i].id+`" class="customer-red-btn"
+                                            id = "unfriend">Remove</a>
+
                                         </div>
                                     </div>
                                     `
+                                }
+                            }
+                            }
+                            else{
+                                for(let i = 0; i < res.friends.length; i++){
+                                id = res.friends[i].id;
+                                var url = "{{ route('socialmedia.profile', [':id']) }}";
+                                    url = url.replace(':id',id);
+                                if(res.friends[i].profile_image === null){
+                                    htmlView += `
+                                    <div class="social-media-fris-fri-row">
+                                        <div class="social-media-fris-fri-img">
+                                                <img src="{{asset('img/customer/imgs/user_default.jpg')}}">
+                                            <p>`+res.friends[i].name+`</p>
+                                        </div>
+
+
+                                        <div class="social-media-fris-fri-btns-container">
+                                            <a href=`+url+` class="customer-primary-btn">View Profile</a>
+                                        </div>
+                                    </div>
+                                    `
+                                }
+                                else{
+                                    htmlView += `
+                                    <div class="social-media-fris-fri-row">
+                                        <div class="social-media-fris-fri-img">
+                                                <img src="{{ asset('/storage/post/${res.friends[i].profile_image}') }}">
+                                            <p>`+res.friends[i].name+`</p>
+                                        </div>
+
+
+                                        <div class="social-media-fris-fri-btns-container">
+                                            <a href=`+url+` class="customer-primary-btn">View Profile</a>
+                                        </div>
+                                    </div>
+                                    `
+                                }
+                            }
                             }
                             $('.social-media-fris-list-container').html(htmlView);
                         }
+                $(document).on('click', '#unfriend', function(e){
+                e.preventDefault();
+                Swal.fire({
+                        text: "Are you sure?",
+                        showClass: {
+                                popup: 'animate__animated animate__fadeInDown'
+                            },
+                            hideClass: {
+                                popup: 'animate__animated animate__fadeOutUp'
+                            },
+                        showCancelButton: true,
+                        timerProgressBar: true,
+                        confirmButtonText: 'Yes',
+                        cancelButtonText: 'No',
 
-
-
+                        }).then((result) => {
+                        /* Read more about isConfirmed, isDenied below */
+                        if (result.isConfirmed) {
+                             var url = new URL(this.href);
+                             var id = url.searchParams.get("id");
+                             var url = "{{ route('unfriend', [':id']) }}";
+                             url = url.replace(':id', id);
+                             $(".cancel-request-btn").attr('href','');
+                                $.ajax({
+                                    type: "GET",
+                                    url: url,
+                                    datatype: "json",
+                                    success: function(data) {
+                                        console.log(data)
+                                        search();
+                                    }
+                                })
+                            Swal.fire('Unfriend!', '', 'success')
+                        }
+                        })
+                $('.social-media-left-searched-items-container').empty();
+                });
 
         })
 </script>
