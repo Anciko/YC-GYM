@@ -29,8 +29,10 @@
 
                         <div class="post-actions-container">
                             <div class="post-action">
-                                <iconify-icon icon="bi:save" class="post-action-icon"></iconify-icon>
-                                <p>Save</p>
+                                {{-- <a href="#"> --}}
+                                    <iconify-icon icon="bi:save" class="post-action-icon"></iconify-icon>
+                                    <p>Save</p>
+                                {{-- </a> --}}
                             </div>
                             {{-- <form action="{{ route('category.destroy',$post->id) }}" method="POST">
                                 @csrf

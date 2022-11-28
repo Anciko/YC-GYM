@@ -1386,6 +1386,22 @@ border-radius: 50%;
   	margin-left:0px;
 }
 
+.customer-profile-posts-header{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.customer-profile-posts-header p{
+    margin-bottom: 0;
+}
+
+.customer-profile-posts-header select{
+    padding: 10px 5px;
+    border-radius: 4px;
+}
+
 
 @media screen and (max-width:1000px){
     .customer-personal-details-form{

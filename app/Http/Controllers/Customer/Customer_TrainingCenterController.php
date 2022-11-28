@@ -86,7 +86,6 @@ class Customer_TrainingCenterController extends Controller
         $user_profile_image=Profile::select('profile_image')
                                 ->where('user_id',$user_id)
                                 ->where('cover_photo',null)
-                                ->orWhere('profile_image',null)
                                 ->orderBy('created_at','DESC')
                                 ->first();
         //dd($user_profile_image);

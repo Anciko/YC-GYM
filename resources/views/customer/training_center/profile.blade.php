@@ -54,11 +54,13 @@
 <!-- The Image Modal -->
 <div id="modal01" class="modal-image" onclick="this.style.display='none'">
     <span class="close-image">&times;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-    <a href="#" class="close-image" id="delete-image" onclick=updateDiv(this)>Delete</a>
+    <a href="#" class="delete-image" id="delete-image" onclick=updateDiv(this)>
+        <i class="fa-solid fa-trash fa-xs"></i>
+    </a>
     <div class="modal-content-image">
       <img id="img01" style="max-width:100%">
     </div>
-  </div>
+</div>
 <!-- End Image Modal -->
 
     <a class="back-btn" href="{{route("socialmedia")}}">
@@ -202,126 +204,139 @@
             </div>
 
             <div class="customer-profile-posts-parent-container">
-                <p>Post & Activities</p>
-                @forelse ($posts as $post)
-                    <div class="customer-post-container">
-                        <div class="customer-post-header">
-                            <div class="customer-post-name-container">
-                                <?php $profile=auth()->user()->profiles->where('cover_photo',null)->sortByDesc('created_at')->first() ?>
-                                @if ($profile==null)
-                                    <img class="nav-profile-img" src="{{asset('img/customer/imgs/user_default.jpg')}}"/>
-                                @else
-                                    <img class="nav-profile-img" src="{{asset('storage/post/'.$profile->profile_image)}}"/>
-                                @endif
-                                <div class="customer-post-name">
-                                    <p>{{$post->user->name}}</p>
-                                    <span>{{ \Carbon\Carbon::parse($post->created_at)->format('d M Y , g:i A')}}</span>
-                                </div>
-                            </div>
+                <div class="customer-profile-posts-header">
+                    <p>Post & Activities</p>
+                    <select class="customer-profile-selector">
+                        <option value="all">All</option>
+                        <option value="saved">Saved</option>
+                    </select>
+                </div>
 
-                            <iconify-icon icon="bi:three-dots-vertical" class="customer-post-header-icon"></iconify-icon>
-                            <div class="post-actions-container">
-                                <div class="post-action">
-                                    <iconify-icon icon="bi:save" class="post-action-icon"></iconify-icon>
-                                    <p>Save</p>
-                                </div>
-                                <a id="edit_post" data-id="{{$post->id}}" data-bs-toggle="modal" >
-                                    <div class="post-action">
-                                        <iconify-icon icon="material-symbols:edit" class="post-action-icon"></iconify-icon>
-                                        <p>Edit</p>
-                                    </div>
-                                </a>
-                                <a id="delete_post" data-id="{{$post->id}}">
-                                    <div class="post-action">
-                                    <iconify-icon icon="material-symbols:delete-forever-outline-rounded" class="post-action-icon"></iconify-icon>
-                                    <p>Delete</p>
-                                    </div>
-                                </a>
-                            </div>
-                        </div>
-
-                        <div class="customer-content-container">
-                            @if ($post->media==null)
-                            <p>{{$post->caption}}</p>
-                            @else
-                            <p>{{$post->caption}}</p>
-                            <div class="customer-media-container">
-                                <?php foreach (json_decode($post->media)as $m){?>
-                                    <div class="customer-media">
-                                    @if (pathinfo($m, PATHINFO_EXTENSION) == 'mp4')
-                                    <video controls>
-                                        <source src="{{asset('storage/post/'.$m) }}">
-                                    </video>
+                <div class="customer-all-posts-container">
+                    @forelse ($posts as $post)
+                        <div class="customer-post-container">
+                            <div class="customer-post-header">
+                                <div class="customer-post-name-container">
+                                    <?php $profile=auth()->user()->profiles->where('cover_photo',null)->sortByDesc('created_at')->first() ?>
+                                    @if ($profile==null)
+                                        <img class="nav-profile-img" src="{{asset('img/customer/imgs/user_default.jpg')}}"/>
                                     @else
-                                        <img src="{{asset('storage/post/'.$m) }}">
+                                        <img class="nav-profile-img" src="{{asset('storage/post/'.$profile->profile_image)}}"/>
                                     @endif
+                                    <div class="customer-post-name">
+                                        <p>{{$post->user->name}}</p>
+                                        <span>{{ \Carbon\Carbon::parse($post->created_at)->format('d M Y , g:i A')}}</span>
+                                    </div>
                                 </div>
-                                <?php }?>
+
+                                <iconify-icon icon="bi:three-dots-vertical" class="customer-post-header-icon"></iconify-icon>
+                                <div class="post-actions-container">
+                                    <div class="post-action">
+                                        <iconify-icon icon="bi:save" class="post-action-icon"></iconify-icon>
+                                        <p>Save</p>
+                                    </div>
+                                    <a id="edit_post" data-id="{{$post->id}}" data-bs-toggle="modal" >
+                                        <div class="post-action">
+                                            <iconify-icon icon="material-symbols:edit" class="post-action-icon"></iconify-icon>
+                                            <p>Edit</p>
+                                        </div>
+                                    </a>
+                                    <a id="delete_post" data-id="{{$post->id}}">
+                                        <div class="post-action">
+                                        <iconify-icon icon="material-symbols:delete-forever-outline-rounded" class="post-action-icon"></iconify-icon>
+                                        <p>Delete</p>
+                                        </div>
+                                    </a>
+                                </div>
                             </div>
-                            <div id="slider-wrapper" class="social-media-media-slider">
-                                <iconify-icon icon="akar-icons:cross" class="slider-close-icon"></iconify-icon>
 
-                                <div id="image-slider" class="image-slider">
-                                    <ul class="ul-image-slider">
+                            <div class="customer-content-container">
+                                @if ($post->media==null)
+                                <p>{{$post->caption}}</p>
+                                @else
+                                <p>{{$post->caption}}</p>
+                                <div class="customer-media-container">
+                                    <?php foreach (json_decode($post->media)as $m){?>
+                                        <div class="customer-media">
+                                        @if (pathinfo($m, PATHINFO_EXTENSION) == 'mp4')
+                                        <video controls>
+                                            <source src="{{asset('storage/post/'.$m) }}">
+                                        </video>
+                                        @else
+                                            <img src="{{asset('storage/post/'.$m) }}">
+                                        @endif
+                                    </div>
+                                    <?php }?>
+                                </div>
+                                <div id="slider-wrapper" class="social-media-media-slider">
+                                    <iconify-icon icon="akar-icons:cross" class="slider-close-icon"></iconify-icon>
 
-                                        <?php foreach (json_decode($post->media)as $m){?>
-                                            @if (pathinfo($m, PATHINFO_EXTENSION) == 'mp4')
-                                            <li>
-                                                <video controls>
-                                                    <source src="{{asset('storage/post/'.$m) }}">
-                                                </video>
-                                            </li>
-                                            @else
+                                    <div id="image-slider" class="image-slider">
+                                        <ul class="ul-image-slider">
+
+                                            <?php foreach (json_decode($post->media)as $m){?>
+                                                @if (pathinfo($m, PATHINFO_EXTENSION) == 'mp4')
                                                 <li>
-                                                    <img src="{{asset('storage/post/'.$m) }}" alt="" />
+                                                    <video controls>
+                                                        <source src="{{asset('storage/post/'.$m) }}">
+                                                    </video>
                                                 </li>
-                                            @endif
+                                                @else
+                                                    <li>
+                                                        <img src="{{asset('storage/post/'.$m) }}" alt="" />
+                                                    </li>
+                                                @endif
 
-                                        <?php }?>
-                                    </ul>
+                                            <?php }?>
+                                        </ul>
 
-                                </div>
+                                    </div>
 
-                                <div id="thumbnail" class="img-slider-thumbnails">
-                                    <ul>
-                                        {{-- <li class="active"><img src="https://40.media.tumblr.com/tumblr_m92vwz7XLZ1qf4jqio1_540.jpg" alt="" /></li> --}}
-                                        <?php foreach (json_decode($post->media)as $m){?>
-                                            @if (pathinfo($m, PATHINFO_EXTENSION) == 'mp4')
-                                            <li>
-                                                <video>
-                                                    <source src="{{asset('storage/post/'.$m) }}">
-                                                </video>
-                                            </li>
-                                            @else
+                                    <div id="thumbnail" class="img-slider-thumbnails">
+                                        <ul>
+                                            {{-- <li class="active"><img src="https://40.media.tumblr.com/tumblr_m92vwz7XLZ1qf4jqio1_540.jpg" alt="" /></li> --}}
+                                            <?php foreach (json_decode($post->media)as $m){?>
+                                                @if (pathinfo($m, PATHINFO_EXTENSION) == 'mp4')
                                                 <li>
-                                                    <img src="{{asset('storage/post/'.$m) }}" alt="" />
+                                                    <video>
+                                                        <source src="{{asset('storage/post/'.$m) }}">
+                                                    </video>
                                                 </li>
-                                            @endif
+                                                @else
+                                                    <li>
+                                                        <img src="{{asset('storage/post/'.$m) }}" alt="" />
+                                                    </li>
+                                                @endif
 
-                                        <?php }?>
+                                            <?php }?>
 
-                                    </ul>
+                                        </ul>
+                                    </div>
+
                                 </div>
+                                @endif
 
                             </div>
-                            @endif
 
+                            <div class="customer-post-footer-container">
+                                <div class="customer-post-like-container">
+                                    <iconify-icon icon="akar-icons:heart" class="like-icon"></iconify-icon>
+                                    <p><span>1.1k</span> Likes</p>
+                                </div>
+                                <div class="customer-post-comment-container">
+                                    <iconify-icon icon="bi:chat-right" class="comment-icon"></iconify-icon>
+                                    <p><span>50</span> Comments</p>
+                                </div>
+                            </div>
                         </div>
+                        @empty
+                        <p class="text-secondary p-1">No Post And Activity</p>
+                    @endforelse
+                </div>
 
-                        <div class="customer-post-footer-container">
-                            <div class="customer-post-like-container">
-                                <iconify-icon icon="akar-icons:heart" class="like-icon"></iconify-icon>
-                                <p><span>1.1k</span> Likes</p>
-                            </div>
-                            <div class="customer-post-comment-container">
-                                <iconify-icon icon="bi:chat-right" class="comment-icon"></iconify-icon>
-                                <p><span>50</span> Comments</p>
-                            </div>
-                        </div>
-                    </div>
-                    @empty
-                    <p class="text-secondary p-1">No Post And Activity</p>
-                @endforelse
+                <div class="customer-saved-posts-container">
+                    <p>Saved Posts</p>
+                </div>
             </div>
         </div>
 
@@ -335,7 +350,7 @@
             </div>
 
             <div class="social-media-photos-container social-media-profiles-container">
-                @forelse (auth()->user()->profiles as $profile)
+                @forelse (auth()->user()->profiles->sortByDesc('created_at') as $profile)
                     @if ($profile->cover_photo)
 
                     @else
@@ -350,12 +365,12 @@
             </div>
 
             <div class="social-media-photos-container social-media-covers-container">
-                @forelse (auth()->user()->profiles as $profile)
+                @forelse (auth()->user()->profiles->sortByDesc('created_at') as $profile)
                     @if ($profile->profile_image)
                     @else
                         <div class="social-media-photo">
                             <img src="{{asset('storage/post/'.$profile->cover_photo)}}" style="max-width:100%;cursor:pointer"
-                            onclick="onClick(this)" class="modal-hover-opacity">
+                            onclick="onClick(this)" id="{{$profile->id}}" class="modal-hover-opacity">
                         </div>
                     @endif
 
@@ -1593,6 +1608,20 @@
         }
 
     $(document).ready(function() {
+        $(".customer-saved-posts-container").hide()
+
+        $(".customer-profile-selector").change(function(e){
+            console.log(e.target.value)
+
+            if(e.target.value === "all"){
+                $(".customer-all-posts-container").show()
+                $(".customer-saved-posts-container").hide()
+            }
+            if(e.target.value === "saved"){
+                $(".customer-all-posts-container").hide()
+                $(".customer-saved-posts-container").show()
+            }
+        })
 
         //image slider start
         console.log($(".image-slider"))

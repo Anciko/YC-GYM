@@ -101,10 +101,12 @@ class SocialmediaController extends Controller
         $user=User::find(auth()->user()->id);
         if($user->profile_id==$request->profile_id){
             $user->profile_id=null;
-            $user->update();
+        }elseif($user->cover_id==$request->profile_id){
+            $user->cover_id=null;
         }
-        Profile::find($request->profile_id)->delete($request->profile_id);
+        $user->update();
 
+        Profile::find($request->profile_id)->delete($request->profile_id);
         return response()->json([
             'success' => 'Profile deleted successfully!'
         ]);

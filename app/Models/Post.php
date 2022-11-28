@@ -25,4 +25,9 @@ class Post extends Model
     {
         return $this->hasMany(UserReactPost::class, 'post_id', 'id');
     }
+
+    public function user_saved_posts()
+    {
+        return $this->hasMany(UserSavedPost::class, 'post_id', 'id');
+    }
 }

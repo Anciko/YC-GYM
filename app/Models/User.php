@@ -41,6 +41,11 @@ class User extends Authenticatable
         return $this->hasMany(UserReactPost::class, 'user_id', 'id');
     }
 
+    public function user_saved_posts()
+    {
+        return $this->hasMany(UserSavedPost::class, 'user_id', 'id');
+    }
+
     public function members()
     {
         return $this->belongsToMany(Member::class, 'member_histories')
