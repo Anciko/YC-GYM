@@ -522,7 +522,35 @@
                                 No data found.
                                 `;
                             }
-
+                            else if(res.friends.length <= 0 && res.users.length != 0){
+                                console.log("myself");
+                                for(let i = 0; i < res.users.length; i++){
+                                id = res.users[i].id;
+                                var url = "{{ route('socialmedia.profile', [':id']) }}";
+                                url = url.replace(':id',id);
+                                if(res.users[i].id === auth_id){
+                                    htmlView += `
+                                            <div class="social-media-left-searched-item">
+                                            <a href=`+url+` class = "profiles">
+                                                <p>`+res.users[i].name+`</p>
+                                            </a>
+                                            </div>
+                                    `
+                                }
+                                else{
+                                    console.log("no friends");
+                                    htmlView += `
+                                            <div class="social-media-left-searched-item">
+                                            <a href=`+url+` class = "profiles">
+                                                <p>`+res.users[i].name+`</p>
+                                            </a>
+                                            <a href="?id=` + res.users[i].id+`"  id = "AddFriend"><iconify-icon icon="bi:person-add" class="search-item-icon"></iconify-icon></a>
+                                            </div>
+                                    `
+                                }
+                                }
+                            }
+                            else{
                                 for(let i = 0; i < res.users.length; i++){
                                     var status = ''
                                 for(let f = 0; f < res.friends.length; f++){
@@ -686,8 +714,7 @@
                                     `
                             }
                             }
-
-
+                            }
                             $('.social-media-left-searched-items-container').html(htmlView);
                         }
 

@@ -183,23 +183,29 @@ class SocialMediaController extends Controller
         $auth = Auth()->user()->id;
         $id = $request->id;
 
-        $profile = DB::table('profiles')
-        ->groupBy('user_id')
-        ->select(DB::raw('max(id) as id'))
-        ->where('profiles.profile_image',null)
-        ->where('user_id',$id)
-        ->get()
-        ->pluck('id');
-        $cover = DB::table('users')
-        ->select('profiles.cover_photo')
-        ->leftjoin('profiles', 'profiles.user_id', '=', 'users.id')
-        ->whereIn('profiles.id',$profile)
-        ->where('users.id',$id)
-        ->get();
+        // $profile = DB::table('profiles')
+        // ->groupBy('user_id')
+        // ->select(DB::raw('max(id) as id'))
+        // ->where('profiles.profile_image',null)
+        // ->where('user_id',$id)
+        // ->get()
+        // ->pluck('id');
+        // $cover = DB::table('users')
+        // ->select('profiles.cover_photo')
+        // ->leftjoin('profiles', 'profiles.user_id', '=', 'users.id')
+        // ->whereIn('profiles.id',$profile)
+        // ->where('users.id',$id)
+        // ->get();
 
         $profile = DB::table('users')
         ->select('users.id','users.name','users.bio','profiles.profile_image','profiles.cover_photo')
         ->leftjoin('profiles', 'profiles.id', '=', 'users.profile_id')
+        ->where('users.id',$id)
+        ->get();
+
+        $cover = DB::table('users')
+        ->select('profiles.cover_photo')
+        ->leftjoin('profiles', 'profiles.id', '=', 'users.cover_id')
         ->where('users.id',$id)
         ->get();
 
@@ -644,6 +650,21 @@ class SocialMediaController extends Controller
         $user->update();
         return response()->json([
             'message'=>'Success',
+        ]);
+    }
+
+    public function profile_photo_delete(Request $request)
+    {
+        $user=User::find(auth()->user()->id);
+        if($user->profile_id==$request->profile_id){
+            $user->profile_id=null;
+        }elseif($user->cover_id==$request->profile_id){
+            $user->cover_id=null;
+        }
+        $user->update();
+        Profile::find($request->profile_id)->delete($request->profile_id);
+        return response()->json([
+            'success' => 'Success!'
         ]);
     }
 
