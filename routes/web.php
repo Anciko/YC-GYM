@@ -74,6 +74,7 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
         Route::post('/socialmedia/delete/{id}', [SocialmediaController::class, 'post_destroy'])->name('post.destroy');
         Route::post('/socialmedia/edit/{id}', [SocialmediaController::class, 'post_edit'])->name('post.edit');
         Route::post('/socialmedia/update', [SocialmediaController::class, 'post_update'])->name('post.update');
+        Route::post('/profile/photo/delete', [SocialmediaController::class, 'profile_photo_delete'])->name('profile.photo.delete');
 
         // Route::get('/testing', [SocialmediaController::class, 'index'])->name('testing');
         // Route::post('/testing/store', [SocialmediaController::class, 'post_store'])->name('testing.store');
@@ -111,6 +112,8 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
         Route::get('/addUser/{id}', [SocialmediaController::class, 'addUser'])->name('addUser');
 
         Route::get('/unfriend/{id}', [SocialmediaController::class, 'unfriend'])->name('unfriend');
+
+        Route::post('/socialmedia/user/react/',[SocialmediaController::class,'user_react_post'])->name('user.react.post');
 
         Route::get('/cancelRequest/{id}', [SocialmediaController::class, 'cancelRequest'])->name('cancelRequest');
         Route::get('/declineRequest/{id}', [SocialmediaController::class, 'declineRequest'])->name('declineRequest');

@@ -15,7 +15,7 @@
                 <div class="social-media-profile-bgimg-container">
                     <?php $profile_cover=$user->profiles->where('profile_image',null)->sortByDesc('created_at')->first() ?>
                     @if ($profile_cover==null)
-                        <img src="{{asset('img/customer/imgs/cover.jpg')}}">
+                        <img src="{{asset('image/cover.jpg')}}">
                     @else
                         <img class="nav-profile-img" src="{{asset('storage/post/'.$profile_cover->cover_photo)}}"/>
                     @endif

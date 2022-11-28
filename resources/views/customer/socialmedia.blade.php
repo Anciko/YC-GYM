@@ -131,7 +131,9 @@
 
                     <div class="social-media-post-footer-container">
                         <div class="social-media-post-like-container">
+                            <a class="like" href="#" id="{{$post->id}}">
                             <iconify-icon icon="akar-icons:heart" class="like-icon"></iconify-icon>
+                            </a>
                             <p><span>1.1k</span> Likes</p>
                         </div>
                         <div class="social-media-post-comment-container">
@@ -147,6 +149,30 @@
 
 @endsection
 @push('scripts')
+<script>
+    $(document).ready(function() {
+        $('.like').click(function(e){
+            e.preventDefault();
+            var isLike=e.target.previousElementSibiling == null ? true : false;
+            var post_id=$(this).attr('id');
+            console.log(post_id)
+            var add_url = "{{ route('user.react.post', [':post_id']) }}";
+            add_url = add_url.replace(':post_id', post_id);
+            $.ajaxSetup({
+                            headers: {
+                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                            }
+                        });
+                    $.ajax({
+                        method: "POST",
+                        url: add_url,
+                        data:{ isLike : isLike , post_id: post_id }
+                    })
+
+
+        })
+    });
+</script>
 {{-- <script>
     $(document).ready(function() {
 

@@ -54,6 +54,7 @@
 <!-- The Image Modal -->
 <div id="modal01" class="modal-image" onclick="this.style.display='none'">
     <span class="close-image">&times;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+    <a href="#" class="close-image" id="delete-image" onclick=updateDiv(this)>Delete</a>
     <div class="modal-content-image">
       <img id="img01" style="max-width:100%">
     </div>
@@ -341,7 +342,7 @@
                     @else
                         <div class="social-media-photo">
                             <img src="{{asset('storage/post/'.$profile->profile_image)}}" style="max-width:100%;cursor:pointer"
-                            onclick="onClick(this)" class="modal-hover-opacity">
+                            onclick="onClick(this)" id="{{$profile->id}}" class="modal-hover-opacity">
                         </div>
                     @endif
                 @empty
@@ -1583,7 +1584,12 @@
 <script>
 
         function onClick(element) {
+
+            var profile_id=$(element).attr('id');
+            console.log(profile_id);
+
             document.getElementById("img01").src = element.src;
+            document.getElementById("delete-image").name=profile_id;
             document.getElementById("modal01").style.display = "block";
         }
 
@@ -2372,5 +2378,44 @@
         $(".editpost-photo-video-imgpreview-container").empty();
 
     }
+
+    function updateDiv(element)
+{
+    var profile_id=element.name;
+    console.log(profile_id+" Profile ID");
+    // $( ".close-image" ).load(window.location.href + " .close-image" );
+
+    Swal.fire({
+                text: 'Are you sure to delete this photo?',
+                timerProgressBar: true,
+                showCloseButton: true,
+                showCancelButton: true,
+                icon: 'warning',
+            }).then((result) => {
+            if (result.isConfirmed) {
+                var add_url = "{{ route('profile.photo.delete') }}";
+
+                $.ajaxSetup({
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        }
+                });
+                $.ajax({
+                        method: "POST",
+                        url: add_url,
+                        data:{
+                            profile_id:profile_id
+                        },
+                        success:function(data){
+                            if(data.success){
+                                window.location.reload();
+                                // $(".social-media-profiles-container").load(location.href + " .social-media-profiles-container");
+                            }
+                        }
+                    })
+            }
+        })
+
+}
 </script>
 @endpush

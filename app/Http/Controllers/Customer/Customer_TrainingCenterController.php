@@ -67,6 +67,7 @@ class Customer_TrainingCenterController extends Controller
         }else{
             $n= array();
         }
+
         $posts=Post::where('user_id',$user_id)
                     ->orderBy('created_at','DESC')
                     ->with('user')
@@ -75,7 +76,6 @@ class Customer_TrainingCenterController extends Controller
         $user_friends=User::whereIn('id',$n)
                         ->where('id','!=',$user_id)
                         ->paginate(6);
-
 
         $user_profile_cover=Profile::select('cover_photo')
                                 ->where('user_id',$user_id)
@@ -86,9 +86,10 @@ class Customer_TrainingCenterController extends Controller
         $user_profile_image=Profile::select('profile_image')
                                 ->where('user_id',$user_id)
                                 ->where('cover_photo',null)
+                                ->orWhere('profile_image',null)
                                 ->orderBy('created_at','DESC')
                                 ->first();
-
+        //dd($user_profile_image);
 
         if($user_profile_cover==null){
             $user_profile_cover=null;
