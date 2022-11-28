@@ -243,7 +243,7 @@ class SocialMediaController extends Controller
             ->orWhere('friendships.sender_id',$id)
             ->whereIn('users.id',$n)
             ->where('users.id','!=',$id)
-            ->paginate(3)->toArray();
+            ->take(6)->get();
 
             $friend_status = DB::select("SELECT * FROM `friendships` WHERE (receiver_id = $auth or sender_id = $auth )
             AND (receiver_id = $request->id or sender_id = $request->id)");
@@ -606,6 +606,9 @@ class SocialMediaController extends Controller
             $profile->cover_photo=$image_name;
             $profile->user_id=auth()->user()->id;
             $profile->save();
+            $user = User::findOrFail(auth()->user()->id);
+            $user->cover_id = $profile->id;
+            $user->update();
             return response()->json([
                 'message'=>'Success',
             ]);
@@ -638,6 +641,7 @@ class SocialMediaController extends Controller
         $user_id=auth()->user()->id;
         $user=User::findOrFail($user_id);
         $user->bio=$request->bio;
+        $user->update();
         return response()->json([
             'message'=>'Success',
         ]);
