@@ -439,6 +439,35 @@ class SocialmediaController extends Controller
          $id = $request->id;
          $user = User::select('id','name')->where('id',$id)->first();
 
+
+        //  $posts= Post::select('users.name','profiles.profile_image','posts.*')
+        //         ->where('posts.user_id',$user->id)
+        //         ->leftJoin('users','users.id','posts.user_id')
+        //         ->leftJoin('profiles','users.profile_id','profiles.id')
+        //         ->orderBy('posts.created_at','DESC')
+        //         ->paginate(30);
+
+        // $saved_post = UserSavedPost::select('posts.*')->leftJoin('posts','posts.id','user_saved_posts.post_id')
+        //         ->where('user_saved_posts.user_id',auth()->user()->id)
+        //         ->get();
+
+        // foreach($posts as $key=>$value){
+        //     $posts[$key]['is_save']= 0;
+        //     // dd($value->id);
+        //         foreach($saved_post as $saved_key=>$save_value ){
+
+        //              if($save_value->id === $value->id){
+        //                 $posts[$key]['is_save']= 1;
+        //              }
+        //              else{
+        //                 $posts[$key]['is_save']= 0;
+        //             }
+        //             }
+        //         }
+
+        // dd($posts)->toArray();
+
+
         return view('customer.friendlist',compact('user'));
     }
     public function friList(Request $request){
@@ -498,12 +527,6 @@ class SocialmediaController extends Controller
     }
 
     public function notification_center(){
-        // $friend_requests = Friendship::select('users.id','users.name')
-        //                     ->leftJoin('users','users.id','friendships.receiver_id')
-        //                     ->where('receiver_id',auth()->user()->id)
-        //                     ->get();
-        // $notification=Notification::where('receiver_id',auth()->user()->id)->paginate(10);
-        // dd($notification);
         $friend_requests=Friendship::select('sender.name','sender.id')
             ->join('users as receiver', 'receiver.id', '=', 'friendships.receiver_id')
             ->join('users as sender', 'sender.id', '=', 'friendships.sender_id')

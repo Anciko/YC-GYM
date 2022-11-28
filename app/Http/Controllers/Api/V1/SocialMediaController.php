@@ -41,6 +41,23 @@ class SocialMediaController extends Controller
         ->leftJoin('profiles','users.profile_id','profiles.id')
         ->orderBy('posts.created_at','DESC')
         ->paginate(30);
+        $saved_post = UserSavedPost::select('posts.*')->leftJoin('posts','posts.id','user_saved_posts.post_id')
+        ->whereIn('user_saved_posts.user_id',$n)
+        ->get();
+
+        foreach($posts as $key=>$value){
+            $posts[$key]['is_save']= 0;
+            // dd($value->id);
+                foreach($saved_post as $saved_key=>$save_value ){
+
+                    if($save_value->id === $value->id){
+                        $posts[$key]['is_save']= 1;
+                    }
+                    else{
+                        $posts[$key]['is_save']= 0;
+                    }
+                    }
+        }
     }else{
         $posts=Post::select('users.name','profiles.profile_image','posts.*')
         ->where('posts.user_id',$user->id)
@@ -48,6 +65,24 @@ class SocialMediaController extends Controller
         ->leftJoin('profiles','users.profile_id','profiles.id')
         ->orderBy('posts.created_at','DESC')
         ->paginate(30);
+
+        $saved_post = UserSavedPost::select('posts.*')->leftJoin('posts','posts.id','user_saved_posts.post_id')
+        ->where('user_saved_posts.user_id',$user->id)
+        ->get();
+
+        foreach($posts as $key=>$value){
+            $posts[$key]['is_save']= 0;
+            // dd($value->id);
+                foreach($saved_post as $saved_key=>$save_value ){
+
+                    if($save_value->id === $value->id){
+                        $posts[$key]['is_save']= 1;
+                    }
+                    else{
+                        $posts[$key]['is_save']= 0;
+                    }
+                    }
+                }
     }
     return response()
     ->json([
@@ -184,20 +219,6 @@ class SocialMediaController extends Controller
         $auth = Auth()->user()->id;
         $id = $request->id;
 
-        // $profile = DB::table('profiles')
-        // ->groupBy('user_id')
-        // ->select(DB::raw('max(id) as id'))
-        // ->where('profiles.profile_image',null)
-        // ->where('user_id',$id)
-        // ->get()
-        // ->pluck('id');
-        // $cover = DB::table('users')
-        // ->select('profiles.cover_photo')
-        // ->leftjoin('profiles', 'profiles.user_id', '=', 'users.id')
-        // ->whereIn('profiles.id',$profile)
-        // ->where('users.id',$id)
-        // ->get();
-
         $profile = DB::table('users')
         ->select('users.id','users.name','users.bio','profiles.profile_image','profiles.cover_photo')
         ->leftjoin('profiles', 'profiles.id', '=', 'users.profile_id')
@@ -215,14 +236,36 @@ class SocialMediaController extends Controller
                 $value->cover_photo = $cover_index->cover_photo;
             }
         }
-        // $profile = json_decode(json_encode($profile));
         $posts=Post::select('users.name','profiles.profile_image','posts.*')
         ->where('posts.user_id',$id)
         ->leftJoin('users','users.id','posts.user_id')
         ->leftJoin('profiles','users.profile_id','profiles.id')
         ->orderBy('posts.created_at','DESC')
         ->paginate(30);
+        // $posts= Post::select('users.name','profiles.profile_image','posts.*')
+        //         ->where('posts.user_id',$user->id)
+        //         ->leftJoin('users','users.id','posts.user_id')
+        //         ->leftJoin('profiles','users.profile_id','profiles.id')
+        //         ->orderBy('posts.created_at','DESC')
+        //         ->paginate(30);
 
+        $saved_post = UserSavedPost::select('posts.*')->leftJoin('posts','posts.id','user_saved_posts.post_id')
+                ->where('user_saved_posts.user_id',$id)
+                ->get();
+
+        foreach($posts as $key=>$value){
+            $posts[$key]['is_save']= 0;
+            // dd($value->id);
+                foreach($saved_post as $saved_key=>$save_value ){
+
+                     if($save_value->id === $value->id){
+                        $posts[$key]['is_save']= 1;
+                     }
+                     else{
+                        $posts[$key]['is_save']= 0;
+                    }
+                    }
+                }
         $friendships=DB::table('friendships')
         ->where('friend_status',2)
         ->where(function($query) use ($id){
@@ -232,7 +275,7 @@ class SocialMediaController extends Controller
         ->join('users as sender','sender.id','friendships.sender_id')
         ->join('users as receiver','receiver.id','friendships.receiver_id')
         ->get(['sender_id','receiver_id'])->toArray();
-        //dd($friends);
+
         $n= array();
             foreach($friendships as $friend){
                     $f=(array)$friend;
@@ -252,7 +295,7 @@ class SocialMediaController extends Controller
             ->where('users.id','!=',$id)
             ->take(6)->get();
 
-            $friend_status = DB::select("SELECT * FROM `friendships` WHERE (receiver_id = $auth or sender_id = $auth )
+        $friend_status = DB::select("SELECT * FROM `friendships` WHERE (receiver_id = $auth or sender_id = $auth )
             AND (receiver_id = $request->id or sender_id = $request->id)");
 
         return response()->json([

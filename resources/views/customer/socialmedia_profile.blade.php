@@ -35,10 +35,10 @@
 
                     <div id = "addFriclass" class="social-media-profile-btns-container">
                         @if (count($friend) < 1)
-                        <button class="customer-primary-btn add-friend-btn">
+                        <a href ="?id={{$user->id}}" class="customer-primary-btn add-friend-btn" id = "AddFriend">
                             <iconify-icon icon="akar-icons:circle-plus" class="add-friend-icon"></iconify-icon>
                             <p>Add friend</p>
-                        </button>
+                        </a>
                         @elseif($user->id == auth()->user()->id)
                             <button class="customer-primary-btn add-friend-btn">
                                 <iconify-icon icon="material-symbols:person-outline" class="add-friend-icon"></iconify-icon>
