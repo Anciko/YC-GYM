@@ -243,7 +243,7 @@ class SocialMediaController extends Controller
             ->orWhere('friendships.sender_id',$id)
             ->whereIn('users.id',$n)
             ->where('users.id','!=',$id)
-            ->paginate(3)->toArray();
+            ->take(6)->get();
 
             $friend_status = DB::select("SELECT * FROM `friendships` WHERE (receiver_id = $auth or sender_id = $auth )
             AND (receiver_id = $request->id or sender_id = $request->id)");
