@@ -71,6 +71,8 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
         Route::get('/socialmedia', [SocialmediaController::class, 'index'])->name('socialmedia');
         Route::post('/socialmedia', [SocialmediaController::class, 'post_store'])->name('post.store');
 
+        Route::get('/socialmedia/post/save/', [SocialmediaController::class, 'post_save'])->name('socialmedia.post.save');
+
         Route::post('/socialmedia/delete/{id}', [SocialmediaController::class, 'post_destroy'])->name('post.destroy');
         Route::post('/socialmedia/edit/{id}', [SocialmediaController::class, 'post_edit'])->name('post.edit');
         Route::post('/socialmedia/update', [SocialmediaController::class, 'post_update'])->name('post.update');

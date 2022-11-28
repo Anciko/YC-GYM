@@ -12,6 +12,7 @@ use App\Models\Friendship;
 use App\Models\NotiFriends;
 use App\Models\Notification;
 use App\Models\UserReactPost;
+use App\Models\UserSavedPost;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use RealRashid\SweetAlert\Facades\Alert;
@@ -145,6 +146,35 @@ class SocialmediaController extends Controller
         $friend = DB::select("SELECT * FROM `friendships` WHERE (receiver_id = $auth or sender_id = $auth )
                         AND (receiver_id = $id or sender_id = $id)");
         return view('customer.socialmedia_profile',compact('user','posts','friends','friend'));
+    }
+
+    public function post_save(Request $request)
+    {
+        $post_id=$request['post_id'];
+        $user=auth()->user();
+        $user_save_post=new UserSavedPost();
+
+        $already_save=$user->user_saved_posts()->where('post_id',$post_id)->first();
+
+        if($already_save){
+            $already_save->delete();
+            $user_save_post->update();
+
+            return response()->json([
+                'unsave' => 'Unsaved Post Successfully',
+                ]);
+        }else{
+            $user_save_post->user_id=$user->id;
+            $user_save_post->post_id=$post_id;
+            $user_save_post->saved_status=1;
+            $user_save_post->save();
+
+            return response()->json([
+                'save' => 'Saved Post Successfully',
+                ]);
+        }
+
+
     }
 
     public function profile(Request $request,$id)
