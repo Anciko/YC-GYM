@@ -265,9 +265,9 @@ class SocialMediaController extends Controller
 
     public function cover_profile_photo(Request $request){
         $id = $request->id;
-        $cover_photo = Profile::select('cover_photo')
+        $cover_photo = Profile::select('cover_photo','id')
         ->where('user_id',$id)->where('profile_image',null)->get();
-        $profile_photo = Profile::select('profile_image')
+        $profile_photo = Profile::select('profile_image','id')
         ->where('user_id',$id)->where('cover_photo',null)->get();
         return response()->json([
             'cover_photo' => $cover_photo,
