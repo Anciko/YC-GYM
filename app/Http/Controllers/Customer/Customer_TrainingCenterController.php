@@ -160,14 +160,16 @@ class Customer_TrainingCenterController extends Controller
         }
 
         $save_posts=UserSavedPost::where('user_id',$user_id)->with('user')->get();
+        $saved_posts = UserSavedPost::select('users.name','profiles.profile_image','posts.*')->leftJoin('posts','posts.id','user_saved_posts.post_id')
+                        ->where('user_saved_posts.user_id',auth()->user()->id)
+                        ->leftJoin('users','users.id','user_saved_posts.user_id')
+                        ->leftJoin('profiles','users.profile_id','profiles.id')
+                        ->orderBy('posts.created_at','DESC')
+                        ->get()->toArray();
 
-        foreach($save_posts as $save_post){
-            //$profile=$save_post->post->user->profiles->where('cover_photo',null)->sortByDesc('created_at')->first();
-        }
+                        //dd($saved_posts);
 
-        dd($save_post);
-
-        return view('customer.training_center.profile', compact('save_posts','user','posts','user_friends','user_profile_cover','user_profile_image','year','workouts', 'workout_date', 'cal_sum', 'time_min', 'time_sec', 'weight_history', 'newDate'));
+        return view('customer.training_center.profile', compact('saved_posts','save_posts','user','posts','user_friends','user_profile_cover','user_profile_image','year','workouts', 'workout_date', 'cal_sum', 'time_min', 'time_sec', 'weight_history', 'newDate'));
     }
     public function member_plan()
     {
