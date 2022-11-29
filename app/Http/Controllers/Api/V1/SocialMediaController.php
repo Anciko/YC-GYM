@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use Pusher\Pusher;
 use App\Models\Post;
 use App\Models\User;
+use App\Models\Comment;
 use App\Models\Profile;
 use App\Models\Friendship;
 use App\Models\Notification;
@@ -350,6 +351,60 @@ class SocialMediaController extends Controller
             ->whereIn('users.id',$n)
             ->where('users.id','!=',$id)
             ->paginate(3)->toArray();
+        return response()->json([
+           'friends' => $friends
+       ]);
+    }
+
+    public function friends_for_mention(Request $request){
+        $id = auth()->user()->id;
+        $friendships=DB::table('friendships')
+        ->where('friend_status',2)
+        ->where(function($query) use ($id){
+            $query->where('sender_id',$id)
+                ->orWhere('receiver_id',$id);
+        })
+        ->join('users as sender','sender.id','friendships.sender_id')
+        ->join('users as receiver','receiver.id','friendships.receiver_id')
+        ->get(['sender_id','receiver_id'])->toArray();
+        //dd($friends);
+        $n= array();
+            foreach($friendships as $friend){
+                    $f=(array)$friend;
+                    array_push($n, $f['sender_id'],$f['receiver_id']);
+            }
+        if($request->keyword != ''){
+            $friends = User::select('users.id','users.name','friendships.date','profiles.profile_image')
+            ->leftjoin('friendships', function ($join) {
+                  $join->on('friendships.receiver_id', '=', 'users.id')
+            ->orOn('friendships.sender_id', '=', 'users.id');})
+            ->leftJoin('profiles','profiles.id','users.profile_id')
+            ->where('users.name','LIKE','%'.$request->keyword.'%')
+            ->where('users.id','!=',$id)
+            ->where('friendships.friend_status',2)
+            ->where('friendships.receiver_id',$id)
+            ->orWhere('friendships.sender_id',$id)
+            ->whereIn('users.id',$n)
+            ->where('users.id','!=',$id)
+            ->where('users.name','LIKE','%'.$request->keyword.'%')
+            ->get();
+            // dd($friends);
+            return response()->json([
+                'friends' => $friends
+            ]);
+        }
+            $friends = User::select('users.id','users.name','friendships.date','profiles.profile_image')
+            ->leftjoin('friendships', function ($join) {
+                $join->on('friendships.receiver_id', '=', 'users.id')
+            ->orOn('friendships.sender_id', '=', 'users.id');})
+            ->leftJoin('profiles','profiles.id','users.profile_id')
+            ->where('users.id','!=',$id)
+            ->where('friendships.friend_status',2)
+            ->where('friendships.receiver_id',$id)
+            ->orWhere('friendships.sender_id',$id)
+            ->whereIn('users.id',$n)
+            ->where('users.id','!=',$id)
+            ->get();
         return response()->json([
            'friends' => $friends
        ]);
@@ -804,6 +859,41 @@ class SocialMediaController extends Controller
         Profile::find($request->profile_id)->delete($request->profile_id);
         return response()->json([
             'success' => 'Success!'
+        ]);
+    }
+
+
+    public function post_comment_store(Request $request){
+        // dd(json_encode($request->mention));
+        $banwords=DB::table('ban_words')->select('ban_word_english','ban_word_myanmar','ban_word_myanglish')->get();
+        foreach($banwords as $b){
+           $e_banword=$b->ban_word_english;
+           $m_banword=$b->ban_word_myanmar;
+           $em_banword=$b->ban_word_myanglish;
+            if (str_contains($request->comment,$e_banword)) {
+                // Alert::warning('Warning', 'Ban Ban Ban');
+                //return redirect()->back();
+                return response()->json([
+                    'ban'=>'Ban',
+                ]);
+            }elseif (str_contains($request->comment,$m_banword)){
+                return response()->json([
+                    'ban'=>'Ban',
+                ]);
+            }elseif (str_contains($request->comment,$em_banword)){
+                return response()->json([
+                    'ban'=>'Ban',
+                ]);
+            }
+        }
+        $comments = new Comment();
+        $comments->user_id=auth()->user()->id;
+        $comments->post_id=$request->post_id;
+        $comments->comment = $request->comment;
+        $comments->mentioned_users = json_encode($request->mention);
+        $comments->save();
+        return response()->json([
+            'data' =>  $comments
         ]);
     }
 

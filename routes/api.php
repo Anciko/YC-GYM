@@ -131,6 +131,10 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
 
     Route::post('friends', [SocialmediaController::class, 'friends']);//
 
+    Route::post('friends_for_mention', [SocialmediaController::class, 'friends_for_mention']);//
+
+    Route::post('/post/comment/store', [SocialmediaController::class, 'post_comment_store'])->name('post.comment.store');
+
     Route::get('notification', [SocialmediaController::class, 'notification']);
 
     Route::post('viewFriendRequestNoti', [SocialmediaController::class, 'viewFriendRequestNoti'])->name('viewFriendRequestNoti');

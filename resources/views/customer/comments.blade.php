@@ -123,6 +123,7 @@
             </form>
 
             <div class="social-media-all-comments">
+                @forelse ($comments as $comment)
                 <div class="social-media-comment-container">
                     <img src="../imgs/trainer2.jpg">
                     <div class="social-media-comment-box">
@@ -146,140 +147,12 @@
                             </div>
                         </div>
 
-                        <p>When can you send them ? I would like to get them ASAP.When can you send them ? I would like to get them ASAP.</p>
+                        <p>{{$comment->comment}}</p>
                     </div>
                 </div>
-                <div class="social-media-comment-container">
-                    <img src="../imgs/trainer2.jpg">
-                    <div class="social-media-comment-box">
-                        <div class="social-media-comment-box-header">
-                            <div class="social-media-comment-box-name">
-                                <p>User Name</p>
-                                <span>19 Sep 2022, 11:02 AM</span>
-                            </div>
-
-                            <iconify-icon icon="bx:dots-vertical-rounded" class="social-media-comment-icon"></iconify-icon>
-                            <div class="comment-actions-container" >
-                                <div class="comment-action">
-                                    <iconify-icon icon="akar-icons:edit" class="comment-action-icon"></iconify-icon>
-                                    <p>Edit</p>
-                                </div>
-
-                                <div class="comment-action">
-                                    <iconify-icon icon="fluent:delete-12-regular" class="comment-action-icon"></iconify-icon>
-                                    <p>Delete</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <p>When can you send them ? I would like to get them ASAP.When can you send them ? I would like to get them ASAP.</p>
-                    </div>
-                </div>
-                <div class="social-media-comment-container">
-                    <img src="../imgs/trainer2.jpg">
-                    <div class="social-media-comment-box">
-                        <div class="social-media-comment-box-header">
-                            <div class="social-media-comment-box-name">
-                                <p>User Name</p>
-                                <span>19 Sep 2022, 11:02 AM</span>
-                            </div>
-
-                            <iconify-icon icon="bx:dots-vertical-rounded" class="social-media-comment-icon"></iconify-icon>
-                            <div class="comment-actions-container" >
-                                <div class="comment-action">
-                                    <iconify-icon icon="akar-icons:edit" class="comment-action-icon"></iconify-icon>
-                                    <p>Edit</p>
-                                </div>
-
-                                <div class="comment-action">
-                                    <iconify-icon icon="fluent:delete-12-regular" class="comment-action-icon"></iconify-icon>
-                                    <p>Delete</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <p>When can you send them ? I would like to get them ASAP.When can you send them ? I would like to get them ASAP.</p>
-                    </div>
-                </div>
-                <div class="social-media-comment-container post-owner-comment">
-                    <img src="../imgs/trainer2.jpg">
-                    <div class="social-media-comment-box">
-                        <div class="social-media-comment-box-header">
-                            <div class="social-media-comment-box-name">
-                                <p>User Name</p>
-                                <span>19 Sep 2022, 11:02 AM</span>
-                            </div>
-
-                            <iconify-icon icon="bx:dots-vertical-rounded" class="social-media-comment-icon"></iconify-icon>
-                            <div class="comment-actions-container" >
-                                <div class="comment-action">
-                                    <iconify-icon icon="akar-icons:edit" class="comment-action-icon"></iconify-icon>
-                                    <p>Edit</p>
-                                </div>
-
-                                <div class="comment-action">
-                                    <iconify-icon icon="fluent:delete-12-regular" class="comment-action-icon"></iconify-icon>
-                                    <p>Delete</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <p>When can you send them ? I would like to get them ASAP.When can you send them ? I would like to get them ASAP.</p>
-                    </div>
-                </div>
-
-                <div class="social-media-comment-container">
-                    <img src="../imgs/trainer2.jpg">
-                    <div class="social-media-comment-box">
-                        <div class="social-media-comment-box-header">
-                            <div class="social-media-comment-box-name">
-                                <p>User Name</p>
-                                <span>19 Sep 2022, 11:02 AM</span>
-                            </div>
-
-                            <iconify-icon icon="bx:dots-vertical-rounded" class="social-media-comment-icon"></iconify-icon>
-                            <div class="comment-actions-container" >
-                                <div class="comment-action">
-                                    <iconify-icon icon="akar-icons:edit" class="comment-action-icon"></iconify-icon>
-                                    <p>Edit</p>
-                                </div>
-
-                                <div class="comment-action">
-                                    <iconify-icon icon="fluent:delete-12-regular" class="comment-action-icon"></iconify-icon>
-                                    <p>Delete</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <p>When can you send them ? I would like to get them ASAP.When can you send them ? I would like to get them ASAP.</p>
-                    </div>
-                </div>
-                <div class="social-media-comment-container">
-                    <img src="../imgs/trainer2.jpg">
-                    <div class="social-media-comment-box">
-                        <div class="social-media-comment-box-header">
-                            <div class="social-media-comment-box-name">
-                                <p>User Name</p>
-                                <span>19 Sep 2022, 11:02 AM</span>
-                            </div>
-
-                            <iconify-icon icon="bx:dots-vertical-rounded" class="social-media-comment-icon"></iconify-icon>
-                            <div class="comment-actions-container" >
-                                <div class="comment-action">
-                                    <iconify-icon icon="akar-icons:edit" class="comment-action-icon"></iconify-icon>
-                                    <p>Edit</p>
-                                </div>
-
-                                <div class="comment-action">
-                                    <iconify-icon icon="fluent:delete-12-regular" class="comment-action-icon"></iconify-icon>
-                                    <p>Delete</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <p>When can you send them ? I would like to get them ASAP.When can you send them ? I would like to get them ASAP.</p>
-                    </div>
-                </div>
+                @empty
+                    <p class="text-secondary p-1">No comment</p>
+                @endforelse
             </div>
         </div>
     </div>
@@ -365,12 +238,33 @@
             $(".social-media-all-comments-input").on('submit',function(e){
                 e.preventDefault()
                 console.log($('.mentiony-content').text())
+                var comment = $('.mentiony-content').text()
 
+                var arr = []
                 $.each($('.mentiony-link'),function(){
-                    console.log($(this).data('item-id'))
+                    arr.push($(this).data('item-id'))
                 })
+                console.log(arr)
 
-                // console.log($('.mentiony-link').data('item-id'))
+                var search_url = "{{ route('post.comment.store') }}";
+                var post_id = "{{$post->id}}"
+                console.log(post_id)
+                    $.ajaxSetup({
+                            headers: {
+                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                            }
+                        });
+                    $.ajax({
+                        method: "POST",
+                        url:search_url,
+                        data : {'post_id':post_id,'mention' : arr , 'comment' : comment},
+                        dataType: "json",
+                        success: function (response) {
+                            console.log("comment")
+                            window.location.reload();
+                        }
+                    });
+
             })
 
             $('.mentiony-content').on('keydown', function(event) {
