@@ -709,4 +709,9 @@ class SocialmediaController extends Controller
             'success' => 'Post deleted successfully!'
         ]);
     }
+
+    public function post_comment()
+    {
+        return view('customer.comments');
+    }
 }

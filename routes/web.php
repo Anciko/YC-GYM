@@ -72,7 +72,7 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
         Route::post('/socialmedia', [SocialmediaController::class, 'post_store'])->name('post.store');
 
         Route::get('/socialmedia/post/save/', [SocialmediaController::class, 'post_save'])->name('socialmedia.post.save');
-        
+
 
         Route::post('/socialmedia/delete/{id}', [SocialmediaController::class, 'post_destroy'])->name('post.destroy');
         Route::post('/socialmedia/edit/{id}', [SocialmediaController::class, 'post_edit'])->name('post.edit');
@@ -128,6 +128,8 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
 
 
         Route::post('/post/store', [SocialmediaController::class, 'post_store'])->name('post.store');
+
+        Route::get('/post/comment', [SocialmediaController::class, 'post_comment'])->name('post.comment');
 });
     Route::get('customer/register', [App\Http\Controllers\HomeController::class, 'customer_register'])->name('customer_register');
     //Route::post('customer/register', [App\Http\Controllers\Auth\RegisterController::class, 'register'])->name('customer_register');
