@@ -9,6 +9,7 @@ use App\Http\Controllers\Admin\MealController;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\SocialmediaController;
 use App\Http\Controllers\Admin\MemberController;
 use App\Http\Controllers\Admin\PaymentController;
 use App\Http\Controllers\Admin\RequestController;
@@ -21,13 +22,13 @@ use App\Http\Controllers\Admin\PermissionController;
 use App\Http\Controllers\User\UserWorkoutController;
 use App\Http\Controllers\Admin\BankinginfoController;
 use App\Http\Controllers\Admin\ReportController;
+use App\Http\Controllers\Admin\TrainingGroupController;
+use App\Http\Controllers\Admin\TrainingCenterController;
 use App\Http\Controllers\Trainer\TrainerGroupController;
 use App\Http\Controllers\Customer\CustomerLoginController;
 use App\Http\Controllers\Customer\RegisterPaymentController;
 use App\Http\Controllers\Customer\CustomerRegisterController;
 use App\Http\Controllers\Admin\RequestAcceptDeclineController;
-use App\Http\Controllers\Admin\TrainingCenterController;
-use App\Http\Controllers\Admin\TrainingGroupController;
 use App\Http\Controllers\Trainer\TrainerManagementConntroller;
 use App\Http\Controllers\Customer\CustomerManagementController;
 use App\Http\Controllers\Customer\Customer_TrainingCenterController;
@@ -66,6 +67,12 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
 
     Auth::routes();
     Route::middleware('auth')->group(function () {
+
+        //Social Media
+        Route::get('/socialmedia_profile', [SocialmediaController::class, 'socialmedia_profile'])->name('socialmedia.profile');
+        Route::get('/socialmedia', [SocialmediaController::class, 'index'])->name('socialmedia');
+        Route::post('/post/store', [SocialmediaController::class, 'post_store'])->name('post.store');
+
         Route::get('customer/personal_infos', [CustomerRegisterController::class, 'personal_info'])->name('customer-personal_infos');
         Route::get('customer/profile', [Customer_TrainingCenterController::class, 'profile'])->name('customer-profile');
         Route::post('customer/profile/update', [Customer_TrainingCenterController::class, 'profile_update'])->name('customer-profile.update');

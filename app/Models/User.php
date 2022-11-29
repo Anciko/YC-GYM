@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Post;
 use App\Models\Payment;
 use App\Models\TrainingUser;
 use App\Models\TrainingGroup;
@@ -68,6 +69,10 @@ class User extends Authenticatable
 
     public function trainingUser(){
         return $this->hasMany(TrainingUser::class,'user_id','id');
+    }
+
+    public function post(){
+        return $this->hasOne(Post::class);
     }
 
 //   public function member()

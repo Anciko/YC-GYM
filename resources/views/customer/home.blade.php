@@ -43,7 +43,7 @@
             <p class="home-price-detail-price">MMK {{$member_plan->price}} / month</p>
 
             <div class="home-price-detail-benefits">
-                
+
                 <div class="home-price-detail-benefit">
                     <iconify-icon icon="akar-icons:check" class="home-price-detail-benefit-icon check"></iconify-icon>
                     <p>Benefit 1</p>
