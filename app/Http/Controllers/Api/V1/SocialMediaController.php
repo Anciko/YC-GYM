@@ -674,9 +674,33 @@ class SocialMediaController extends Controller
         }
     }
     public function saved_post(){
-        $saved_post = UserSavedPost::select('posts.*')->leftJoin('posts','posts.id','user_saved_posts.post_id')
+        $saved_post = UserSavedPost::select('users.name','profiles.profile_image','posts.*')->leftJoin('posts','posts.id','user_saved_posts.post_id')
                         ->where('user_saved_posts.user_id',auth()->user()->id)
+                        ->leftJoin('users','users.id','user_saved_posts.user_id')
+                        ->leftJoin('profiles','users.profile_id','profiles.id')
+                        ->orderBy('posts.created_at','DESC')
                         ->get();
+
+        // $posts=Post::select('users.name','profiles.profile_image','posts.*')
+        //                 ->where('posts.user_id',auth()->user()->id)
+        //                 ->leftJoin('users','users.id','posts.user_id')
+        //                 ->leftJoin('profiles','users.profile_id','profiles.id')
+        //                 ->orderBy('posts.created_at','DESC')
+        //                 ->paginate(30);
+
+        //                 foreach($posts as $key=>$value){
+        //                     $posts[$key]['is_save']= 0;
+        //                     // dd($value->id);
+        //                         foreach($saved_post as $saved_key=>$save_value ){
+
+        //                             if($save_value->id === $value->id){
+        //                                 $posts[$key]['is_save']= 1;
+        //                             }
+        //                             else{
+        //                                 $posts[$key]['is_save']= 0;
+        //                             }
+        //                             }
+        //                         }
         return response()->json([
             'save' => $saved_post
             ]);
