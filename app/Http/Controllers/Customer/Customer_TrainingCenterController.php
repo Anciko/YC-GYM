@@ -17,6 +17,7 @@ use App\Models\PersonalMealInfo;
 use Illuminate\Support\Facades\DB;
 use App\Models\PersonalWorkOutInfo;
 use App\Http\Controllers\Controller;
+use App\Models\UserSavedPost;
 use RealRashid\SweetAlert\Facades\Alert;
 
 class Customer_TrainingCenterController extends Controller
@@ -158,7 +159,15 @@ class Customer_TrainingCenterController extends Controller
             }
         }
 
-        return view('customer.training_center.profile', compact('user','posts','user_friends','user_profile_cover','user_profile_image','year','workouts', 'workout_date', 'cal_sum', 'time_min', 'time_sec', 'weight_history', 'newDate'));
+        $save_posts=UserSavedPost::where('user_id',$user_id)->with('user')->get();
+
+        foreach($save_posts as $save_post){
+            //$profile=$save_post->post->user->profiles->where('cover_photo',null)->sortByDesc('created_at')->first();
+        }
+
+        dd($save_post);
+
+        return view('customer.training_center.profile', compact('save_posts','user','posts','user_friends','user_profile_cover','user_profile_image','year','workouts', 'workout_date', 'cal_sum', 'time_min', 'time_sec', 'weight_history', 'newDate'));
     }
     public function member_plan()
     {

@@ -31,8 +31,15 @@
                             <a href="#" style="text-decoration:none" class="post_save" id="{{$post->id}}">
                                 <div class="post-action">
                                     <iconify-icon icon="bi:save" class="post-action-icon"></iconify-icon>
+                                    @php
+                                        $already_save=auth()->user()->user_saved_posts->where('post_id',$post->id)->first();
+                                    @endphp
+
+                                    @if ($already_save)
+                                        <p class="save">Unsave</p>
+                                    @else
                                         <p class="save">Save</p>
-                                        <p class="unsave">Unsave</p>
+                                     @endif
                                 </div>
                             </a>
                         @if ($post->user->id == auth()->user()->id)
@@ -149,8 +156,7 @@
 @push('scripts')
 <script>
     $(document).ready(function() {
-        $('.unsave').hide();
-        $('.save').show();
+
         $('.like').click(function(e){
             e.preventDefault();
             var isLike=e.target.previousElementSibiling == null ? true : false;
@@ -193,18 +199,20 @@
                                         timerProgressBar: true,
                                         timer: 5000,
                                         icon: 'success',
-                                    });
-                                    $('.unsave').show();
-                                    $('.save').hide();
+                                    }).then((result) => {
+                                        $(".save").html("Unsave");
+                                    })
+
                                 }else{
                                     Swal.fire({
                                         text: data.unsave,
                                         timerProgressBar: true,
                                         timer: 5000,
                                         icon: 'success',
-                                    });
-                                    $('.unsave').hide();
-                                    $('.save').show();
+                                    }).then((result) => {
+                                        $(".save").html("Save");
+
+                                })
                                 }
 
                             }
