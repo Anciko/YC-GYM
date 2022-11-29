@@ -674,9 +674,10 @@ class SocialMediaController extends Controller
         }
     }
     public function saved_post(){
-        $saved_post = UserSavedPost::select('users.name','profiles.profile_image','posts.*')->leftJoin('posts','posts.id','user_saved_posts.post_id')
+        $saved_post = UserSavedPost::select('users.name','profiles.profile_image','posts.*')
+                        ->leftJoin('posts','posts.id','user_saved_posts.post_id')
                         ->where('user_saved_posts.user_id',auth()->user()->id)
-                        ->leftJoin('users','users.id','user_saved_posts.user_id')
+                        ->leftJoin('users','users.id','posts.user_id')
                         ->leftJoin('profiles','users.profile_id','profiles.id')
                         ->orderBy('posts.created_at','DESC')
                         ->get();
