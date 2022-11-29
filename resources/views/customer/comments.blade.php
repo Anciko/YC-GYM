@@ -49,7 +49,8 @@
 
         <div class="social-media-all-comments-container">
             <form class="social-media-all-comments-input">
-                <textarea placeholder="Write a comment"></textarea>
+                <textarea placeholder="Write a comment" id="textarea"></textarea>
+                <div id="menu" class="menu" role="listbox"></div>
                 <button class="social-media-all-comments-send-btn">
                     <iconify-icon icon="akar-icons:send" class="social-media-all-comments-send-icon"></iconify-icon>
                 </button>
@@ -220,6 +221,101 @@
 </div>
 
 @endsection
+
 @push('scripts')
+<script>
+    $(document).ready(function() {
+        $('#textarea').mentiony({
+                    onDataRequest: function (mode, keyword, onDataRequestCompleteCallback) {
+
+                        var data = [
+                            { id:1, name:'Nguyen Luat', 'avatar':'https://goo.gl/WXAP1U', 'info':'Vietnam' , href: 'http://a.co/id'},
+                            { id:2, name:'Dinh Luat', 'avatar':'https://goo.gl/WXAP1U', 'info':'Vietnam' , href: 'http://a.co/id'},
+                            { id:3, name:'Max Luat', 'avatar':'https://goo.gl/WXAP1U', 'info':'Vietnam' , href: 'http://a.co/id'},
+                            { id:4, name:'John Neo', 'avatar':'https://goo.gl/WXAP1U', 'info':'Vietnam' , href: 'http://a.co/id'},
+                            { id:5, name:'John Dinh', 'avatar':'https://goo.gl/WXAP1U', 'info':'Vietnam' , href: 'http://a.co/id'},
+                            { id:6, name:'Test User', 'avatar':'https://goo.gl/WXAP1U', 'info':'Vietnam' , href: 'http://a.co/id'},
+                            { id:7, name:'Test User 2', 'avatar':'https://goo.gl/WXAP1U', 'info':'Vietnam' , href: 'http://a.co/id'},
+                            { id:8, name:'No Test', 'avatar':'https://goo.gl/WXAP1U', 'info':'Vietnam' , href: 'http://a.co/id'},
+                            { id:9, name:'The User Foo', 'avatar':'https://goo.gl/WXAP1U', 'info':'Vietnam' , href: 'http://a.co/id'},
+                            { id:10, name:'Foo Bar', 'avatar':'https://goo.gl/WXAP1U', 'info':'Vietnam' , href: 'http://a.co/id'},
+                        ];
+
+                        data = jQuery.grep(data, function( item ) {
+                            return item.name.toLowerCase().indexOf(keyword.toLowerCase()) > -1;
+                        });
+
+                        // Call this to populate mention.
+                        onDataRequestCompleteCallback.call(this, data);
+                    },
+                    timeOut: 0,
+                    debug: 1,
+                });
+
+            //     $('textarea[name="mention2"]').mentiony({
+            //     onDataRequest: function (mode, keyword, onDataRequestCompleteCallback) {
+
+            //         $.ajax({
+            //             method: "GET",
+            //             url: "js/example.json?query="+ keyword,
+            //             dataType: "json",
+            //             success: function (response) {
+            //                 var data = response;
+
+            //                 // NOTE: Assuming this filter process was done on server-side
+            //                 data = jQuery.grep(data, function( item ) {
+            //                     return item.name.toLowerCase().indexOf(keyword.toLowerCase()) > -1;
+            //                 });
+            //                 // End server-side
+
+            //                 // Call this to populate mention.
+            //                 onDataRequestCompleteCallback.call(this, data);
+            //             }
+            //         });
+
+            //     },
+            //     timeOut: 500, // Timeout to show mention after press @
+            //     debug: 1, // show debug info
+            // });
+
+            $(".mentiony-container").attr('style','')
+            $(".mentiony-content").attr('style','')
+
+
+            $(".social-media-all-comments-input").on('submit',function(e){
+                e.preventDefault()
+                console.log($('.mentiony-content').text())
+
+                $.each($('.mentiony-link'),function(){
+                    console.log($(this).data('item-id'))
+                })
+
+                // console.log($('.mentiony-link').data('item-id'))
+            })
+
+            $('.mentiony-content').on('keydown', function(event) {
+                console.log(event.which)
+                if (event.which == 8 || event.which == 46) {
+                    s = window.getSelection();
+                    r = s.getRangeAt(0)
+                    el = r.startContainer.parentElement
+
+                    console.log(el.classList.contains('mentiony-link') || el.classList.contains('mention-area') || el.classList.contains('highlight'))
+                    console.log(el)
+                    if (el.classList.contains('mentiony-link') || el.classList.contains('mention-area') || el.classList.contains('highlight')) {
+                        console.log('delete mention')
+
+
+                                el.remove();
+
+                            return;
+
+                    }
+                }
+                event.target.querySelectorAll('delete-highlight').forEach(function(el) { el.classList.remove('delete-highlight');})
+            });
+    })
+</script>
+
 
 @endpush
