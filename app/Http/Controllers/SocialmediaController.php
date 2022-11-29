@@ -712,29 +712,6 @@ class SocialmediaController extends Controller
 
     public function post_comment()
     {
-        // $id = 3;
-        $saved_post = UserSavedPost::select('posts.*')->leftJoin('posts','posts.id','user_saved_posts.post_id')
-        ->where('user_saved_posts.post_id',$id)
-        ->where('user_saved_posts.user_id',auth()->user()->id)
-        ->first();
-        // dd($saved_post);
-        $posts=Post::select('users.name','profiles.profile_image','posts.*')
-        ->where('posts.id',$id)
-        ->leftJoin('users','users.id','posts.user_id')
-        ->leftJoin('profiles','users.profile_id','profiles.id')
-        ->first();
-        // dd($posts);
-        if(empty($saved_post)){
-            foreach($posts as $value ){
-                $posts['is_save']= 0;
-            }
-        }
-        else{
-            foreach($posts as $value ){
-                $posts['is_save']= 1;
-            }
-        }
-        dd($posts);
         return view('customer.comments');
     }
 }
