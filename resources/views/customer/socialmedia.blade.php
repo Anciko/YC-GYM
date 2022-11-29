@@ -135,8 +135,10 @@
                             <p><span>1.1k</span> Likes</p>
                         </div>
                         <div class="social-media-post-comment-container">
+                            <a href = "{{route('post.comment',$post->id)}}">
                             <iconify-icon icon="bi:chat-right" class="comment-icon"></iconify-icon>
                             <p><span>50</span> Comments</p>
+                            </a>
                         </div>
                     </div>
                 </div>

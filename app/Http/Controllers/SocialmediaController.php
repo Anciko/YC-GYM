@@ -710,8 +710,23 @@ class SocialmediaController extends Controller
         ]);
     }
 
-    public function post_comment()
+    public function post_comment($id)
     {
-        return view('customer.comments');
+        // dd($id);
+        $post=Post::select('users.name','profiles.profile_image','posts.*')
+        ->where('posts.id',$id)
+        ->leftJoin('users','users.id','posts.user_id')
+        ->leftJoin('profiles','users.profile_id','profiles.id')
+        ->first();
+        return view('customer.comments',compact('post'));
+    }
+
+    public function users_for_mention(Request $request){
+        // dd($request->keyword);
+        $user = User::select('users.id','users.name','profiles.profile_image as avatar')
+        ->leftJoin('profiles','profiles.id','users.profile_id')->get()->toArray();
+        return response()->json([
+            'data' =>  $user
+        ]);
     }
 }

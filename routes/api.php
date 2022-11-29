@@ -141,6 +141,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
 
     Route::post('one_post',[SocialmediaController::class, 'one_post']);
 
+
     Route::post('post_create', [SocialmediaController::class, 'post_store']);
     Route::post('post_delete', [SocialmediaController::class, 'post_destroy']);
     Route::post('post_edit', [SocialmediaController::class, 'post_edit']);

@@ -90,7 +90,9 @@ class SocialMediaController extends Controller
     ]);
     }
     public function search_users(Request $request){
-        $users = User::where('name','LIKE','%'.$request->keyword.'%')
+        $users = User::select('users.id','users.name','profiles.profile_image')
+                 ->leftJoin('profiles','users.profile_id','profiles.id')
+                 ->where('name','LIKE','%'.$request->keyword.'%')
                         ->orWhere('phone','LIKE','%'.$request->keyword.'%')->get();
         $friends=DB::table('friendships')->get();
         return response()->json([

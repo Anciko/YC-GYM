@@ -10,8 +10,8 @@
                 <div class="social-media-post-name-container">
                     <img src="../imgs/trainer2.jpg">
                     <div class="social-media-post-name">
-                        <p>User Name</p>
-                        <span>19 Sep 2022, 11:02 AM</span>
+                        <p>{{$post->name}}</p>
+                        <span>{{ \Carbon\Carbon::parse($post->created_at)->format('d M Y , g:i A')}}</span>
                     </div>
                 </div>
 
@@ -31,7 +31,72 @@
             </div>
 
             <div class="social-media-content-container">
-                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Dui hendrerit potenti pellentesque tellus urna bibendum mollis.</p>
+                @if ($post->media==null)
+                <p>{{$post->caption}}</p>
+                @else
+                <p>{{$post->caption}}</p>
+                <div class="social-media-media-container">
+                    <?php foreach (json_decode($post->media)as $m){?>
+                    <div class="social-media-media">
+                        @if (pathinfo($m, PATHINFO_EXTENSION) == 'mp4')
+                            <video controls>
+                                <source src="{{asset('storage/post/'.$m) }}">
+                            </video>
+                        @else
+                            <img src="{{asset('storage/post/'.$m) }}">
+                        @endif
+                    </div>
+                    <?php }?>
+                </div>
+
+                <div id="slider-wrapper" class="social-media-media-slider">
+                    <iconify-icon icon="akar-icons:cross" class="slider-close-icon"></iconify-icon>
+
+                    <div id="image-slider" class="image-slider">
+                        <ul class="ul-image-slider">
+
+                            <?php foreach (json_decode($post->media)as $m){?>
+                                @if (pathinfo($m, PATHINFO_EXTENSION) == 'mp4')
+                                <li>
+                                    <video controls>
+                                        <source src="{{asset('storage/post/'.$m) }}">
+                                    </video>
+                                </li>
+                                @else
+                                    <li>
+                                        <img src="{{asset('storage/post/'.$m) }}" alt="" />
+                                    </li>
+                                @endif
+
+                            <?php }?>
+                        </ul>
+
+                    </div>
+
+                    <div id="thumbnail" class="img-slider-thumbnails">
+                        <ul>
+                            {{-- <li class="active"><img src="https://40.media.tumblr.com/tumblr_m92vwz7XLZ1qf4jqio1_540.jpg" alt="" /></li> --}}
+                            <?php foreach (json_decode($post->media)as $m){?>
+                                @if (pathinfo($m, PATHINFO_EXTENSION) == 'mp4')
+                                <li>
+                                    <video>
+                                        <source src="{{asset('storage/post/'.$m) }}">
+                                    </video>
+                                </li>
+                                @else
+                                    <li>
+                                        <img src="{{asset('storage/post/'.$m) }}" alt="" />
+                                    </li>
+                                @endif
+
+                            <?php }?>
+
+                        </ul>
+                    </div>
+
+                </div>
+
+                @endif
 
             </div>
 
@@ -225,58 +290,73 @@
 @push('scripts')
 <script>
     $(document).ready(function() {
-        $('#textarea').mentiony({
-                    onDataRequest: function (mode, keyword, onDataRequestCompleteCallback) {
+        // $('#textarea').mentiony({
+        //             onDataRequest: function (mode, keyword, onDataRequestCompleteCallback) {
 
-                        var data = [
-                            { id:1, name:'Nguyen Luat', 'avatar':'https://goo.gl/WXAP1U', 'info':'Vietnam' , href: 'http://a.co/id'},
-                            { id:2, name:'Dinh Luat', 'avatar':'https://goo.gl/WXAP1U', 'info':'Vietnam' , href: 'http://a.co/id'},
-                            { id:3, name:'Max Luat', 'avatar':'https://goo.gl/WXAP1U', 'info':'Vietnam' , href: 'http://a.co/id'},
-                            { id:4, name:'John Neo', 'avatar':'https://goo.gl/WXAP1U', 'info':'Vietnam' , href: 'http://a.co/id'},
-                            { id:5, name:'John Dinh', 'avatar':'https://goo.gl/WXAP1U', 'info':'Vietnam' , href: 'http://a.co/id'},
-                            { id:6, name:'Test User', 'avatar':'https://goo.gl/WXAP1U', 'info':'Vietnam' , href: 'http://a.co/id'},
-                            { id:7, name:'Test User 2', 'avatar':'https://goo.gl/WXAP1U', 'info':'Vietnam' , href: 'http://a.co/id'},
-                            { id:8, name:'No Test', 'avatar':'https://goo.gl/WXAP1U', 'info':'Vietnam' , href: 'http://a.co/id'},
-                            { id:9, name:'The User Foo', 'avatar':'https://goo.gl/WXAP1U', 'info':'Vietnam' , href: 'http://a.co/id'},
-                            { id:10, name:'Foo Bar', 'avatar':'https://goo.gl/WXAP1U', 'info':'Vietnam' , href: 'http://a.co/id'},
-                        ];
+        //                 // var data = [
+        //                 //     { id:1, name:'Nguyen Luat', 'avatar':'https://goo.gl/WXAP1U'},
+        //                 //     { id:2, name:'Dinh Luat', 'avatar':'https://goo.gl/WXAP1U'},
+        //                 //     { id:3, name:'Max Luat', 'avatar':'https://goo.gl/WXAP1U'},
+        //                 //     { id:4, name:'John Neo', 'avatar':'https://goo.gl/WXAP1U'},
+        //                 //     { id:5, name:'John Dinh', 'avatar':'https://goo.gl/WXAP1U'},
+        //                 //     { id:6, name:'Test User', 'avatar':'https://goo.gl/WXAP1U'},
+        //                 //     { id:7, name:'Test User 2', 'avatar':'https://goo.gl/WXAP1U'},
+        //                 //     { id:8, name:'No Test', 'avatar':'https://goo.gl/WXAP1U'},
+        //                 // ];
+        //                 var data = []
+        //                 var search_url = "{{ route('users.mention') }}";
+        //                     $.post(search_url,
+        //                     {
+        //                         _token: $('meta[name="csrf-token"]').attr('content'),
+        //                         keyword:keyword
+        //                     },
+        //                     function(response){
+        //                         var data = response.data;
+        //                         console.log(data)
+        //                         data = jQuery.grep(data, function( item ) {
+        //                     return item.name.toLowerCase().indexOf(keyword.toLowerCase()) > -1;
+        //                     });
+        //                     });
 
-                        data = jQuery.grep(data, function( item ) {
-                            return item.name.toLowerCase().indexOf(keyword.toLowerCase()) > -1;
+        //                 // Call this to populate mention.
+        //                 onDataRequestCompleteCallback.call(this, data);
+        //             },
+        //             timeOut: 0,
+        //             debug: 1,
+        //         });
+
+                $('#textarea').mentiony({
+                onDataRequest: function (mode, keyword, onDataRequestCompleteCallback) {
+                    var search_url = "{{ route('users.mention') }}";
+                    $.ajaxSetup({
+                            headers: {
+                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                            }
                         });
+                    $.ajax({
+                        method: "POST",
+                        url:search_url,
+                        data : keyword,
+                        dataType: "json",
+                        success: function (response) {
+                            var data = response.data;
+                            console.log(data)
 
-                        // Call this to populate mention.
-                        onDataRequestCompleteCallback.call(this, data);
-                    },
-                    timeOut: 0,
-                    debug: 1,
-                });
+                            // NOTE: Assuming this filter process was done on server-side
+                            data = jQuery.grep(data, function( item ) {
+                                return item.name.toLowerCase().indexOf(keyword.toLowerCase()) > -1;
+                            });
+                            // End server-side
 
-            //     $('textarea[name="mention2"]').mentiony({
-            //     onDataRequest: function (mode, keyword, onDataRequestCompleteCallback) {
+                            // Call this to populate mention.
+                            onDataRequestCompleteCallback.call(this, data);
+                        }
+                    });
 
-            //         $.ajax({
-            //             method: "GET",
-            //             url: "js/example.json?query="+ keyword,
-            //             dataType: "json",
-            //             success: function (response) {
-            //                 var data = response;
-
-            //                 // NOTE: Assuming this filter process was done on server-side
-            //                 data = jQuery.grep(data, function( item ) {
-            //                     return item.name.toLowerCase().indexOf(keyword.toLowerCase()) > -1;
-            //                 });
-            //                 // End server-side
-
-            //                 // Call this to populate mention.
-            //                 onDataRequestCompleteCallback.call(this, data);
-            //             }
-            //         });
-
-            //     },
-            //     timeOut: 500, // Timeout to show mention after press @
-            //     debug: 1, // show debug info
-            // });
+                },
+                timeOut: 500, // Timeout to show mention after press @
+                debug: 1, // show debug info
+            });
 
             $(".mentiony-container").attr('style','')
             $(".mentiony-content").attr('style','')
