@@ -35,10 +35,10 @@
 
                     <div id = "addFriclass" class="social-media-profile-btns-container">
                         @if (count($friend) < 1)
-                        <button class="customer-primary-btn add-friend-btn">
+                        <a href ="?id={{$user->id}}" class="customer-primary-btn add-friend-btn" id = "Add">
                             <iconify-icon icon="akar-icons:circle-plus" class="add-friend-icon"></iconify-icon>
                             <p>Add friend</p>
-                        </button>
+                        </a>
                         @elseif($user->id == auth()->user()->id)
                             <button class="customer-primary-btn add-friend-btn">
                                 <iconify-icon icon="material-symbols:person-outline" class="add-friend-icon"></iconify-icon>
@@ -52,10 +52,10 @@
                             <iconify-icon icon="mdi:message-reply-outline" class="add-friend-icon"></iconify-icon>
                             <p>Message</p>
                         </button>
-                        <button class="customer-red-btn add-friend-btn unfriend "  data-id = {{$user->id}}>
+                        <a href ="?id={{$user->id}}" class="customer-red-btn add-friend-btn unfriend "  data-id = {{$user->id}}>
                             <iconify-icon icon="mdi:account-minus-outline" class="add-friend-icon"></iconify-icon>
                             <p>Unfriend</p>
-                        </button>
+                        </a>
                         @elseif ($friend_status->friend_status == 1 AND $friend_status->sender_id  === auth()->user()->id )
                         <button class="customer-primary-btn add-friend-btn">
                             <iconify-icon icon="material-symbols:cancel-schedule-send-outline-rounded" class="add-friend-icon"></iconify-icon>
@@ -209,45 +209,62 @@
 @push('scripts')
 <script>
     $(document).ready(function() {
-        // $(document).on('click', '#AddFriend', function(e) {
-        //         e.preventDefault();
-        //         $('.social-media-left-searched-items-container').empty();
-        //         var url = new URL(this.href);
-
-        //         var id = url.searchParams.get("id");
-        //         var group_id = $(this).attr("id");
-
-        //         var add_url = "{{ route('addUser', [':id']) }}";
-        //         add_url = add_url.replace(':id', id);
-        //         $(".add-member-btn").attr('href','');
-        //         $.ajax({
-        //             type: "GET",
-        //             url: add_url,
-        //             datatype: "json",
-        //             success: function(data) {
-        //                 console.log(data)
-        //                 search();
-        //             }
-        //         })
-        //         });
-
-                $(document).on('click', '.unfriend', function(e) {
+        $(document).on('click', '#Add', function(e) {
                 e.preventDefault();
-                alert("ok");
-                var id = $(this).data('id');;
-                console.log(id,"ddd")
+                $('.social-media-left-searched-items-container').empty();
+                var url = new URL(this.href);
 
-                var unfriend_url = "{{ route('unfriend', [':id']) }}";
-                unfriend_url = unfriend_url.replace(':id', id);
+                var id = url.searchParams.get("id");
+                var group_id = $(this).attr("id");
+
+                var add_url = "{{ route('addUser', [':id']) }}";
+                add_url = add_url.replace(':id', id);
+                $(".add-member-btn").attr('href','');
                 $.ajax({
                     type: "GET",
-                    url: unfriend_url,
+                    url: add_url,
                     datatype: "json",
                     success: function(data) {
                         console.log(data)
-                        alert("ok");
+                        window.location.reload();
                     }
                 })
+                });
+
+                $(document).on('click', '.unfriend', function(e) {
+                e.preventDefault();
+                Swal.fire({
+                        text: "Are you sure?",
+                        showClass: {
+                                popup: 'animate__animated animate__fadeInDown'
+                            },
+                            hideClass: {
+                                popup: 'animate__animated animate__fadeOutUp'
+                            },
+                        showCancelButton: true,
+                        timerProgressBar: true,
+                        confirmButtonText: 'Yes',
+                        cancelButtonText: 'No',
+
+                        }).then((result) => {
+                        /* Read more about isConfirmed, isDenied below */
+                        if (result.isConfirmed) {
+                             var url = new URL(this.href);
+                             var id = url.searchParams.get("id");
+                             var url = "{{ route('unfriend', [':id']) }}";
+                             url = url.replace(':id', id);
+                             $(".cancel-request-btn").attr('href','');
+                                $.ajax({
+                                    type: "GET",
+                                    url: url,
+                                    datatype: "json",
+                                    success: function(data) {
+                                        console.log(data)
+                                        window.location.reload();
+                                    }
+                                })
+                        }
+                        })
                 });
     });
 

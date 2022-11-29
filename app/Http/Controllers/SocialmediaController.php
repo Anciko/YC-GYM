@@ -173,8 +173,6 @@ class SocialmediaController extends Controller
                 'save' => 'Saved Post Successfully',
                 ]);
         }
-
-
     }
 
     public function profile(Request $request,$id)
@@ -500,12 +498,6 @@ class SocialmediaController extends Controller
     }
 
     public function notification_center(){
-        // $friend_requests = Friendship::select('users.id','users.name')
-        //                     ->leftJoin('users','users.id','friendships.receiver_id')
-        //                     ->where('receiver_id',auth()->user()->id)
-        //                     ->get();
-        // $notification=Notification::where('receiver_id',auth()->user()->id)->paginate(10);
-        // dd($notification);
         $friend_requests=Friendship::select('sender.name','sender.id')
             ->join('users as receiver', 'receiver.id', '=', 'friendships.receiver_id')
             ->join('users as sender', 'sender.id', '=', 'friendships.sender_id')

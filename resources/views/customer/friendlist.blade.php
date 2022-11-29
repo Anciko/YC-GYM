@@ -61,9 +61,12 @@
                                 if(res.friends[i].profile_image === null){
                                     htmlView += `
                                     <div class="social-media-fris-fri-row">
+
                                         <div class="social-media-fris-fri-img">
+                                            <a href=`+url+`>
                                                 <img src="{{asset('img/customer/imgs/user_default.jpg')}}">
                                             <p>`+res.friends[i].name+`</p>
+                                            </a>
                                         </div>
 
 
@@ -80,8 +83,10 @@
                                     htmlView += `
                                     <div class="social-media-fris-fri-row">
                                         <div class="social-media-fris-fri-img">
+                                            <a href=`+url+`>
                                                 <img src="{{ asset('/storage/post/${res.friends[i].profile_image}') }}">
                                             <p>`+res.friends[i].name+`</p>
+                                            </a>
                                         </div>
 
 
@@ -165,10 +170,9 @@
                                     datatype: "json",
                                     success: function(data) {
                                         console.log(data)
-                                        search();
+                                        window.location.reload();
                                     }
                                 })
-                            Swal.fire('Unfriend!', '', 'success')
                         }
                         })
                 $('.social-media-left-searched-items-container').empty();

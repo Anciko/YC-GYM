@@ -307,7 +307,19 @@
     <script src="https://js.pusher.com/4.1/pusher.min.js"></script>
 
     <script>
+                var user_id = {{auth()->user()->id}};
+                console.log(user_id);
+                var pusher = new Pusher('{{env("MIX_PUSHER_APP_KEY")}}', {
+                cluster: '{{env("PUSHER_APP_CLUSTER")}}',
+                encrypted: true
+                });
+                var channel = pusher.subscribe('friend_request.'+user_id);
+                channel.bind('friendRequest', function(data) {
+                console.log(data);
+                $.notify(data, "success",{ position:"left" });
+                });
     $(document).ready(function() {
+
 
         //image slider start
         console.log($(".image-slider"))
@@ -487,7 +499,7 @@
                                         search();
                                     }
                                 })
-                            Swal.fire('Canceled Request!', '', 'success')
+
                         }
                         })
                 $('.social-media-left-searched-items-container').empty();
@@ -522,7 +534,35 @@
                                 No data found.
                                 `;
                             }
-
+                            else if(res.friends.length <= 0 && res.users.length != 0){
+                                console.log("myself");
+                                for(let i = 0; i < res.users.length; i++){
+                                id = res.users[i].id;
+                                var url = "{{ route('socialmedia.profile', [':id']) }}";
+                                url = url.replace(':id',id);
+                                if(res.users[i].id === auth_id){
+                                    htmlView += `
+                                            <div class="social-media-left-searched-item">
+                                            <a href=`+url+` class = "profiles">
+                                                <p>`+res.users[i].name+`</p>
+                                            </a>
+                                            </div>
+                                    `
+                                }
+                                else{
+                                    console.log("no friends");
+                                    htmlView += `
+                                            <div class="social-media-left-searched-item">
+                                            <a href=`+url+` class = "profiles">
+                                                <p>`+res.users[i].name+`</p>
+                                            </a>
+                                            <a href="?id=` + res.users[i].id+`"  id = "AddFriend"><iconify-icon icon="bi:person-add" class="search-item-icon"></iconify-icon></a>
+                                            </div>
+                                    `
+                                }
+                                }
+                            }
+                            else{
                                 for(let i = 0; i < res.users.length; i++){
                                     var status = ''
                                 for(let f = 0; f < res.friends.length; f++){
@@ -649,8 +689,6 @@
                                             <a href=`+url+` class = "profiles">
                                                 <p>`+res.users[i].name+`</p>
                                             </a>
-                                            <a href=`+url+`
-                                            ><iconify-icon icon="ion:people-sharp" class="search-item-icon"></iconify-icon></a>
                                             </div>
                                             `
                             }
@@ -686,8 +724,7 @@
                                     `
                             }
                             }
-
-
+                            }
                             $('.social-media-left-searched-items-container').html(htmlView);
                         }
 

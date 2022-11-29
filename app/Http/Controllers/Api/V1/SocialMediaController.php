@@ -10,6 +10,7 @@ use App\Models\Profile;
 use App\Models\Friendship;
 use App\Models\Notification;
 use Illuminate\Http\Request;
+use App\Models\UserSavedPost;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Storage;
@@ -40,6 +41,23 @@ class SocialMediaController extends Controller
         ->leftJoin('profiles','users.profile_id','profiles.id')
         ->orderBy('posts.created_at','DESC')
         ->paginate(30);
+        $saved_post = UserSavedPost::select('posts.*')->leftJoin('posts','posts.id','user_saved_posts.post_id')
+        ->whereIn('user_saved_posts.user_id',$n)
+        ->get();
+
+        foreach($posts as $key=>$value){
+            $posts[$key]['is_save']= 0;
+            // dd($value->id);
+                foreach($saved_post as $saved_key=>$save_value ){
+
+                    if($save_value->id === $value->id){
+                        $posts[$key]['is_save']= 1;
+                    }
+                    else{
+                        $posts[$key]['is_save']= 0;
+                    }
+                    }
+        }
     }else{
         $posts=Post::select('users.name','profiles.profile_image','posts.*')
         ->where('posts.user_id',$user->id)
@@ -47,6 +65,24 @@ class SocialMediaController extends Controller
         ->leftJoin('profiles','users.profile_id','profiles.id')
         ->orderBy('posts.created_at','DESC')
         ->paginate(30);
+
+        $saved_post = UserSavedPost::select('posts.*')->leftJoin('posts','posts.id','user_saved_posts.post_id')
+        ->where('user_saved_posts.user_id',$user->id)
+        ->get();
+
+        foreach($posts as $key=>$value){
+            $posts[$key]['is_save']= 0;
+            // dd($value->id);
+                foreach($saved_post as $saved_key=>$save_value ){
+
+                    if($save_value->id === $value->id){
+                        $posts[$key]['is_save']= 1;
+                    }
+                    else{
+                        $posts[$key]['is_save']= 0;
+                    }
+                    }
+                }
     }
     return response()
     ->json([
@@ -183,23 +219,15 @@ class SocialMediaController extends Controller
         $auth = Auth()->user()->id;
         $id = $request->id;
 
-        $profile = DB::table('profiles')
-        ->groupBy('user_id')
-        ->select(DB::raw('max(id) as id'))
-        ->where('profiles.profile_image',null)
-        ->where('user_id',$id)
-        ->get()
-        ->pluck('id');
-        $cover = DB::table('users')
-        ->select('profiles.cover_photo')
-        ->leftjoin('profiles', 'profiles.user_id', '=', 'users.id')
-        ->whereIn('profiles.id',$profile)
-        ->where('users.id',$id)
-        ->get();
-
         $profile = DB::table('users')
         ->select('users.id','users.name','users.bio','profiles.profile_image','profiles.cover_photo')
         ->leftjoin('profiles', 'profiles.id', '=', 'users.profile_id')
+        ->where('users.id',$id)
+        ->get();
+
+        $cover = DB::table('users')
+        ->select('profiles.cover_photo')
+        ->leftjoin('profiles', 'profiles.id', '=', 'users.cover_id')
         ->where('users.id',$id)
         ->get();
 
@@ -208,14 +236,36 @@ class SocialMediaController extends Controller
                 $value->cover_photo = $cover_index->cover_photo;
             }
         }
-        // $profile = json_decode(json_encode($profile));
         $posts=Post::select('users.name','profiles.profile_image','posts.*')
         ->where('posts.user_id',$id)
         ->leftJoin('users','users.id','posts.user_id')
         ->leftJoin('profiles','users.profile_id','profiles.id')
         ->orderBy('posts.created_at','DESC')
         ->paginate(30);
+        // $posts= Post::select('users.name','profiles.profile_image','posts.*')
+        //         ->where('posts.user_id',$user->id)
+        //         ->leftJoin('users','users.id','posts.user_id')
+        //         ->leftJoin('profiles','users.profile_id','profiles.id')
+        //         ->orderBy('posts.created_at','DESC')
+        //         ->paginate(30);
 
+        $saved_post = UserSavedPost::select('posts.*')->leftJoin('posts','posts.id','user_saved_posts.post_id')
+                ->where('user_saved_posts.user_id',$id)
+                ->get();
+
+        foreach($posts as $key=>$value){
+            $posts[$key]['is_save']= 0;
+            // dd($value->id);
+                foreach($saved_post as $saved_key=>$save_value ){
+
+                     if($save_value->id === $value->id){
+                        $posts[$key]['is_save']= 1;
+                     }
+                     else{
+                        $posts[$key]['is_save']= 0;
+                    }
+                    }
+                }
         $friendships=DB::table('friendships')
         ->where('friend_status',2)
         ->where(function($query) use ($id){
@@ -225,7 +275,7 @@ class SocialMediaController extends Controller
         ->join('users as sender','sender.id','friendships.sender_id')
         ->join('users as receiver','receiver.id','friendships.receiver_id')
         ->get(['sender_id','receiver_id'])->toArray();
-        //dd($friends);
+
         $n= array();
             foreach($friendships as $friend){
                     $f=(array)$friend;
@@ -245,7 +295,7 @@ class SocialMediaController extends Controller
             ->where('users.id','!=',$id)
             ->take(6)->get();
 
-            $friend_status = DB::select("SELECT * FROM `friendships` WHERE (receiver_id = $auth or sender_id = $auth )
+        $friend_status = DB::select("SELECT * FROM `friendships` WHERE (receiver_id = $auth or sender_id = $auth )
             AND (receiver_id = $request->id or sender_id = $request->id)");
 
         return response()->json([
@@ -258,9 +308,9 @@ class SocialMediaController extends Controller
 
     public function cover_profile_photo(Request $request){
         $id = $request->id;
-        $cover_photo = Profile::select('cover_photo')
+        $cover_photo = Profile::select('cover_photo','id')
         ->where('user_id',$id)->where('profile_image',null)->get();
-        $profile_photo = Profile::select('profile_image')
+        $profile_photo = Profile::select('profile_image','id')
         ->where('user_id',$id)->where('cover_photo',null)->get();
         return response()->json([
             'cover_photo' => $cover_photo,
@@ -532,6 +582,9 @@ class SocialMediaController extends Controller
 
     }
 
+
+
+
     elseif($input['addPostInput'] == null && $input['caption'] ==null){
         $caption=$input['caption'];
         $updateFilenames = $input['filenames'];
@@ -593,6 +646,66 @@ class SocialMediaController extends Controller
         ]);
     }
 
+
+    public function post_save(Request $request)
+    {
+        $post_id=$request['post_id'];
+        $user=auth()->user();
+        $user_save_post=new UserSavedPost();
+
+        $already_save=$user->user_saved_posts()->where('post_id',$post_id)->first();
+
+        if($already_save){
+            $already_save->delete();
+            $user_save_post->update();
+
+            return response()->json([
+                'unsave' => 'Unsaved Post Successfully',
+                ]);
+        }else{
+            $user_save_post->user_id=$user->id;
+            $user_save_post->post_id=$post_id;
+            $user_save_post->saved_status=1;
+            $user_save_post->save();
+
+            return response()->json([
+                'save' => 'Saved Post Successfully',
+                ]);
+        }
+    }
+    public function saved_post(){
+        $saved_post = UserSavedPost::select('users.name','profiles.profile_image','posts.*')->leftJoin('posts','posts.id','user_saved_posts.post_id')
+                        ->where('user_saved_posts.user_id',auth()->user()->id)
+                        ->leftJoin('users','users.id','user_saved_posts.user_id')
+                        ->leftJoin('profiles','users.profile_id','profiles.id')
+                        ->orderBy('posts.created_at','DESC')
+                        ->get();
+
+        // $posts=Post::select('users.name','profiles.profile_image','posts.*')
+        //                 ->where('posts.user_id',auth()->user()->id)
+        //                 ->leftJoin('users','users.id','posts.user_id')
+        //                 ->leftJoin('profiles','users.profile_id','profiles.id')
+        //                 ->orderBy('posts.created_at','DESC')
+        //                 ->paginate(30);
+
+        //                 foreach($posts as $key=>$value){
+        //                     $posts[$key]['is_save']= 0;
+        //                     // dd($value->id);
+        //                         foreach($saved_post as $saved_key=>$save_value ){
+
+        //                             if($save_value->id === $value->id){
+        //                                 $posts[$key]['is_save']= 1;
+        //                             }
+        //                             else{
+        //                                 $posts[$key]['is_save']= 0;
+        //                             }
+        //                             }
+        //                         }
+        return response()->json([
+            'save' => $saved_post
+            ]);
+    }
+
     public function profile_update_cover(Request $request)
     {
             $tmp = $request->cover;
@@ -644,6 +757,21 @@ class SocialMediaController extends Controller
         $user->update();
         return response()->json([
             'message'=>'Success',
+        ]);
+    }
+
+    public function profile_photo_delete(Request $request)
+    {
+        $user=User::find(auth()->user()->id);
+        if($user->profile_id==$request->profile_id){
+            $user->profile_id=null;
+        }elseif($user->cover_id==$request->profile_id){
+            $user->cover_id=null;
+        }
+        $user->update();
+        Profile::find($request->profile_id)->delete($request->profile_id);
+        return response()->json([
+            'success' => 'Success!'
         ]);
     }
 
