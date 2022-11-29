@@ -139,6 +139,8 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::get('newFeeds', [SocialmediaController::class, 'newFeeds']);
     Route::get('saved_post',[SocialmediaController::class, 'saved_post']);
 
+    Route::post('one_post',[SocialmediaController::class, 'one_post']);
+
     Route::post('post_create', [SocialmediaController::class, 'post_store']);
     Route::post('post_delete', [SocialmediaController::class, 'post_destroy']);
     Route::post('post_edit', [SocialmediaController::class, 'post_edit']);

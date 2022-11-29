@@ -707,6 +707,35 @@ class SocialMediaController extends Controller
             ]);
     }
 
+
+    public function one_post(Request $request){
+        $id = $request->id;
+        $saved_post = UserSavedPost::select('posts.*')->leftJoin('posts','posts.id','user_saved_posts.post_id')
+        ->where('user_saved_posts.post_id',$id)
+        ->where('user_saved_posts.user_id',auth()->user()->id)
+        ->first();
+        // dd($saved_post);
+        $post=Post::select('users.name','profiles.profile_image','posts.*')
+        ->where('posts.id',$id)
+        ->leftJoin('users','users.id','posts.user_id')
+        ->leftJoin('profiles','users.profile_id','profiles.id')
+        ->first();
+        // dd($posts);
+        if(empty($saved_post)){
+            foreach($post as $value ){
+                $post['is_save']= 0;
+            }
+        }
+        else{
+            foreach($post as $value ){
+                $post['is_save']= 1;
+            }
+        }
+        return response()->json([
+            'post' => $post
+            ]);
+    }
+
     public function profile_update_cover(Request $request)
     {
             $tmp = $request->cover;
