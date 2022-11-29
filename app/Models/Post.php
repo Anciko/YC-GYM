@@ -13,6 +13,21 @@ class Post extends Model
 
     public function user()
     {
-        return $this->belongsTo(User::class, 'user_id', 'id');
+        return $this->belongsTo(User::class);
+    }
+
+    public function post()
+    {
+        return $this->belongsTo(Post::class);
+    }
+
+    public function user_reacted_posts()
+    {
+        return $this->hasMany(UserReactPost::class, 'post_id', 'id');
+    }
+
+    public function user_saved_posts()
+    {
+        return $this->hasMany(UserSavedPost::class, 'post_id', 'id');
     }
 }

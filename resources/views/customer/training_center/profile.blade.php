@@ -12,6 +12,10 @@
         </div>
         <form class="modal-body" id="edit_form" enctype= multipart/form-data>
 
+
+        {{-- <form class="modal-body" method="POST" action="{{route('post.store')}}" enctype= multipart/form-data>
+            @csrf
+            @method('POST') --}}
             <input type="hidden" id="edit_post_id">
 
           <div class="addpost-caption">
@@ -29,7 +33,7 @@
                     <input type="file" id="editPostInput" name="editPostInput[]" multiple enctype="multipart/form-data">
                 </div>
 
-                <button class="addpost-photovideo-clear-btn" type="button" onclick="clearAddPost()">Clear</button>
+                <button class="addpost-photovideo-clear-btn" type="button" onclick="clearEditPost()">Clear</button>
 
             </span>
 
@@ -47,11 +51,27 @@
     </div>
 </div>
 
+<!-- The Image Modal -->
+<div id="modal01" class="modal-image" onclick="this.style.display='none'">
+    <span class="close-image">&times;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+    <a href="#" class="delete-image" id="delete-image" onclick=updateDiv(this)>
+        <i class="fa-solid fa-trash fa-xs"></i>
+    </a>
+    <div class="modal-content-image">
+      <img id="img01" style="max-width:100%">
+    </div>
+</div>
+<!-- End Image Modal -->
+
+    <a class="back-btn" href="{{route("socialmedia")}}">
+        <iconify-icon icon="bi:arrow-left" class="back-btn-icon"></iconify-icon>
+    </a>
+
 <div class="customer-profile-parent-container">
     <div class="customer-cover-photo-container">
 
-        @if($user_profile_cover==null)
-        <img class="customer-cover-photo" src="{{asset('image/trainer2.jpg')}}">
+        @if($user_profile_cover==null || auth()->user()->cover_id==null)
+        <img class="customer-cover-photo" src="{{asset('image/cover.jpg')}}">
         @else
         <img class="customer-cover-photo" src="{{asset('storage/post/'.$user_profile_cover->cover_photo)}}">
         @endif
@@ -76,10 +96,10 @@
                     @csrf
                     @method('POST')
                     <div class="customer-profile-img-container">
-                        @if($user_profile_image==null)
+                        @if($user_profile_image==null || auth()->user()->profile_id==null)
                             <img class="customer-profile-img" src="{{asset('img/user.jpg')}}">
                         @else
-                        <img class="customer-profile-img" src="{{asset('storage/post/'.$user_profile_image->profile_image)}}">
+                        <img class="customer-profile-img" src="{{asset('storage/post/'.$user_profile_image->profile_image)}}" >
                         @endif
                         <label class="customer-profile-img-change-btn">
                             <input type="file" name="profile_image" class="customer-profile-img-change-input">
@@ -115,9 +135,13 @@
         @csrf
         @method('POST')
         <div class="customer-bio-text">
+            @if (auth()->user()->bio==null)
+                <p class="text-secondary" >No Bio Here</p>
+            @else
             <p>{{auth()->user()->bio}}</p>
-            <input type="text" name="bio">
-            <iconify-icon icon="cil:pen" class="customer-bio-change-icon"></iconify-icon>
+            @endif
+            <input type="text" name="bio" id="bio" value="{{auth()->user()->bio}}">
+            <iconify-icon icon="cil:pen" class="customer-bio-change-icon" id={{auth()->user()->id}}></iconify-icon>
         </div>
         <div class="customer-bio-btns-container">
             <button type="submit" class="customer-primary-btn">Confirm</button>
@@ -139,10 +163,337 @@
             <p>Shop</p>
         </div>
     </div>
+    <div class="customer-profile-socialmedia-container">
+        <div class="customer-profile-social-media-default-container">
+            <div class="customer-profile-friends-parent-container">
+                <div class="customer-profile-friends-header">
+                    @if (count($user_friends)>1)
+                    <p>{{count($user_friends)}} Friends</p>
+                    @else
+                    <p>{{count($user_friends)}} Friend</p>
+                    @endif
+                    <span class="customer-profile-see-all-fris-btn">
+                        See All
+                        <iconify-icon icon="bi:arrow-right" class="arrow-icon"></iconify-icon>
+                    </span>
+                </div>
+
+                <div class="customer-profile-friends-container">
+                    @forelse ($user_friends as $friend)
+                    <div class="customer-profile-friend">
+                        <?php $image=$friend->profiles()->where('cover_photo',null)->orderBy('created_at','desc')->first() ?>
+                        @if($image==null)
+                        <a href="{{route('socialmedia.profile',$friend->id)}}" style="text-decoration:none">
+                        <img src="{{asset('img/customer/imgs/user_default.jpg')}}">
+                        </a>
+                        @else
+                        <a href="{{route('socialmedia.profile',$friend->id)}}" style="text-decoration:none">
+                        <img src="{{asset('storage/post/'.$image->profile_image)}}">
+                        </a>
+                        @endif
+                        <a href="{{route('socialmedia.profile',$friend->id)}}" style="text-decoration:none">
+                        <p>{{$friend->name}}</p>
+                        </a>
+                    </div>
+                    @empty
+                        <p class="text-secondary p-1">No Friend</p>
+                    @endforelse
+                </div>
+
+                <p href="#" class="social-media-profile-photos-link">Photos</p>
+            </div>
+
+            <div class="customer-profile-posts-parent-container">
+                <div class="customer-profile-posts-header">
+                    <p>Post & Activities</p>
+                    <select class="customer-profile-selector">
+                        <option value="all">All</option>
+                        <option value="saved">Saved</option>
+                    </select>
+                </div>
+
+                <div class="customer-all-posts-container">
+                    @forelse ($posts as $post)
+                        <div class="customer-post-container">
+                            <div class="customer-post-header">
+                                <div class="customer-post-name-container">
+                                    <?php $profile=auth()->user()->profiles->where('cover_photo',null)->sortByDesc('created_at')->first() ?>
+                                    @if ($profile==null)
+                                        <img class="nav-profile-img" src="{{asset('img/customer/imgs/user_default.jpg')}}"/>
+                                    @else
+                                        <img class="nav-profile-img" src="{{asset('storage/post/'.$profile->profile_image)}}"/>
+                                    @endif
+                                    <div class="customer-post-name">
+                                        <p>{{$post->user->name}}</p>
+                                        <span>{{ \Carbon\Carbon::parse($post->created_at)->format('d M Y , g:i A')}}</span>
+                                    </div>
+                                </div>
+
+                                <iconify-icon icon="bi:three-dots-vertical" class="customer-post-header-icon"></iconify-icon>
+                                <div class="post-actions-container">
+                                    <div class="post-action">
+                                        <iconify-icon icon="bi:save" class="post-action-icon"></iconify-icon>
+                                        <p>Save</p>
+                                    </div>
+                                    <a id="edit_post" data-id="{{$post->id}}" data-bs-toggle="modal" >
+                                        <div class="post-action">
+                                            <iconify-icon icon="material-symbols:edit" class="post-action-icon"></iconify-icon>
+                                            <p>Edit</p>
+                                        </div>
+                                    </a>
+                                    <a id="delete_post" data-id="{{$post->id}}">
+                                        <div class="post-action">
+                                        <iconify-icon icon="material-symbols:delete-forever-outline-rounded" class="post-action-icon"></iconify-icon>
+                                        <p>Delete</p>
+                                        </div>
+                                    </a>
+                                </div>
+                            </div>
+
+                            <div class="customer-content-container">
+                                @if ($post->media==null)
+                                <p>{{$post->caption}}</p>
+                                @else
+                                <p>{{$post->caption}}</p>
+                                <div class="customer-media-container">
+                                    <?php foreach (json_decode($post->media)as $m){?>
+                                        <div class="customer-media">
+                                        @if (pathinfo($m, PATHINFO_EXTENSION) == 'mp4')
+                                        <video controls>
+                                            <source src="{{asset('storage/post/'.$m) }}">
+                                        </video>
+                                        @else
+                                            <img src="{{asset('storage/post/'.$m) }}">
+                                        @endif
+                                    </div>
+                                    <?php }?>
+                                </div>
+                                <div id="slider-wrapper" class="social-media-media-slider">
+                                    <iconify-icon icon="akar-icons:cross" class="slider-close-icon"></iconify-icon>
+
+                                    <div id="image-slider" class="image-slider">
+                                        <ul class="ul-image-slider">
+
+                                            <?php foreach (json_decode($post->media)as $m){?>
+                                                @if (pathinfo($m, PATHINFO_EXTENSION) == 'mp4')
+                                                <li>
+                                                    <video controls>
+                                                        <source src="{{asset('storage/post/'.$m) }}">
+                                                    </video>
+                                                </li>
+                                                @else
+                                                    <li>
+                                                        <img src="{{asset('storage/post/'.$m) }}" alt="" />
+                                                    </li>
+                                                @endif
+
+                                            <?php }?>
+                                        </ul>
+
+                                    </div>
+
+                                    <div id="thumbnail" class="img-slider-thumbnails">
+                                        <ul>
+                                            {{-- <li class="active"><img src="https://40.media.tumblr.com/tumblr_m92vwz7XLZ1qf4jqio1_540.jpg" alt="" /></li> --}}
+                                            <?php foreach (json_decode($post->media)as $m){?>
+                                                @if (pathinfo($m, PATHINFO_EXTENSION) == 'mp4')
+                                                <li>
+                                                    <video>
+                                                        <source src="{{asset('storage/post/'.$m) }}">
+                                                    </video>
+                                                </li>
+                                                @else
+                                                    <li>
+                                                        <img src="{{asset('storage/post/'.$m) }}" alt="" />
+                                                    </li>
+                                                @endif
+
+                                            <?php }?>
+
+                                        </ul>
+                                    </div>
+
+                                </div>
+                                @endif
+
+                            </div>
+
+                            <div class="customer-post-footer-container">
+                                <div class="customer-post-like-container">
+                                    <iconify-icon icon="akar-icons:heart" class="like-icon"></iconify-icon>
+                                    <p><span>1.1k</span> Likes</p>
+                                </div>
+                                <div class="customer-post-comment-container">
+                                    <iconify-icon icon="bi:chat-right" class="comment-icon"></iconify-icon>
+                                    <p><span>50</span> Comments</p>
+                                </div>
+                            </div>
+                        </div>
+                        @empty
+                        <p class="text-secondary p-1">No Post And Activity</p>
+                    @endforelse
+                </div>
+
+                <div class="customer-saved-posts-container">
+                    <p>Saved Posts</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="customer-profile-social-media-photoes-container">
+            <p class="customer-profile-social-media-photoes-back">
+                <iconify-icon icon="material-symbols:arrow-back"></iconify-icon>
+                Go Back
+            </p>
+            <div class="social-media-photos-tabs-container">
+                <p class="social-media-photos-tab social-media-profiles-tab">Profile Photos</p>
+                <p class="social-media-photos-tab social-media-covers-tab">Cover Photos</p>
+            </div>
+
+            <div class="social-media-photos-container social-media-profiles-container">
+                @forelse (auth()->user()->profiles->sortByDesc('created_at') as $profile)
+                    @if ($profile->cover_photo)
+
+                    @else
+                        <div class="social-media-photo">
+                            <img src="{{asset('storage/post/'.$profile->profile_image)}}" style="max-width:100%;cursor:pointer"
+                            onclick="onClick(this)" id="{{$profile->id}}" class="modal-hover-opacity">
+                        </div>
+                    @endif
+                @empty
+                <p>No Profile Photo</p>
+                @endforelse
+            </div>
+
+            <div class="social-media-photos-container social-media-covers-container">
+                @forelse (auth()->user()->profiles->sortByDesc('created_at') as $profile)
+                    @if ($profile->profile_image)
+                    @else
+                        <div class="social-media-photo">
+                            <img src="{{asset('storage/post/'.$profile->cover_photo)}}" style="max-width:100%;cursor:pointer"
+                            onclick="onClick(this)" id="{{$profile->id}}" class="modal-hover-opacity">
+                        </div>
+                    @endif
+
+                @empty
+                <p>No Cover Photo</p>
+                @endforelse
+            </div>
+
+        </div>
+
+        <div class="customer-profile-social-media-fris-container">
+            <p class="customer-profile-social-media-photoes-back">
+                <iconify-icon icon="material-symbols:arrow-back"></iconify-icon>
+                Go Back</p>
+            <div class="social-media-fris-search">
+                <input type="text" placeholder="Search your friends">
+                <iconify-icon icon="akar-icons:search" class="search-icon"></iconify-icon>
+           </div>
+
+           <div class="social-media-fris-list-container">
+            {{-- <div class="social-media-fris-fri-row">
+                <div class="social-media-fris-fri-img">
+                    <img src="../imgs/cover.jpg">
+                    <p>Friend Name</p>
+                </div>
+
+                <div class="social-media-fris-fri-btns-container">
+                    <a href="#" class="customer-primary-btn">Message</a>
+                    <button class="customer-red-btn">Remove</button>
+                </div>
+            </div>
+            <div class="social-media-fris-fri-row">
+                <div class="social-media-fris-fri-img">
+                    <img src="../imgs/cover.jpg">
+                    <p>Friend Name</p>
+                </div>
+
+                <div class="social-media-fris-fri-btns-container">
+                    <a href="#" class="customer-primary-btn">Message</a>
+                    <button class="customer-red-btn">Remove</button>
+                </div>
+            </div>
+            <div class="social-media-fris-fri-row">
+                <div class="social-media-fris-fri-img">
+                    <img src="../imgs/cover.jpg">
+                    <p>Friend Name</p>
+                </div>
+
+                <div class="social-media-fris-fri-btns-container">
+                    <a href="#" class="customer-primary-btn">Message</a>
+                    <button class="customer-red-btn">Remove</button>
+                </div>
+            </div>
+            <div class="social-media-fris-fri-row">
+                <div class="social-media-fris-fri-img">
+                    <img src="../imgs/cover.jpg">
+                    <p>Friend Name</p>
+                </div>
+
+                <div class="social-media-fris-fri-btns-container">
+                    <a href="#" class="customer-primary-btn">Message</a>
+                    <button class="customer-red-btn">Remove</button>
+                </div>
+            </div>
+            <div class="social-media-fris-fri-row">
+                <div class="social-media-fris-fri-img">
+                    <img src="../imgs/cover.jpg">
+                    <p>Friend Name</p>
+                </div>
+
+                <div class="social-media-fris-fri-btns-container">
+                    <a href="#" class="customer-primary-btn">Message</a>
+                    <button class="customer-red-btn">Remove</button>
+                </div>
+            </div>
+            <div class="social-media-fris-fri-row">
+                <div class="social-media-fris-fri-img">
+                    <img src="../imgs/cover.jpg">
+                    <p>Friend Name</p>
+                </div>
+
+                <div class="social-media-fris-fri-btns-container">
+                    <a href="#" class="customer-primary-btn">Message</a>
+                    <button class="customer-red-btn">Remove</button>
+                </div>
+            </div>
+            <div class="social-media-fris-fri-row">
+                <div class="social-media-fris-fri-img">
+                    <img src="../imgs/cover.jpg">
+                    <p>Friend Name</p>
+                </div>
+
+                <div class="social-media-fris-fri-btns-container">
+                    <a href="#" class="customer-primary-btn">Message</a>
+                    <button class="customer-red-btn">Remove</button>
+                </div>
+            </div>
+            <div class="social-media-fris-fri-row">
+                <div class="social-media-fris-fri-img">
+                    <img src="../imgs/cover.jpg">
+                    <p>Friend Name Friend Name Friend Name</p>
+                </div>
+
+                <div class="social-media-fris-fri-btns-container">
+                    <a href="#" class="customer-primary-btn">Message</a>
+                    <button class="customer-red-btn">Remove</button>
+                </div>
+            </div> --}}
+
+           </div>
+        </div>
+
+    </div>
+
+    <div class="customer-profile-shop-container">
+        <h1>Coming Soon...</h1>
+    </div>
+
     <div class="customer-profile-training-center-container">
         @if(count(auth()->user()->roles)==0)
         {{-- <div class="customer-profile-personaldetails-parent-container"> --}}
-        <p class="customer-notraining-message">
+        <p class="customer-notraining-message text-secondary">
             You don't have training center information.Please fill information
             <a href="{{route('customer-personal_infos')}}">Training Center</a>
         </p>
@@ -298,377 +649,123 @@
             <p style="text-align:center;margin-top:100px;">You don’t have weight history  to review.
                 Keep working out.</p>
         </div>
+        {{-- @endhasanyrole --}}
+            @hasanyrole('Platinum|Diamond|Gym Member')
+            <div class="customer-profile-trackers-parent-container">
+                <div class="customer-profile-trackers-headers-container">
+                    <div class="customer-profile-tracker-header" id="workout">
+                        Workout
+                    </div>
+                    <div class="customer-profile-tracker-header" id="meal">
+                        Meal
+                    </div>
+                    <div class="customer-profile-tracker-header" id="water">
+                        Water
+                    </div>
+                </div>
+
+                <div class="customer-profile-tracker-workout-container">
+
+                    <div id="my-calendar"></div>
+
+                    <form class="customer-profile-days-container customer-profile-workout-days-container">
+                        <div class="customer-profile-days-btn" id="workout-today">
+                            Today
+                        </div>
+                        <div class="customer-profile-days-btn" id = "workout-7days">
+                            Last 7 Days
+                        </div>
+
+                        <div class="customer-profile-fromto-inputs-container">
+                            <div class="customer-profile-from">
+                                <p>From:</p>
+                                <input type="date" id="from_date">
+                            </div>
+                            <div class="customer-profile-to">
+                                <p>To:</p>
+                                <input type="date" id="to_date">
+                            </div>
+                        </div>
+
+                        <button type="button" class="customer-profile-workout-filter-btn">Filter</button>
+                    </form>
+
+                    <div class="customer-profile-workout-list-parent-container">
+
+                    </div>
+
+                </div>
+                <div class="customer-profile-tracker-meal-container">
+                    <div class="customer-profile-days-container">
+                        <div class="customer-profile-days-btn" id="meal-today">
+                            Today
+                        </div>
+                        <div class="customer-profile-days-btn" id = "meal-7days">
+                            Last 7 Days
+                        </div>
+                    </div>
+
+                    <div class="customer-7days-filter-meal-container">
+
+                    </div>
+
+                    <div class="customer-7days-meal-tables-container"></div>
+                </div>
+                {{-- <div class="customer-post-container">
+                    <div class="customer-post-header">
+                        <div class="customer-post-name-container">
+                            <img src="{{asset('image/cover.jpg')}}">
+                            <div class="customer-post-name">
+                                <p>User Name</p>
+                                <span>19 Sep 2022, 11:02 AM</span>
+                            </div> --}}
+
+
+
+
+                {{-- </div> --}}
+                <div class="customer-profile-tracker-water-container">
+                    <div class="customer-profile-days-container">
+                        <div class="customer-profile-days-btn" id="water-today">
+                            Today
+                        </div>
+                        <div class="customer-profile-days-btn" id = "water-7days">
+                            Last 7 Days
+                        </div>
+                    </div>
+
+                    <div class="customer-7days-filter-water-container">
+
+                    </div>
+
+                    <div class="customer-profile-water-track-history-container">
+                        <div class="card-chart">
+                            <div class="card-donut water-chart" data-size="100" data-thickness="8"></div>
+                            <div class="card-center">
+                            <span class="card-value"></span>
+                            <div class="card-label"></div>
+                            </div>
+                        </div>
+
+                        <div class="customer-profile-water-track-history-text">
+                            <p></p>
+                            <span></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            @endhasanyrole
         @endhasanyrole
-        @hasanyrole('Platinum|Diamond|Gym Member')
-        <div class="customer-profile-trackers-parent-container">
-            <div class="customer-profile-trackers-headers-container">
-                <div class="customer-profile-tracker-header" id="workout">
-                    Workout
-                </div>
-                <div class="customer-profile-tracker-header" id="meal">
-                    Meal
-                </div>
-                <div class="customer-profile-tracker-header" id="water">
-                    Water
-                </div>
-            </div>
-
-            <div class="customer-profile-tracker-workout-container">
-
-                <div id="my-calendar"></div>
-
-                <form class="customer-profile-days-container customer-profile-workout-days-container">
-                    <div class="customer-profile-days-btn" id="workout-today">
-                        Today
-                    </div>
-                    <div class="customer-profile-days-btn" id = "workout-7days">
-                        Last 7 Days
-                    </div>
-
-                    <div class="customer-profile-fromto-inputs-container">
-                        <div class="customer-profile-from">
-                            <p>From:</p>
-                            <input type="date" id="from_date">
-                        </div>
-                        <div class="customer-profile-to">
-                            <p>To:</p>
-                            <input type="date" id="to_date">
-                        </div>
-                    </div>
-
-                    <button type="button" class="customer-profile-workout-filter-btn">Filter</button>
-                </form>
-
-                <div class="customer-profile-workout-list-parent-container">
-
-                </div>
-
-            </div>
-            <div class="customer-profile-tracker-meal-container">
-                <div class="customer-profile-days-container">
-                    <div class="customer-profile-days-btn" id="meal-today">
-                        Today
-                    </div>
-                    <div class="customer-profile-days-btn" id = "meal-7days">
-                        Last 7 Days
-                    </div>
-                </div>
-            </div>
-            <div class="customer-post-container">
-                <div class="customer-post-header">
-                    <div class="customer-post-name-container">
-                        <img src="{{asset('image/trainer2.jpg')}}">
-                        <div class="customer-post-name">
-                            <p>User Name</p>
-                            <span>19 Sep 2022, 11:02 AM</span>
-                        </div>
-
-                <div class="customer-7days-filter-meal-container">
-
-                </div>
-
-                <div class="customer-7days-meal-tables-container"></div>
-
-
-            </div>
-            <div class="customer-profile-tracker-water-container">
-                <div class="customer-profile-days-container">
-                    <div class="customer-profile-days-btn" id="water-today">
-                        Today
-                    </div>
-                    <div class="customer-profile-days-btn" id = "water-7days">
-                        Last 7 Days
-                    </div>
-                </div>
-
-                <div class="customer-7days-filter-water-container">
-
-                </div>
-
-                <div class="customer-profile-water-track-history-container">
-                    <div class="card-chart">
-                        <div class="card-donut water-chart" data-size="100" data-thickness="8"></div>
-                        <div class="card-center">
-                        <span class="card-value"></span>
-                        <div class="card-label"></div>
-                        </div>
-                    </div>
-
-                    <div class="customer-profile-water-track-history-text">
-                        <p></p>
-                        <span></span>
-                    </div>
-                </div>
-            </div>
-        </div>
-        @endhasanyrole
-    </div>
-
-    <div class="customer-profile-socialmedia-container">
-        <div class="customer-profile-social-media-default-container">
-            <div class="customer-profile-friends-parent-container">
-                <div class="customer-profile-friends-header">
-                    @if (count($user_friends)>1)
-                    <p>{{count($user_friends)}} Friends</p>
-                    @else
-                    <p>{{count($user_friends)}} Friend</p>
-                    @endif
-                    <span class="customer-profile-see-all-fris-btn">
-                        See All
-                        <iconify-icon icon="bi:arrow-right" class="arrow-icon"></iconify-icon>
-                    </span>
-                </div>
-
-                <div class="customer-profile-friends-container">
-                    @foreach ($user_friends as $friend)
-                    <div class="customer-profile-friend">
-                        <?php $image=$friend->profiles()->where('cover_photo',null)->orderBy('created_at','desc')->first() ?>
-                        @if($image==null)
-                        <a href="{{route('socialmedia.profile',$friend->id)}}" style="text-decoration:none">
-                        <img src="{{asset('img/customer/imgs/user_default.jpg')}}">
-                        </a>
-                        @else
-                        <a href="{{route('socialmedia.profile',$friend->id)}}" style="text-decoration:none">
-                        <img src="{{asset('storage/post/'.$image->profile_image)}}">
-                        </a>
-                        @endif
-                        <a href="{{route('socialmedia.profile',$friend->id)}}" style="text-decoration:none">
-                        <p>{{$friend->name}}</p>
-                        </a>
-                    </div>
-                    @endforeach
-                </div>
-
-                <p href="#" class="social-media-profile-photos-link">Photos</p>
-            </div>
-
-            <div class="customer-profile-posts-parent-container">
-                <p>Post & Activities</p>
-                @foreach ($posts as $post)
-                    <div class="customer-post-container">
-                        <div class="customer-post-header">
-                            <div class="customer-post-name-container">
-                                <img src="{{asset('image/trainer2.jpg')}}">
-                                <div class="customer-post-name">
-                                    <p>{{$post->user->name}}</p>
-                                    <span>{{ \Carbon\Carbon::parse($post->created_at)->format('d M Y , g:i A')}}</span>
-                                </div>
-                            </div>
-
-                            <iconify-icon icon="bi:three-dots-vertical" class="customer-post-header-icon"></iconify-icon>
-                            <div class="post-actions-container">
-                                <div class="post-action">
-                                    <iconify-icon icon="bi:save" class="post-action-icon"></iconify-icon>
-                                    <p>Save</p>
-                                </div>
-                                <a id="edit_post" data-id="{{$post->id}}" data-bs-toggle="modal" >
-                                    <div class="post-action">
-                                        <iconify-icon icon="material-symbols:edit" class="post-action-icon"></iconify-icon>
-                                        <p>Edit</p>
-                                    </div>
-                                </a>
-                                <a id="delete_post" data-id="{{$post->id}}">
-                                    <div class="post-action">
-                                    <iconify-icon icon="material-symbols:delete-forever-outline-rounded" class="post-action-icon"></iconify-icon>
-                                    <p>Delete</p>
-                                    </div>
-                                </a>
-                            </div>
-                        </div>
-
-                        <div class="customer-content-container">
-                            @if ($post->media==null)
-                            <p>{{$post->caption}}</p>
-                            @else
-                            <p>{{$post->caption}}</p>
-                            <div class="customer-media-container">
-                                <?php foreach (json_decode($post->media)as $m){?>
-                                    <div class="customer-media">
-                                    @if (pathinfo($m, PATHINFO_EXTENSION) == 'mp4')
-                                    <video controls>
-                                        <source src="{{asset('storage/post/'.$m) }}">
-                                    </video>
-                                    @else
-                                        <img src="{{asset('storage/post/'.$m) }}">
-                                    @endif
-                                </div>
-                                <?php }?>
-                            </div>
-                            @endif
-                        </div>
-
-                        <div class="customer-post-footer-container">
-                            <div class="customer-post-like-container">
-                                <iconify-icon icon="akar-icons:heart" class="like-icon"></iconify-icon>
-                                <p><span>1.1k</span> Likes</p>
-                            </div>
-                            <div class="customer-post-comment-container">
-                                <iconify-icon icon="bi:chat-right" class="comment-icon"></iconify-icon>
-                                <p><span>50</span> Comments</p>
-                            </div>
-                        </div>
-                    </div>
-                @endforeach
-
-            </div>
-        </div>
-
-        <div class="customer-profile-social-media-photoes-container">
-            <p class="customer-profile-social-media-photoes-back">
-                <iconify-icon icon="material-symbols:arrow-back"></iconify-icon>
-                Go Back</p>
-            <div class="social-media-photos-tabs-container">
-                <p class="social-media-photos-tab social-media-profiles-tab">Profile Photos</p>
-                <p class="social-media-photos-tab social-media-covers-tab">Cover Photos</p>
-            </div>
-
-            <div class="social-media-photos-container social-media-profiles-container">
-                @forelse (auth()->user()->profiles as $profile)
-                    @if ($profile->cover_photo)
-
-                    @else
-                        <div class="social-media-photo">
-                            <img src="{{asset('storage/post/'.$profile->profile_image)}}">
-                        </div>
-                    @endif
-                @empty
-                <p>No Profile Photo</p>
-                @endforelse
-            </div>
-
-            <div class="social-media-photos-container social-media-covers-container">
-                @forelse (auth()->user()->profiles as $profile)
-                    @if ($profile->profile_image)
-                    @else
-                        <div class="social-media-photo">
-                            <img src="{{asset('storage/post/'.$profile->cover_photo)}}">
-                        </div>
-                    @endif
-
-                @empty
-                <p>No Cover Photo</p>
-                @endforelse
-            </div>
-
-        </div>
-
-        <div class="customer-profile-social-media-fris-container">
-            <p class="customer-profile-social-media-photoes-back">
-                <iconify-icon icon="material-symbols:arrow-back"></iconify-icon>
-                Go Back</p>
-            <div class="social-media-fris-search">
-                <input type="text" placeholder="Search your friends">
-                <iconify-icon icon="akar-icons:search" class="search-icon"></iconify-icon>
-           </div>
-
-           <div class="social-media-fris-list-container">
-            <div class="social-media-fris-fri-row">
-                <div class="social-media-fris-fri-img">
-                    <img src="../imgs/trainer2.jpg">
-                    <p>Friend Name</p>
-                </div>
-
-                <div class="social-media-fris-fri-btns-container">
-                    <a href="#" class="customer-primary-btn">Message</a>
-                    <button class="customer-red-btn">Remove</button>
-                </div>
-            </div>
-            <div class="social-media-fris-fri-row">
-                <div class="social-media-fris-fri-img">
-                    <img src="../imgs/trainer2.jpg">
-                    <p>Friend Name</p>
-                </div>
-
-                <div class="social-media-fris-fri-btns-container">
-                    <a href="#" class="customer-primary-btn">Message</a>
-                    <button class="customer-red-btn">Remove</button>
-                </div>
-            </div>
-            <div class="social-media-fris-fri-row">
-                <div class="social-media-fris-fri-img">
-                    <img src="../imgs/trainer2.jpg">
-                    <p>Friend Name</p>
-                </div>
-
-                <div class="social-media-fris-fri-btns-container">
-                    <a href="#" class="customer-primary-btn">Message</a>
-                    <button class="customer-red-btn">Remove</button>
-                </div>
-            </div>
-            <div class="social-media-fris-fri-row">
-                <div class="social-media-fris-fri-img">
-                    <img src="../imgs/trainer2.jpg">
-                    <p>Friend Name</p>
-                </div>
-
-                <div class="social-media-fris-fri-btns-container">
-                    <a href="#" class="customer-primary-btn">Message</a>
-                    <button class="customer-red-btn">Remove</button>
-                </div>
-            </div>
-            <div class="social-media-fris-fri-row">
-                <div class="social-media-fris-fri-img">
-                    <img src="../imgs/trainer2.jpg">
-                    <p>Friend Name</p>
-                </div>
-
-                <div class="social-media-fris-fri-btns-container">
-                    <a href="#" class="customer-primary-btn">Message</a>
-                    <button class="customer-red-btn">Remove</button>
-                </div>
-            </div>
-            <div class="social-media-fris-fri-row">
-                <div class="social-media-fris-fri-img">
-                    <img src="../imgs/trainer2.jpg">
-                    <p>Friend Name</p>
-                </div>
-
-                <div class="social-media-fris-fri-btns-container">
-                    <a href="#" class="customer-primary-btn">Message</a>
-                    <button class="customer-red-btn">Remove</button>
-                </div>
-            </div>
-            <div class="social-media-fris-fri-row">
-                <div class="social-media-fris-fri-img">
-                    <img src="../imgs/trainer2.jpg">
-                    <p>Friend Name</p>
-                </div>
-
-                <div class="social-media-fris-fri-btns-container">
-                    <a href="#" class="customer-primary-btn">Message</a>
-                    <button class="customer-red-btn">Remove</button>
-                </div>
-            </div>
-            <div class="social-media-fris-fri-row">
-                <div class="social-media-fris-fri-img">
-                    <img src="../imgs/trainer2.jpg">
-                    <p>Friend Name Friend Name Friend Name</p>
-                </div>
-
-                <div class="social-media-fris-fri-btns-container">
-                    <a href="#" class="customer-primary-btn">Message</a>
-                    <button class="customer-red-btn">Remove</button>
-                </div>
-            </div>
-
-           </div>
-        </div>
-
-    </div>
-
-    <div class="customer-profile-shop-container">
-        <h1>Coming Soon...</h1>
     </div>
 
 </div>
 
 @endsection
 @push('scripts')
-@hasanyrole('Platinum|Diamond|Gym Member|Gold|Ruby|Ruby Premium')
-<script>
-
-            let myChart=null;
-            function linechart(data){
+    @hasanyrole('Platinum|Diamond|Gym Member|Gold|Ruby|Ruby Premium')
+    <script>
+        let myChart=null;
+        function linechart(data){
             var weight_history=data;
             if(weight_history.length<2){
                 $(".weight-chart-filter").show();
@@ -736,160 +833,570 @@
                     );
 
             }
+        }
+
+        function year_filter(value) {
+
+            console.log(value);
+            var url="profile/year/";
+            $.ajax({
+                        type: "GET",
+                        url: url+value,
+                        datatype: "json",
+                        success: function(data) {
+                            var data=data.weight_history;
+
+                            linechart(data);
 
 
-    }
+                        }
+            })
+        }
 
-
-    function year_filter(value) {
-
-        console.log(value);
-        var url="profile/year/";
-        $.ajax({
-                    type: "GET",
-                    url: url+value,
-                    datatype: "json",
-                    success: function(data) {
-                        var data=data.weight_history;
-
-                        linechart(data);
-
-
-                    }
-        })
-    }
-
-    $( document ).ready(function() {
-        //destroyChart();
-         var data = @json($weight_history);
-        // destroyChart();
-         linechart(data);
-        var bmi=@json($bmi);
-        $('.customer-profile-bmi-text').animate({ left: `+=${bmi}%` }, "slow");
-        $(".name").hide();
-        $('.customer-name-calculate-btn').hide();
-        $(".customer-bmi-calculate-btn").hide();
-
-        var today = new Date();
-        var dd = String(today.getDate()).padStart(2, '0');
-        var mm = String(today.getMonth() + 1).padStart(2, '0');
-
-        var yyyy = today.getFullYear();
-        var d = String(today.getDate());
-        const monthNames = ["January", "Febuary", "March", "April", "May", "June",
-        "July", "August", "September", "October", "November", "December"
-        ];
-        var m = monthNames[today.getMonth()];
-
-        today =  yyyy+'-'+mm+'-'+dd;
-        tdy =  d+' '+m+', '+yyyy;
-
-        $('select.height_ft').attr('disabled', true);
-        $('select.height_in').attr('disabled', true);
-        //on clicking one of the butttons of last 7 days (water)
-        $("#pen1").on('click', function(event){
-            event.stopPropagation();
-            event.stopImmediatePropagation();
-            $(".age").removeAttr("readonly");
-            $(".weight").removeAttr("readonly");
-            $(".neck").removeAttr("readonly");
-            $(".waist").removeAttr("readonly");
-            $(".hip").removeAttr("readonly");
-            $(".shoulders").removeAttr("readonly");
-            $(".customer-bmi-calculate-btn").show();
-            $('select.height_ft').attr('disabled', false);
-            $('select.height_in').attr('disabled', false);
-            $('.change-name-icon').hide();
-            $('.customer-name-calculate-btn').hide();
-            $("#name").show();
+        $( document ).ready(function() {
+            //destroyChart();
+            var data = @json($weight_history);
+            // destroyChart();
+            linechart(data);
+            var bmi=@json($bmi);
+            $('.customer-profile-bmi-text').animate({ left: `+=${bmi}%` }, "slow");
             $(".name").hide();
-        });
-
-        $("#customer_cancel").on('click', function(event){
-            event.stopPropagation();
-            event.stopImmediatePropagation();
-            $(".age").attr('readonly', true);
-            $(".weight").attr('readonly', true);
-            $(".neck").attr('readonly', true);
-            $(".waist").attr('readonly', true);
-            $(".hip").attr('readonly', true);
-            $(".shoulders").attr('readonly', true);
+            $('.customer-name-calculate-btn').hide();
             $(".customer-bmi-calculate-btn").hide();
+
+            var today = new Date();
+            var dd = String(today.getDate()).padStart(2, '0');
+            var mm = String(today.getMonth() + 1).padStart(2, '0');
+
+            var yyyy = today.getFullYear();
+            var d = String(today.getDate());
+            const monthNames = ["January", "Febuary", "March", "April", "May", "June",
+            "July", "August", "September", "October", "November", "December"
+            ];
+            var m = monthNames[today.getMonth()];
+
+            today =  yyyy+'-'+mm+'-'+dd;
+            tdy =  d+' '+m+', '+yyyy;
+
             $('select.height_ft').attr('disabled', true);
             $('select.height_in').attr('disabled', true);
-            $('.change-name-icon').show();
-            $('.customer-name-calculate-btn').show();
-            $("#name").show();
-            $(".name").hide();
-            $('.customer-name-calculate-btn').hide();
-            $('#customer_name_cancel').hide();
+            //on clicking one of the butttons of last 7 days (water)
+            $("#pen1").on('click', function(event){
+                event.stopPropagation();
+                event.stopImmediatePropagation();
+                $(".age").removeAttr("readonly");
+                $(".weight").removeAttr("readonly");
+                $(".neck").removeAttr("readonly");
+                $(".waist").removeAttr("readonly");
+                $(".hip").removeAttr("readonly");
+                $(".shoulders").removeAttr("readonly");
+                $(".customer-bmi-calculate-btn").show();
+                $('select.height_ft').attr('disabled', false);
+                $('select.height_in').attr('disabled', false);
+                $('.change-name-icon').hide();
+                $('.customer-name-calculate-btn').hide();
+                $("#name").show();
+                $(".name").hide();
+            });
 
-        });
+            $("#customer_cancel").on('click', function(event){
+                event.stopPropagation();
+                event.stopImmediatePropagation();
+                $(".age").attr('readonly', true);
+                $(".weight").attr('readonly', true);
+                $(".neck").attr('readonly', true);
+                $(".waist").attr('readonly', true);
+                $(".hip").attr('readonly', true);
+                $(".shoulders").attr('readonly', true);
+                $(".customer-bmi-calculate-btn").hide();
+                $('select.height_ft').attr('disabled', true);
+                $('select.height_in').attr('disabled', true);
+                $('.change-name-icon').show();
+                $('.customer-name-calculate-btn').show();
+                $("#name").show();
+                $(".name").hide();
+                $('.customer-name-calculate-btn').hide();
+                $('#customer_name_cancel').hide();
 
-        $('#name_edit_pen').on('click',function(){
-            $(".name").show();
-            $('.customer-name-calculate-btn').show();
-            $('#name_edit_pen').hide();
-            $("#name").hide();
-        })
+            });
 
-        $("#customer_name_cancel").on('click',function(event){
-            $(".name").hide();
-            $('.customer-name-calculate-btn').hide();
-            $('#name_edit_pen').show();
-            $("#name").show();
-        })
+            $('#name_edit_pen').on('click',function(){
+                $(".name").show();
+                $('.customer-name-calculate-btn').show();
+                $('#name_edit_pen').hide();
+                $("#name").hide();
+            })
 
-        $(".personal_detail").submit(function(){
-            $('.customer-bmi-calculate-btn').attr('disabled', true);
-        })
+            $("#customer_name_cancel").on('click',function(event){
+                $(".name").hide();
+                $('.customer-name-calculate-btn').hide();
+                $('#name_edit_pen').show();
+                $("#name").show();
+            })
 
-        $("#my-calendar").zabuto_calendar({
+            $(".personal_detail").submit(function(){
+                $('.customer-bmi-calculate-btn').attr('disabled', true);
+            })
 
-            data:@json($workout_date)
+            $("#my-calendar").zabuto_calendar({
 
-        });
+                data:@json($workout_date)
 
-        const sevenDays = Last7Days()
-        // console.log(Last7DaysWithoutformat)
+            });
 
-        //adding last 7days buttons
-        $.each(sevenDays,function(index,value){
-            $(".customer-7days-filter-water-container").append(`
-            <div class="customer-7days-day-water-btn">${value}</div>
-            `)
-            $(".customer-7days-filter-meal-container").append(`
-            <div class="customer-7days-day-meal-btn">${value}</div>
-            `)
-        })
+            const sevenDays = Last7Days()
+            // console.log(Last7DaysWithoutformat)
 
-        $(".customer-profile-workout-filter-btn").on('click',function(event){
-            to=$('#to_date').val();
-            from=$('#from_date').val();
-            var url = "{{ route('workout_filter', [':from', ':to']) }}";
-            url = url.replace(':from', from);
-            url = url.replace(':to', to);
-            $.ajax({
-                    type: "GET",
-                    url: url,
-                    datatype: "json",
-                    success: function(data) {
-                        var workouts= data.workouts;
-                        $(".customer-profile-workout-list-parent-container").empty();
-                        $(".customer-profile-workout-list-parent-container").append(`
-                        <div class="customer-profile-workout-list-header">
-                        <p>${data.from} - ${data.to}</p>
-                        <div class="customer-profile-workoutdetails-container">
-                            <div class="customer-profile-workoutdetail">
-                                <iconify-icon icon="icon-park-outline:time" class="customer-profile-time-icon"></iconify-icon>
-                                <p>${data.time_min}mins ${data.time_sec}sec</p>
-                            </div>
-                            <div class="customer-profile-workoutdetail">
-                                <iconify-icon icon="codicon:flame" class="customer-profile-flame-icon"></iconify-icon>
-                                <p>${data.cal_sum}</p>
+            //adding last 7days buttons
+            $.each(sevenDays,function(index,value){
+                $(".customer-7days-filter-water-container").append(`
+                <div class="customer-7days-day-water-btn">${value}</div>
+                `)
+                $(".customer-7days-filter-meal-container").append(`
+                <div class="customer-7days-day-meal-btn">${value}</div>
+                `)
+            })
+
+            $(".customer-profile-workout-filter-btn").on('click',function(event){
+                to=$('#to_date').val();
+                from=$('#from_date').val();
+                var url = "{{ route('workout_filter', [':from', ':to']) }}";
+                url = url.replace(':from', from);
+                url = url.replace(':to', to);
+                $.ajax({
+                        type: "GET",
+                        url: url,
+                        datatype: "json",
+                        success: function(data) {
+                            var workouts= data.workouts;
+                            $(".customer-profile-workout-list-parent-container").empty();
+                            $(".customer-profile-workout-list-parent-container").append(`
+                            <div class="customer-profile-workout-list-header">
+                            <p>${data.from} - ${data.to}</p>
+                            <div class="customer-profile-workoutdetails-container">
+                                <div class="customer-profile-workoutdetail">
+                                    <iconify-icon icon="icon-park-outline:time" class="customer-profile-time-icon"></iconify-icon>
+                                    <p>${data.time_min}mins ${data.time_sec}sec</p>
+                                </div>
+                                <div class="customer-profile-workoutdetail">
+                                    <iconify-icon icon="codicon:flame" class="customer-profile-flame-icon"></iconify-icon>
+                                    <p>${data.cal_sum}</p>
+                                </div>
                             </div>
                         </div>
+
+                            ${workouts.map((item,index) => (
+                                `<div class="customer-profile-workout-row">
+                                <div class="customer-profile-workout-row-namedate-container">
+                                    <p>${item.workout_plan_type}</p>
+                                    <div class="customer-profile-workout-row-date">
+                                        <iconify-icon icon="bx:calendar" class="customer-profile-date-icon"></iconify-icon>
+                                        <p>${item.date}</p>
+                                    </div>
+                                </div>
+
+                                <div class="customer-profile-workoutdetails-container">
+                                    <div class="customer-profile-workoutdetail">
+                                        <iconify-icon icon="icon-park-outline:time" class="customer-profile-time-icon"></iconify-icon>
+                                        <p>${Math.floor(item.time/60)}mins ${item.time%60}sec</p>
+                                    </div>
+                                    <div class="customer-profile-workoutdetail">
+                                        <iconify-icon icon="codicon:flame" class="customer-profile-flame-icon"></iconify-icon>
+                                        <p>${item.calories}</p>
+                                    </div>
+                                </div>
+                            </div>`
+                            ))}
+                        `)
+
+                        }
+                    });
+
+            })
+
+            //on clicking one of the butttons of last 7 days (water)
+            $(".customer-7days-day-water-btn").on('click', function(event){
+                $(".customer-7days-day-water-btn").removeClass("customer-7days-day-btn-active")
+                $(this).addClass("customer-7days-day-btn-active")
+                event.stopPropagation();
+                event.stopImmediatePropagation();
+                console.log($(this).text())
+                date = $(this).text();
+                $.ajax({
+                        type: "GET",
+                        url: "/customer/lastsevenDay/"+ date,
+                        datatype: "json",
+                        success: function(data) {
+
+                            if(data.water == null){
+                                renderCircle(3000,0)
+                            }
+                            else{
+                                renderCircle(3000,data.water.update_water)
+                            }
+
+                        }
+                    });
+                // renderCircle(3000,600)
+            });
+
+            //on clicking one of the butttons of last 7 days (meal)
+            $(".customer-7days-day-meal-btn").on('click', function(event){
+
+                $(".customer-7days-day-meal-btn").removeClass("customer-7days-day-btn-active")
+                $(this).addClass("customer-7days-day-btn-active")
+                $(".customer-7days-meal-tables-container").empty();
+                event.stopPropagation();
+                event.stopImmediatePropagation();
+
+                console.log($(this).text())
+                meal_sevendays($(this).text())
+
+                // renderCircle(3000,600)
+
+            });
+
+
+            //hide 7days buttons (default)
+            $(".customer-7days-filter-water-container").hide()
+            $(".customer-7days-filter-meal-container").hide()
+            //workout tab active by default
+            $('#workout').addClass('customer-profile-tracker-header-active')
+            $('.customer-profile-tracker-workout-container').show()
+            $('.customer-profile-tracker-meal-container').hide()
+            $('.customer-profile-tracker-water-container').hide()
+
+            //show today's meal by default
+            $("#meal-today").addClass("customer-profile-days-btn-active")
+            meal_sevendays(today)
+
+            //show today's water by default
+            $("#water-today").addClass("customer-profile-days-btn-active")
+            todaywater()
+
+            function todaywater(){
+                $.ajax({
+                        type: "GET",
+                        url: "/customer/today",
+                        datatype: "json",
+                        success: function(data) {
+
+                            if(data.water == null){
+                                renderTodayCircle(3000,0)
+                            }
+                            else{
+                                renderTodayCircle(3000,data.water.update_water)
+                            }
+
+                        }
+                    });
+            }
+
+            //show today's workout by default
+            $("#workout-today").addClass("customer-profile-days-btn-active")
+            renderWorkoutList()
+
+            //on clicking workout tab
+            $('#workout').click(function(){
+                $('#workout').addClass('customer-profile-tracker-header-active')
+                $('#meal').removeClass('customer-profile-tracker-header-active')
+                $('#water').removeClass('customer-profile-tracker-header-active')
+
+                $('.customer-profile-tracker-workout-container').show()
+                $('.customer-profile-tracker-meal-container').hide()
+                $('.customer-profile-tracker-water-container').hide()
+            })
+
+
+            //on clicking meal tab
+            $('#meal').click(function(){
+                $('#workout').removeClass('customer-profile-tracker-header-active')
+                $('#meal').addClass('customer-profile-tracker-header-active')
+                $('#water').removeClass('customer-profile-tracker-header-active')
+
+                $('.customer-profile-tracker-workout-container').hide()
+                $('.customer-profile-tracker-meal-container').show()
+                $('.customer-profile-tracker-water-container').hide()
+            })
+
+
+            //on clicking water tab
+            $('#water').click(function(){
+                $('#workout').removeClass('customer-profile-tracker-header-active')
+                $('#meal').removeClass('customer-profile-tracker-header-active')
+                $('#water').addClass('customer-profile-tracker-header-active')
+
+                $('.customer-profile-tracker-workout-container').hide()
+                $('.customer-profile-tracker-meal-container').hide()
+                $('.customer-profile-tracker-water-container').show()
+            })
+
+            //on clicking today (meal)
+            $("#meal-today").click(function(){
+
+                $("#meal-today").addClass("customer-profile-days-btn-active")
+                $("#meal-7days").removeClass("customer-profile-days-btn-active")
+                $(".customer-7days-filter-meal-container").hide()
+                $(".customer-7days-meal-tables-container").empty();
+
+                meal_sevendays(today)
+            })
+
+            function meal_sevendays(date){
+                var add_url = "{{ route('meal_sevendays',[':date']) }}";
+                add_url = add_url.replace(':date', date);
+
+                $.ajax({
+                        type: "GET",
+                        url: add_url,
+                        datatype: "json",
+                        success: function(data) {
+                            //
+                            var breakFast =data.meal_breafast ? data.meal_breafast : [];
+                            var lunch =data.meal_lunch ? data.meal_lunch : [];
+                            var snack =data.meal_snack ? data.meal_snack : [];
+                            var dinner =data.meal_dinner ? data.meal_dinner : [];
+                            $(".customer-7days-meal-tables-container").append(`
+            <div class="customer-profile-meal-table-container">
+                        <h1>Breakfast</h1>
+                        <table class="customer-profile-meal-table">
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                    <th>No</th>
+                                    <th>Name</th>
+                                    <th>Cal</th>
+                                    <th>Carb</th>
+                                    <th>Protein</th>
+                                    <th>Fat</th>
+                                    <th>Servings</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                ${breakFast.map((item,index) => (
+                                    `<tr class="meal-table-total">
+                                    <td></td>
+                                    <td>${index+1}</td>
+                                    <td>${item.name}</td>
+                                    <td>${item.calories} </td>
+                                    <td>${item.carbohydrates}</td>
+                                    <td>${item.protein}</td>
+                                    <td>${item.fat}</td>
+                                    <td>${item.serving}</td>
+                                </tr>`
+                                ))}
+                            </tbody>
+                            <tr class="meal-table-total">
+                                <td>Total</td>
+                                <td></td>
+                                <td></td>
+                                <td>${data.total_calories_breakfast}</td>
+                                <td>${data.total_carbohydrates_breakfast}</td>
+                                <td>${data.total_protein_breakfast}</td>
+                                <td>${data.total_fat_breakfast}</td>
+                                <td>${data.total_serving_breakfast}</td>
+                            </tr>
+                        </table>
+                        <h1>Lunch</h1>
+                        <table class="customer-profile-meal-table">
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                    <th>No</th>
+                                    <th>Name</th>
+                                    <th>Cal</th>
+                                    <th>Carb</th>
+                                    <th>Protein</th>
+                                    <th>Fat</th>
+                                    <th>Servings</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                ${lunch.map((item,index) => (
+                                    `<tr class="meal-table-total">
+                                    <td></td>
+                                    <td>${index+1}</td>
+                                    <td>${item.name}</td>
+                                    <td>${item.calories}</td>
+                                    <td>${item.carbohydrates}</td>
+                                    <td>${item.protein}</td>
+                                    <td>${item.fat}</td>
+                                    <td>${item.serving}</td>
+                                </tr>`
+                                ))}
+                            </tbody>
+                            <tr class="meal-table-total">
+                                <td>Total</td>
+                                <td></td>
+                                <td></td>
+                                <td>${data.total_calories_lunch}</td>
+                                <td>${data.total_carbohydrates_lunch}</td>
+                                <td>${data.total_protein_lunch}</td>
+                                <td>${data.total_fat_lunch}</td>
+                                <td>${data.total_serving_lunch}</td>
+                            </tr>
+                        </table>
+                        <h1>Snack</h1>
+                        <table class="customer-profile-meal-table">
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                    <th>No</th>
+                                    <th>Name</th>
+                                    <th>Cal</th>
+                                    <th>Carb</th>
+                                    <th>Protein</th>
+                                    <th>Fat</th>
+                                    <th>Servings</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                ${snack.map((item,index) => (
+                                    `<tr class="meal-table-total">
+                                    <td></td>
+                                    <td>${index+1}</td>
+                                    <td>${item.name}</td>
+                                    <td id = "cal">${item.calories}</td>
+                                    <td>${item.carbohydrates}</td>
+                                    <td>${item.protein}</td>
+                                    <td>${item.fat}</td>
+                                    <td>${item.serving}</td>
+                                </tr>
+                                ` ))}
+                            </tbody>
+                            <tr class="meal-table-total">
+                                <td>Total</td>
+                                <td></td>
+                                <td></td>
+                                <td>${data.total_calories_snack}</td>
+                                <td>${data.total_carbohydrates_snack}</td>
+                                <td>${data.total_protein_snack}</td>
+                                <td>${data.total_fat_snack}</td>
+                                <td>${data.total_serving_snack}</td>
+                            </tr>
+                        </table>
+                        <h1>Dinner</h1>
+                        <table class="customer-profile-meal-table">
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                    <th>No</th>
+                                    <th>Name</th>
+                                    <th>Cal</th>
+                                    <th>Carb</th>
+                                    <th>Protein</th>
+                                    <th>Fat</th>
+                                    <th>Servings</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                ${dinner.map((item,index) => (
+                                    `<tr class="meal-table-total">
+                                    <td></td>
+                                    <td>${index+1}</td>
+                                    <td>${item.name}</td>
+                                    <td>${item.calories}</td>
+                                    <td>${item.carbohydrates}</td>
+                                    <td>${item.protein }</td>
+                                    <td>${item.fat}</td>
+                                    <td>${item.serving}</td>
+                                </tr>`
+                                ))}
+                            </tbody>
+                            <tr class="meal-table-total">
+                                <td>Total</td>
+                                <td></td>
+                                <td></td>
+                                <td>${data.total_calories_dinner}</td>
+                                <td>${data.total_carbohydrates_dinner}</td>
+                                <td>${data.total_protein_dinner}</td>
+                                <td>${data.total_fat_dinner}</td>
+                                <td>${data.total_serving_dinner}</td>
+                            </tr>
+                        </table>
                     </div>
+            `);
+                        }
+                    })
+            }
+
+            //on clicking last 7 days (meal)
+            $("#meal-7days").click(function(){
+                $("#meal-today").removeClass("customer-profile-days-btn-active")
+                $("#meal-7days").addClass("customer-profile-days-btn-active")
+                $(".customer-7days-filter-meal-container").show()
+                $(".customer-7days-day-meal-btn").removeClass("customer-7days-day-btn-active")
+                $(".customer-7days-day-meal-btn").last().addClass("customer-7days-day-btn-active");
+                $(".customer-7days-meal-tables-container").empty();
+                console.log($(".customer-7days-day-meal-btn").last().text())
+                meal_sevendays(today)
+            })
+
+            //on clicking today (water)
+            $("#water-today").click(function(){
+                $("#water-today").addClass("customer-profile-days-btn-active")
+                $("#water-7days").removeClass("customer-profile-days-btn-active")
+                $(".customer-7days-filter-water-container").hide()
+                // alert("okk");
+                todaywater();
+            })
+
+            //on clicking last 7 days (water)
+            $("#water-7days").click(function(){
+                $("#water-today").removeClass("customer-profile-days-btn-active")
+                $("#water-7days").addClass("customer-profile-days-btn-active")
+                $(".customer-7days-filter-water-container").show()
+                $(".customer-7days-day-water-btn").removeClass("customer-7days-day-btn-active")
+                $(".customer-7days-day-water-btn").last().addClass("customer-7days-day-btn-active")
+                console.log($(".customer-7days-day-water-btn").last().text())
+                todaywater();
+            })
+
+            //on clicking today (workout)
+            $("#workout-today").click(function(){
+                $("#workout-today").addClass("customer-profile-days-btn-active")
+                $("#workout-7days").removeClass("customer-profile-days-btn-active")
+                renderWorkoutList()
+            })
+
+            //on clicking last 7 days (water)
+            $("#workout-7days").click(function(){
+                $("#workout-today").removeClass("customer-profile-days-btn-active")
+                $("#workout-7days").addClass("customer-profile-days-btn-active")
+                workout_7days()
+
+            })
+
+
+        });
+
+        function workout_7days(){
+
+            $.ajax({
+                        type: "GET",
+                        url: "/customer/workout/lastsevenDay/",
+                        datatype: "json",
+                        success: function(data) {
+                            var workouts= data.workouts;
+                            $(".customer-profile-workout-list-parent-container").empty()
+                            $(".customer-profile-workout-list-parent-container").append(`
+                            <div class="customer-profile-workout-list-header">
+                            <p>${data.seven} - ${data.current}</p>
+                            <div class="customer-profile-workoutdetails-container">
+                                <div class="customer-profile-workoutdetail">
+                                    <iconify-icon icon="icon-park-outline:time" class="customer-profile-time-icon"></iconify-icon>
+                                    <p>${data.time_min}mins ${data.time_sec}sec</p>
+                                </div>
+                                <div class="customer-profile-workoutdetail">
+                                    <iconify-icon icon="codicon:flame" class="customer-profile-flame-icon"></iconify-icon>
+                                    <p>${data.cal_sum}</p>
+                                </div>
+                            </div>
+                        </div>
 
                         ${workouts.map((item,index) => (
                             `<div class="customer-profile-workout-row">
@@ -913,664 +1420,436 @@
                             </div>
                         </div>`
                         ))}
-                    `)
 
+
+            `)
+                        }
+                    });
+
+        }
+        //getting the last 7 days from today
+        function Last7Days () {
+            var result = [];
+            for (var i=1; i<=7; i++) {
+                var d = new Date();
+                d.setDate(d.getDate() - i);
+                result.push( formatDate(d) )
+            }
+
+            return(result);
+        }
+        //formatting the date of last 7 days
+        function formatDate(date){
+            const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
+            "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+            ];
+            var dd = date.getDate();
+            // var mm = monthNames[date.getMonth()];
+            var mm = date.getMonth()+1;
+            var yyyy = date.getFullYear();
+            if(dd<10) {dd='0'+dd}
+            if(mm<10) {mm='0'+mm}
+            date = yyyy+'-'+mm+'-'+dd;
+            return date
+        }
+
+        //rendering last 7 days water circle progress
+        function renderCircle(total,taken){
+            var result = taken / total
+            var color
+            console.log('last 7 days',taken)
+
+            if(taken < 3000 ){
+                console.log("fail")
+                $(".customer-profile-water-track-history-text span").text('Mission Failed')
+                color = '#FF0000'
+                $('.water-chart').circleProgress({
+                    startAngle: 1.5 * Math.PI,
+                    lineCap: 'round',
+                    value: result,
+                    emptyFill: '#D9D9D9',
+                    fill: { 'color': '#FF0000' }
+                });
+            }else if(taken >= 3000){
+                console.log("complete")
+                $(".customer-profile-water-track-history-text  span").text('Mission Complete')
+                $('.water-chart').circleProgress({
+                    startAngle: 1.5 * Math.PI,
+                    lineCap: 'round',
+                    value: result,
+                    emptyFill: '#D9D9D9',
+                    fill: {
+                        gradient: ["#3aeabb", "#fdd250"]
                     }
                 });
+            }
 
-        })
+            $(".customer-profile-water-track-history-text p").text(`You Drunk ${taken}/${total} ML of Your Daily Mission.`)
 
-        //on clicking one of the butttons of last 7 days (water)
-        $(".customer-7days-day-water-btn").on('click', function(event){
-            $(".customer-7days-day-water-btn").removeClass("customer-7days-day-btn-active")
-            $(this).addClass("customer-7days-day-btn-active")
-            event.stopPropagation();
-            event.stopImmediatePropagation();
-            console.log($(this).text())
-            date = $(this).text();
-            $.ajax({
-                    type: "GET",
-                    url: "/customer/lastsevenDay/"+ date,
-                    datatype: "json",
-                    success: function(data) {
-                        console.log(data);
-                        if(data.water == null){
-                            renderCircle(3000,0)
-                        }
-                        else{
-                            renderCircle(3000,data.water.update_water)
-                        }
-
-                    }
-                });
-            // renderCircle(3000,600)
-        });
-
-        //on clicking one of the butttons of last 7 days (meal)
-        $(".customer-7days-day-meal-btn").on('click', function(event){
-
-            $(".customer-7days-day-meal-btn").removeClass("customer-7days-day-btn-active")
-            $(this).addClass("customer-7days-day-btn-active")
-            $(".customer-7days-meal-tables-container").empty();
-            event.stopPropagation();
-            event.stopImmediatePropagation();
-
-            console.log($(this).text())
-            meal_sevendays($(this).text())
-
-            // renderCircle(3000,600)
-
-        });
-
-
-        //hide 7days buttons (default)
-        $(".customer-7days-filter-water-container").hide()
-        $(".customer-7days-filter-meal-container").hide()
-        //workout tab active by default
-        $('#workout').addClass('customer-profile-tracker-header-active')
-        $('.customer-profile-tracker-workout-container').hide()
-        $('.customer-profile-tracker-meal-container').hide()
-        $('.customer-profile-tracker-water-container').hide()
-
-        //show today's meal by default
-        $("#meal-today").addClass("customer-profile-days-btn-active")
-        meal_sevendays(today)
-
-        //show today's water by default
-        $("#water-today").addClass("customer-profile-days-btn-active")
-        todaywater()
-
-        function todaywater(){
-            $.ajax({
-                    type: "GET",
-                    url: "/customer/today",
-                    datatype: "json",
-                    success: function(data) {
-                        console.log(data);
-                        if(data.water == null){
-                            renderTodayCircle(3000,0)
-                        }
-                        else{
-                            renderTodayCircle(3000,data.water.update_water)
-                        }
-
-                    }
-                });
         }
 
-        //show today's workout by default
-        $("#workout-today").addClass("customer-profile-days-btn-active")
-        renderWorkoutList()
+        //rendering today water circle progress
+        function renderTodayCircle(total,taken){
+            var result = taken / total
+            console.log('today',taken)
 
-        //on clicking workout tab
-        $('#workout').click(function(){
-            $('#workout').addClass('customer-profile-tracker-header-active')
-            $('#meal').removeClass('customer-profile-tracker-header-active')
-            $('#water').removeClass('customer-profile-tracker-header-active')
-
-            $('.customer-profile-tracker-workout-container').show()
-            $('.customer-profile-tracker-meal-container').hide()
-            $('.customer-profile-tracker-water-container').hide()
-        })
-
-
-        //on clicking meal tab
-        $('#meal').click(function(){
-            $('#workout').removeClass('customer-profile-tracker-header-active')
-            $('#meal').addClass('customer-profile-tracker-header-active')
-            $('#water').removeClass('customer-profile-tracker-header-active')
-
-            $('.customer-profile-tracker-workout-container').hide()
-            $('.customer-profile-tracker-meal-container').show()
-            $('.customer-profile-tracker-water-container').hide()
-        })
-
-
-        //on clicking water tab
-        $('#water').click(function(){
-            $('#workout').removeClass('customer-profile-tracker-header-active')
-            $('#meal').removeClass('customer-profile-tracker-header-active')
-            $('#water').addClass('customer-profile-tracker-header-active')
-
-            $('.customer-profile-tracker-workout-container').hide()
-            $('.customer-profile-tracker-meal-container').hide()
-            $('.customer-profile-tracker-water-container').show()
-        })
-
-        //on clicking today (meal)
-        $("#meal-today").click(function(){
-
-            $("#meal-today").addClass("customer-profile-days-btn-active")
-            $("#meal-7days").removeClass("customer-profile-days-btn-active")
-            $(".customer-7days-filter-meal-container").hide()
-            $(".customer-7days-meal-tables-container").empty();
-
-            meal_sevendays(today)
-        })
-
-        function meal_sevendays(date){
-            var add_url = "{{ route('meal_sevendays',[':date']) }}";
-            add_url = add_url.replace(':date', date);
-
-            $.ajax({
-                    type: "GET",
-                    url: add_url,
-                    datatype: "json",
-                    success: function(data) {
-                        console.log(data);
-                        var breakFast =data.meal_breafast;
-                        var lunch =data.meal_lunch;
-                        var snack =data.meal_snack;
-                        var dinner =data.meal_dinner;
-                        $(".customer-7days-meal-tables-container").append(`
-        <div class="customer-profile-meal-table-container">
-                    <h1>Breakfast</h1>
-                    <table class="customer-profile-meal-table">
-                        <thead>
-                            <tr>
-                                <th></th>
-                                <th>No</th>
-                                <th>Name</th>
-                                <th>Cal</th>
-                                <th>Carb</th>
-                                <th>Protein</th>
-                                <th>Fat</th>
-                                <th>Servings</th>
-                            </tr>
-                        </thead>
-
-                        <tbody>
-                            ${breakFast.map((item,index) => (
-                                `<tr class="meal-table-total">
-                                <td></td>
-                                <td>${index+1}</td>
-                                <td>${item.name}</td>
-                                <td>${item.calories} </td>
-                                <td>${item.carbohydrates}</td>
-                                <td>${item.protein}</td>
-                                <td>${item.fat}</td>
-                                <td>${item.serving}</td>
-                            </tr>`
-                            ))}
-                        </tbody>
-                        <tr class="meal-table-total">
-                            <td>Total</td>
-                            <td></td>
-                            <td></td>
-                            <td>${data.total_calories_breakfast}</td>
-                            <td>${data.total_carbohydrates_breakfast}</td>
-                            <td>${data.total_protein_breakfast}</td>
-                            <td>${data.total_fat_breakfast}</td>
-                            <td>${data.total_serving_breakfast}</td>
-                        </tr>
-                    </table>
-                    <h1>Lunch</h1>
-                    <table class="customer-profile-meal-table">
-                        <thead>
-                            <tr>
-                                <th></th>
-                                <th>No</th>
-                                <th>Name</th>
-                                <th>Cal</th>
-                                <th>Carb</th>
-                                <th>Protein</th>
-                                <th>Fat</th>
-                                <th>Servings</th>
-                            </tr>
-                        </thead>
-
-                        <tbody>
-                            ${lunch.map((item,index) => (
-                                `<tr class="meal-table-total">
-                                <td></td>
-                                <td>${index+1}</td>
-                                <td>${item.name}</td>
-                                <td>${item.calories}</td>
-                                <td>${item.carbohydrates}</td>
-                                <td>${item.protein}</td>
-                                <td>${item.fat}</td>
-                                <td>${item.serving}</td>
-                            </tr>`
-                            ))}
-                        </tbody>
-                        <tr class="meal-table-total">
-                            <td>Total</td>
-                            <td></td>
-                            <td></td>
-                            <td>${data.total_calories_lunch}</td>
-                            <td>${data.total_carbohydrates_lunch}</td>
-                            <td>${data.total_protein_lunch}</td>
-                            <td>${data.total_fat_lunch}</td>
-                            <td>${data.total_serving_lunch}</td>
-                        </tr>
-                    </table>
-                    <h1>Snack</h1>
-                    <table class="customer-profile-meal-table">
-                        <thead>
-                            <tr>
-                                <th></th>
-                                <th>No</th>
-                                <th>Name</th>
-                                <th>Cal</th>
-                                <th>Carb</th>
-                                <th>Protein</th>
-                                <th>Fat</th>
-                                <th>Servings</th>
-                            </tr>
-                        </thead>
-
-                        <tbody>
-                            ${snack.map((item,index) => (
-                                `<tr class="meal-table-total">
-                                <td></td>
-                                <td>${index+1}</td>
-                                <td>${item.name}</td>
-                                <td id = "cal">${item.calories}</td>
-                                <td>${item.carbohydrates}</td>
-                                <td>${item.protein}</td>
-                                <td>${item.fat}</td>
-                                <td>${item.serving}</td>
-                            </tr>
-                            ` ))}
-                        </tbody>
-                        <tr class="meal-table-total">
-                            <td>Total</td>
-                            <td></td>
-                            <td></td>
-                            <td>${data.total_calories_snack}</td>
-                            <td>${data.total_carbohydrates_snack}</td>
-                            <td>${data.total_protein_snack}</td>
-                            <td>${data.total_fat_snack}</td>
-                            <td>${data.total_serving_snack}</td>
-                        </tr>
-                    </table>
-                    <h1>Dinner</h1>
-                    <table class="customer-profile-meal-table">
-                        <thead>
-                            <tr>
-                                <th></th>
-                                <th>No</th>
-                                <th>Name</th>
-                                <th>Cal</th>
-                                <th>Carb</th>
-                                <th>Protein</th>
-                                <th>Fat</th>
-                                <th>Servings</th>
-                            </tr>
-                        </thead>
-
-                        <tbody>
-                            ${dinner.map((item,index) => (
-                                `<tr class="meal-table-total">
-                                <td></td>
-                                <td>${index+1}</td>
-                                <td>${item.name}</td>
-                                <td>${item.calories}</td>
-                                <td>${item.carbohydrates}</td>
-                                <td>${item.protein }</td>
-                                <td>${item.fat}</td>
-                                <td>${item.serving}</td>
-                            </tr>`
-                            ))}
-                        </tbody>
-                        <tr class="meal-table-total">
-                            <td>Total</td>
-                            <td></td>
-                            <td></td>
-                            <td>${data.total_calories_dinner}</td>
-                            <td>${data.total_carbohydrates_dinner}</td>
-                            <td>${data.total_protein_dinner}</td>
-                            <td>${data.total_fat_dinner}</td>
-                            <td>${data.total_serving_dinner}</td>
-                        </tr>
-                    </table>
-                </div>
-        `);
-                    }
-                })
-        }
-
-        //on clicking last 7 days (meal)
-        $("#meal-7days").click(function(){
-            $("#meal-today").removeClass("customer-profile-days-btn-active")
-            $("#meal-7days").addClass("customer-profile-days-btn-active")
-            $(".customer-7days-filter-meal-container").show()
-            $(".customer-7days-day-meal-btn").removeClass("customer-7days-day-btn-active")
-            $(".customer-7days-day-meal-btn").last().addClass("customer-7days-day-btn-active");
-            $(".customer-7days-meal-tables-container").empty();
-            console.log($(".customer-7days-day-meal-btn").last().text())
-             meal_sevendays(today)
-        })
-
-        //on clicking today (water)
-        $("#water-today").click(function(){
-            $("#water-today").addClass("customer-profile-days-btn-active")
-            $("#water-7days").removeClass("customer-profile-days-btn-active")
-            $(".customer-7days-filter-water-container").hide()
-            // alert("okk");
-            todaywater();
-        })
-
-        //on clicking last 7 days (water)
-        $("#water-7days").click(function(){
-            $("#water-today").removeClass("customer-profile-days-btn-active")
-            $("#water-7days").addClass("customer-profile-days-btn-active")
-            $(".customer-7days-filter-water-container").show()
-            $(".customer-7days-day-water-btn").removeClass("customer-7days-day-btn-active")
-            $(".customer-7days-day-water-btn").last().addClass("customer-7days-day-btn-active")
-            console.log($(".customer-7days-day-water-btn").last().text())
-            todaywater();
-        })
-
-         //on clicking today (workout)
-         $("#workout-today").click(function(){
-            $("#workout-today").addClass("customer-profile-days-btn-active")
-            $("#workout-7days").removeClass("customer-profile-days-btn-active")
-            renderWorkoutList()
-        })
-
-         //on clicking last 7 days (water)
-         $("#workout-7days").click(function(){
-            $("#workout-today").removeClass("customer-profile-days-btn-active")
-            $("#workout-7days").addClass("customer-profile-days-btn-active")
-            workout_7days()
-
-        })
-
-
-    });
-
-
-    function workout_7days(){
-
-        $.ajax({
-                    type: "GET",
-                    url: "/customer/workout/lastsevenDay/",
-                    datatype: "json",
-                    success: function(data) {
-                        var workouts= data.workouts;
-                        $(".customer-profile-workout-list-parent-container").empty()
-                        $(".customer-profile-workout-list-parent-container").append(`
-                        <div class="customer-profile-workout-list-header">
-                        <p>${data.seven} - ${data.current}</p>
-                        <div class="customer-profile-workoutdetails-container">
-                            <div class="customer-profile-workoutdetail">
-                                <iconify-icon icon="icon-park-outline:time" class="customer-profile-time-icon"></iconify-icon>
-                                <p>${data.time_min}mins ${data.time_sec}sec</p>
-                            </div>
-                            <div class="customer-profile-workoutdetail">
-                                <iconify-icon icon="codicon:flame" class="customer-profile-flame-icon"></iconify-icon>
-                                <p>${data.cal_sum}</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    ${workouts.map((item,index) => (
-                        `<div class="customer-profile-workout-row">
-                        <div class="customer-profile-workout-row-namedate-container">
-                            <p>${item.workout_plan_type}</p>
-                            <div class="customer-profile-workout-row-date">
-                                <iconify-icon icon="bx:calendar" class="customer-profile-date-icon"></iconify-icon>
-                                <p>${item.date}</p>
-                            </div>
-                        </div>
-
-                        <div class="customer-profile-workoutdetails-container">
-                            <div class="customer-profile-workoutdetail">
-                                <iconify-icon icon="icon-park-outline:time" class="customer-profile-time-icon"></iconify-icon>
-                                <p>${Math.floor(item.time/60)}mins ${item.time%60}sec</p>
-                            </div>
-                            <div class="customer-profile-workoutdetail">
-                                <iconify-icon icon="codicon:flame" class="customer-profile-flame-icon"></iconify-icon>
-                                <p>${item.calories}</p>
-                            </div>
-                        </div>
-                    </div>`
-                    ))}
-
-
-        `)
-                    }
+            if(taken < 3000 ){
+                console.log("keep drinking")
+                $(".customer-profile-water-track-history-text  span").text('Keep Drinking')
+                $('.water-chart').circleProgress({
+                    startAngle: 1.5 * Math.PI,
+                    lineCap: 'round',
+                    value: result,
+                    emptyFill: '#D9D9D9',
+                    fill: { 'color': "#3CADDD" }
                 });
 
-    }
-    //getting the last 7 days from today
-    function Last7Days () {
-        var result = [];
-        for (var i=1; i<=7; i++) {
-            var d = new Date();
-            d.setDate(d.getDate() - i);
-            result.push( formatDate(d) )
+            }else if(taken >= 3000){
+                console.log("complete")
+                $(".customer-profile-water-track-history-text  span").text('Mission Complete')
+                $('.water-chart').circleProgress({
+                    startAngle: 1.5 * Math.PI,
+                    lineCap: 'round',
+                    value: result,
+                    emptyFill: '#D9D9D9',
+                    fill: {
+                        gradient: ["#3aeabb", "#fdd250"]
+                    }
+                });
+            }
+
+
+
+            $(".customer-profile-water-track-history-text p").text(`You Drunk ${taken}/${total} ML of Your Daily Mission.`)
+
         }
 
-        return(result);
-    }
-    //formatting the date of last 7 days
-    function formatDate(date){
-        const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
-        "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
-        ];
-        var dd = date.getDate();
-        // var mm = monthNames[date.getMonth()];
-        var mm = date.getMonth()+1;
-        var yyyy = date.getFullYear();
-        if(dd<10) {dd='0'+dd}
-        if(mm<10) {mm='0'+mm}
-        date = yyyy+'-'+mm+'-'+dd;
-        return date
-    }
+        //rendering meal table
+        function renderMealTable(){
+            $(".customer-7days-meal-tables-container").empty()
 
-    //rendering last 7 days water circle progress
-    function renderCircle(total,taken){
-        var result = taken / total
-        var color
-        console.log('last 7 days',taken)
+            var breakFast = []
+            var lunch = []
+            var snack = []
+            var dinner = []
 
-        if(taken < 3000 ){
-            console.log("fail")
-            $(".customer-profile-water-track-history-text span").text('Mission Failed')
-            color = '#FF0000'
-            $('.water-chart').circleProgress({
-                startAngle: 1.5 * Math.PI,
-                lineCap: 'round',
-                value: result,
-                emptyFill: '#D9D9D9',
-                fill: { 'color': '#FF0000' }
-            });
-        }else if(taken >= 3000){
-            console.log("complete")
-            $(".customer-profile-water-track-history-text  span").text('Mission Complete')
-            $('.water-chart').circleProgress({
-                startAngle: 1.5 * Math.PI,
-                lineCap: 'round',
-                value: result,
-                emptyFill: '#D9D9D9',
-                fill: {
-                     gradient: ["#3aeabb", "#fdd250"]
-                }
-            });
+
+
         }
 
-        $(".customer-profile-water-track-history-text p").text(`You Drunk ${taken}/${total} ML of Your Daily Mission.`)
+        //rendering workoutList
+        function renderWorkoutList(){
+            var today = new Date();
+            var dd = String(today.getDate()).padStart(2, '0');
+            var mm = today.toLocaleString('default', { month: 'short' });
+            var yyyy = today.getFullYear();
 
-    }
+            today =  yyyy+'-'+mm+'-'+dd;
+            const workouts = @json($workouts);
+            const time_sec=@json($time_sec);
+            const time_min=@json($time_min);
+            const cal_sum=@json($cal_sum);
 
-
-    //rendering today water circle progress
-    function renderTodayCircle(total,taken){
-        var result = taken / total
-        console.log('today',taken)
-
-        if(taken < 3000 ){
-            console.log("keep drinking")
-            $(".customer-profile-water-track-history-text  span").text('Keep Drinking')
-            $('.water-chart').circleProgress({
-                startAngle: 1.5 * Math.PI,
-                lineCap: 'round',
-                value: result,
-                emptyFill: '#D9D9D9',
-                fill: { 'color': "#3CADDD" }
-            });
-
-        }else if(taken >= 3000){
-            console.log("complete")
-            $(".customer-profile-water-track-history-text  span").text('Mission Complete')
-            $('.water-chart').circleProgress({
-                startAngle: 1.5 * Math.PI,
-                lineCap: 'round',
-                value: result,
-                emptyFill: '#D9D9D9',
-                fill: {
-                     gradient: ["#3aeabb", "#fdd250"]
-                }
-            });
-        }
-
-
-
-        $(".customer-profile-water-track-history-text p").text(`You Drunk ${taken}/${total} ML of Your Daily Mission.`)
-
-    }
-
-    //rendering meal table
-    function renderMealTable(){
-        $(".customer-7days-meal-tables-container").empty()
-
-        var breakFast = []
-        var lunch = []
-        var snack = []
-        var dinner = []
-
-
-
-    }
-
-    //rendering workoutList
-    function renderWorkoutList(){
-        var today = new Date();
-        var dd = String(today.getDate()).padStart(2, '0');
-        var mm = today.toLocaleString('default', { month: 'short' });
-        var yyyy = today.getFullYear();
-
-        today =  yyyy+'-'+mm+'-'+dd;
-        const workouts = @json($workouts);
-        const time_sec=@json($time_sec);
-        const time_min=@json($time_min);
-        const cal_sum=@json($cal_sum);
-
-        $(".customer-profile-workout-list-parent-container").empty()
-        $(".customer-profile-workout-list-parent-container").append(`
-        <div class="customer-profile-workout-list-header">
-                        <p>${dd}, ${mm}, ${yyyy}</p>
-                        <div class="customer-profile-workoutdetails-container">
-                            <div class="customer-profile-workoutdetail">
-                                <iconify-icon icon="icon-park-outline:time" class="customer-profile-time-icon"></iconify-icon>
-                                <p>${time_min}mins ${time_sec}sec</p>
-                            </div>
-                            <div class="customer-profile-workoutdetail">
-                                <iconify-icon icon="codicon:flame" class="customer-profile-flame-icon"></iconify-icon>
-                                <p>${cal_sum}</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    ${workouts.map((item,index) => (
-                        `<div class="customer-profile-workout-row">
-                        <div class="customer-profile-workout-row-namedate-container">
-                            <p>${item.workout_plan_type}</p>
-                            <div class="customer-profile-workout-row-date">
-                                <iconify-icon icon="bx:calendar" class="customer-profile-date-icon"></iconify-icon>
-                                <p>${item.date}</p>
+            $(".customer-profile-workout-list-parent-container").empty()
+            $(".customer-profile-workout-list-parent-container").append(`
+            <div class="customer-profile-workout-list-header">
+                            <p>${dd}, ${mm}, ${yyyy}</p>
+                            <div class="customer-profile-workoutdetails-container">
+                                <div class="customer-profile-workoutdetail">
+                                    <iconify-icon icon="icon-park-outline:time" class="customer-profile-time-icon"></iconify-icon>
+                                    <p>${time_min}mins ${time_sec}sec</p>
+                                </div>
+                                <div class="customer-profile-workoutdetail">
+                                    <iconify-icon icon="codicon:flame" class="customer-profile-flame-icon"></iconify-icon>
+                                    <p>${cal_sum}</p>
+                                </div>
                             </div>
                         </div>
 
-                        <div class="customer-profile-workoutdetails-container">
-                            <div class="customer-profile-workoutdetail">
-                                <iconify-icon icon="icon-park-outline:time" class="customer-profile-time-icon"></iconify-icon>
-                                <p>${Math.floor(item.time/60)}mins ${item.time%60}sec</p>
+                        ${workouts.map((item,index) => (
+                            `<div class="customer-profile-workout-row">
+                            <div class="customer-profile-workout-row-namedate-container">
+                                <p>${item.workout_plan_type}</p>
+                                <div class="customer-profile-workout-row-date">
+                                    <iconify-icon icon="bx:calendar" class="customer-profile-date-icon"></iconify-icon>
+                                    <p>${item.date}</p>
+                                </div>
                             </div>
-                            <div class="customer-profile-workoutdetail">
-                                <iconify-icon icon="codicon:flame" class="customer-profile-flame-icon"></iconify-icon>
-                                <p>${item.calories}</p>
+
+                            <div class="customer-profile-workoutdetails-container">
+                                <div class="customer-profile-workoutdetail">
+                                    <iconify-icon icon="icon-park-outline:time" class="customer-profile-time-icon"></iconify-icon>
+                                    <p>${Math.floor(item.time/60)}mins ${item.time%60}sec</p>
+                                </div>
+                                <div class="customer-profile-workoutdetail">
+                                    <iconify-icon icon="codicon:flame" class="customer-profile-flame-icon"></iconify-icon>
+                                    <p>${item.calories}</p>
+                                </div>
                             </div>
-                        </div>
-                    </div>`
-                    ))}
+                        </div>`
+                        ))}
 
 
-        `)
-    }
-</script>
-@endhasanyrole
-@hasanyrole('Free|Gold|Ruby|Ruby Premium')
+            `)
+        }
+    </script>
+    @endhasanyrole
+
+
 <script>
-    $( document ).ready(function() {
-        $(".name").hide();
-        $('.customer-name-calculate-btn').hide();
-        $(".customer-bmi-calculate-btn").hide();
-        $("#pen1").on('click', function(event){
-            event.stopPropagation();
-            event.stopImmediatePropagation();
-            $(".age").removeAttr("readonly");
-            $(".weight").removeAttr("readonly");
-            $(".neck").removeAttr("readonly");
-            $(".waist").removeAttr("readonly");
-            $(".hip").removeAttr("readonly");
-            $(".shoulders").removeAttr("readonly");
-            $(".customer-bmi-calculate-btn").show();
-            $('select.height_ft').attr('disabled', false);
-            $('select.height_in').attr('disabled', false);
-            $('.change-name-icon').hide();
-            $('.customer-name-calculate-btn').hide();
-            $("#name").show();
-            $(".name").hide();
-        });
 
+        function onClick(element) {
 
+            var profile_id=$(element).attr('id');
+            console.log(profile_id);
 
-        $("#customer_cancel").on('click', function(event){
-            event.stopPropagation();
-            event.stopImmediatePropagation();
-            $(".age").attr('readonly', true);
-            $(".weight").attr('readonly', true);
-            $(".neck").attr('readonly', true);
-            $(".waist").attr('readonly', true);
-            $(".hip").attr('readonly', true);
-            $(".shoulders").attr('readonly', true);
-            $(".customer-bmi-calculate-btn").hide();
-            $('select.height_ft').attr('disabled', true);
-            $('select.height_in').attr('disabled', true);
-            $('.change-name-icon').show();
-            $('.customer-name-calculate-btn').show();
-            $("#name").show();
-            $(".name").hide();
-            $('.customer-name-calculate-btn').hide();
-            $('#customer_name_cancel').hide();
+            document.getElementById("img01").src = element.src;
+            document.getElementById("delete-image").name=profile_id;
+            document.getElementById("modal01").style.display = "block";
+        }
 
-        });
+    $(document).ready(function() {
+        $(".customer-saved-posts-container").hide()
 
-        // $('#name_edit_pen').on('click',function(){
-        //     $(".name").show();
-        //     $('.customer-name-calculate-btn').show();
-        //     $('#name_edit_pen').hide();
-        //     $("#name").hide();
-        // })
+        $(".customer-profile-selector").change(function(e){
+            console.log(e.target.value)
 
-        // $("#customer_name_cancel").on('click',function(event){
-        //     $(".name").hide();
-        //     $('.customer-name-calculate-btn').hide();
-        //     $('#name_edit_pen').show();
-        //     $("#name").show();
-        // })
-
-        $(".personal_detail").submit(function(){
-            $('.customer-bmi-calculate-btn').attr('disabled', true);
+            if(e.target.value === "all"){
+                $(".customer-all-posts-container").show()
+                $(".customer-saved-posts-container").hide()
+            }
+            if(e.target.value === "saved"){
+                $(".customer-all-posts-container").hide()
+                $(".customer-saved-posts-container").show()
+            }
         })
-    })
-</script>
-@endhasanyrole
-<script>
-    $( document ).ready(function() {
+                    $('.social-media-fris-search input').on('keyup', function(){
+                            search();
+            });
+
+                        search();
+                        function search(){
+                            var keyword = $('.social-media-fris-search input').val();
+                            console.log(keyword);
+                            var user_id = {{$user->id}};
+                            console.log();
+                            var search_url = "{{ route('friend_search',':id') }}";
+                            search_url = search_url.replace(':id', user_id);
+                            $.post(search_url,
+                            {
+                                _token: $('meta[name="csrf-token"]').attr('content'),
+                                keyword:keyword
+                            },
+                            function(data){
+                                table_post_row(data);
+                                console.log(data.friends);
+                            });
+                        }
+                        // table row with ajax
+                        function table_post_row(res){
+                            console.log(res.friends.length)
+                        let htmlView = '';
+                            if(res.friends.length <= 0){
+                                console.log("no data");
+                                htmlView+= `
+                                No data found.
+                                `;
+                            }
+                            console.log("data");
+                            if({{auth()->user()->id}} === {{$user->id}}){
+                                for(let i = 0; i < res.friends.length; i++){
+                                id = res.friends[i].id;
+                                var url = "{{ route('socialmedia.profile', [':id']) }}";
+                                    url = url.replace(':id',id);
+                                if(res.friends[i].profile_image === null){
+                                    htmlView += `
+                                    <div class="social-media-fris-fri-row">
+                                        <div class="social-media-fris-fri-img">
+                                                <img src="{{asset('img/customer/imgs/user_default.jpg')}}">
+                                            <p>`+res.friends[i].name+`</p>
+                                        </div>
+
+
+                                        <div class="social-media-fris-fri-btns-container">
+                                            <a href="#" class="customer-primary-btn">Message</a>
+
+                                            <a href="?id=` + res.friends[i].id+`" class="customer-red-btn"
+                                            id = "unfriend">Remove</a>
+
+                                        </div>
+                                    </div>                                    `
+                                }
+                                else{
+                                    htmlView += `
+                                    <div class="social-media-fris-fri-row">
+                                        <div class="social-media-fris-fri-img">
+                                                <img src="{{ asset('/storage/post/${res.friends[i].profile_image}') }}">
+                                            <p>`+res.friends[i].name+`</p>
+                                        </div>
+
+
+                                        <div class="social-media-fris-fri-btns-container">
+                                            <a href="#" class="customer-primary-btn">Message</a>
+
+                                            <a href="?id=` + res.friends[i].id+`" class="customer-red-btn"
+                                            id = "unfriend">Remove</a>
+
+                                        </div>
+                                    </div>
+                                    `
+                                }
+                            }
+                            }
+                            else{
+                                for(let i = 0; i < res.friends.length; i++){
+                                id = res.friends[i].id;
+                                var url = "{{ route('socialmedia.profile', [':id']) }}";
+                                    url = url.replace(':id',id);
+                                if(res.friends[i].profile_image === null){
+                                    htmlView += `
+                                    <div class="social-media-fris-fri-row">
+                                        <div class="social-media-fris-fri-img">
+                                                <img src="{{asset('img/customer/imgs/user_default.jpg')}}">
+                                            <p>`+res.friends[i].name+`</p>
+                                        </div>
+
+
+                                        <div class="social-media-fris-fri-btns-container">
+                                            <a href=`+url+` class="customer-primary-btn">View Profile</a>
+                                        </div>
+                                    </div>
+                                    `
+                                }
+                                else{
+                                    htmlView += `
+                                    <div class="social-media-fris-fri-row">
+                                        <div class="social-media-fris-fri-img">
+                                                <img src="{{ asset('/storage/post/${res.friends[i].profile_image}') }}">
+                                            <p>`+res.friends[i].name+`</p>
+                                        </div>
+
+
+                                        <div class="social-media-fris-fri-btns-container">
+                                            <a href=`+url+` class="customer-primary-btn">View Profile</a>
+                                        </div>
+                                    </div>
+                                    `
+                                }
+                            }
+                            }
+                            $('.social-media-fris-list-container').html(htmlView);
+                        }
+                $(document).on('click', '#unfriend', function(e){
+                e.preventDefault();
+                Swal.fire({
+                        text: "Are you sure?",
+                        showClass: {
+                                popup: 'animate__animated animate__fadeInDown'
+                            },
+                            hideClass: {
+                                popup: 'animate__animated animate__fadeOutUp'
+                            },
+                        showCancelButton: true,
+                        timerProgressBar: true,
+                        confirmButtonText: 'Yes',
+                        cancelButtonText: 'No',
+
+                        }).then((result) => {
+                        /* Read more about isConfirmed, isDenied below */
+                        if (result.isConfirmed) {
+                             var url = new URL(this.href);
+                             var id = url.searchParams.get("id");
+                             var url = "{{ route('unfriend', [':id']) }}";
+                             url = url.replace(':id', id);
+                             $(".cancel-request-btn").attr('href','');
+                                $.ajax({
+                                    type: "GET",
+                                    url: url,
+                                    datatype: "json",
+                                    success: function(data) {
+                                        console.log(data)
+                                        search();
+                                    }
+                                })
+                            Swal.fire('Unfriend!', '', 'success')
+                        }
+                        })
+                $('.social-media-left-searched-items-container').empty();
+                });
+
+        //image slider start
+        console.log($(".image-slider"))
+
+        $.each($(".ul-image-slider"),function(){
+            console.log($(this).children('li').length)
+
+            $(this).children('li:first').addClass("active-img")
+        })
+
+        $.each($(".img-slider-thumbnails ul"),function(){
+            console.log($(this).children('li').length)
+
+            $(this).children('li:first').addClass("active")
+        })
+
+        $(function(){
+
+            $('.img-slider-thumbnails li').click(function(){
+
+            var thisIndex = $(this).index()
+            // console.log(thisIndex,$(this).siblings("li.active").index())
+            if($(this).siblings(".active").index() === -1){
+                return
+            }
+
+
+            if(thisIndex < $(this).siblings(".active").index()){
+                prevImage(thisIndex, $(this).parents(".img-slider-thumbnails").prev("#image-slider"));
+            }else if(thisIndex > $(this).siblings(".active").index()){
+                nextImage(thisIndex, $(this).parents(".img-slider-thumbnails").prev("#image-slider"));
+            }
+
+
+            $(this).siblings('.active').removeClass('active');
+            $(this).addClass('active');
+
+            });
+
+        });
+
+        var width = $('#image-slider').width();
+        console.log(width)
+
+        function nextImage(newIndex, parent){
+            parent.find('li').eq(newIndex).addClass('next-img').css('left', width).animate({left: 0},600);
+            parent.find('li.active-img').removeClass('active-img').css('left', '0').animate({left: '-100%'},600);
+            parent.find('li.next-img').attr('class', 'active-img');
+        }
+        function prevImage(newIndex, parent){
+            parent.find('li').eq(newIndex).addClass('next-img').css('left', -width).animate({left: 0},600);
+            parent.find('li.active-img').removeClass('active-img').css('left', '0').animate({left: '100%'},600);
+            parent.find('li.next-img').attr('class', 'active-img');
+        }
+
+        /* Thumbails */
+        // var ThumbailsWidth = ($('#image-slider').width() - 18.5)/7;
+        // $('#thumbnail li').find('img').css('width', ThumbailsWidth);
+
+        $('.social-media-media-slider').hide()
+
+        $(".customer-media-container").click(function(){
+
+            $(this).siblings(".social-media-media-slider").show()
+            $(this).hide()
+        })
+
+        $(".slider-close-icon").click(function(){
+            $(this).closest('.social-media-media-slider').hide()
+            $(this).closest('.social-media-media-slider').siblings('.customer-media-container').show()
+        })
+        //image slider end
+
+
         $(".customer-profile-social-media-photoes-container").hide()
         $(".customer-profile-social-media-fris-container").hide()
         $(".social-media-profile-photos-link").click(function(){
@@ -1670,7 +1949,7 @@
             }else{
                 coverImgInput.value = ""
                 // profileImg.removeAttribute("src")
-                coverImg.setAttribute('src',"{{asset('image/trainer2.jpg')}}");
+                coverImg.setAttribute('src',"{{asset('image/cover.jpg')}}");
                 $('.customer-cover-change-btns-container').hide()
             }
 
@@ -1694,7 +1973,7 @@
         $(".customer-cover-change-cancel-btn").click(function(){
             coverImgInput.value = ""
             // profileImg.removeAttribute("src")
-            coverImg.setAttribute('src',"{{asset('image/trainer2.jpg')}}");
+            coverImg.setAttribute('src',"{{asset('image/cover.jpg')}}");
             $('.customer-cover-change-btns-container').hide()
         })
 
@@ -1706,6 +1985,9 @@
             $('.customer-bio-btns-container').show()
 
             $('.customer-bio-form p').hide()
+
+
+
         })
 
         $(".customer-bio-change-cancel-btn").click(function(){
@@ -1757,83 +2039,44 @@
         $('.customer-post-header-icon').click(function(){
             $(this).next().toggle()
         })
-        ///EditPost
-        $("#editPostInput").on("change", handleFileSelectEdit);
 
+        $(document).on('click', '#delete_post', function(e){
 
-        var storedFilesEdit = [];
-        const dtEdit = new DataTransfer();
+            e.preventDefault();
+            var id = $(this).data('id');
+            Swal.fire({
+                        text: 'Are you sure to delete this post?',
+                        timerProgressBar: true,
+                        showCloseButton: true,
+                        showCancelButton: true,
+                        icon: 'warning',
+                    }).then((result) => {
+                    if (result.isConfirmed) {
+                        var add_url = "{{ route('post.destroy', [':id']) }}";
+                            add_url = add_url.replace(':id', id);
 
-        function handleFileSelectEdit(e) {
+                            $.ajaxSetup({
+                                    headers: {
+                                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                                    }
+                                });
+                            $.ajax({
+                                    method: "POST",
+                                    url: add_url,
+                                    datatype: "json",
+                                    success: function(data) {
+                                        window.location.reload();
+                                    }
+                                })
+                    }else{
 
-                    var files = e.target.files;
-                    console.log(files)
+                    }
+                    })
 
-                    var filesArr = Array.prototype.slice.call(files);
+        })
 
-                    var device = $(e.target).data("device");
+        ///Edit Post
 
-                    filesArr.forEach(function(f) {
-
-                        if (f.type.match("image.*")) {
-                            storedFilesEdit.push(f);
-
-                            var reader = new FileReader();
-                            reader.onload = function(e) {
-                            var html = "<div class='addpost-preview'><iconify-icon icon='akar-icons:cross' data-file='" + f.name + "' class='delete-preview-edit-input-icon'></iconify-icon><img src=\"" + e.target.result + "\" data-file='" + f.name + "' class='selFile' title='Click to remove'></div>";
-
-                            if (device == "mobile") {
-                                $("#selectedFilesM").append(html);
-                            } else {
-                                $(".editpost-photo-video-imgpreview-container").append(html);
-                            }
-                            }
-                            reader.readAsDataURL(f);
-                            dtEdit.items.add(f);
-                        }else if(f.type.match("video.*")){
-                            storedFilesEdit.push(f);
-
-                            var reader = new FileReader();
-                            reader.onload = function(e) {
-                            var html = "<div class='addpost-preview'><iconify-icon icon='akar-icons:cross' data-file='" + f.name + "' class='delete-preview-edit-input-icon'></iconify-icon><video controls><source src=\"" + e.target.result + "\" data-file='" + f.name + "' class='selFile' title='Click to remove'>" + f.name + "<br clear=\"left\"/><video></div>";
-
-                            if (device == "mobile") {
-                                $("#selectedFilesM").append(html);
-                            } else {
-                                $(".editpost-photo-video-imgpreview-container").append(html);
-                            }
-                            }
-                            reader.readAsDataURL(f);
-                            dtEdit.items.add(f);
-
-        }
-
-        function removeFileFromEditInput(e) {
-            var file = $(this).data("file");
-            var names = [];
-            for(let i = 0; i < dtEdit.items.length; i++){
-                if(file === dtEdit.items[i].getAsFile().name){
-                    dtEdit.items.remove(i);
-                }
-            }
-            document.getElementById('editPostInput').files = dtEdit.files;
-
-            for (var i = 0; i < storedFilesEdit.length; i++) {
-                if (storedFilesEdit[i].name === file) {
-                storedFilesEdit.splice(i, 1);
-                break;
-                }
-            }
-            $(this).parent().remove();
-        }
-
-
-
-});
-
-        document.getElementById('editPostInput').files = dtEdit.files;
-
-}
         $(document).on('click','#edit_post',function(e){
             e.preventDefault();
             $(".editpost-photo-video-imgpreview-container").empty();
@@ -1875,13 +2118,15 @@
                                     var html="<div class='addpost-preview'>\
                                         <iconify-icon icon='akar-icons:cross' data-file='" + f + "' class='delete-preview-db-icon'></iconify-icon>\
                                         <video controls><source src='storage/post/" + f + "' data-file='" + f+ "' class='selFile' title='Click to remove'>" + f + "<br clear=\"left\"/>\
-                                        <video></div>"
+                                        <video>\
+                                    </div>"
                                     $(".editpost-photo-video-imgpreview-container").append(html);
 
                                 }else{
                                     var html = "<div class='addpost-preview'><iconify-icon icon='akar-icons:cross' data-file='" + f + "' class='delete-preview-db-icon'></iconify-icon><img src='storage/post/"+f+"' data-file='" + f + "' class='selFile' title='Click to remove'></div>";
                                     $(".editpost-photo-video-imgpreview-container").append(html);
                                 }
+
                             });
 
                             $("body").on("click", ".delete-preview-db-icon", removeFiledb);
@@ -1894,6 +2139,10 @@
 
                                 $(this).parent().remove();
                             }
+
+                            $(".addpost-photovideo-clear-btn").click(function(){
+                                storedFilesdb = []
+                            })
 
                             $('#edit_form').submit(function(e){
                                 e.preventDefault();
@@ -1983,41 +2232,219 @@
 
         })
 
-        $(document).on('click', '#delete_post', function(e){
+        $("#addPostInput").on("change", handleFileSelect);
 
-            e.preventDefault();
-            var id = $(this).data('id');
-            Swal.fire({
-                        text: 'Are you sure to delete this post?',
-                        timerProgressBar: true,
-                        showCloseButton: true,
-                        showCancelButton: true,
-                        icon: 'warning',
-                    }).then((result) => {
-                    if (result.isConfirmed) {
-                        var add_url = "{{ route('post.destroy', [':id']) }}";
-                            add_url = add_url.replace(':id', id);
+        $("#editPostInput").on("change", handleFileSelectEdit);
 
-                            $.ajaxSetup({
-                                    headers: {
-                                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                                    }
-                                });
-                            $.ajax({
-                                    method: "POST",
-                                    url: add_url,
-                                    datatype: "json",
-                                    success: function(data) {
-                                        window.location.reload();
-                                    }
-                                })
-                    }else{
+        selDiv = $(".addpost-photo-video-imgpreview-container");
 
-                    }
-                    })
+        console.log(selDiv);
 
-        })
+        $("body").on("click", ".delete-preview-icon", removeFile);
+        $("body").on("click", ".delete-preview-edit-input-icon", removeFileFromEditInput);
 
     });
+
+    ////Edit Post
+    var selDiv = "";
+
+    var storedFiles = [];
+    var storedFilesEdit = [];
+    const dt = new DataTransfer();
+    const dtEdit = new DataTransfer();
+
+    function handleFileSelect(e) {
+
+        var files = e.target.files;
+        console.log(files)
+
+        var filesArr = Array.prototype.slice.call(files);
+
+        var device = $(e.target).data("device");
+
+        filesArr.forEach(function(f) {
+            console.log(f);
+            if (f.type.match("image.*")) {
+                storedFiles.push(f);
+
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                var html = "<div class='addpost-preview'><iconify-icon icon='akar-icons:cross' data-file='" + f.name + "' class='delete-preview-icon'></iconify-icon><img src=\"" + e.target.result + "\" data-file='" + f.name + "' class='selFile' title='Click to remove'></div>";
+
+                if (device == "mobile") {
+                    $("#selectedFilesM").append(html);
+                } else {
+                    $(".addpost-photo-video-imgpreview-container").append(html);
+                }
+                }
+                reader.readAsDataURL(f);
+                dt.items.add(f);
+            }else if(f.type.match("video.*")){
+                storedFiles.push(f);
+
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                var html = "<div class='addpost-preview'><iconify-icon icon='akar-icons:cross' data-file='" + f.name + "' class='delete-preview-icon'></iconify-icon><video controls><source src=\"" + e.target.result + "\" data-file='" + f.name + "' class='selFile' title='Click to remove'>" + f.name + "<br clear=\"left\"/><video></div>";
+
+                if (device == "mobile") {
+                    $("#selectedFilesM").append(html);
+                } else {
+                    $(".addpost-photo-video-imgpreview-container").append(html);
+                }
+                }
+                reader.readAsDataURL(f);
+                dt.items.add(f);
+            }
+
+
+        });
+
+        document.getElementById('addPostInput').files = dt.files;
+        console.log(document.getElementById('addPostInput').files+" Add Post Input")
+
+    }
+
+    function handleFileSelectEdit(e) {
+
+        var files = e.target.files;
+        console.log(files)
+
+        var filesArr = Array.prototype.slice.call(files);
+
+        var device = $(e.target).data("device");
+
+        filesArr.forEach(function(f) {
+
+            if (f.type.match("image.*")) {
+                storedFilesEdit.push(f);
+
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                var html = "<div class='addpost-preview'><iconify-icon icon='akar-icons:cross' data-file='" + f.name + "' class='delete-preview-edit-input-icon'></iconify-icon><img src=\"" + e.target.result + "\" data-file='" + f.name + "' class='selFile' title='Click to remove'></div>";
+
+                if (device == "mobile") {
+                    $("#selectedFilesM").append(html);
+                } else {
+                    $(".editpost-photo-video-imgpreview-container").append(html);
+                }
+                }
+                reader.readAsDataURL(f);
+                dtEdit.items.add(f);
+            }else if(f.type.match("video.*")){
+                storedFilesEdit.push(f);
+
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                var html = "<div class='addpost-preview'><iconify-icon icon='akar-icons:cross' data-file='" + f.name + "' class='delete-preview-edit-input-icon'></iconify-icon><video controls><source src=\"" + e.target.result + "\" data-file='" + f.name + "' class='selFile' title='Click to remove'>" + f.name + "<br clear=\"left\"/><video></div>";
+
+                if (device == "mobile") {
+                    $("#selectedFilesM").append(html);
+                } else {
+                    $(".editpost-photo-video-imgpreview-container").append(html);
+                }
+                }
+                reader.readAsDataURL(f);
+                dtEdit.items.add(f);
+            }
+
+
+        });
+
+        document.getElementById('editPostInput').files = dtEdit.files;
+        console.log(document.getElementById('editPostInput').files+" Edit Post Input")
+
+    }
+
+    function removeFile(e) {
+        var file = $(this).data("file");
+        var names = [];
+        for(let i = 0; i < dt.items.length; i++){
+            if(file === dt.items[i].getAsFile().name){
+                dt.items.remove(i);
+            }
+        }
+        document.getElementById('addPostInput').files = dt.files;
+
+        for (var i = 0; i < storedFiles.length; i++) {
+            if (storedFiles[i].name === file) {
+            storedFiles.splice(i, 1);
+            break;
+            }
+        }
+        $(this).parent().remove();
+    }
+    function removeFileFromEditInput(e) {
+        var file = $(this).data("file");
+        var names = [];
+        for(let i = 0; i < dtEdit.items.length; i++){
+            if(file === dtEdit.items[i].getAsFile().name){
+                dtEdit.items.remove(i);
+            }
+        }
+        document.getElementById('editPostInput').files = dtEdit.files;
+
+        for (var i = 0; i < storedFilesEdit.length; i++) {
+            if (storedFilesEdit[i].name === file) {
+            storedFilesEdit.splice(i, 1);
+            break;
+            }
+        }
+        $(this).parent().remove();
+    }
+
+
+    function clearAddPost(){
+        storedFiles = []
+        dt.clearData()
+        document.getElementById('addPostInput').files = dt.files;
+        $(".addpost-photo-video-imgpreview-container").empty();
+    }
+
+    function clearEditPost(){
+        storedFilesEdit = []
+        dtEdit.clearData()
+        document.getElementById('editPostInput').files = dtEdit.files;
+        $(".editpost-photo-video-imgpreview-container").empty();
+
+    }
+
+    function updateDiv(element)
+{
+    var profile_id=element.name;
+    console.log(profile_id+" Profile ID");
+    // $( ".close-image" ).load(window.location.href + " .close-image" );
+
+    Swal.fire({
+                text: 'Are you sure to delete this photo?',
+                timerProgressBar: true,
+                showCloseButton: true,
+                showCancelButton: true,
+                icon: 'warning',
+            }).then((result) => {
+            if (result.isConfirmed) {
+                var add_url = "{{ route('profile.photo.delete') }}";
+
+                $.ajaxSetup({
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        }
+                });
+                $.ajax({
+                        method: "POST",
+                        url: add_url,
+                        data:{
+                            profile_id:profile_id
+                        },
+                        success:function(data){
+                            if(data.success){
+                                window.location.reload();
+                                // $(".social-media-profiles-container").load(location.href + " .social-media-profiles-container");
+                            }
+                        }
+                    })
+            }
+        })
+
+}
 </script>
 @endpush

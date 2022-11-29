@@ -117,10 +117,12 @@
             </div>
         </div>
     </div>
-
-
+@endsection
+@push('scripts')
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.min.js" integrity="sha512-aVKKRRi/Q/YV+4mjoKBsE4x3H+BkegoM/em46NNlCqNTmUYADjBbeNefNxYV7giUp0VxICtqdrbqU7iVaeZNXA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <script src="../js/theme.js"></script>
+<script src="../js/theme.js"></script>
+
+
 <script>
     $(document).ready(function() {
         $(".social-media-noti-likes-tab").addClass("social-media-noti-active-tab")
@@ -142,17 +144,8 @@
             $(".social-media-requests-container").show()
         })
 
-        $( ".social-media-left-search-container input" ).focus(function() {
-            // alert( "Handler for .focus() called." );
-            $( ".social-media-left-infos-container" ).hide()
-            $(".social-media-left-searched-items-container").show()
-        });
 
-        $( ".social-media-left-search-container input" ).focusout(function() {
-            // alert( "Handler for .focus() called." );
-            $( ".social-media-left-infos-container" ).show()
-            $(".social-media-left-searched-items-container").hide()
-        });
+
         $('.social-media-post-header-icon').click(function(){
             $(this).next().toggle()
         })
@@ -165,4 +158,4 @@
 
     })
 </script>
-@endsection
+@endpush

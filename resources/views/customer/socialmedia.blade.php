@@ -10,7 +10,12 @@
                     <div class="social-media-post-header">
                         <div class="social-media-post-name-container">
                             <a href="{{route('socialmedia.profile',$post->user_id)}}" style="text-decoration:none">
-                            <img src="{{asset('img/customer/imgs/user_default.jpg')}}">
+                                <?php $profile=$post->user->profiles->where('cover_photo',null)->sortByDesc('created_at')->first() ?>
+                                @if ($profile==null)
+                                    <img class="nav-profile-img" src="{{asset('img/customer/imgs/user_default.jpg')}}"/>
+                                @else
+                                    <img class="nav-profile-img" src="{{asset('storage/post/'.$profile->profile_image)}}"/>
+                                @endif
                             </a>
                             <div class="social-media-post-name">
                                 <a href="{{route('socialmedia.profile',$post->user_id)}}" style="text-decoration:none">
@@ -23,15 +28,13 @@
                         <iconify-icon icon="bi:three-dots-vertical" class="social-media-post-header-icon"></iconify-icon>
 
                         <div class="post-actions-container">
-                            <div class="post-action">
-                                <iconify-icon icon="bi:save" class="post-action-icon"></iconify-icon>
-                                <p>Save</p>
-                            </div>
-                            {{-- <form action="{{ route('category.destroy',$post->id) }}" method="POST">
-                                @csrf
-                                @method('POST')
-                                <button type="submit">Delete</button>
-                            </form> --}}
+                            <a href="#" style="text-decoration:none" class="post_save" id="{{$post->id}}">
+                                <div class="post-action">
+                                    <iconify-icon icon="bi:save" class="post-action-icon"></iconify-icon>
+                                        <p class="save">Save</p>
+                                        <p class="unsave">Unsave</p>
+                                </div>
+                            </a>
                         @if ($post->user->id == auth()->user()->id)
 
                             <a id="edit_post" data-id="{{$post->id}}" data-bs-toggle="modal" >
@@ -126,7 +129,9 @@
 
                     <div class="social-media-post-footer-container">
                         <div class="social-media-post-like-container">
+                            <a class="like" href="#" id="{{$post->id}}">
                             <iconify-icon icon="akar-icons:heart" class="like-icon"></iconify-icon>
+                            </a>
                             <p><span>1.1k</span> Likes</p>
                         </div>
                         <div class="social-media-post-comment-container">
@@ -142,6 +147,73 @@
 
 @endsection
 @push('scripts')
+<script>
+    $(document).ready(function() {
+        $('.unsave').hide();
+        $('.save').show();
+        $('.like').click(function(e){
+            e.preventDefault();
+            var isLike=e.target.previousElementSibiling == null ? true : false;
+            var post_id=$(this).attr('id');
+            console.log(post_id)
+            var add_url = "{{ route('user.react.post', [':post_id']) }}";
+            add_url = add_url.replace(':post_id', post_id);
+            $.ajaxSetup({
+                            headers: {
+                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                            }
+                        });
+                    $.ajax({
+                        method: "POST",
+                        url: add_url,
+                        data:{ isLike : isLike , post_id: post_id }
+                    })
+
+
+        })
+
+        $('.post_save').click(function(e){
+            e.preventDefault();
+
+            var post_id=$(this).attr('id');
+            var add_url = "{{ route('socialmedia.post.save', [':post_id']) }}";
+            add_url = add_url.replace(':post_id', post_id);
+
+                    $.ajax({
+                        method: "GET",
+                        url: add_url,
+                        data:{
+                                post_id : post_id
+                            },
+                            success: function(data) {
+                                // window.location.reload();
+                                if(data.save){
+                                    Swal.fire({
+                                        text: data.save,
+                                        timerProgressBar: true,
+                                        timer: 5000,
+                                        icon: 'success',
+                                    });
+                                    $('.unsave').show();
+                                    $('.save').hide();
+                                }else{
+                                    Swal.fire({
+                                        text: data.unsave,
+                                        timerProgressBar: true,
+                                        timer: 5000,
+                                        icon: 'success',
+                                    });
+                                    $('.unsave').hide();
+                                    $('.save').show();
+                                }
+
+                            }
+                    })
+
+
+        })
+    });
+</script>
 {{-- <script>
     $(document).ready(function() {
 

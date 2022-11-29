@@ -127,19 +127,29 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::post('confirmRequest', [SocialmediaController::class, 'confirmRequest']);//
     Route::post('socialmedia_profile', [SocialmediaController::class, 'socialmedia_profile']);//
 
-    Route::get('notification', [SocialmediaController::class, 'notification']);
-    Route::post('/viewFriendRequestNoti', [SocialmediaController::class, 'viewFriendRequestNoti'])->name('viewFriendRequestNoti');
+    Route::post('cover_profile_photo', [SocialmediaController::class, 'cover_profile_photo']);//
 
-    Route::get('/friend_request', [SocialmediaController::class, 'friend_request']);
-    Route::get('/newFeeds', [SocialmediaController::class, 'newFeeds']);
+    Route::post('friends', [SocialmediaController::class, 'friends']);//
+
+    Route::get('notification', [SocialmediaController::class, 'notification']);
+
+    Route::post('viewFriendRequestNoti', [SocialmediaController::class, 'viewFriendRequestNoti'])->name('viewFriendRequestNoti');
+
+    Route::get('friend_request', [SocialmediaController::class, 'friend_request']);
+    Route::get('newFeeds', [SocialmediaController::class, 'newFeeds']);
+    Route::get('saved_post',[SocialmediaController::class, 'saved_post']);
 
     Route::post('post_create', [SocialmediaController::class, 'post_store']);
     Route::post('post_delete', [SocialmediaController::class, 'post_destroy']);
     Route::post('post_edit', [SocialmediaController::class, 'post_edit']);
     Route::post('post_update', [SocialmediaController::class, 'post_update']);
+    Route::post('post_save', [SocialmediaController::class, 'post_save']);
 
     Route::post('profile/cover/update', [SocialmediaController::class, 'profile_update_cover']);
     Route::post('profile/image/update', [SocialmediaController::class, 'profile_update_profile_img']);
+    Route::post('profile/bio/update', [SocialmediaController::class, 'profile_update_bio']);
+    Route::post('/profile/photo/delete', [SocialmediaController::class, 'profile_photo_delete']);
+
 
 
 });

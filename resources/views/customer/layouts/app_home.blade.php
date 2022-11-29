@@ -124,7 +124,7 @@
                                 <input type="file" id="editPostInput" name="editPostInput[]" multiple enctype="multipart/form-data">
                             </div>
 
-                            <button class="addpost-photovideo-clear-btn" type="button" onclick="clearAddPost()">Clear</button>
+                            <button class="addpost-photovideo-clear-btn" type="button" onclick="clearEditPost()">Clear</button>
 
                         </span>
 
@@ -175,14 +175,19 @@
                             <div class="social-media-left-friends-container">
                                 <div class="social-media-left-container-header">
                                     <p>Friends</p>
-                                    <a href="#">See All <iconify-icon icon="bi:arrow-right" class="arrow-icon"></iconify-icon></a>
+                                    <a href="{{route('friendsList',auth()->user()->id)}}">See All <iconify-icon icon="bi:arrow-right" class="arrow-icon"></iconify-icon></a>
                                 </div>
-
                                 <div class="social-media-left-friends-rows-container">
 
                                     @forelse ($left_friends as $friend)
                                     <a  href="{{route('socialmedia.profile',$friend->id)}}" class="social-media-left-friends-row">
-                                        <img src="{{asset('img/customer/imgs/user_default.jpg')}}">
+                                        <?php $profile=$friend->profiles->where('cover_photo',null)->sortByDesc('created_at')->first() ?>
+
+                                            @if ($profile==null)
+                                                <img class="nav-profile-img" src="{{asset('img/customer/imgs/user_default.jpg')}}"/>
+                                            @else
+                                                <img class="nav-profile-img" src="{{asset('storage/post/'.$profile->profile_image)}}"/>
+                                            @endif
                                         <p>{{$friend->name}}</p>
                                     </a>
                                     @empty
@@ -302,7 +307,19 @@
     <script src="https://js.pusher.com/4.1/pusher.min.js"></script>
 
     <script>
+                var user_id = {{auth()->user()->id}};
+                console.log(user_id);
+                var pusher = new Pusher('{{env("MIX_PUSHER_APP_KEY")}}', {
+                cluster: '{{env("PUSHER_APP_CLUSTER")}}',
+                encrypted: true
+                });
+                var channel = pusher.subscribe('friend_request.'+user_id);
+                channel.bind('friendRequest', function(data) {
+                console.log(data);
+                $.notify(data, "success",{ position:"left" });
+                });
     $(document).ready(function() {
+
 
         //image slider start
         console.log($(".image-slider"))
@@ -343,8 +360,8 @@
 
         });
 
-    var width = $('#image-slider').width();
-    console.log(width)
+        var width = $('#image-slider').width();
+        console.log(width)
 
         function nextImage(newIndex, parent){
             parent.find('li').eq(newIndex).addClass('next-img').css('left', width).animate({left: 0},600);
@@ -428,176 +445,6 @@
 
         })
 
-        $(document).on('click','#edit_post',function(e){
-            e.preventDefault();
-            $(".editpost-photo-video-imgpreview-container").empty();
-
-            dtEdit.clearData()
-            document.getElementById('editPostInput').files = dtEdit.files;
-            var id = $(this).data('id');
-
-            $('#editPostModal').modal('show');
-            var add_url = "{{ route('post.edit', [':id']) }}";
-            add_url = add_url.replace(':id', id);
-
-            $.ajaxSetup({
-                    headers: {
-                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                    }
-                });
-            $.ajax({
-                    method: "POST",
-                    url: add_url,
-                    datatype: "json",
-                    success: function(data) {
-                        if(data.status==400){
-                            alert(data.message)
-                        }else{
-                            $('#editPostCaption').val(data.post.caption);
-                            $('#edit_post_id').val(data.post.id);
-
-                            var filesdb =data.post.media ? JSON.parse(data.post.media) : [];
-                            // var filesAmount=files.length;
-                            var storedFilesdb = filesdb;
-                            // console.log(storedFilesdb)
-
-
-                            filesdb.forEach(function(f) {
-                                fileExtension = f.replace(/^.*\./, '');
-                                console.log(fileExtension);
-                                if(fileExtension=='mp4') {
-                                    var html="<div class='addpost-preview'>\
-                                        <iconify-icon icon='akar-icons:cross' data-file='" + f + "' class='delete-preview-db-icon'></iconify-icon>\
-                                        <video controls><source src='storage/post/" + f + "' data-file='" + f+ "' class='selFile' title='Click to remove'>" + f + "<br clear=\"left\"/>\
-                                        <video>\
-                                    </div>"
-                                    $(".editpost-photo-video-imgpreview-container").append(html);
-
-                                }else{
-                                    var html = "<div class='addpost-preview'><iconify-icon icon='akar-icons:cross' data-file='" + f + "' class='delete-preview-db-icon'></iconify-icon><img src='storage/post/"+f+"' data-file='" + f + "' class='selFile' title='Click to remove'></div>";
-                                    $(".editpost-photo-video-imgpreview-container").append(html);
-                                }
-
-                            });
-
-                            $("body").on("click", ".delete-preview-db-icon", removeFiledb);
-
-                            function removeFiledb(){
-                                var file = $(this).data('file')
-                                storedFilesdb = storedFilesdb.filter((item) => {
-                                    return file !== item
-                                })
-
-                                $(this).parent().remove();
-                            }
-
-                            $('#edit_form').submit(function(e){
-                                e.preventDefault();
-                                $('#editPostModal'). modal('hide');
-
-                            var fileUpload=$('#editPostInput');
-                            console.log(storedFilesdb.length );
-                            console.log(parseInt(fileUpload.get(0).files.length) );
-                            console.log(storedFilesdb);
-                            console.log(fileUpload.get(0).files);
-
-                            if(!$('#editPostCaption').val() && (parseInt(fileUpload.get(0).files.length) + storedFilesdb.length) === 0){
-                                alert("Cannot post!!")
-                            }else{
-                                if((parseInt(fileUpload.get(0).files.length))+storedFilesdb.length > 5){
-                                    Swal.fire({
-                                                text: "You can only upload a maximum of 5 files",
-                                                timer: 5000,
-                                                icon: 'warning',
-                                            });
-                                }else{
-                                    e.preventDefault();
-
-                                    var url="{{route('post.update')}}";
-                                    let formData = new FormData(edit_form);
-                                    var oldimg=storedFilesdb;
-                                    var edit_post_id=$('#edit_post_id').val();
-                                    var caption=$('#editPostCaption').val();
-
-                                    const totalImages = $("#editPostInput")[0].files.length;
-                                    let images = $("#editPostInput")[0];
-
-                                    // for (let i = 0; i < totalImages; i++) {
-                                        formData.append('images', images);
-                                    // }
-                                    formData.append('totalImages', totalImages);
-                                    formData.append('caption', caption);
-                                    formData.append('oldimg', storedFilesdb);
-                                    formData.append('edit_post_id', edit_post_id);
-
-                                    for (const value of formData.values()) {
-                                        console.log(value);
-                                    }
-
-                                    $.ajaxSetup({
-                                                headers: {
-                                                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                                                }
-                                            });
-
-                                    $.ajax({
-                                            type:'POST',
-                                            url:url,
-                                            data: formData,
-                                            processData: false,
-                                            cache: false,
-                                            contentType: false,
-                                            success:function(data){
-                                                if(data.ban){
-                                                    Swal.fire({
-                                                        text: data.ban,
-                                                        timer: 5000,
-                                                        timerProgressBar: true,
-                                                        icon: 'error',
-                                                    })
-                                                }else{
-                                                    Swal.fire({
-                                                        text: data.success,
-                                                        timer: 5000,
-                                                        timerProgressBar: true,
-                                                        icon: 'success',
-                                                    }).then(() => {
-                                                        window.location.reload()
-                                                    })
-                                                }
-                                                }
-                                        });
-                                }
-
-                            }
-                            // var data={
-                            //             'caption':$('#editPostCaption').val(),
-                            //             'post_id':$('#edit_post_id').val()
-                            //         }
-                            // $.ajax({
-                            //                 type:'POST',
-                            //                 url:url,
-                            //                 data: data,
-                            //                 success:function(data){
-                            //                    Swal.fire({
-                            //                             text: data.success,
-                            //
-                            //                             timer: 5000
-                            //                         }).then(() => {
-                            //                             window.location.reload()
-                            //             })
-                            //                 }
-                            //     });
-                        })
-
-                        }
-
-                    }
-                })
-
-        })
-
-
         $(document).on('click', '#AddFriend', function(e) {
                 e.preventDefault();
                 $('.social-media-left-searched-items-container').empty();
@@ -652,7 +499,7 @@
                                         search();
                                     }
                                 })
-                            Swal.fire('Canceled Request!', '', 'success')
+
                         }
                         })
                 $('.social-media-left-searched-items-container').empty();
@@ -687,7 +534,35 @@
                                 No data found.
                                 `;
                             }
-
+                            else if(res.friends.length <= 0 && res.users.length != 0){
+                                console.log("myself");
+                                for(let i = 0; i < res.users.length; i++){
+                                id = res.users[i].id;
+                                var url = "{{ route('socialmedia.profile', [':id']) }}";
+                                url = url.replace(':id',id);
+                                if(res.users[i].id === auth_id){
+                                    htmlView += `
+                                            <div class="social-media-left-searched-item">
+                                            <a href=`+url+` class = "profiles">
+                                                <p>`+res.users[i].name+`</p>
+                                            </a>
+                                            </div>
+                                    `
+                                }
+                                else{
+                                    console.log("no friends");
+                                    htmlView += `
+                                            <div class="social-media-left-searched-item">
+                                            <a href=`+url+` class = "profiles">
+                                                <p>`+res.users[i].name+`</p>
+                                            </a>
+                                            <a href="?id=` + res.users[i].id+`"  id = "AddFriend"><iconify-icon icon="bi:person-add" class="search-item-icon"></iconify-icon></a>
+                                            </div>
+                                    `
+                                }
+                                }
+                            }
+                            else{
                                 for(let i = 0; i < res.users.length; i++){
                                     var status = ''
                                 for(let f = 0; f < res.friends.length; f++){
@@ -814,8 +689,6 @@
                                             <a href=`+url+` class = "profiles">
                                                 <p>`+res.users[i].name+`</p>
                                             </a>
-                                            <a href=`+url+`
-                                            ><iconify-icon icon="ion:people-sharp" class="search-item-icon"></iconify-icon></a>
                                             </div>
                                             `
                             }
@@ -851,8 +724,7 @@
                                     `
                             }
                             }
-
-
+                            }
                             $('.social-media-left-searched-items-container').html(htmlView);
                         }
 
@@ -867,6 +739,7 @@
             $('.social-media-overlay').toggle()
             $(".social-media-left-container-trigger .arrow-icon").toggleClass("rotate-arrow")
         })
+
 
         $('#form').submit(function(e){
             e.preventDefault();
@@ -942,9 +815,163 @@
 
         })
 
+        $(document).on('click','#edit_post',function(e){
+            e.preventDefault();
+            $(".editpost-photo-video-imgpreview-container").empty();
 
+            dtEdit.clearData()
+            document.getElementById('editPostInput').files = dtEdit.files;
+            var id = $(this).data('id');
+
+            $('#editPostModal').modal('show');
+            var add_url = "{{ route('post.edit', [':id']) }}";
+            add_url = add_url.replace(':id', id);
+
+            $.ajaxSetup({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    }
+                });
+            $.ajax({
+                    method: "POST",
+                    url: add_url,
+                    datatype: "json",
+                    success: function(data) {
+                        if(data.status==400){
+                            alert(data.message)
+                        }else{
+                            $('#editPostCaption').val(data.post.caption);
+                            $('#edit_post_id').val(data.post.id);
+
+                            var filesdb =data.post.media ? JSON.parse(data.post.media) : [];
+                            // var filesAmount=files.length;
+                            var storedFilesdb = filesdb;
+                            // console.log(storedFilesdb)
+
+
+                            filesdb.forEach(function(f) {
+                                fileExtension = f.replace(/^.*\./, '');
+                                console.log(fileExtension);
+                                if(fileExtension=='mp4') {
+                                    var html="<div class='addpost-preview'>\
+                                        <iconify-icon icon='akar-icons:cross' data-file='" + f + "' class='delete-preview-db-icon'></iconify-icon>\
+                                        <video controls><source src='storage/post/" + f + "' data-file='" + f+ "' class='selFile' title='Click to remove'>" + f + "<br clear=\"left\"/>\
+                                        <video>\
+                                    </div>"
+                                    $(".editpost-photo-video-imgpreview-container").append(html);
+
+                                }else{
+                                    var html = "<div class='addpost-preview'><iconify-icon icon='akar-icons:cross' data-file='" + f + "' class='delete-preview-db-icon'></iconify-icon><img src='storage/post/"+f+"' data-file='" + f + "' class='selFile' title='Click to remove'></div>";
+                                    $(".editpost-photo-video-imgpreview-container").append(html);
+                                }
+
+                            });
+
+                            $("body").on("click", ".delete-preview-db-icon", removeFiledb);
+
+                            function removeFiledb(){
+                                var file = $(this).data('file')
+                                storedFilesdb = storedFilesdb.filter((item) => {
+                                    return file !== item
+                                })
+
+                                $(this).parent().remove();
+                            }
+
+                            $(".addpost-photovideo-clear-btn").click(function(){
+                                storedFilesdb = []
+                            })
+
+                            $('#edit_form').submit(function(e){
+                                e.preventDefault();
+                                $('#editPostModal'). modal('hide');
+
+                            var fileUpload=$('#editPostInput');
+                            console.log(storedFilesdb.length );
+                            console.log(parseInt(fileUpload.get(0).files.length) );
+                            console.log(storedFilesdb);
+                            console.log(fileUpload.get(0).files);
+
+                            if(!$('#editPostCaption').val() && (parseInt(fileUpload.get(0).files.length) + storedFilesdb.length) === 0){
+                                alert("Cannot post!!")
+                            }else{
+                                if((parseInt(fileUpload.get(0).files.length))+storedFilesdb.length > 5){
+                                    Swal.fire({
+                                                text: "You can only upload a maximum of 5 files",
+                                                timer: 5000,
+                                                icon: 'warning',
+                                            });
+                                }else{
+                                    e.preventDefault();
+
+                                    var url="{{route('post.update')}}";
+                                    let formData = new FormData(edit_form);
+                                    var oldimg=storedFilesdb;
+                                    var edit_post_id=$('#edit_post_id').val();
+                                    var caption=$('#editPostCaption').val();
+
+                                    const totalImages = $("#editPostInput")[0].files.length;
+                                    let images = $("#editPostInput")[0];
+
+                                    // for (let i = 0; i < totalImages; i++) {
+                                        formData.append('images', images);
+                                    // }
+                                    formData.append('totalImages', totalImages);
+                                    formData.append('caption', caption);
+                                    formData.append('oldimg', storedFilesdb);
+                                    formData.append('edit_post_id', edit_post_id);
+
+                                    for (const value of formData.values()) {
+                                        console.log(value);
+                                    }
+
+                                    $.ajaxSetup({
+                                                headers: {
+                                                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                                                }
+                                            });
+
+                                    $.ajax({
+                                            type:'POST',
+                                            url:url,
+                                            data: formData,
+                                            processData: false,
+                                            cache: false,
+                                            contentType: false,
+                                            success:function(data){
+                                                if(data.ban){
+                                                    Swal.fire({
+                                                        text: data.ban,
+                                                        timer: 5000,
+                                                        timerProgressBar: true,
+                                                        icon: 'error',
+                                                    })
+                                                }else{
+                                                    Swal.fire({
+                                                        text: data.success,
+                                                        timer: 5000,
+                                                        timerProgressBar: true,
+                                                        icon: 'success',
+                                                    }).then(() => {
+                                                        window.location.reload()
+                                                    })
+                                                }
+                                                }
+                                        });
+                                }
+
+                            }
+                        })
+
+                        }
+
+                    }
+                })
+
+        })
 
         $("#addPostInput").on("change", handleFileSelect);
+
         $("#editPostInput").on("change", handleFileSelectEdit);
 
         selDiv = $(".addpost-photo-video-imgpreview-container");
@@ -953,8 +980,6 @@
 
         $("body").on("click", ".delete-preview-icon", removeFile);
         $("body").on("click", ".delete-preview-edit-input-icon", removeFileFromEditInput);
-
-
 
         console.log($("#selectFilesM").length);
     });
@@ -1017,6 +1042,7 @@
         console.log(document.getElementById('addPostInput').files+" Add Post Input")
 
     }
+
     function handleFileSelectEdit(e) {
 
         var files = e.target.files;
@@ -1111,6 +1137,14 @@
         dt.clearData()
         document.getElementById('addPostInput').files = dt.files;
         $(".addpost-photo-video-imgpreview-container").empty();
+    }
+
+    function clearEditPost(){
+        storedFilesEdit = []
+        dtEdit.clearData()
+        document.getElementById('editPostInput').files = dtEdit.files;
+        $(".editpost-photo-video-imgpreview-container").empty();
+
     }
 
 </script>

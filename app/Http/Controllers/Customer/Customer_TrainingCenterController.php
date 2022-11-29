@@ -67,6 +67,7 @@ class Customer_TrainingCenterController extends Controller
         }else{
             $n= array();
         }
+
         $posts=Post::where('user_id',$user_id)
                     ->orderBy('created_at','DESC')
                     ->with('user')
@@ -75,7 +76,6 @@ class Customer_TrainingCenterController extends Controller
         $user_friends=User::whereIn('id',$n)
                         ->where('id','!=',$user_id)
                         ->paginate(6);
-
 
         $user_profile_cover=Profile::select('cover_photo')
                                 ->where('user_id',$user_id)
@@ -88,7 +88,7 @@ class Customer_TrainingCenterController extends Controller
                                 ->where('cover_photo',null)
                                 ->orderBy('created_at','DESC')
                                 ->first();
-
+        //dd($user_profile_image);
 
         if($user_profile_cover==null){
             $user_profile_cover=null;
@@ -356,6 +356,10 @@ class Customer_TrainingCenterController extends Controller
         $profile->user_id=auth()->user()->id;
         $profile->save();
 
+        $user = User::findOrFail(auth()->user()->id);
+        $user->cover_id = $profile->id;
+        $user->update();
+
         Alert::success('Success', 'Cover Photo Updated Successfully');
         return redirect()->back();
     }
@@ -374,6 +378,11 @@ class Customer_TrainingCenterController extends Controller
         $profile->profile_image=$imgData;
         $profile->user_id=auth()->user()->id;
         $profile->save();
+
+
+        $user = User::findOrFail(auth()->user()->id);
+        $user->profile_id = $profile->id;
+        $user->update();
 
         Alert::success('Success', 'Profile Photo Updated Successfully');
         return redirect()->back();

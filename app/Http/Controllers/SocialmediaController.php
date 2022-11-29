@@ -11,6 +11,8 @@ use App\Models\Profile;
 use App\Models\Friendship;
 use App\Models\NotiFriends;
 use App\Models\Notification;
+use App\Models\UserReactPost;
+use App\Models\UserSavedPost;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use RealRashid\SweetAlert\Facades\Alert;
@@ -54,6 +56,63 @@ class SocialmediaController extends Controller
         //$posts=Post::orderBy('created_at','DESC')->with('user')->paginate(10);
         return view('customer.socialmedia',compact('posts'));
     }
+
+    public function user_react_post(Request $request)
+    {
+        $post_id=$request['post_id'];
+        $isLike=$request['isLike'] === true;
+
+        $update=false;
+        $post=Post::findOrFail($post_id);
+
+        if(!$post){
+            return null;
+        }
+        $user=auth()->user();
+        $react=$user->user_reacted_posts()->where('post_id',$post_id)->first();
+
+        if($react){
+            $already_like=true;
+            $update=true;
+                if($already_like==$isLike){
+                    $react->delete();
+                    return null;
+                }
+        }else{
+                $react=new UserReactPost();
+            }
+            $react->user_id=$user->id;
+            $react->post_id=$post_id;
+            $react->reacted_status=true;
+
+            if($update==true){
+                $react->update();
+            }else{
+                $react->save();
+            }
+            return null;
+    }
+
+    public function profile_photo_delete(Request $request)
+    {
+        // $profile=Profile::find($request->profile_id);
+        // $profile->profile_image=null;
+        // $profile->cover_photo=null;
+        // $profile->update();
+        $user=User::find(auth()->user()->id);
+        if($user->profile_id==$request->profile_id){
+            $user->profile_id=null;
+        }elseif($user->cover_id==$request->profile_id){
+            $user->cover_id=null;
+        }
+        $user->update();
+
+        Profile::find($request->profile_id)->delete($request->profile_id);
+        return response()->json([
+            'success' => 'Profile deleted successfully!'
+        ]);
+    }
+
     public function socialmedia_profile($id)
     {
         //dd($id);
@@ -80,12 +139,40 @@ class SocialmediaController extends Controller
                     array_push($n, $f['sender_id'],$f['receiver_id']);
             }
         $friends=User::select('users.name','users.id')
-                         ->whereIn('id',$n)
+                        ->whereIn('id',$n)
                         ->where('id','!=',$user->id)
                         ->paginate(6);
+
         $friend = DB::select("SELECT * FROM `friendships` WHERE (receiver_id = $auth or sender_id = $auth )
                         AND (receiver_id = $id or sender_id = $id)");
         return view('customer.socialmedia_profile',compact('user','posts','friends','friend'));
+    }
+
+    public function post_save(Request $request)
+    {
+        $post_id=$request['post_id'];
+        $user=auth()->user();
+        $user_save_post=new UserSavedPost();
+
+        $already_save=$user->user_saved_posts()->where('post_id',$post_id)->first();
+
+        if($already_save){
+            $already_save->delete();
+            $user_save_post->update();
+
+            return response()->json([
+                'unsave' => 'Unsaved Post Successfully',
+                ]);
+        }else{
+            $user_save_post->user_id=$user->id;
+            $user_save_post->post_id=$post_id;
+            $user_save_post->saved_status=1;
+            $user_save_post->save();
+
+            return response()->json([
+                'save' => 'Saved Post Successfully',
+                ]);
+        }
     }
 
     public function profile(Request $request,$id)
@@ -178,13 +265,13 @@ class SocialmediaController extends Controller
 
         $user_profile_cover=Profile::select('cover_photo')
                                 ->where('user_id',$user_id)
-                                ->where('profile_image','')
+                                ->where('profile_image',null)
                                 ->orderBy('created_at','DESC')
                                 ->get();
 
         $user_profile_image=Profile::select('profile_image')
                                 ->where('user_id',$user_id)
-                                ->where('cover_photo','')
+                                ->where('cover_photo',null)
                                 ->orderBy('created_at','DESC')
                                 ->get();
 
@@ -347,17 +434,70 @@ class SocialmediaController extends Controller
          ]);
     }
 
-    public function friendsList(){
-        return view('customer.friendlist');
+    public function friendsList(Request $request){
+        //dd($request->user_id);
+         $id = $request->id;
+         $user = User::select('id','name')->where('id',$id)->first();
+
+        return view('customer.friendlist',compact('user'));
+    }
+    public function friList(Request $request){
+        //dd($request->keyword);
+        $id = $request->id;
+        $friendships=DB::table('friendships')
+        ->where('friend_status',2)
+        ->where(function($query) use ($id){
+            $query->where('sender_id',$id)
+                ->orWhere('receiver_id',$id);
+        })
+        ->join('users as sender','sender.id','friendships.sender_id')
+        ->join('users as receiver','receiver.id','friendships.receiver_id')
+        ->get(['sender_id','receiver_id'])->toArray();
+        //dd($friends);
+        $n= array();
+            foreach($friendships as $friend){
+                    $f=(array)$friend;
+                    array_push($n, $f['sender_id'],$f['receiver_id']);
+            }
+        if($request->keyword != ''){
+            $friends = User::select('users.id','users.name','friendships.date','profiles.profile_image')
+            ->leftjoin('friendships', function ($join) {
+                  $join->on('friendships.receiver_id', '=', 'users.id')
+            ->orOn('friendships.sender_id', '=', 'users.id');})
+            ->leftJoin('profiles','profiles.id','users.profile_id')
+            ->where('users.name','LIKE','%'.$request->keyword.'%')
+            ->where('users.id','!=',$id)
+            ->where('friendships.friend_status',2)
+            ->where('friendships.receiver_id',$id)
+            ->orWhere('friendships.sender_id',$id)
+            ->whereIn('users.id',$n)
+            ->where('users.id','!=',$id)
+            ->where('users.name','LIKE','%'.$request->keyword.'%')
+            ->get();
+            // dd($friends);
+            return response()->json([
+                'friends' => $friends
+            ]);
+        }
+            $friends = User::select('users.id','users.name','friendships.date','profiles.profile_image')
+            ->leftjoin('friendships', function ($join) {
+                $join->on('friendships.receiver_id', '=', 'users.id')
+            ->orOn('friendships.sender_id', '=', 'users.id');})
+            ->leftJoin('profiles','profiles.id','users.profile_id')
+            ->where('users.id','!=',$id)
+            ->where('friendships.friend_status',2)
+            ->where('friendships.receiver_id',$id)
+            ->orWhere('friendships.sender_id',$id)
+            ->whereIn('users.id',$n)
+            ->where('users.id','!=',$id)
+            ->get();
+
+        return response()->json([
+           'friends' => $friends
+       ]);
     }
 
     public function notification_center(){
-        // $friend_requests = Friendship::select('users.id','users.name')
-        //                     ->leftJoin('users','users.id','friendships.receiver_id')
-        //                     ->where('receiver_id',auth()->user()->id)
-        //                     ->get();
-        // $notification=Notification::where('receiver_id',auth()->user()->id)->paginate(10);
-        // dd($notification);
         $friend_requests=Friendship::select('sender.name','sender.id')
             ->join('users as receiver', 'receiver.id', '=', 'friendships.receiver_id')
             ->join('users as sender', 'sender.id', '=', 'friendships.sender_id')
@@ -436,7 +576,10 @@ class SocialmediaController extends Controller
                                             ->where('receiver_id',$request->id)
                                             ->where('post_id',null);
         $noti_delete_sender->delete();
-        return redirect()->back();
+        return response()
+        ->json([
+            'data'=>'Success'
+        ]);
     }
 
     public function confirmRequest(Request $request){
@@ -565,5 +708,10 @@ class SocialmediaController extends Controller
         return response()->json([
             'success' => 'Post deleted successfully!'
         ]);
+    }
+
+    public function post_comment()
+    {
+        return view('customer.comments');
     }
 }
