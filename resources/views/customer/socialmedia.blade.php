@@ -31,8 +31,15 @@
                             <a href="#" style="text-decoration:none" class="post_save" id="{{$post->id}}">
                                 <div class="post-action">
                                     <iconify-icon icon="bi:save" class="post-action-icon"></iconify-icon>
+                                    @php
+                                        $already_save=auth()->user()->user_saved_posts->where('post_id',$post->id)->first();
+                                    @endphp
+
+                                    @if ($already_save)
+                                        <p class="save">Unsave</p>
+                                    @else
                                         <p class="save">Save</p>
-                                        <p class="unsave">Unsave</p>
+                                     @endif
                                 </div>
                             </a>
                         @if ($post->user->id == auth()->user()->id)
@@ -129,14 +136,36 @@
 
                     <div class="social-media-post-footer-container">
                         <div class="social-media-post-like-container">
+                            @php
+                                $total_likes=$post->user_reacted_posts->count();
+                                $user=auth()->user();
+                                $already_liked=$user->user_reacted_posts->where('post_id',$post->id)->count();
+                            @endphp
+
                             <a class="like" href="#" id="{{$post->id}}">
-                            <iconify-icon icon="akar-icons:heart" class="like-icon"></iconify-icon>
+
+                            @if($already_liked==0)
+                            <iconify-icon icon="mdi:cards-heart-outline" class="like-icon">
+                            </iconify-icon>
+                            @else
+                            <iconify-icon icon="mdi:cards-heart" style="color: red;" class="like-icon already-liked">
+                            </iconify-icon>
+                            @endif
+
                             </a>
-                            <p><span>1.1k</span> Likes</p>
+                            <p>
+                                <span class="total_likes">
+
+                                {{$total_likes}}
+                                </span>
+                                Likes
+                            </p>
                         </div>
                         <div class="social-media-post-comment-container">
+                            <a href = "{{route('post.comment',$post->id)}}">
                             <iconify-icon icon="bi:chat-right" class="comment-icon"></iconify-icon>
                             <p><span>50</span> Comments</p>
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -149,8 +178,7 @@
 @push('scripts')
 <script>
     $(document).ready(function() {
-        $('.unsave').hide();
-        $('.save').show();
+
         $('.like').click(function(e){
             e.preventDefault();
             var isLike=e.target.previousElementSibiling == null ? true : false;
@@ -158,6 +186,7 @@
             console.log(post_id)
             var add_url = "{{ route('user.react.post', [':post_id']) }}";
             add_url = add_url.replace(':post_id', post_id);
+            var that = $(this)
             $.ajaxSetup({
                             headers: {
                                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -166,7 +195,21 @@
                     $.ajax({
                         method: "POST",
                         url: add_url,
-                        data:{ isLike : isLike , post_id: post_id }
+                        data:{ isLike : isLike , post_id: post_id },
+                        success:function(data){
+                            that.siblings('p').children('.total_likes').html(data.total_likes)
+
+                            if(that.children('.like-icon').hasClass("already-liked")){
+                                that.children('.like-icon').attr('style','')
+                                that.children('.like-icon').attr('class','like-icon')
+                                that.children(".like-icon").attr('icon','mdi:cards-heart-outline')
+                            }else{
+                                that.children('.like-icon').attr('style','color : red')
+                                that.children('.like-icon').attr('class','like-icon already-liked')
+                                that.children(".like-icon").attr('icon','mdi:cards-heart')
+                            }
+
+                        }
                     })
 
 
@@ -178,7 +221,6 @@
             var post_id=$(this).attr('id');
             var add_url = "{{ route('socialmedia.post.save', [':post_id']) }}";
             add_url = add_url.replace(':post_id', post_id);
-
                     $.ajax({
                         method: "GET",
                         url: add_url,
@@ -193,18 +235,19 @@
                                         timerProgressBar: true,
                                         timer: 5000,
                                         icon: 'success',
-                                    });
-                                    $('.unsave').show();
-                                    $('.save').hide();
+                                    }).then((result) => {
+                                        e.target.innerHTML = "Unsave";
+                                    })
                                 }else{
                                     Swal.fire({
-                                        text: data.unsave,
-                                        timerProgressBar: true,
-                                        timer: 5000,
-                                        icon: 'success',
-                                    });
-                                    $('.unsave').hide();
-                                    $('.save').show();
+                                            text: data.unsave,
+                                            timerProgressBar: true,
+                                            timer: 5000,
+                                            icon: 'success',
+                                        }).then((result) => {
+                                            e.target.innerHTML="Save";
+
+                                    })
                                 }
 
                             }

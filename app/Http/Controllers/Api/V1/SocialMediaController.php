@@ -7,6 +7,7 @@ use Carbon\Carbon;
 use Pusher\Pusher;
 use App\Models\Post;
 use App\Models\User;
+use App\Models\Comment;
 use App\Models\Profile;
 use App\Models\Friendship;
 use App\Models\Notification;
@@ -92,7 +93,9 @@ class SocialMediaController extends Controller
     ]);
     }
     public function search_users(Request $request){
-        $users = User::where('name','LIKE','%'.$request->keyword.'%')
+        $users = User::select('users.id','users.name','profiles.profile_image')
+                 ->leftJoin('profiles','users.profile_id','profiles.id')
+                 ->where('name','LIKE','%'.$request->keyword.'%')
                         ->orWhere('phone','LIKE','%'.$request->keyword.'%')->get();
         $friends=DB::table('friendships')->get();
         return response()->json([
@@ -350,6 +353,40 @@ class SocialMediaController extends Controller
             ->whereIn('users.id',$n)
             ->where('users.id','!=',$id)
             ->paginate(3)->toArray();
+        return response()->json([
+           'friends' => $friends
+       ]);
+    }
+
+    public function friends_for_mention(Request $request){
+        $id = auth()->user()->id;
+        $friendships=DB::table('friendships')
+        ->where('friend_status',2)
+        ->where(function($query) use ($id){
+            $query->where('sender_id',$id)
+                ->orWhere('receiver_id',$id);
+        })
+        ->join('users as sender','sender.id','friendships.sender_id')
+        ->join('users as receiver','receiver.id','friendships.receiver_id')
+        ->get(['sender_id','receiver_id'])->toArray();
+        //dd($friends);
+        $n= array();
+            foreach($friendships as $friend){
+                    $f=(array)$friend;
+                    array_push($n, $f['sender_id'],$f['receiver_id']);
+            }
+            $friends = User::select('users.id','users.name','friendships.date','profiles.profile_image')
+            ->leftjoin('friendships', function ($join) {
+                $join->on('friendships.receiver_id', '=', 'users.id')
+            ->orOn('friendships.sender_id', '=', 'users.id');})
+            ->leftJoin('profiles','profiles.id','users.profile_id')
+            ->where('users.id','!=',$id)
+            ->where('friendships.friend_status',2)
+            ->where('friendships.receiver_id',$id)
+            ->orWhere('friendships.sender_id',$id)
+            ->whereIn('users.id',$n)
+            ->where('users.id','!=',$id)
+            ->get();
         return response()->json([
            'friends' => $friends
        ]);
@@ -676,11 +713,65 @@ class SocialMediaController extends Controller
         }
     }
     public function saved_post(){
-        $saved_post = UserSavedPost::select('posts.*')->leftJoin('posts','posts.id','user_saved_posts.post_id')
+        $saved_post = UserSavedPost::select('users.name','profiles.profile_image','posts.*')
+                        ->leftJoin('posts','posts.id','user_saved_posts.post_id')
                         ->where('user_saved_posts.user_id',auth()->user()->id)
+                        ->leftJoin('users','users.id','posts.user_id')
+                        ->leftJoin('profiles','users.profile_id','profiles.id')
+                        ->orderBy('posts.created_at','DESC')
                         ->get();
+
+        // $posts=Post::select('users.name','profiles.profile_image','posts.*')
+        //                 ->where('posts.user_id',auth()->user()->id)
+        //                 ->leftJoin('users','users.id','posts.user_id')
+        //                 ->leftJoin('profiles','users.profile_id','profiles.id')
+        //                 ->orderBy('posts.created_at','DESC')
+        //                 ->paginate(30);
+
+        //                 foreach($posts as $key=>$value){
+        //                     $posts[$key]['is_save']= 0;
+        //                     // dd($value->id);
+        //                         foreach($saved_post as $saved_key=>$save_value ){
+
+        //                             if($save_value->id === $value->id){
+        //                                 $posts[$key]['is_save']= 1;
+        //                             }
+        //                             else{
+        //                                 $posts[$key]['is_save']= 0;
+        //                             }
+        //                             }
+        //                         }
         return response()->json([
             'save' => $saved_post
+            ]);
+    }
+
+
+    public function one_post(Request $request){
+        $id = $request->id;
+        $saved_post = UserSavedPost::select('posts.*')->leftJoin('posts','posts.id','user_saved_posts.post_id')
+        ->where('user_saved_posts.post_id',$id)
+        ->where('user_saved_posts.user_id',auth()->user()->id)
+        ->first();
+        // dd($saved_post);
+        $post=Post::select('users.name','profiles.profile_image','posts.*')
+        ->where('posts.id',$id)
+        ->leftJoin('users','users.id','posts.user_id')
+        ->leftJoin('profiles','users.profile_id','profiles.id')
+        ->first();
+        // dd($posts);
+        if(empty($saved_post)){
+            foreach($post as $value ){
+                $post['is_save']= 0;
+            }
+        }
+        else{
+            foreach($post as $value ){
+                $post['is_save']= 1;
+            }
+        }
+        return response()->json([
+            'post' => $post
             ]);
     }
 
@@ -753,6 +844,7 @@ class SocialMediaController extends Controller
         ]);
     }
 
+<<<<<<< HEAD
     public function chatting(Request $request,$id){
 
         $message = new Chat();
@@ -762,6 +854,62 @@ class SocialMediaController extends Controller
         $message->save();
 
         event(new Chatting($message, $request->sender));
+=======
+
+    public function post_comment_store(Request $request){
+        // dd(json_encode($request->mention));
+        $banwords=DB::table('ban_words')->select('ban_word_english','ban_word_myanmar','ban_word_myanglish')->get();
+        foreach($banwords as $b){
+           $e_banword=$b->ban_word_english;
+           $m_banword=$b->ban_word_myanmar;
+           $em_banword=$b->ban_word_myanglish;
+            if (str_contains($request->comment,$e_banword)) {
+                // Alert::warning('Warning', 'Ban Ban Ban');
+                //return redirect()->back();
+                return response()->json([
+                    'ban'=>'Ban',
+                ]);
+            }elseif (str_contains($request->comment,$m_banword)){
+                return response()->json([
+                    'ban'=>'Ban',
+                ]);
+            }elseif (str_contains($request->comment,$em_banword)){
+                return response()->json([
+                    'ban'=>'Ban',
+                ]);
+            }
+        }
+        $comments = new Comment();
+        $comments->user_id=auth()->user()->id;
+        $comments->post_id=$request->post_id;
+        $comments->comment = $request->comment;
+        $comments->mentioned_users = json_encode($request->mention);
+        $comments->save();
+        return response()->json([
+            'data' =>  $comments
+        ]);
+    }
+
+
+    public function comment_delete(Request $request)
+    {
+        Comment::find($request->id)->delete($request->id);
+
+        return response()->json([
+            'success' => 'Comment deleted successfully!'
+        ]);
+    }
+
+    public function comment_list(Request $request){
+        $id = $request->id;
+        $comments = Comment::select('users.name','users.profile_id','profiles.profile_image','comments.*')
+        ->leftJoin('users','users.id','comments.user_id')
+        ->leftJoin('profiles','users.profile_id','profiles.id')
+        ->where('post_id',$id)->orderBy('created_at','DESC')->get();
+        return response()->json([
+            'success' => $comments
+        ]);
+>>>>>>> 5aa4d82e73baed9d8eb6bb755658e8bd57652162
     }
 
 }

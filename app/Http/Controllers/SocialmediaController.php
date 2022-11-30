@@ -8,6 +8,7 @@ use App\Models\Post;
 use App\Models\User;
 use App\Models\BanWord;
 use App\Models\Chat;
+use App\Models\Comment;
 use App\Models\Profile;
 use App\Models\Friendship;
 use App\Models\NotiFriends;
@@ -55,6 +56,9 @@ class SocialmediaController extends Controller
 
                         //dd($left_friends);
         //$posts=Post::orderBy('created_at','DESC')->with('user')->paginate(10);
+        // $post_reacted=UserReactPost::groupBy('post_id')->get('post_id');
+        // dd($post_reacted->toArray());
+
         return view('customer.socialmedia',compact('posts'));
     }
 
@@ -72,13 +76,14 @@ class SocialmediaController extends Controller
         $user=auth()->user();
         $react=$user->user_reacted_posts()->where('post_id',$post_id)->first();
 
-        if($react){
+        if(!empty($react)){
             $already_like=true;
             $update=true;
-                if($already_like==$isLike){
+                // if($already_like==$isLike){
                     $react->delete();
-                    return null;
-                }
+                //     return null;
+
+                // }
         }else{
                 $react=new UserReactPost();
             }
@@ -91,7 +96,12 @@ class SocialmediaController extends Controller
             }else{
                 $react->save();
             }
-            return null;
+
+            $total_likes=UserReactPost::where('post_id',$post_id)->count();
+
+            return response()->json([
+                'total_likes' => $total_likes,
+            ]);
     }
 
     public function profile_photo_delete(Request $request)
@@ -440,35 +450,6 @@ class SocialmediaController extends Controller
          $id = $request->id;
          $user = User::select('id','name')->where('id',$id)->first();
 
-
-        //  $posts= Post::select('users.name','profiles.profile_image','posts.*')
-        //         ->where('posts.user_id',$user->id)
-        //         ->leftJoin('users','users.id','posts.user_id')
-        //         ->leftJoin('profiles','users.profile_id','profiles.id')
-        //         ->orderBy('posts.created_at','DESC')
-        //         ->paginate(30);
-
-        // $saved_post = UserSavedPost::select('posts.*')->leftJoin('posts','posts.id','user_saved_posts.post_id')
-        //         ->where('user_saved_posts.user_id',auth()->user()->id)
-        //         ->get();
-
-        // foreach($posts as $key=>$value){
-        //     $posts[$key]['is_save']= 0;
-        //     // dd($value->id);
-        //         foreach($saved_post as $saved_key=>$save_value ){
-
-        //              if($save_value->id === $value->id){
-        //                 $posts[$key]['is_save']= 1;
-        //              }
-        //              else{
-        //                 $posts[$key]['is_save']= 0;
-        //             }
-        //             }
-        //         }
-
-        // dd($posts)->toArray();
-
-
         return view('customer.friendlist',compact('user'));
     }
     public function friList(Request $request){
@@ -740,6 +721,7 @@ class SocialmediaController extends Controller
         ]);
     }
 
+<<<<<<< HEAD
     public function see_all_message(){
         $auth_user = auth()->user();
 
@@ -778,5 +760,77 @@ class SocialmediaController extends Controller
         $auth_user_name = auth()->user()->name;
 
         return view('customer.chat_message', compact('sender_message','reciever_message','id','messages','auth_user_name'));
+=======
+    public function post_comment($id)
+    {
+        // dd($id);
+        $post=Post::select('users.name','profiles.profile_image','posts.*')
+        ->where('posts.id',$id)
+        ->leftJoin('users','users.id','posts.user_id')
+        ->leftJoin('profiles','users.profile_id','profiles.id')
+        ->first();
+        $comments = Comment::select('users.name','users.profile_id','profiles.profile_image','comments.*')
+        ->leftJoin('users','users.id','comments.user_id')
+        ->leftJoin('profiles','users.profile_id','profiles.id')
+        ->where('post_id',$id)->orderBy('created_at','DESC')->get();
+       // dd($comments)->toArray();
+        return view('customer.comments',compact('post','comments'));
+    }
+
+    public function users_for_mention(Request $request){
+        // dd($request->keyword);
+        $user = User::select('users.id','users.name','profiles.profile_image as avatar')
+        ->leftJoin('profiles','profiles.id','users.profile_id')->get()->toArray();
+        return response()->json([
+            'data' =>  $user
+        ]);
+    }
+
+    public function post_comment_store(Request $request){
+        // dd(json_encode($request->mention));
+
+
+        $banwords=DB::table('ban_words')->select('ban_word_english','ban_word_myanmar','ban_word_myanglish')->get();
+
+        foreach($banwords as $b){
+           $e_banword=$b->ban_word_english;
+           $m_banword=$b->ban_word_myanmar;
+           $em_banword=$b->ban_word_myanglish;
+
+            if (str_contains($request->comment,$e_banword)) {
+                // Alert::warning('Warning', 'Ban Ban Ban');
+                //return redirect()->back();
+                return response()->json([
+                    'ban'=>'Ban',
+                ]);
+            }elseif (str_contains($request->comment,$m_banword)){
+                return response()->json([
+                    'ban'=>'Ban',
+                ]);
+            }elseif (str_contains($request->comment,$em_banword)){
+                return response()->json([
+                    'ban'=>'Ban',
+                ]);
+            }
+        }
+        $comments = new Comment();
+        $comments->user_id=auth()->user()->id;
+        $comments->post_id=$request->post_id;
+        $comments->comment = $request->comment;
+        $comments->mentioned_users = json_encode($request->mention);
+        $comments->save();
+        return response()->json([
+            'data' =>  $comments
+        ]);
+    }
+
+    public function comment_delete(Request $request)
+    {
+        Comment::find($request->id)->delete($request->id);
+
+        return response()->json([
+            'success' => 'Comment deleted successfully!'
+        ]);
+>>>>>>> 5aa4d82e73baed9d8eb6bb755658e8bd57652162
     }
 }

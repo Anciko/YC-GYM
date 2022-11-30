@@ -33,6 +33,9 @@
     <!--social media -->
     <link href="{{ asset('css/socialMedia.css')}}" rel="stylesheet"/>
 
+    <!--comment mention--->
+    <link href="{{asset('css/customer/jquery.mentiony.css')}}" rel="stylesheet"/>
+
     <title>YC-fitness</title>
   </head>
   <body class="customer-loggedin-bg">
@@ -305,8 +308,22 @@
     {{-- emoji --}}
     <script src="https://cdn.jsdelivr.net/npm/@joeattardi/emoji-button@3.0.3/dist/index.min.js"></script>
 
+    <script src="{{asset('js/customer/jquery.mentiony.js')}}"></script>
+
     <script>
+                var user_id = {{auth()->user()->id}};
+                console.log(user_id);
+                var pusher = new Pusher('{{env("MIX_PUSHER_APP_KEY")}}', {
+                cluster: '{{env("PUSHER_APP_CLUSTER")}}',
+                encrypted: true
+                });
+                var channel = pusher.subscribe('friend_request.'+user_id);
+                channel.bind('friendRequest', function(data) {
+                console.log(data);
+                $.notify(data, "success",{ position:"left" });
+                });
     $(document).ready(function() {
+
 
         //image slider start
         console.log($(".image-slider"))
@@ -486,7 +503,7 @@
                                         search();
                                     }
                                 })
-                            Swal.fire('Canceled Request!', '', 'success')
+
                         }
                         })
                 $('.social-media-left-searched-items-container').empty();
@@ -676,8 +693,6 @@
                                             <a href=`+url+` class = "profiles">
                                                 <p>`+res.users[i].name+`</p>
                                             </a>
-                                            <a href=`+url+`
-                                            ><iconify-icon icon="ion:people-sharp" class="search-item-icon"></iconify-icon></a>
                                             </div>
                                             `
                             }
