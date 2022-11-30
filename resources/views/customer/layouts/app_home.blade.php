@@ -33,6 +33,9 @@
     <!--social media -->
     <link href="{{ asset('css/socialMedia.css')}}" rel="stylesheet"/>
 
+    <!--comment mention--->
+    <link href="{{asset('css/customer/jquery.mentiony.css')}}" rel="stylesheet"/>
+
     <title>YC-fitness</title>
   </head>
   <body class="customer-loggedin-bg">
@@ -305,6 +308,8 @@
     <script src={{asset('js/navBar.js')}}></script>
     <script src={{asset('js/notify.js')}}></script>
     <script src="https://js.pusher.com/4.1/pusher.min.js"></script>
+
+    <script src="{{asset('js/customer/jquery.mentiony.js')}}"></script>
 
     <script>
                 var user_id = {{auth()->user()->id}};

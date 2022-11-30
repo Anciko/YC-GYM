@@ -19,6 +19,7 @@ class CreateCommentsTable extends Migration
             $table->integer('post_id');
             $table->integer('ban_word_id');
             $table->text('comment');
+            $table->string('mentioned_users');
             $table->string('image');
             $table->softDeletes();
             $table->timestamps();

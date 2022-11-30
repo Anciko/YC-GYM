@@ -131,6 +131,10 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
 
     Route::post('friends', [SocialmediaController::class, 'friends']);//
 
+    Route::post('friends_for_mention', [SocialmediaController::class, 'friends_for_mention']);//
+
+    Route::post('/post/comment/store', [SocialmediaController::class, 'post_comment_store'])->name('post.comment.store');
+
     Route::get('notification', [SocialmediaController::class, 'notification']);
 
     Route::post('viewFriendRequestNoti', [SocialmediaController::class, 'viewFriendRequestNoti'])->name('viewFriendRequestNoti');
@@ -138,6 +142,9 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::get('friend_request', [SocialmediaController::class, 'friend_request']);
     Route::get('newFeeds', [SocialmediaController::class, 'newFeeds']);
     Route::get('saved_post',[SocialmediaController::class, 'saved_post']);
+
+    Route::post('one_post',[SocialmediaController::class, 'one_post']);
+
 
     Route::post('post_create', [SocialmediaController::class, 'post_store']);
     Route::post('post_delete', [SocialmediaController::class, 'post_destroy']);

@@ -7,6 +7,7 @@ use Pusher\Pusher;
 use App\Models\Post;
 use App\Models\User;
 use App\Models\BanWord;
+use App\Models\Comment;
 use App\Models\Profile;
 use App\Models\Friendship;
 use App\Models\NotiFriends;
@@ -716,6 +717,65 @@ class SocialmediaController extends Controller
 
         return response()->json([
             'success' => 'Post deleted successfully!'
+        ]);
+    }
+
+    public function post_comment($id)
+    {
+        // dd($id);
+        $post=Post::select('users.name','profiles.profile_image','posts.*')
+        ->where('posts.id',$id)
+        ->leftJoin('users','users.id','posts.user_id')
+        ->leftJoin('profiles','users.profile_id','profiles.id')
+        ->first();
+        $comments = Comment::where('post_id',$id)->orderBy('created_at','DESC')->get();
+        return view('customer.comments',compact('post','comments'));
+    }
+
+    public function users_for_mention(Request $request){
+        // dd($request->keyword);
+        $user = User::select('users.id','users.name','profiles.profile_image as avatar')
+        ->leftJoin('profiles','profiles.id','users.profile_id')->get()->toArray();
+        return response()->json([
+            'data' =>  $user
+        ]);
+    }
+
+    public function post_comment_store(Request $request){
+        // dd(json_encode($request->mention));
+
+
+        $banwords=DB::table('ban_words')->select('ban_word_english','ban_word_myanmar','ban_word_myanglish')->get();
+
+        foreach($banwords as $b){
+           $e_banword=$b->ban_word_english;
+           $m_banword=$b->ban_word_myanmar;
+           $em_banword=$b->ban_word_myanglish;
+
+            if (str_contains($request->comment,$e_banword)) {
+                // Alert::warning('Warning', 'Ban Ban Ban');
+                //return redirect()->back();
+                return response()->json([
+                    'ban'=>'Ban',
+                ]);
+            }elseif (str_contains($request->comment,$m_banword)){
+                return response()->json([
+                    'ban'=>'Ban',
+                ]);
+            }elseif (str_contains($request->comment,$em_banword)){
+                return response()->json([
+                    'ban'=>'Ban',
+                ]);
+            }
+        }
+        $comments = new Comment();
+        $comments->user_id=auth()->user()->id;
+        $comments->post_id=$request->post_id;
+        $comments->comment = $request->comment;
+        $comments->mentioned_users = json_encode($request->mention);
+        $comments->save();
+        return response()->json([
+            'data' =>  $comments
         ]);
     }
 }

@@ -1388,6 +1388,44 @@
     color: black;
 }
 
+#msgbox
+{
+border:solid 1px #dedede;padding:5px;
+display:none;background-color:#f2f2f2
+}
+#display
+{
+display:none;
+
+border-left:solid 1px #dedede;
+border-right:solid 1px #dedede;
+border-bottom:solid 1px #dedede;
+/* overflow:hidden; */
+position: absolute;
+bottom: -40px;
+background-color: white;
+z-index: 5;
+
+}
+
+.addname{
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.addname:hover{
+    background-color: var(--customer-primary-color);
+}
+
+.menu {
+    background-color: #f3f3f3;
+    position: absolute;
+}
+
+
+
+
+
 ul{
 	padding: 0;
 	margin: 0;
