@@ -6,9 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-
-
-
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 
@@ -30,6 +27,8 @@
     <link href="{{ asset('css/customer/css/customerLogin.css')}}" rel="stylesheet"/>
 
     <link href="{{ asset('css/customer/css/transactionChoice.css')}}" rel="stylesheet"/>
+     <!--social media -->
+     <link href="{{ asset('css/socialMedia.css')}}" rel="stylesheet"/>
 
     <!--social media -->
     <link href="{{ asset('css/socialMedia.css')}}" rel="stylesheet"/>
@@ -45,15 +44,242 @@
 
         @include('customer.training_center.layouts.header')
         <!--theme-->
+
+
         <script src="{{asset('js/theme.js')}}"></script>
 
         <div class="nav-overlay">
         </div>
 
-    <!-- </div> -->
-        <div class="customer-main-content-container">
-            @yield('content')
-        </div>
+            <div class="modal fade" id="addPostModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h1 class="modal-title fs-5" id="exampleModalLabel">Create A Post</h1>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <form class="modal-body" id="form">
+                    {{-- <form class="modal-body" method="POST" action="{{route('post.store')}}" enctype= multipart/form-data>
+                        @csrf
+                        @method('POST') --}}
+                      <div class="addpost-caption">
+                        <p>Post Caption</p>
+                        <textarea placeholder="Caption goes here..." name="caption" id="addPostCaption" class="addpost-caption-input"></textarea>
+                      </div>
+
+                      <div class="addpost-photovideo">
+
+                        <span class="selectImage">
+
+                            <div class="addpost-photovideo-btn">
+                                <iconify-icon icon="akar-icons:circle-plus" class="addpst-photovideo-btn-icon"></iconify-icon>
+                                <p>Photo/Video</p>
+                                <input type="file" id="addPostInput" name="addPostInput[]" multiple enctype="multipart/form-data">
+                            </div>
+
+                            <button class="addpost-photovideo-clear-btn" type="button" onclick="clearAddPost()">Clear</button>
+
+                        </span>
+
+                        <div class="addpost-photo-video-imgpreview-container">
+                        </div>
+
+
+                        </div>
+                        <button type="submit" class="customer-primary-btn addpost-submit-btn" id="">Post</button>
+                        {{-- <button type="submit" class="customer-primary-btn addpost-submit-btn">Post</button> --}}
+                    </form>
+
+                  </div>
+                </div>
+            </div>
+
+            <div class="modal fade" id="editPostModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h1 class="modal-title fs-5" id="exampleModalLabel">Edit Post</h1>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <form class="modal-body" id="edit_form" enctype= multipart/form-data>
+
+
+                    {{-- <form class="modal-body" method="POST" action="{{route('post.store')}}" enctype= multipart/form-data>
+                        @csrf
+                        @method('POST') --}}
+                        <input type="hidden" id="edit_post_id">
+
+                      <div class="addpost-caption">
+                        <p>Post Caption</p>
+                        <textarea placeholder="Caption goes here..." name="caption" id="editPostCaption" class="addpost-caption-input"></textarea>
+                      </div>
+
+                      <div class="addpost-photovideo">
+
+                        <span class="selectImage">
+
+                            <div class="addpost-photovideo-btn">
+                                <iconify-icon icon="akar-icons:circle-plus" class="addpst-photovideo-btn-icon"></iconify-icon>
+                                <p>Photo/Video</p>
+                                <input type="file" id="editPostInput" name="editPostInput[]" multiple enctype="multipart/form-data">
+                            </div>
+
+                            <button class="addpost-photovideo-clear-btn" type="button" onclick="clearEditPost()">Clear</button>
+
+                        </span>
+
+                        <div class="editpost-photo-video-imgpreview-container">
+                        </div>
+
+
+                        </div>
+                        {{-- <input type="submit" class="customer-primary-btn addpost-submit-btn" value="Update"> --}}
+                        {{-- <button type="button" class="customer-primary-btn addpost-submit-btn "  id="editpost-submit-btn">Update</button> --}}
+                        <button type="submit" class="customer-primary-btn addpost-submit-btn">Post</button>
+                    </form>
+
+                  </div>
+                </div>
+            </div>
+
+            <div class="customer-main-content-container">
+                <div class="social-media-header-btns-container margin-top">
+                    <a class="back-btn" href="{{route("socialmedia")}}">
+                        <iconify-icon icon="bi:arrow-left" class="back-btn-icon"></iconify-icon>
+                    </a>
+                    <button class="social-media-addpost-btn customer-primary-btn" data-bs-toggle="modal" data-bs-target="#addPostModal">
+                        <iconify-icon icon="akar-icons:circle-plus" class="addpost-icon"></iconify-icon>
+                        <p>Add Post</p>
+                    </button>
+                </div>
+
+                <div class="social-media-left-container-trigger">
+                    Friends
+                    <iconify-icon icon="bi:arrow-right" class="arrow-icon"></iconify-icon>
+                </div>
+
+                <div class="social-media-overlay"></div>
+
+                <div class="social-media-parent-container">
+                    <div class="social-media-left-container">
+                        <div class="social-media-left-search-cancel-container">
+                            <div class="social-media-left-search-container">
+                                <input type="text" id ="search">
+                                <iconify-icon icon="akar-icons:search" class="search-icon"></iconify-icon>
+                            </div>
+                            <div class="cancel">
+                            <p class="customer-secondary-btn cancel" >Cancel</p>
+                            </div>
+                        </div>
+                        <div class="social-media-left-infos-container">
+                            <div class="social-media-left-friends-container">
+                                <div class="social-media-left-container-header">
+                                    <p>Friends</p>
+                                    <a href="{{route('friendsList',auth()->user()->id)}}">See All <iconify-icon icon="bi:arrow-right" class="arrow-icon"></iconify-icon></a>
+                                </div>
+                                <div class="social-media-left-friends-rows-container">
+
+                                    @forelse ($left_friends as $friend)
+                                    <a  href="{{route('socialmedia.profile',$friend->id)}}" class="social-media-left-friends-row">
+                                        <?php $profile=$friend->profiles->where('cover_photo',null)->sortByDesc('created_at')->first() ?>
+
+                                            @if ($profile==null)
+                                                <img class="nav-profile-img" src="{{asset('img/customer/imgs/user_default.jpg')}}"/>
+                                            @else
+                                                <img class="nav-profile-img" src="{{asset('storage/post/'.$profile->profile_image)}}"/>
+                                            @endif
+                                        <p>{{$friend->name}}</p>
+                                    </a>
+                                    @empty
+                                    <p class="text-secondary p-1">No Friend</p>
+                                    @endforelse
+                                </div>
+
+                            </div>
+
+
+                            <div class="social-media-left-messages-container">
+                                <div class="social-media-left-container-header">
+                                    <p>Messages</p>
+                                    <a href="{{route('message.seeall')}}">See All <iconify-icon icon="bi:arrow-right" class="arrow-icon"></iconify-icon></a>
+                                </div>
+
+                                <div class="social-media-left-messages-rows-container">
+                                    @forelse ($left_friends as $friend)
+                                    <a href="{{route('message.chat',$friend->id)}}" class="social-media-left-messages-row">
+                                        <?php $profile=$friend->profiles->where('cover_photo',null)->sortByDesc('created_at')->first() ?>
+
+                                        @if ($profile==null)
+                                            <img class="nav-profile-img" src="{{asset('img/customer/imgs/user_default.jpg')}}"/>
+                                        @else
+                                            <img class="nav-profile-img" src="{{asset('storage/post/'.$profile->profile_image)}}"/>
+                                        @endif
+                                        <p>
+                                            {{$friend->name}}<br>
+                                            <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Dui hendrerit potenti pellentesque tellus urna bibendum mollis. </span>
+                                        </p>
+                                    </a>
+                                    @empty
+                                    <p class="text-secondary p-1">No Messages</p>
+                                    @endforelse
+
+                                </div>
+                            </div>
+
+                            <div class="social-media-left-gpmessages-container">
+                                <div class="social-media-left-container-header">
+                                    <p>Group Messages</p>
+                                    <a href="#">See All <iconify-icon icon="bi:arrow-right" class="arrow-icon"></iconify-icon></a>
+                                </div>
+
+                                <div class="social-media-left-gpmessages-rows-container">
+                                    <a href="#" class="social-media-left-gpmessages-row">
+                                        <img src="{{asset('img/customer/imgs/user_default.jpg')}}">
+                                        <p>
+                                            Group Name<br>
+                                            <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Dui hendrerit potenti pellentesque tellus urna bibendum mollis. </span>
+                                        </p>
+                                    </a>
+                                    <a href="#" class="social-media-left-gpmessages-row">
+                                        <img src="{{asset('img/customer/imgs/user_default.jpg')}}">
+                                        <p>
+                                            Group Name<br>
+                                            <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Dui hendrerit potenti pellentesque tellus urna bibendum mollis. </span>
+                                        </p>
+                                    </a>
+                                    <a href="#" class="social-media-left-gpmessages-row">
+                                        <img src="{{asset('img/customer/imgs/user_default.jpg')}}">
+                                        <p>
+                                            Group Name<br>
+                                            <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Dui hendrerit potenti pellentesque tellus urna bibendum mollis. </span>
+                                        </p>
+                                    </a>
+                                    <a href="#" class="social-media-left-gpmessages-row">
+                                        <img src="{{asset('img/customer/imgs/user_default.jpg')}}">
+                                        <p>
+                                            Group Name<br>
+                                            <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Dui hendrerit potenti pellentesque tellus urna bibendum mollis. </span>
+                                        </p>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="social-media-left-searched-items-container">
+
+                        </div>
+
+                    </div>
+
+                    @yield('content')
+                </div>
+            </div>
+        {{-- <div class="customer-main-content-container"> --}}
+
+
+
+        {{-- </div> --}}
+
 
 
     <!-- Option 1: Bootstrap Bundle with Popper -->
@@ -67,32 +293,894 @@
 
     <!--nav bar-->
     <script src={{asset('js/navBar.js')}}></script>
+    <script src={{asset('js/notify.js')}}></script>
 
-    @stack('scripts')
 
-    @push('scripts')
-        <script>
-             $(document).ready(function(){
-            $(window).scroll(function(){
-                var scroll = $(window).scrollTop()
-                if(scroll>50){
-                    $('.index-page-header').addClass("sticky-state")
-                    // $(".index-page-header .customer-logo").css("color","#ffffff")
-                    // $(".index-page-header .customer-navlinks-container a").css("color","#ffffff")
-                    // $(".index-page-header select").css("color","#ffffff")
-                    // $(".index-page-header select option").css("color","#000000")
-                }else{
-                    $('.index-page-header').removeClass("sticky-state")
-                    // $(".index-page-header .customer-logo").css("color","#000000")
-                    // $(".index-page-header .customer-navlinks-container a").css("color","#000000")
-                    // $(".index-page-header select").css("color","#000000")
-                }
-            })
+    {{-- axios --}}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.1.3/axios.min.js" integrity="sha512-0qU9M9jfqPw6FKkPafM3gy2CBAvUWnYVOfNPDYKVuRTel1PrciTj+a9P3loJB+j0QmN2Y0JYQmkBBS8W+mbezg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+    {{-- pusher --}}
+    <script src="https://js.pusher.com/7.2/pusher.min.js"></script>
+
+    {{-- emoji --}}
+    <script src="https://cdn.jsdelivr.net/npm/@joeattardi/emoji-button@3.0.3/dist/index.min.js"></script>
+
+    <script>
+    $(document).ready(function() {
+
+        //image slider start
+        console.log($(".image-slider"))
+
+        $.each($(".ul-image-slider"),function(){
+            console.log($(this).children('li').length)
+
+            $(this).children('li:first').addClass("active-img")
+        })
+
+        $.each($(".img-slider-thumbnails ul"),function(){
+            console.log($(this).children('li').length)
+
+            $(this).children('li:first').addClass("active")
+        })
+
+        $(function(){
+
+            $('.img-slider-thumbnails li').click(function(){
+            var thisIndex = $(this).index()
+            // console.log(thisIndex,$(this).siblings("li.active").index())
+            if($(this).siblings(".active").index() === -1){
+                return
+            }
+
+
+            if(thisIndex < $(this).siblings(".active").index()){
+                prevImage(thisIndex, $(this).parents(".img-slider-thumbnails").prev("#image-slider"));
+            }else if(thisIndex > $(this).siblings(".active").index()){
+                nextImage(thisIndex, $(this).parents(".img-slider-thumbnails").prev("#image-slider"));
+            }
+
+
+            $(this).siblings('.active').removeClass('active');
+            $(this).addClass('active');
+
+            });
+
+        });
+
+        var width = $('#image-slider').width();
+        console.log(width)
+
+        function nextImage(newIndex, parent){
+            parent.find('li').eq(newIndex).addClass('next-img').css('left', width).animate({left: 0},600);
+            parent.find('li.active-img').removeClass('active-img').css('left', '0').animate({left: '-100%'},600);
+            parent.find('li.next-img').attr('class', 'active-img');
+        }
+        function prevImage(newIndex, parent){
+            parent.find('li').eq(newIndex).addClass('next-img').css('left', -width).animate({left: 0},600);
+            parent.find('li.active-img').removeClass('active-img').css('left', '0').animate({left: '100%'},600);
+            parent.find('li.next-img').attr('class', 'active-img');
+        }
+
+        /* Thumbails */
+        // var ThumbailsWidth = ($('#image-slider').width() - 18.5)/7;
+        // $('#thumbnail li').find('img').css('width', ThumbailsWidth);
+
+        $('.social-media-media-slider').hide()
+
+        $(".social-media-media-container").click(function(){
+
+            $(this).siblings(".social-media-media-slider").show()
+            $(this).hide()
+        })
+
+        $(".slider-close-icon").click(function(){
+            $(this).closest('.social-media-media-slider').hide()
+            $(this).closest('.social-media-media-slider').siblings('.social-media-media-container').show()
+        })
+        //image slider end
+
+
+
+
+        $(".cancel").hide();
+        $( ".social-media-left-search-container input" ).focus(function() {
+            // alert( "Handler for .focus() called." );
+            $( ".social-media-left-infos-container" ).hide()
+            $(".social-media-left-searched-items-container").show()
+            $(".cancel").show();
+        });
+
+        $(document).on('click', '.cancel', function(e) {
+            // alert( "Handler for .focus() called." );
+            $( ".social-media-left-infos-container" ).show()
+            $(".social-media-left-searched-items-container").hide()
+            $(".cancel").hide()
+            $('.social-media-left-search-container input').val('')
+        });
+
+        $(document).on('click', '#delete_post', function(e){
+            e.preventDefault();
+            var id = $(this).data('id');
+            Swal.fire({
+                        text: 'Are you sure to delete this post?',
+                        timerProgressBar: true,
+                        showCloseButton: true,
+                        showCancelButton: true,
+                        icon: 'warning',
+                    }).then((result) => {
+                    if (result.isConfirmed) {
+                        var add_url = "{{ route('post.destroy', [':id']) }}";
+                            add_url = add_url.replace(':id', id);
+
+                            $.ajaxSetup({
+                                    headers: {
+                                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                                    }
+                                });
+                            $.ajax({
+                                    method: "POST",
+                                    url: add_url,
+                                    datatype: "json",
+                                    success: function(data) {
+                                        window.location.reload();
+                                    }
+                                })
+                    }else{
+
+                    }
+                    })
+
+        })
+
+        $(document).on('click', '#AddFriend', function(e) {
+                e.preventDefault();
+                $('.social-media-left-searched-items-container').empty();
+                var url = new URL(this.href);
+
+                var id = url.searchParams.get("id");
+                var group_id = $(this).attr("id");
+
+                var add_url = "{{ route('addUser', [':id']) }}";
+                add_url = add_url.replace(':id', id);
+                $(".add-member-btn").attr('href','');
+                    $.ajax({
+                        type: "GET",
+                        url: add_url,
+                        datatype: "json",
+                        success: function(data) {
+                            console.log(data)
+                            search();
+                        }
+                    })
+                });
+
+                $(document).on('click', '#cancelRequest', function(e) {
+                e.preventDefault();
+                Swal.fire({
+                        text: "Are you sure?",
+                        showClass: {
+                                popup: 'animate__animated animate__fadeInDown'
+                            },
+                            hideClass: {
+                                popup: 'animate__animated animate__fadeOutUp'
+                            },
+                        showCancelButton: true,
+                        timerProgressBar: true,
+                        confirmButtonText: 'Yes',
+                        cancelButtonText: 'No',
+
+                        }).then((result) => {
+                        /* Read more about isConfirmed, isDenied below */
+                        if (result.isConfirmed) {
+                             var url = new URL(this.href);
+                             var id = url.searchParams.get("id");
+                             var url = "{{ route('cancelRequest', [':id']) }}";
+                             url = url.replace(':id', id);
+                             $(".cancel-request-btn").attr('href','');
+                                $.ajax({
+                                    type: "GET",
+                                    url: url,
+                                    datatype: "json",
+                                    success: function(data) {
+                                        console.log(data)
+                                        search();
+                                    }
+                                })
+                            Swal.fire('Canceled Request!', '', 'success')
+                        }
+                        })
+                $('.social-media-left-searched-items-container').empty();
+                });
+
+
+                    $('.social-media-left-search-container input').on('keyup', function(){
+                            search();
+                    });
+
+                        function search(){
+
+                            var keyword = $('#search').val();
+                            //console.log(keyword);
+                            var search_url = "{{ route('search_users') }}";
+                            $.post(search_url,
+                            {
+                                _token: $('meta[name="csrf-token"]').attr('content'),
+                                keyword:keyword
+                            },
+                            function(data){
+                                table_post_row(data);
+                                console.log(data);
+                            });
+                        }
+                        // table row with ajax
+                        function table_post_row(res){
+                        var auth_id = {{auth()->user()->id}}
+                        let htmlView = '';
+                            if(res.users.length <= 0){
+                                htmlView+= `
+                                No data found.
+                                `;
+                            }
+                            else if(res.friends.length <= 0 && res.users.length != 0){
+                                console.log("myself");
+                                for(let i = 0; i < res.users.length; i++){
+                                id = res.users[i].id;
+                                var url = "{{ route('socialmedia.profile', [':id']) }}";
+                                url = url.replace(':id',id);
+                                if(res.users[i].id === auth_id){
+                                    htmlView += `
+                                            <div class="social-media-left-searched-item">
+                                            <a href=`+url+` class = "profiles">
+                                                <p>`+res.users[i].name+`</p>
+                                            </a>
+                                            </div>
+                                    `
+                                }
+                                else{
+                                    console.log("no friends");
+                                    htmlView += `
+                                            <div class="social-media-left-searched-item">
+                                            <a href=`+url+` class = "profiles">
+                                                <p>`+res.users[i].name+`</p>
+                                            </a>
+                                            <a href="?id=` + res.users[i].id+`"  id = "AddFriend"><iconify-icon icon="bi:person-add" class="search-item-icon"></iconify-icon></a>
+                                            </div>
+                                    `
+                                }
+                                }
+                            }
+                            else{
+                                for(let i = 0; i < res.users.length; i++){
+                                    var status = ''
+                                for(let f = 0; f < res.friends.length; f++){
+                                    id = res.users[i].id;
+                                    var url = "{{ route('socialmedia.profile', [':id']) }}";
+                                    url = url.replace(':id',id);
+                                    console.log(auth_id)
+
+                                    if(res.users[i].id === res.friends[f].receiver_id &&
+                                    res.friends[f].sender_id === auth_id &&
+                                    res.friends[f].friend_status === 1 ){
+                                        console.log(res.users[i].name,'sender request')
+                                        status = 'sender request'
+                                        break
+                                        // return
+                                        // htmlView += `
+                                        //     <a href=`+url+` class = "profiles">
+                                        //         <p>`+res.users[i].name+`</p>
+                                        //     </a>
+                                        //     <a href="?id=` + res.users[i].id+`" class="customer-secondary-btn cancel-request-btn"
+                                        //     id = "cancelRequest">Cancel Request</a>
+                                        //     `
+                                    }
+                                    else if(
+                                    res.users[i].id === res.friends[f].sender_id &&
+                                    res.friends[f].receiver_id === auth_id &&
+                                    res.friends[f].friend_status === 1
+                                    ){
+                                        console.log(res.users[i].name,'receiver request')
+                                        status = 'receiver request'
+                                        break
+                                        // return
+                                        // htmlView += `
+                                        //     <a href=`+url+` class = "profiles">
+                                        //         <p>`+res.users[i].name+`</p>
+                                        //     </a>
+                                        //     <a href="?id=` + res.users[i].id+`" class="customer-secondary-btn cancel-request-btn"
+                                        //     id = "cancelRequest">Response</a>
+                                        //     `
+                                    }
+                                    else if (res.users[i].id === auth_id){
+                                        console.log(res.users[i].name,'profile')
+                                        status = "profile"
+                                        break
+                                        // return
+                                        // htmlView += `
+                                        //     <a href=`+url+` class = "profiles">
+                                        //         <p>`+res.users[i].name+`</p>
+                                        //     </a>
+                                        //     <a href=`+url+` class="customer-secondary-btn "
+                                        //     >View Profile</a>
+                                        //     `
+                                    }
+                                    else if (res.users[i].id === res.friends[f].receiver_id &&
+                                    res.friends[f].sender_id === auth_id &&
+                                    res.friends[f].friend_status === 2
+                                    ){
+                                        console.log(res.users[i].name,'sender view profile')
+                                        status = "sender view profile"
+                                        break
+                                        // return
+                                        // htmlView += `
+                                        //     <a href= `+url+` class = "profiles">
+                                        //         <p>`+res.users[i].name+`</p>
+                                        //     </a>
+                                        //     <a href="?id=` + res.users[i].id+`" class="customer-secondary-btn add-friend-btn">Friend</a>
+                                        //     `
+                                    }
+                                    else if (
+                                    res.users[i].id === res.friends[f].sender_id &&
+                                    res.friends[f].receiver_id === auth_id &&
+                                    res.friends[f].friend_status === 2
+                                    ){
+                                        console.log(res.users[i].name,'receiver view profile')
+                                        status = "receiver view profile"
+                                        break
+                                        // return
+                                        // htmlView += `
+                                        //     <a href= `+url+` class = "profiles">
+                                        //         <p>`+res.users[i].name+`</p>
+                                        //     </a>
+                                        //     <a href="?id=` + res.users[i].id+`" class="customer-secondary-btn add-friend-btn">Friend</a>
+                                        //   `
+                                    }
+                                    else{
+                                        status="add fri"
+                                        console.log(res.users[i].name,'add fri')
+                                    //     htmlView += `
+                                    //         <a href=`+url+` class = "profiles">
+                                    //             <p>`+res.users[i].name+`</p>
+                                    //         </a>
+                                    //         <a href="?id=` + res.users[i].id+`" class="customer-secondary-btn add-friend-btn" id = "AddFriend">Add</a>
+                                    // `
+                                    }
+
+                            }
+
+                            if(status === 'sender request'){
+                                htmlView += `
+                                            <div class="social-media-left-searched-item">
+                                            <a href=`+url+` class = "profiles">
+                                                <p>`+res.users[i].name+`</p>
+                                            </a>
+                                            <a href="?id=` + res.users[i].id+`" class="cancel-request-btn"
+                                            id = "cancelRequest"><iconify-icon icon="material-symbols:cancel-schedule-send-outline" class="search-item-icon"></iconify-icon></a>
+                                            </div>
+                                            `
+                            }
+
+                            else if(status === 'receiver request'){
+                               htmlView += `
+                                            <div class="social-media-left-searched-item">
+                                            <a href=`+url+` class = "profiles">
+                                                <p>`+res.users[i].name+`</p>
+                                            </a>
+                                            <a href=`+url+`><iconify-icon icon="mdi:account-question-outline" class="search-item-icon"></iconify-icon></a>
+                                            </div>
+                                            `
+                            }
+
+                            else if(status === "profile"){
+                                 htmlView += `
+                                            <div class="social-media-left-searched-item">
+                                            <a href=`+url+` class = "profiles">
+                                                <p>`+res.users[i].name+`</p>
+                                            </a>
+                                            <a href=`+url+`
+                                            ><iconify-icon icon="ion:people-sharp" class="search-item-icon"></iconify-icon></a>
+                                            </div>
+                                            `
+                            }
+
+                            else if(status === "sender view profile"){
+                                htmlView += `
+                                            <div class="social-media-left-searched-item">
+                                            <a href= `+url+` class = "profiles">
+                                                <p>`+res.users[i].name+`</p>
+                                            </a>
+                                            <a href=`+url+` ><iconify-icon icon="ion:people-sharp" class="search-item-icon"></iconify-icon></a>
+                                            </div>
+                                          `
+                            }
+                            else if(status === "receiver view profile"){
+                                htmlView += `
+                                            <div class="social-media-left-searched-item">
+                                            <a href= `+url+` class = "profiles">
+                                                <p>`+res.users[i].name+`</p>
+                                            </a>
+                                            <a href=`+url+`><iconify-icon icon="ion:people-sharp" class="search-item-icon"></iconify-icon></a>
+                                            </div>
+                                          `
+                            }
+                            else{
+                                    htmlView += `
+                                            <div class="social-media-left-searched-item">
+                                            <a href=`+url+` class = "profiles">
+                                                <p>`+res.users[i].name+`</p>
+                                            </a>
+                                            <a href="?id=` + res.users[i].id+`"  id = "AddFriend"><iconify-icon icon="bi:person-add" class="search-item-icon"></iconify-icon></a>
+                                            </div>
+                                    `
+                            }
+                            }
+                            }
+                            $('.social-media-left-searched-items-container').html(htmlView);
+                        }
+
+
+
+        $('.social-media-post-header-icon').click(function(){
+            $(this).next().toggle()
+        })
+
+        $(".social-media-left-container-trigger").click(function(){
+            $('.social-media-left-container').toggleClass("social-media-left-container-open")
+            $('.social-media-overlay').toggle()
+            $(".social-media-left-container-trigger .arrow-icon").toggleClass("rotate-arrow")
         })
 
 
-        </script>
-    @endpush
+        $('#form').submit(function(e){
+            e.preventDefault();
+            $('#addPostModal'). modal('hide');
+            var caption=$('#addPostCaption').val();
+
+            var url="{{route('post.store')}}";
+            var $fileUpload=$('#addPostInput');
+
+            if(!$('.addpost-caption-input').val() && parseInt($fileUpload.get(0).files.length) === 0){
+                alert("Cannot post!!")
+            }
+            else{
+                if (parseInt($fileUpload.get(0).files.length)>5){
+                    Swal.fire({
+                        text: "You can only upload a maximum of 5 files",
+                        timerProgressBar: true,
+                        timer: 5000,
+                        icon: 'warning',
+                    });
+                }
+                else{
+                    e.preventDefault();
+                    let formData = new FormData(form);
+
+                    const totalImages = $("#addPostInput")[0].files.length;
+                    let images = $("#addPostInput")[0];
+
+                    for (let i = 0; i < totalImages; i++) {
+                        formData.append('images' + i, images.files[i]);
+                    }
+                    formData.append('totalImages', totalImages);
+
+                    var caption=$('#addPostCaption').val();
+
+                    $.ajaxSetup({
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        }
+                    });
+
+                    $.ajax({
+                            type:'POST',
+                            url:"{{route('post.store')}}",
+                            data: formData,
+                                processData: false,
+                                cache: false,
+                                contentType: false,
+                            success:function(data){
+                            if(data.message){
+                                Swal.fire({
+                                            text: data.message,
+                                            timerProgressBar: true,
+                                            timer: 5000,
+                                            icon: 'success',
+                                        }).then(() => {
+                                            window.location.reload()
+                                        })
+                            }else{
+                                Swal.fire({
+                                            text: data.ban,
+                                            timerProgressBar: true,
+                                            timer: 5000,
+                                            icon: 'error',
+                                        })
+                            }
+
+                            }
+                    });
+
+                }
+            }
+
+        })
+
+        $(document).on('click','#edit_post',function(e){
+            e.preventDefault();
+            $(".editpost-photo-video-imgpreview-container").empty();
+
+            dtEdit.clearData()
+            document.getElementById('editPostInput').files = dtEdit.files;
+            var id = $(this).data('id');
+
+            $('#editPostModal').modal('show');
+            var add_url = "{{ route('post.edit', [':id']) }}";
+            add_url = add_url.replace(':id', id);
+
+            $.ajaxSetup({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    }
+                });
+            $.ajax({
+                    method: "POST",
+                    url: add_url,
+                    datatype: "json",
+                    success: function(data) {
+                        if(data.status==400){
+                            alert(data.message)
+                        }else{
+                            $('#editPostCaption').val(data.post.caption);
+                            $('#edit_post_id').val(data.post.id);
+
+                            var filesdb =data.post.media ? JSON.parse(data.post.media) : [];
+                            // var filesAmount=files.length;
+                            var storedFilesdb = filesdb;
+                            // console.log(storedFilesdb)
+
+
+                            filesdb.forEach(function(f) {
+                                fileExtension = f.replace(/^.*\./, '');
+                                console.log(fileExtension);
+                                if(fileExtension=='mp4') {
+                                    var html="<div class='addpost-preview'>\
+                                        <iconify-icon icon='akar-icons:cross' data-file='" + f + "' class='delete-preview-db-icon'></iconify-icon>\
+                                        <video controls><source src='storage/post/" + f + "' data-file='" + f+ "' class='selFile' title='Click to remove'>" + f + "<br clear=\"left\"/>\
+                                        <video>\
+                                    </div>"
+                                    $(".editpost-photo-video-imgpreview-container").append(html);
+
+                                }else{
+                                    var html = "<div class='addpost-preview'><iconify-icon icon='akar-icons:cross' data-file='" + f + "' class='delete-preview-db-icon'></iconify-icon><img src='storage/post/"+f+"' data-file='" + f + "' class='selFile' title='Click to remove'></div>";
+                                    $(".editpost-photo-video-imgpreview-container").append(html);
+                                }
+
+                            });
+
+                            $("body").on("click", ".delete-preview-db-icon", removeFiledb);
+
+                            function removeFiledb(){
+                                var file = $(this).data('file')
+                                storedFilesdb = storedFilesdb.filter((item) => {
+                                    return file !== item
+                                })
+
+                                $(this).parent().remove();
+                            }
+
+                            $(".addpost-photovideo-clear-btn").click(function(){
+                                storedFilesdb = []
+                            })
+
+                            $('#edit_form').submit(function(e){
+                                e.preventDefault();
+                                $('#editPostModal'). modal('hide');
+
+                            var fileUpload=$('#editPostInput');
+                            console.log(storedFilesdb.length );
+                            console.log(parseInt(fileUpload.get(0).files.length) );
+                            console.log(storedFilesdb);
+                            console.log(fileUpload.get(0).files);
+
+                            if(!$('#editPostCaption').val() && (parseInt(fileUpload.get(0).files.length) + storedFilesdb.length) === 0){
+                                alert("Cannot post!!")
+                            }else{
+                                if((parseInt(fileUpload.get(0).files.length))+storedFilesdb.length > 5){
+                                    Swal.fire({
+                                                text: "You can only upload a maximum of 5 files",
+                                                timer: 5000,
+                                                icon: 'warning',
+                                            });
+                                }else{
+                                    e.preventDefault();
+
+                                    var url="{{route('post.update')}}";
+                                    let formData = new FormData(edit_form);
+                                    var oldimg=storedFilesdb;
+                                    var edit_post_id=$('#edit_post_id').val();
+                                    var caption=$('#editPostCaption').val();
+
+                                    const totalImages = $("#editPostInput")[0].files.length;
+                                    let images = $("#editPostInput")[0];
+
+                                    // for (let i = 0; i < totalImages; i++) {
+                                        formData.append('images', images);
+                                    // }
+                                    formData.append('totalImages', totalImages);
+                                    formData.append('caption', caption);
+                                    formData.append('oldimg', storedFilesdb);
+                                    formData.append('edit_post_id', edit_post_id);
+
+                                    for (const value of formData.values()) {
+                                        console.log(value);
+                                    }
+
+                                    $.ajaxSetup({
+                                                headers: {
+                                                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                                                }
+                                            });
+
+                                    $.ajax({
+                                            type:'POST',
+                                            url:url,
+                                            data: formData,
+                                            processData: false,
+                                            cache: false,
+                                            contentType: false,
+                                            success:function(data){
+                                                if(data.ban){
+                                                    Swal.fire({
+                                                        text: data.ban,
+                                                        timer: 5000,
+                                                        timerProgressBar: true,
+                                                        icon: 'error',
+                                                    })
+                                                }else{
+                                                    Swal.fire({
+                                                        text: data.success,
+                                                        timer: 5000,
+                                                        timerProgressBar: true,
+                                                        icon: 'success',
+                                                    }).then(() => {
+                                                        window.location.reload()
+                                                    })
+                                                }
+                                                }
+                                        });
+                                }
+
+                            }
+                        })
+
+                        }
+
+                    }
+                })
+
+        })
+
+        $("#addPostInput").on("change", handleFileSelect);
+
+        $("#editPostInput").on("change", handleFileSelectEdit);
+
+        selDiv = $(".addpost-photo-video-imgpreview-container");
+
+        console.log(selDiv);
+
+        $("body").on("click", ".delete-preview-icon", removeFile);
+        $("body").on("click", ".delete-preview-edit-input-icon", removeFileFromEditInput);
+
+        console.log($("#selectFilesM").length);
+    });
+
+
+    var selDiv = "";
+
+    var storedFiles = [];
+    var storedFilesEdit = [];
+    const dt = new DataTransfer();
+    const dtEdit = new DataTransfer();
+
+    function handleFileSelect(e) {
+
+        var files = e.target.files;
+        console.log(files)
+
+        var filesArr = Array.prototype.slice.call(files);
+
+        var device = $(e.target).data("device");
+
+        filesArr.forEach(function(f) {
+            console.log(f);
+            if (f.type.match("image.*")) {
+                storedFiles.push(f);
+
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                var html = "<div class='addpost-preview'><iconify-icon icon='akar-icons:cross' data-file='" + f.name + "' class='delete-preview-icon'></iconify-icon><img src=\"" + e.target.result + "\" data-file='" + f.name + "' class='selFile' title='Click to remove'></div>";
+
+                if (device == "mobile") {
+                    $("#selectedFilesM").append(html);
+                } else {
+                    $(".addpost-photo-video-imgpreview-container").append(html);
+                }
+                }
+                reader.readAsDataURL(f);
+                dt.items.add(f);
+            }else if(f.type.match("video.*")){
+                storedFiles.push(f);
+
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                var html = "<div class='addpost-preview'><iconify-icon icon='akar-icons:cross' data-file='" + f.name + "' class='delete-preview-icon'></iconify-icon><video controls><source src=\"" + e.target.result + "\" data-file='" + f.name + "' class='selFile' title='Click to remove'>" + f.name + "<br clear=\"left\"/><video></div>";
+
+                if (device == "mobile") {
+                    $("#selectedFilesM").append(html);
+                } else {
+                    $(".addpost-photo-video-imgpreview-container").append(html);
+                }
+                }
+                reader.readAsDataURL(f);
+                dt.items.add(f);
+            }
+
+
+        });
+
+        document.getElementById('addPostInput').files = dt.files;
+        console.log(document.getElementById('addPostInput').files+" Add Post Input")
+
+    }
+
+    function handleFileSelectEdit(e) {
+
+        var files = e.target.files;
+        console.log(files)
+
+        var filesArr = Array.prototype.slice.call(files);
+
+        var device = $(e.target).data("device");
+
+        filesArr.forEach(function(f) {
+
+            if (f.type.match("image.*")) {
+                storedFilesEdit.push(f);
+
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                var html = "<div class='addpost-preview'><iconify-icon icon='akar-icons:cross' data-file='" + f.name + "' class='delete-preview-edit-input-icon'></iconify-icon><img src=\"" + e.target.result + "\" data-file='" + f.name + "' class='selFile' title='Click to remove'></div>";
+
+                if (device == "mobile") {
+                    $("#selectedFilesM").append(html);
+                } else {
+                    $(".editpost-photo-video-imgpreview-container").append(html);
+                }
+                }
+                reader.readAsDataURL(f);
+                dtEdit.items.add(f);
+            }else if(f.type.match("video.*")){
+                storedFilesEdit.push(f);
+
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                var html = "<div class='addpost-preview'><iconify-icon icon='akar-icons:cross' data-file='" + f.name + "' class='delete-preview-edit-input-icon'></iconify-icon><video controls><source src=\"" + e.target.result + "\" data-file='" + f.name + "' class='selFile' title='Click to remove'>" + f.name + "<br clear=\"left\"/><video></div>";
+
+                if (device == "mobile") {
+                    $("#selectedFilesM").append(html);
+                } else {
+                    $(".editpost-photo-video-imgpreview-container").append(html);
+                }
+                }
+                reader.readAsDataURL(f);
+                dtEdit.items.add(f);
+            }
+
+
+        });
+
+        document.getElementById('editPostInput').files = dtEdit.files;
+        console.log(document.getElementById('editPostInput').files+" Edit Post Input")
+
+    }
+
+    function removeFile(e) {
+        var file = $(this).data("file");
+        var names = [];
+        for(let i = 0; i < dt.items.length; i++){
+            if(file === dt.items[i].getAsFile().name){
+                dt.items.remove(i);
+            }
+        }
+        document.getElementById('addPostInput').files = dt.files;
+
+        for (var i = 0; i < storedFiles.length; i++) {
+            if (storedFiles[i].name === file) {
+            storedFiles.splice(i, 1);
+            break;
+            }
+        }
+        $(this).parent().remove();
+    }
+    function removeFileFromEditInput(e) {
+        var file = $(this).data("file");
+        var names = [];
+        for(let i = 0; i < dtEdit.items.length; i++){
+            if(file === dtEdit.items[i].getAsFile().name){
+                dtEdit.items.remove(i);
+            }
+        }
+        document.getElementById('editPostInput').files = dtEdit.files;
+
+        for (var i = 0; i < storedFilesEdit.length; i++) {
+            if (storedFilesEdit[i].name === file) {
+            storedFilesEdit.splice(i, 1);
+            break;
+            }
+        }
+        $(this).parent().remove();
+    }
+
+
+    function clearAddPost(){
+        storedFiles = []
+        dt.clearData()
+        document.getElementById('addPostInput').files = dt.files;
+        $(".addpost-photo-video-imgpreview-container").empty();
+    }
+
+    function clearEditPost(){
+        storedFilesEdit = []
+        dtEdit.clearData()
+        document.getElementById('editPostInput').files = dtEdit.files;
+        $(".editpost-photo-video-imgpreview-container").empty();
+
+    }
+
+</script>
+
+<script>
+    $(document).ready(function(){
+        $('.nav-icon').click(function(){
+                $('.notis-box-container').toggle()
+            })
+
+        $(document).on('click', '.accept', function(e) {
+                e.preventDefault();
+                alert("okk")
+                var url = new URL(this.href);
+                var id = url.searchParams.get("id");
+                 console.log(id,"noti_id");
+                var sender_id = $(this).attr("id");
+                console.log(sender_id , "rererer");
+                var social_url = "{{ route('socialmedia.profile', [':id']) }}";
+                social_url = social_url.replace(':id', sender_id);
+
+                var url = "{{ route('social_media_profile') }}";
+                $(".add-member-btn").attr('href','');
+                $.ajaxSetup({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    }
+                });
+                    $.ajax({
+                        type: "POST",
+                        url: url,
+                        datatype: "json",
+                        data : {
+                            id : sender_id,
+                            noti_id : id
+                    },
+                        success: function(data) {
+                            console.log(data)
+                            window.location.href = social_url
+                        }
+                    })
+                });
+    })
+</script>
+
+
+@stack('scripts')
 
   </body>
 </html>

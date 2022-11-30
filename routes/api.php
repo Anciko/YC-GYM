@@ -4,10 +4,11 @@ use Illuminate\Http\Request;
 use App\Models\TrainingGroup;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\V1\AuthController;
-use App\Http\Controllers\Api\V1\CustomerProfileController;
+use App\Http\Controllers\Api\V1\SocialMediaController;
 use App\Http\Controllers\Api\V1\TrainingGroupController;
-use App\Http\Controllers\Api\V1\TrainingManagementController;
 use App\Http\Controllers\Trainer\TrainerGroupController;
+use App\Http\Controllers\Api\V1\CustomerProfileController;
+use App\Http\Controllers\Api\V1\TrainingManagementController;
 use App\Http\Controllers\Trainer\TrainerManagementConntroller;
 
 /*
@@ -115,6 +116,42 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     //Group chat for mobile
     Route::post('chat/sendmessage/{id}', [TrainingManagementController::class, 'sendmessage']);
     Route::get('chat/showmessage/{id}', [TrainingManagementController::class, 'chatshow']);
+
+
+    //social media
+    Route::post('search_users', [SocialMediaController::class, 'search_users']); //search users
+    Route::post('add_friend', [SocialMediaController::class, 'add_friends']); //add friends
+    Route::post('unfriend', [SocialMediaController::class, 'unfriend']); //un friends
+    Route::post('cancelRequest', [SocialmediaController::class, 'cancelRequest']); // cancel request
+    Route::post('declineRequest', [SocialmediaController::class, 'declineRequest']); //
+    Route::post('confirmRequest', [SocialmediaController::class, 'confirmRequest']);//
+    Route::post('socialmedia_profile', [SocialmediaController::class, 'socialmedia_profile']);//
+
+    Route::post('cover_profile_photo', [SocialmediaController::class, 'cover_profile_photo']);//
+
+    Route::post('friends', [SocialmediaController::class, 'friends']);//
+
+    Route::get('notification', [SocialmediaController::class, 'notification']);
+
+    Route::post('viewFriendRequestNoti', [SocialmediaController::class, 'viewFriendRequestNoti'])->name('viewFriendRequestNoti');
+
+    Route::get('friend_request', [SocialmediaController::class, 'friend_request']);
+    Route::get('newFeeds', [SocialmediaController::class, 'newFeeds']);
+    Route::get('saved_post',[SocialmediaController::class, 'saved_post']);
+
+    Route::post('post_create', [SocialmediaController::class, 'post_store']);
+    Route::post('post_delete', [SocialmediaController::class, 'post_destroy']);
+    Route::post('post_edit', [SocialmediaController::class, 'post_edit']);
+    Route::post('post_update', [SocialmediaController::class, 'post_update']);
+    Route::post('post_save', [SocialmediaController::class, 'post_save']);
+
+    Route::post('profile/cover/update', [SocialmediaController::class, 'profile_update_cover']);
+    Route::post('profile/image/update', [SocialmediaController::class, 'profile_update_profile_img']);
+    Route::post('profile/bio/update', [SocialmediaController::class, 'profile_update_bio']);
+    Route::post('/profile/photo/delete', [SocialmediaController::class, 'profile_photo_delete']);
+
+    Route::post('message/chat/{id}',[SocialMediaController::class,'chatting']);
+
 });
 
 Route::get('test', [AuthController::class, 'test']);

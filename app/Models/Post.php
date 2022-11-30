@@ -12,11 +12,27 @@ class Post extends Model
 {
     use HasFactory,SoftDeletes;
 
-    public function report(){
-        return $this->hasOne(Report::class);
+    public function user()
+    {
+        return $this->belongsTo(User::class);
     }
 
-    public function user(){
-        return $this->belongsTo(User::class);
+    public function post()
+    {
+        return $this->belongsTo(Post::class);
+    }
+
+    public function user_reacted_posts()
+    {
+        return $this->hasMany(UserReactPost::class, 'post_id', 'id');
+    }
+
+    public function user_saved_posts()
+    {
+        return $this->hasMany(UserSavedPost::class, 'post_id', 'id');
+    }
+
+    public function report(){
+        return $this->hasOne(Report::class);
     }
 }

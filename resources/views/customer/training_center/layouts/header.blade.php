@@ -49,9 +49,18 @@
             <div class="customer-dropdown-container">
                 <ul>
                     <li class="customer-dropdown">
+
                     <a href="#" data-toggle="dropdown">
-                        <img class="nav-profile-img" src="{{asset('img/user.jpg')}}"/>
+                        <?php
+                        $profile=auth()->user()->profiles->where('cover_photo',null)->sortByDesc('created_at')->first()
+                        ?>
+                        @if ($profile==null)
+                            <img class="nav-profile-img" src="{{asset('img/user.jpg')}}"/>
+                        @else
+                            <img class="nav-profile-img" src="{{asset('storage/post/'.$profile->profile_image)}}"/>
+                        @endif
                         <i class="icon-arrow"></i>
+                        {{-- <p class="customer-dropdown-name">{{auth()->user()->name}}</p> --}}
                     </a>
                     <ul class="customer-dropdown-menu">
                         <li><a href="{{route('customer-profile')}}">Profile</a></li>
@@ -85,13 +94,55 @@
 
         </div> --}}
         <div class="customer-navlinks-notiprofile-container">
-            <a href="#"><iconify-icon icon="akar-icons:bell" class="nav-icon"></iconify-icon></a>
+            <iconify-icon icon="akar-icons:bell" class="nav-icon"></iconify-icon>
             <iconify-icon icon="pajamas:hamburger" class="burger-icon"></iconify-icon>
             <iconify-icon icon="akar-icons:cross" class="close-nav-icon"></iconify-icon>
+
+            <div class="notis-box-container">
+                <div class="notis-box-header">
+                    <p>Notifications</p>
+                    <a href="{{ route('notification_center') }}">See All</a>
+                </div>
+
+                <div class="notis-box-notis-container">
+                    <?php $count = 0; ?>
+                    @foreach(auth()->user()->notifri->sortByDesc('created_at') as $noti)
+                    <?php if($count == 10) break; ?>
+
+                       @if($noti->notification_status == 1)
+                    {{-- <a href = "{{route('viewFriendRequestNoti',[$noti->sender_id,$noti->id])}}">
+                        <div class="notis-box-noti-row notis-box-unread-noti">
+                            <span>{{$noti->created_at->diffForHumans()}}
+                            </span>
+                            <p>{{$noti->description}}</p>
+                        </div>
+                    </a> --}}
+                    <a href ="?id={{$noti->id}}"  class = "accept" id = {{$noti->sender_id}}>
+                        <div class="notis-box-noti-row notis-box-unread-noti">
+                            <img src="{{asset('img/avatar.png')}}">
+                            <div class="notis-box-noti-row-detail">
+                                <span>{{$noti->created_at->diffForHumans()}}
+                                </span>
+                                <p>{{$noti->description}}</p>
+                            </div>
+                        </div>
+                    </a>
+                        @else
+                    <a href ="?id={{$noti->id}}"  class = "accept" id = {{$noti->sender_id}}>
+                        <div class="notis-box-noti-row ">
+                            <img src="{{asset('img/avatar.png')}}">
+                            <div class="notis-box-noti-row-detail">
+                                <span>{{$noti->created_at->diffForHumans()}}</span>
+                                <p>{{$noti->description}}</p>
+                            </div>
+                        </div>
+                    </a>
+                        @endif
+                        <?php $count++; ?>
+                    @endforeach
+                </div>
+
+            </div>
         </div>
-
-
-
-
     </div>
 </div>
