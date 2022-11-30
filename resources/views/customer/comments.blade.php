@@ -123,7 +123,7 @@
             </form>
 
             <div class="social-media-all-comments">
-                @forelse ($comments as $comment)
+                {{-- @forelse ($comments as $comment)
                 <div class="social-media-comment-container">
                     <img src="../imgs/trainer2.jpg">
                     <div class="social-media-comment-box">
@@ -133,17 +133,33 @@
                                 <span>19 Sep 2022, 11:02 AM</span>
                             </div>
 
-                            <iconify-icon icon="bx:dots-vertical-rounded" class="social-media-comment-icon"></iconify-icon>
-                            <div class="comment-actions-container" >
-                                <div class="comment-action">
-                                    <iconify-icon icon="akar-icons:edit" class="comment-action-icon"></iconify-icon>
-                                    <p>Edit</p>
-                                </div>
+                            <iconify-icon icon="bi:three-dots-vertical" class="social-media-post-header-icon"></iconify-icon>
 
-                                <div class="comment-action">
-                                    <iconify-icon icon="fluent:delete-12-regular" class="comment-action-icon"></iconify-icon>
-                                    <p>Delete</p>
-                                </div>
+                                    <div class="post-actions-container">
+
+                                    @if ($comment->user->id == auth()->user()->id)
+
+                                        <a id="edit_post" data-id="{{$comment->id}}" data-bs-toggle="modal" >
+                                            <div class="post-action">
+                                                <iconify-icon icon="material-symbols:edit" class="post-action-icon"></iconify-icon>
+                                                <p>Edit</p>
+                                            </div>
+                                        </a>
+                                        <a id="delete_comment" data-id="{{$comment->id}}">
+                                            <div class="post-action">
+                                            <iconify-icon icon="material-symbols:delete-forever-outline-rounded" class="post-action-icon"></iconify-icon>
+                                            <p>Delete</p>
+                                            </div>
+                                        </a>
+                                    @else
+                                    <a id="delete_comment" data-id="{{$comment->id}}">
+                                        <div class="post-action">
+                                        <iconify-icon icon="material-symbols:delete-forever-outline-rounded" class="post-action-icon"></iconify-icon>
+                                        <p>Delete</p>
+                                        </div>
+                                    </a>
+                                    @endif
+
                             </div>
                         </div>
 
@@ -152,7 +168,7 @@
                 </div>
                 @empty
                     <p class="text-secondary p-1">No comment</p>
-                @endforelse
+                @endforelse --}}
             </div>
         </div>
     </div>
@@ -163,40 +179,9 @@
 @push('scripts')
 <script>
     $(document).ready(function() {
-        // $('#textarea').mentiony({
-        //             onDataRequest: function (mode, keyword, onDataRequestCompleteCallback) {
 
-        //                 // var data = [
-        //                 //     { id:1, name:'Nguyen Luat', 'avatar':'https://goo.gl/WXAP1U'},
-        //                 //     { id:2, name:'Dinh Luat', 'avatar':'https://goo.gl/WXAP1U'},
-        //                 //     { id:3, name:'Max Luat', 'avatar':'https://goo.gl/WXAP1U'},
-        //                 //     { id:4, name:'John Neo', 'avatar':'https://goo.gl/WXAP1U'},
-        //                 //     { id:5, name:'John Dinh', 'avatar':'https://goo.gl/WXAP1U'},
-        //                 //     { id:6, name:'Test User', 'avatar':'https://goo.gl/WXAP1U'},
-        //                 //     { id:7, name:'Test User 2', 'avatar':'https://goo.gl/WXAP1U'},
-        //                 //     { id:8, name:'No Test', 'avatar':'https://goo.gl/WXAP1U'},
-        //                 // ];
-        //                 var data = []
-        //                 var search_url = "{{ route('users.mention') }}";
-        //                     $.post(search_url,
-        //                     {
-        //                         _token: $('meta[name="csrf-token"]').attr('content'),
-        //                         keyword:keyword
-        //                     },
-        //                     function(response){
-        //                         var data = response.data;
-        //                         console.log(data)
-        //                         data = jQuery.grep(data, function( item ) {
-        //                     return item.name.toLowerCase().indexOf(keyword.toLowerCase()) > -1;
-        //                     });
-        //                     });
 
-        //                 // Call this to populate mention.
-        //                 onDataRequestCompleteCallback.call(this, data);
-        //             },
-        //             timeOut: 0,
-        //             debug: 1,
-        //         });
+        
 
                 $('#textarea').mentiony({
                 onDataRequest: function (mode, keyword, onDataRequestCompleteCallback) {
@@ -238,17 +223,45 @@
             $(".social-media-all-comments-input").on('submit',function(e){
                 e.preventDefault()
                 console.log($('.mentiony-content').text())
-                var comment = $('.mentiony-content').text()
+
 
                 var arr = []
                 $.each($('.mentiony-link'),function(){
                     arr.push($(this).data('item-id'))
-                })
-                console.log(arr)
+                    $(this).text(`@${$(this).data('item-id')}`)
 
+                })
+
+                var comment = $('.mentiony-content').text()
+                console.log(arr)
+                console.log(comment)
+
+                // for(let i = 0; i < comment.length;i++){
+                //     // console.log(comment[i])
+                //     // console.log(/^\d$/.test(comment[i]))
+                //     var commentTemplate = ``
+                //     if(comment[i] === '@' && /^\d$/.test(comment[i+1])){
+                //         console.log("change to link")
+                //         commentTemplate = commentTemplate + `<a></a>`
+                //         continue
+                //     }
+
+                //     if(/^\d$/.test(comment[i]) && comment[i-1] === '@'){
+                //         continue
+                //     }
+
+                //     console.log(comment[i])
+                // }
+
+                // [...comment].forEach(a => {
+                //     console.log(a)
+                // })
+
+
+                // <a href = "" >Trainer</a>
                 var search_url = "{{ route('post.comment.store') }}";
                 var post_id = "{{$post->id}}"
-                console.log(post_id)
+                // console.log(post_id)
                     $.ajaxSetup({
                             headers: {
                                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -261,7 +274,7 @@
                         dataType: "json",
                         success: function (response) {
                             console.log("comment")
-                            window.location.reload();
+                             window.location.reload();
                         }
                     });
 
@@ -288,6 +301,49 @@
                 }
                 event.target.querySelectorAll('delete-highlight').forEach(function(el) { el.classList.remove('delete-highlight');})
             });
+
+
+
+            $(document).on('click', '#delete_comment', function(e) {
+                e.preventDefault();
+                Swal.fire({
+                        text: "Are you sure?",
+                        showClass: {
+                                popup: 'animate__animated animate__fadeInDown'
+                            },
+                            hideClass: {
+                                popup: 'animate__animated animate__fadeOutUp'
+                            },
+                        showCancelButton: true,
+                        timerProgressBar: true,
+                        confirmButtonText: 'Yes',
+                        cancelButtonText: 'No',
+
+                        }).then((result) => {
+                        /* Read more about isConfirmed, isDenied below */
+                        if (result.isConfirmed) {
+                            var id = $(this).data('id');
+                             var url = "{{ route('post.comment.delete', [':id']) }}";
+                             url = url.replace(':id', id);
+                             $.ajaxSetup({
+                            headers: {
+                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                            }
+                              });
+                                $.ajax({
+                                    type: "post",
+                                    url: url,
+                                    datatype: "json",
+                                    success: function(data) {
+                                        console.log(data)
+                                        window.location.reload();
+                                    }
+                                })
+
+                        }
+                        })
+                $('.social-media-left-searched-items-container').empty();
+                });
     })
 </script>
 

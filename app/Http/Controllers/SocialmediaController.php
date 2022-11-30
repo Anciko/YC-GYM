@@ -719,7 +719,11 @@ class SocialmediaController extends Controller
         ->leftJoin('users','users.id','posts.user_id')
         ->leftJoin('profiles','users.profile_id','profiles.id')
         ->first();
-        $comments = Comment::where('post_id',$id)->orderBy('created_at','DESC')->get();
+        $comments = Comment::select('users.name','users.profile_id','profiles.profile_image','comments.*')
+        ->leftJoin('users','users.id','comments.user_id')
+        ->leftJoin('profiles','users.profile_id','profiles.id')
+        ->where('post_id',$id)->orderBy('created_at','DESC')->get();
+       // dd($comments)->toArray();
         return view('customer.comments',compact('post','comments'));
     }
 
@@ -767,6 +771,15 @@ class SocialmediaController extends Controller
         $comments->save();
         return response()->json([
             'data' =>  $comments
+        ]);
+    }
+
+    public function comment_delete(Request $request)
+    {
+        Comment::find($request->id)->delete($request->id);
+
+        return response()->json([
+            'success' => 'Comment deleted successfully!'
         ]);
     }
 }

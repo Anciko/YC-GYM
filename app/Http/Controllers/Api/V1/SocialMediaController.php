@@ -373,26 +373,6 @@ class SocialMediaController extends Controller
                     $f=(array)$friend;
                     array_push($n, $f['sender_id'],$f['receiver_id']);
             }
-        if($request->keyword != ''){
-            $friends = User::select('users.id','users.name','friendships.date','profiles.profile_image')
-            ->leftjoin('friendships', function ($join) {
-                  $join->on('friendships.receiver_id', '=', 'users.id')
-            ->orOn('friendships.sender_id', '=', 'users.id');})
-            ->leftJoin('profiles','profiles.id','users.profile_id')
-            ->where('users.name','LIKE','%'.$request->keyword.'%')
-            ->where('users.id','!=',$id)
-            ->where('friendships.friend_status',2)
-            ->where('friendships.receiver_id',$id)
-            ->orWhere('friendships.sender_id',$id)
-            ->whereIn('users.id',$n)
-            ->where('users.id','!=',$id)
-            ->where('users.name','LIKE','%'.$request->keyword.'%')
-            ->get();
-            // dd($friends);
-            return response()->json([
-                'friends' => $friends
-            ]);
-        }
             $friends = User::select('users.id','users.name','friendships.date','profiles.profile_image')
             ->leftjoin('friendships', function ($join) {
                 $join->on('friendships.receiver_id', '=', 'users.id')
@@ -894,6 +874,27 @@ class SocialMediaController extends Controller
         $comments->save();
         return response()->json([
             'data' =>  $comments
+        ]);
+    }
+
+
+    public function comment_delete(Request $request)
+    {
+        Comment::find($request->id)->delete($request->id);
+
+        return response()->json([
+            'success' => 'Comment deleted successfully!'
+        ]);
+    }
+
+    public function comment_list(Request $request){
+        $id = $request->id;
+        $comments = Comment::select('users.name','users.profile_id','profiles.profile_image','comments.*')
+        ->leftJoin('users','users.id','comments.user_id')
+        ->leftJoin('profiles','users.profile_id','profiles.id')
+        ->where('post_id',$id)->orderBy('created_at','DESC')->get();
+        return response()->json([
+            'success' => $comments
         ]);
     }
 
