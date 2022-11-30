@@ -54,6 +54,9 @@ class SocialmediaController extends Controller
 
                         //dd($left_friends);
         //$posts=Post::orderBy('created_at','DESC')->with('user')->paginate(10);
+        // $post_reacted=UserReactPost::groupBy('post_id')->get('post_id');
+        // dd($post_reacted->toArray());
+
         return view('customer.socialmedia',compact('posts'));
     }
 
@@ -71,13 +74,14 @@ class SocialmediaController extends Controller
         $user=auth()->user();
         $react=$user->user_reacted_posts()->where('post_id',$post_id)->first();
 
-        if($react){
+        if(!empty($react)){
             $already_like=true;
             $update=true;
-                if($already_like==$isLike){
+                // if($already_like==$isLike){
                     $react->delete();
-                    return null;
-                }
+                //     return null;
+
+                // }
         }else{
                 $react=new UserReactPost();
             }
@@ -90,7 +94,12 @@ class SocialmediaController extends Controller
             }else{
                 $react->save();
             }
-            return null;
+
+            $total_likes=UserReactPost::where('post_id',$post_id)->count();
+
+            return response()->json([
+                'total_likes' => $total_likes,
+            ]);
     }
 
     public function profile_photo_delete(Request $request)

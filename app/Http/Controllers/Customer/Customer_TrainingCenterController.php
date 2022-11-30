@@ -160,12 +160,13 @@ class Customer_TrainingCenterController extends Controller
         }
 
         $save_posts=UserSavedPost::where('user_id',$user_id)->with('user')->get();
-        $saved_posts = UserSavedPost::select('users.name','profiles.profile_image','posts.*')->leftJoin('posts','posts.id','user_saved_posts.post_id')
+        $saved_posts = UserSavedPost::select('users.name','profiles.profile_image','posts.*')
+                        ->leftJoin('posts','posts.id','user_saved_posts.post_id')
                         ->where('user_saved_posts.user_id',auth()->user()->id)
-                        ->leftJoin('users','users.id','user_saved_posts.user_id')
+                        ->leftJoin('users','users.id','posts.user_id')
                         ->leftJoin('profiles','users.profile_id','profiles.id')
                         ->orderBy('posts.created_at','DESC')
-                        ->get()->toArray();
+                        ->get();
 
                         //dd($saved_posts);
 

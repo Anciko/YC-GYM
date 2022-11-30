@@ -231,10 +231,20 @@
 
                                 <iconify-icon icon="bi:three-dots-vertical" class="customer-post-header-icon"></iconify-icon>
                                 <div class="post-actions-container">
-                                    <div class="post-action">
-                                        <iconify-icon icon="bi:save" class="post-action-icon"></iconify-icon>
-                                        <p>Save</p>
-                                    </div>
+                                    <a href="#" style="text-decoration:none" class="post_save" id="{{$post->id}}">
+                                        <div class="post-action">
+                                            <iconify-icon icon="bi:save" class="post-action-icon"></iconify-icon>
+                                            @php
+                                                $already_save=auth()->user()->user_saved_posts->where('post_id',$post->id)->first();
+                                            @endphp
+
+                                            @if ($already_save)
+                                                <p class="save">Unsave</p>
+                                            @else
+                                                <p class="save">Save</p>
+                                             @endif
+                                        </div>
+                                    </a>
                                     <a id="edit_post" data-id="{{$post->id}}" data-bs-toggle="modal" >
                                         <div class="post-action">
                                             <iconify-icon icon="material-symbols:edit" class="post-action-icon"></iconify-icon>
@@ -333,130 +343,130 @@
                     @endforelse
                 </div>
 
+                {{-- Saved Post Start --}}
                 <div class="customer-saved-posts-container">
-                    @forelse ($save_posts as $save_post)
-                    <div class="customer-post-container">
-                        <div class="customer-post-header">
-                            <div class="customer-post-name-container">
-                                <?php $profile=$save_post->post->user->profiles->where('cover_photo',null)->sortByDesc('created_at')->first() ?>
-                                @if ($profile==null)
-                                    <img class="nav-profile-img" src="{{asset('img/customer/imgs/user_default.jpg')}}"/>
-                                @else
-                                    <img class="nav-profile-img" src="{{asset('storage/post/'.$profile->profile_image)}}"/>
-                                @endif
-                                <div class="customer-post-name">
-                                    <p>{{$save_post->post->user->name}}</p>
-                                    <span>{{ \Carbon\Carbon::parse($save_post->post->created_at)->format('d M Y , g:i A')}}</span>
-                                </div>
-                            </div>
-
-                            <iconify-icon icon="bi:three-dots-vertical" class="customer-post-header-icon"></iconify-icon>
-                            <div class="post-actions-container">
-                                <a href="#" style="text-decoration:none" class="post_save" id="{{$save_post->post_id}}">
-                                    <div class="post-action">
-                                        <iconify-icon icon="bi:save" class="post-action-icon"></iconify-icon>
-                                            <p class="save">Unsave</p>
-                                    </div>
-                                </a>
-                                @if ($save_post->post->user->id == auth()->user()->id)
-                                    <a id="edit_post" data-id="{{$save_post->post->id}}" data-bs-toggle="modal" >
-                                        <div class="post-action">
-                                            <iconify-icon icon="material-symbols:edit" class="post-action-icon"></iconify-icon>
-                                            <p>Edit</p>
-                                        </div>
-                                    </a>
-                                    <a id="delete_post" data-id="{{$save_post->post->id}}">
-                                        <div class="post-action">
-                                        <iconify-icon icon="material-symbols:delete-forever-outline-rounded" class="post-action-icon"></iconify-icon>
-                                        <p>Delete</p>
-                                        </div>
-                                    </a>
-                                @endif
-                            </div>
-                        </div>
-
-                        <div class="customer-content-container">
-                            @if ($save_post->post->media==null)
-                            <p>{{$save_post->post->caption}}</p>
-                            @else
-                            <p>{{$save_post->post->caption}}</p>
-                            <div class="customer-media-container">
-                                <?php foreach (json_decode($save_post->post->media)as $m){?>
-                                    <div class="customer-media">
-                                    @if (pathinfo($m, PATHINFO_EXTENSION) == 'mp4')
-                                    <video controls>
-                                        <source src="{{asset('storage/post/'.$m) }}">
-                                    </video>
+                    @forelse ($save_posts->sortByDesc('created_at') as $save_post)
+                        <div class="customer-post-container">
+                            <div class="customer-post-header">
+                                <div class="customer-post-name-container">
+                                    <?php $profile=$save_post->post->user->profiles->where('cover_photo',null)->sortByDesc('created_at')->first() ?>
+                                    @if ($profile==null)
+                                        <img class="nav-profile-img" src="{{asset('img/customer/imgs/user_default.jpg')}}"/>
                                     @else
-                                        <img src="{{asset('storage/post/'.$m) }}">
+                                        <img class="nav-profile-img" src="{{asset('storage/post/'.$profile->profile_image)}}"/>
+                                    @endif
+                                    <div class="customer-post-name">
+                                        <p>{{$save_post->post->user->name}}</p>
+                                        <span>{{ \Carbon\Carbon::parse($save_post->post->created_at)->format('d M Y , g:i A')}}</span>
+                                    </div>
+                                </div>
+
+                                <iconify-icon icon="bi:three-dots-vertical" class="customer-post-header-icon"></iconify-icon>
+                                <div class="post-actions-container">
+                                    <a href="#" style="text-decoration:none" class="post_save" id="{{$save_post->post_id}}">
+                                        <div class="post-action">
+                                            <iconify-icon icon="bi:save" class="post-action-icon"></iconify-icon>
+                                                <p class="save">Unsave</p>
+                                        </div>
+                                    </a>
+                                    @if ($save_post->post->user->id == auth()->user()->id)
+                                        <a id="edit_post" data-id="{{$save_post->post->id}}" data-bs-toggle="modal" >
+                                            <div class="post-action">
+                                                <iconify-icon icon="material-symbols:edit" class="post-action-icon"></iconify-icon>
+                                                <p>Edit</p>
+                                            </div>
+                                        </a>
+                                        <a id="delete_post" data-id="{{$save_post->post->id}}">
+                                            <div class="post-action">
+                                            <iconify-icon icon="material-symbols:delete-forever-outline-rounded" class="post-action-icon"></iconify-icon>
+                                            <p>Delete</p>
+                                            </div>
+                                        </a>
                                     @endif
                                 </div>
-                                <?php }?>
                             </div>
-                            <div id="slider-wrapper" class="social-media-media-slider">
-                                <iconify-icon icon="akar-icons:cross" class="slider-close-icon"></iconify-icon>
 
-                                <div id="image-slider" class="image-slider">
-                                    <ul class="ul-image-slider">
+                            <div class="customer-content-container">
+                                @if ($save_post->post->media==null)
+                                <p>{{$save_post->post->caption}}</p>
+                                @else
+                                <p>{{$save_post->post->caption}}</p>
+                                <div class="customer-media-container">
+                                    <?php foreach (json_decode($save_post->post->media)as $m){?>
+                                        <div class="customer-media">
+                                        @if (pathinfo($m, PATHINFO_EXTENSION) == 'mp4')
+                                        <video controls>
+                                            <source src="{{asset('storage/post/'.$m) }}">
+                                        </video>
+                                        @else
+                                            <img src="{{asset('storage/post/'.$m) }}">
+                                        @endif
+                                    </div>
+                                    <?php }?>
+                                </div>
+                                <div id="slider-wrapper" class="social-media-media-slider">
+                                    <iconify-icon icon="akar-icons:cross" class="slider-close-icon"></iconify-icon>
 
-                                        <?php foreach (json_decode($save_post->post->media)as $m){?>
-                                            @if (pathinfo($m, PATHINFO_EXTENSION) == 'mp4')
-                                            <li>
-                                                <video controls>
-                                                    <source src="{{asset('storage/post/'.$m) }}">
-                                                </video>
-                                            </li>
-                                            @else
+                                    <div id="image-slider" class="image-slider">
+                                        <ul class="ul-image-slider">
+
+                                            <?php foreach (json_decode($save_post->post->media)as $m){?>
+                                                @if (pathinfo($m, PATHINFO_EXTENSION) == 'mp4')
                                                 <li>
-                                                    <img src="{{asset('storage/post/'.$m) }}" alt="" />
+                                                    <video controls>
+                                                        <source src="{{asset('storage/post/'.$m) }}">
+                                                    </video>
                                                 </li>
-                                            @endif
+                                                @else
+                                                    <li>
+                                                        <img src="{{asset('storage/post/'.$m) }}" alt="" />
+                                                    </li>
+                                                @endif
 
-                                        <?php }?>
-                                    </ul>
+                                            <?php }?>
+                                        </ul>
+
+                                    </div>
+
+                                    <div id="thumbnail" class="img-slider-thumbnails">
+                                        <ul>
+                                            <?php foreach (json_decode($save_post->post->media)as $m){?>
+                                                @if (pathinfo($m, PATHINFO_EXTENSION) == 'mp4')
+                                                <li>
+                                                    <video>
+                                                        <source src="{{asset('storage/post/'.$m) }}">
+                                                    </video>
+                                                </li>
+                                                @else
+                                                    <li>
+                                                        <img src="{{asset('storage/post/'.$m) }}" alt="" />
+                                                    </li>
+                                                @endif
+
+                                            <?php }?>
+
+                                        </ul>
+                                    </div>
 
                                 </div>
+                                @endif
 
-                                <div id="thumbnail" class="img-slider-thumbnails">
-                                    <ul>
-                                        {{-- <li class="active"><img src="https://40.media.tumblr.com/tumblr_m92vwz7XLZ1qf4jqio1_540.jpg" alt="" /></li> --}}
-                                        <?php foreach (json_decode($save_post->post->media)as $m){?>
-                                            @if (pathinfo($m, PATHINFO_EXTENSION) == 'mp4')
-                                            <li>
-                                                <video>
-                                                    <source src="{{asset('storage/post/'.$m) }}">
-                                                </video>
-                                            </li>
-                                            @else
-                                                <li>
-                                                    <img src="{{asset('storage/post/'.$m) }}" alt="" />
-                                                </li>
-                                            @endif
+                            </div>
 
-                                        <?php }?>
-
-                                    </ul>
+                            <div class="customer-post-footer-container">
+                                <div class="customer-post-like-container">
+                                    <iconify-icon icon="akar-icons:heart" class="like-icon"></iconify-icon>
+                                    <p><span>1.1k</span> Likes</p>
                                 </div>
-
-                            </div>
-                            @endif
-
-                        </div>
-
-                        <div class="customer-post-footer-container">
-                            <div class="customer-post-like-container">
-                                <iconify-icon icon="akar-icons:heart" class="like-icon"></iconify-icon>
-                                <p><span>1.1k</span> Likes</p>
-                            </div>
-                            <div class="customer-post-comment-container">
-                                <iconify-icon icon="bi:chat-right" class="comment-icon"></iconify-icon>
-                                <p><span>50</span> Comments</p>
+                                <div class="customer-post-comment-container">
+                                    <iconify-icon icon="bi:chat-right" class="comment-icon"></iconify-icon>
+                                    <p><span>50</span> Comments</p>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    @empty
-                    <p class="text-secondary p-1">No Saved Post And Activity</p>
-                @endforelse
+                        @empty
+                        <p class="text-secondary p-1">No Saved Post And Activity</p>
+                    @endforelse
                 </div>
             </div>
         </div>
@@ -1730,7 +1740,7 @@
         }
 
     $(document).ready(function() {
-        saved_post()
+         
         $(".customer-saved-posts-container").hide()
 
         $(".customer-profile-selector").change(function(e){
@@ -1748,35 +1758,57 @@
 
         function saved_post(){
             var save_posts=@json($saved_posts);
-            console.log(save_posts);
-            $(".customer-saved-posts-container").append(`
 
+            $('.customer-saved-posts-container').append(`
             ${save_posts.map((item,index) => (`
-                            <div class="customer-post-container">
-                                <div class="customer-post-header">
-                                    <div class="customer-post-name-container">
+                <div class="customer-post-container">
+                    <div class="customer-post-header">
+                        <div class="customer-post-name-container">
+                            <img class="nav-profile-img" src="{{asset('img/customer/imgs/user_default.jpg')}}"/>
+                            <div class="customer-post-name">
+                                <p>${item.name}</p>
+                                <span>dstgyergdfhgf</span>
+                            </div>
 
-                                        <div class="customer-post-name">
-                                            <p>${item.name}</p>
-                                            <span>{{ \Carbon\Carbon::parse($save_post->post->created_at)->format('d M Y , g:i A')}}</span>
+                        </div>
+                            <iconify-icon icon="bi:three-dots-vertical" class="customer-post-header-icon"></iconify-icon>
+                            <div class="post-actions-container">
+                                <a href="#" style="text-decoration:none" class="post_save" id="${item.id}">
+                                    <div class="post-action">
+                                        <iconify-icon icon="bi:save" class="post-action-icon"></iconify-icon>
+                                            <p class="save">Unsave</p>
+                                    </div>
+                                </a>
+                                    <a id="edit_post" data-id="${item.id}" data-bs-toggle="modal" >
+                                        <div class="post-action">
+                                            <iconify-icon icon="material-symbols:edit" class="post-action-icon"></iconify-icon>
+                                            <p>Edit</p>
                                         </div>
-                                    </div>
-                                    <iconify-icon icon="bi:three-dots-vertical" class="customer-post-header-icon"></iconify-icon>
-                                    <div class="post-actions-container">
-                                        <a href="#" style="text-decoration:none" class="post_save" id="${item.id}">
-                                            <div class="post-action">
-                                                <iconify-icon icon="bi:save" class="post-action-icon"></iconify-icon>
-                                                    <p class="save">Unsave</p>
-                                            </div>
-                                        </a>
-                                    </div>
+                                    </a>
+                                    <a id="delete_post" data-id="${item.id}">
+                                        <div class="post-action">
+                                        <iconify-icon icon="material-symbols:delete-forever-outline-rounded" class="post-action-icon"></iconify-icon>
+                                        <p>Delete</p>
+                                        </div>
+                                    </a>
+                            </div>
+                    </div>
+                    <div class="customer-content-container">
+                        <p>${item.caption}</p>
+                        <div class="customer-media-container">
+                            <div class="customer-media">
+                                <div class="customer-media">
+                                    <h1>${item.media}</h1>
                                 </div>
                             </div>
-                            `
-                        )
-                    )}
+                        </div>
+                    </div>
+                </div>
+            </div>`
+            ))}
 
             `)
+
 
         }
 
@@ -1801,6 +1833,8 @@
                                         timerProgressBar: true,
                                         timer: 5000,
                                         icon: 'success',
+                                    }).then((result) => {
+                                        e.target.innerHTML = "Unsave";
                                     })
 
                                 }else{
@@ -1809,10 +1843,10 @@
                                         timerProgressBar: true,
                                         timer: 5000,
                                         icon: 'success',
+                                    }).then((result) => {
+                                        e.target.innerHTML = "Save";
                                     })
                                 }
-
-                                $( ".customer-saved-posts-container" ).load(window.location.href + " .customer-saved-posts-container" );
 
                             }
                     })
@@ -2196,9 +2230,9 @@
             $('.customer-bio-form p').show()
         })
 
-        $('.customer-profile-training-center-tab').addClass("customer-profile-training-center-tab-active")
-        $('.customer-profile-training-center-container').show()
-        $('.customer-profile-socialmedia-container').hide()
+        $('.customer-profile-socialmedia-tab').addClass("customer-profile-training-center-tab-active")
+        $('.customer-profile-training-center-container').hide()
+        $('.customer-profile-socialmedia-container').show()
         $('.customer-profile-shop-container').hide()
 
         $('.customer-profile-training-center-tab').click(function(){
