@@ -7,6 +7,7 @@ use Pusher\Pusher;
 use App\Models\Post;
 use App\Models\User;
 use App\Models\BanWord;
+use App\Models\Chat;
 use App\Models\Comment;
 use App\Models\Profile;
 use App\Models\Friendship;
@@ -760,6 +761,45 @@ class SocialmediaController extends Controller
         ]);
     }
 
+    public function see_all_message(){
+        $auth_user = auth()->user();
+
+        $messages = Chat::where('from_user_id','!=',$auth_user->id)->where(function($qu) use ($auth_user){
+            $qu->where('to_user_id',$auth_user->id);
+        })->get();
+// dd($messages->toArray());
+        $user_id = Chat::select('from_user_id','to_user_id')->where('from_user_id', $auth_user->id)->orWhere('to_user_id',$auth_user->id)->get();
+
+        foreach($user_id as $id){
+            $chat_lists = Chat::where('from_user_id', $auth_user->id)->orWhere('to_user_id',$auth_user->id)
+                        ->with('to_user')->with('from_user')->with('to_user.profiles')->with('from_user.profiles')
+                        ->where(function($query) use ($id){
+                            $query->where('from_user_id', $id)->orWhere('to_user_id',$id);
+                        })->get();
+        }
+
+
+        return view('customer.message_seeall', compact('chat_lists', 'messages'));
+    }
+
+    public function chat_message($id){
+        $auth_user = auth()->user();
+        $sender_message = Chat::where('from_user_id',$auth_user->id)->where('to_user_id',$id)
+                        ->get();
+
+        $reciever_message = Chat::where('from_user_id',$id)->where('to_user_id',$auth_user->id)->with('to_user')->with('from_user')
+        ->get();
+
+        $messages = Chat::where(function($query) use ($auth_user){
+            $query->where('from_user_id',$auth_user->id)->orWhere('to_user_id',$auth_user->id);
+        })->where(function($que) use ($id){
+            $que->where('from_user_id',$id)->orWhere('to_user_id',$id);
+        })->with('to_user')->with('from_user')->get();
+
+        $auth_user_name = auth()->user()->name;
+
+        return view('customer.chat_message', compact('sender_message','reciever_message','id','messages','auth_user_name'));
+    }
     public function post_comment($id)
     {
         // dd($id);
@@ -768,7 +808,35 @@ class SocialmediaController extends Controller
         ->leftJoin('users','users.id','posts.user_id')
         ->leftJoin('profiles','users.profile_id','profiles.id')
         ->first();
-        $comments = Comment::where('post_id',$id)->orderBy('created_at','DESC')->get();
+        $comments = Comment::select('users.name','users.profile_id','profiles.profile_image','comments.*')
+        ->leftJoin('users','users.id','comments.user_id')
+        ->leftJoin('profiles','users.profile_id','profiles.id')
+        ->where('post_id',$id)->orderBy('created_at','DESC')->get();
+
+       foreach($comments as $key=>$comm1){
+                   $mentioned_user_id = json_decode($comm1->mentioned_users);
+                //    dd(count($mentioned_user_id));
+                   if($mentioned_user_id){
+                    foreach($mentioned_user_id as $id){
+                        for($i=0;count($mentioned_user_id)>$i;$i++){
+                            $main =  $comm1['comment'];
+                            if (str_contains($main,'@'.$mentioned_user_id[$i])) {
+                            $replace = str_replace("@$mentioned_user_id[$i]","<a href = '#'>"."$mentioned_user_id[$i]"."</a>",$main);
+
+                            $comments[$key]['Replace']= $replace;
+                            }
+                        }
+
+                    }
+                    }
+                   else{
+                    $comments[$key]['Replace']= $comm1->comment;
+                   }
+
+        }
+
+    // dd($comments);
+
         return view('customer.comments',compact('post','comments'));
     }
 
@@ -816,6 +884,31 @@ class SocialmediaController extends Controller
         $comments->save();
         return response()->json([
             'data' =>  $comments
+        ]);
+    }
+
+    public function comment_delete(Request $request)
+    {
+        Comment::find($request->id)->delete($request->id);
+
+        return response()->json([
+            'success' => 'Comment deleted successfully!'
+        ]);
+    }
+
+    public function comment_list(Request $request){
+        $id = $request->id;
+        $comments = Comment::select('users.name','users.profile_id','profiles.profile_image','comments.*')
+        ->leftJoin('users','users.id','comments.user_id')
+        ->leftJoin('profiles','users.profile_id','profiles.id')
+        ->where('post_id',$id)->orderBy('created_at','DESC')->get();
+        foreach($comments as $key=>$comm1){
+            $main =  $comm1['comment'];
+            $replace = str_replace("@1","<a href = '#'>"."User One"."</a>",$main);
+            $comments[$key]['Replace']= $replace;
+        }
+        return response()->json([
+            'comment' => $comments
         ]);
     }
 }

@@ -131,9 +131,9 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
 
     Route::post('friends', [SocialmediaController::class, 'friends']);//
 
-    Route::post('friends_for_mention', [SocialmediaController::class, 'friends_for_mention']);//
+    Route::get('friends_for_mention', [SocialmediaController::class, 'friends_for_mention']);//
 
-    Route::post('/post/comment/store', [SocialmediaController::class, 'post_comment_store'])->name('post.comment.store');
+
 
     Route::get('notification', [SocialmediaController::class, 'notification']);
 
@@ -155,8 +155,13 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::post('profile/cover/update', [SocialmediaController::class, 'profile_update_cover']);
     Route::post('profile/image/update', [SocialmediaController::class, 'profile_update_profile_img']);
     Route::post('profile/bio/update', [SocialmediaController::class, 'profile_update_bio']);
-    Route::post('/profile/photo/delete', [SocialmediaController::class, 'profile_photo_delete']);
+    Route::post('profile/photo/delete', [SocialmediaController::class, 'profile_photo_delete']);
 
+    Route::post('message/chat/{id}',[SocialMediaController::class,'chatting']);
+    Route::post('post/comment/store', [SocialmediaController::class, 'post_comment_store']);
+    Route::post('post/comment/delete', [SocialmediaController::class, 'comment_delete']);
+
+    Route::post('post/comment/list', [SocialmediaController::class, 'comment_list']);
 
 
 });

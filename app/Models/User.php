@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Chat;
 use App\Models\Post;
 use App\Models\Payment;
 use App\Models\Friendship;
@@ -78,6 +79,11 @@ class User extends Authenticatable
         return $this->hasMany(Post::class, 'user_id', 'id');
     }
 
+    public function comments()
+    {
+        return $this->hasMany(Comment::class, 'user_id', 'id');
+    }
+
     public function personalmealinfos()
     {
         return $this->hasMany(PersonalMealInfo::class, 'client_id', 'id');
@@ -92,6 +98,9 @@ class User extends Authenticatable
         return $this->hasMany(TrainingUser::class,'user_id','id');
     }
 
+    public function post(){
+        return $this->hasOne(Post::class);
+    }
     public function notifri(){
         return $this->hasMany(Notification::class,'receiver_id');
     }

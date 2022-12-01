@@ -204,38 +204,28 @@
                             <div class="social-media-left-messages-container">
                                 <div class="social-media-left-container-header">
                                     <p>Messages</p>
-                                    <a href="#">See All <iconify-icon icon="bi:arrow-right" class="arrow-icon"></iconify-icon></a>
+                                    <a href="{{route('message.seeall')}}">See All <iconify-icon icon="bi:arrow-right" class="arrow-icon"></iconify-icon></a>
                                 </div>
 
                                 <div class="social-media-left-messages-rows-container">
-                                    <a href="#" class="social-media-left-messages-row">
-                                        <img src="{{asset('img/customer/imgs/user_default.jpg')}}">
+                                    @forelse ($left_friends as $friend)
+                                    <a href="{{route('message.chat',$friend->id)}}" class="social-media-left-messages-row">
+                                        <?php $profile=$friend->profiles->where('cover_photo',null)->sortByDesc('created_at')->first() ?>
+
+                                        @if ($profile==null)
+                                            <img class="nav-profile-img" src="{{asset('img/customer/imgs/user_default.jpg')}}"/>
+                                        @else
+                                            <img class="nav-profile-img" src="{{asset('storage/post/'.$profile->profile_image)}}"/>
+                                        @endif
                                         <p>
-                                            Friend Name<br>
+                                            {{$friend->name}}<br>
                                             <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Dui hendrerit potenti pellentesque tellus urna bibendum mollis. </span>
                                         </p>
                                     </a>
-                                    <a href="#" class="social-media-left-messages-row">
-                                        <img src="{{asset('img/customer/imgs/user_default.jpg')}}">
-                                        <p>
-                                            Friend Name<br>
-                                            <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Dui hendrerit potenti pellentesque tellus urna bibendum mollis. </span>
-                                        </p>
-                                    </a>
-                                    <a href="#" class="social-media-left-messages-row">
-                                        <img src="{{asset('img/customer/imgs/user_default.jpg')}}">
-                                        <p>
-                                            Friend Name<br>
-                                            <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Dui hendrerit potenti pellentesque tellus urna bibendum mollis. </span>
-                                        </p>
-                                    </a>
-                                    <a href="#" class="social-media-left-messages-row">
-                                        <img src="{{asset('img/customer/imgs/user_default.jpg')}}">
-                                        <p>
-                                            Friend Name<br>
-                                            <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Dui hendrerit potenti pellentesque tellus urna bibendum mollis. </span>
-                                        </p>
-                                    </a>
+                                    @empty
+                                    <p class="text-secondary p-1">No Messages</p>
+                                    @endforelse
+
                                 </div>
                             </div>
 
@@ -307,7 +297,16 @@
     <!--nav bar-->
     <script src={{asset('js/navBar.js')}}></script>
     <script src={{asset('js/notify.js')}}></script>
-    <script src="https://js.pusher.com/4.1/pusher.min.js"></script>
+
+
+    {{-- axios --}}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.1.3/axios.min.js" integrity="sha512-0qU9M9jfqPw6FKkPafM3gy2CBAvUWnYVOfNPDYKVuRTel1PrciTj+a9P3loJB+j0QmN2Y0JYQmkBBS8W+mbezg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+    {{-- pusher --}}
+    <script src="https://js.pusher.com/7.2/pusher.min.js"></script>
+
+    {{-- emoji --}}
+    <script src="https://cdn.jsdelivr.net/npm/@joeattardi/emoji-button@3.0.3/dist/index.min.js"></script>
 
     <script src="{{asset('js/customer/jquery.mentiony.js')}}"></script>
 
@@ -1194,6 +1193,8 @@
                 });
     })
 </script>
+
+
 @stack('scripts')
 
   </body>

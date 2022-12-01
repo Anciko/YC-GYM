@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\V1;
 
+use App\Events\Chatting;
 use Carbon\Carbon;
 use Pusher\Pusher;
 use App\Models\Post;
@@ -14,6 +15,7 @@ use Illuminate\Http\Request;
 use App\Models\UserSavedPost;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use App\Models\Chat;
 use Illuminate\Support\Facades\Storage;
 
 class SocialMediaController extends Controller
@@ -373,26 +375,6 @@ class SocialMediaController extends Controller
                     $f=(array)$friend;
                     array_push($n, $f['sender_id'],$f['receiver_id']);
             }
-        if($request->keyword != ''){
-            $friends = User::select('users.id','users.name','friendships.date','profiles.profile_image')
-            ->leftjoin('friendships', function ($join) {
-                  $join->on('friendships.receiver_id', '=', 'users.id')
-            ->orOn('friendships.sender_id', '=', 'users.id');})
-            ->leftJoin('profiles','profiles.id','users.profile_id')
-            ->where('users.name','LIKE','%'.$request->keyword.'%')
-            ->where('users.id','!=',$id)
-            ->where('friendships.friend_status',2)
-            ->where('friendships.receiver_id',$id)
-            ->orWhere('friendships.sender_id',$id)
-            ->whereIn('users.id',$n)
-            ->where('users.id','!=',$id)
-            ->where('users.name','LIKE','%'.$request->keyword.'%')
-            ->get();
-            // dd($friends);
-            return response()->json([
-                'friends' => $friends
-            ]);
-        }
             $friends = User::select('users.id','users.name','friendships.date','profiles.profile_image')
             ->leftjoin('friendships', function ($join) {
                 $join->on('friendships.receiver_id', '=', 'users.id')
@@ -862,7 +844,16 @@ class SocialMediaController extends Controller
         ]);
     }
 
+    public function chatting(Request $request,$id){
 
+        $message = new Chat();
+        $message->to_user_id = $id;
+        $message->from_user_id = auth()->user()->id;
+        $message->text = $request->text == null ?  null : $request->text;
+        $message->save();
+
+        event(new Chatting($message, $request->sender));
+    }
     public function post_comment_store(Request $request){
         // dd(json_encode($request->mention));
         $banwords=DB::table('ban_words')->select('ban_word_english','ban_word_myanmar','ban_word_myanglish')->get();
@@ -894,6 +885,27 @@ class SocialMediaController extends Controller
         $comments->save();
         return response()->json([
             'data' =>  $comments
+        ]);
+    }
+
+
+    public function comment_delete(Request $request)
+    {
+        Comment::find($request->id)->delete($request->id);
+
+        return response()->json([
+            'success' => 'Comment deleted successfully!'
+        ]);
+    }
+
+    public function comment_list(Request $request){
+        $id = $request->id;
+        $comments = Comment::select('users.name','users.profile_id','profiles.profile_image','comments.*')
+        ->leftJoin('users','users.id','comments.user_id')
+        ->leftJoin('profiles','users.profile_id','profiles.id')
+        ->where('post_id',$id)->orderBy('created_at','DESC')->get();
+        return response()->json([
+            'comments' => $comments
         ]);
     }
 
