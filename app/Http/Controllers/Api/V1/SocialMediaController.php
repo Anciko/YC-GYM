@@ -844,7 +844,6 @@ class SocialMediaController extends Controller
         ]);
     }
 
-<<<<<<< HEAD
     public function chatting(Request $request,$id){
 
         $message = new Chat();
@@ -854,8 +853,7 @@ class SocialMediaController extends Controller
         $message->save();
 
         event(new Chatting($message, $request->sender));
-=======
-
+    }
     public function post_comment_store(Request $request){
         // dd(json_encode($request->mention));
         $banwords=DB::table('ban_words')->select('ban_word_english','ban_word_myanmar','ban_word_myanglish')->get();
@@ -909,7 +907,6 @@ class SocialMediaController extends Controller
         return response()->json([
             'comments' => $comments
         ]);
->>>>>>> 5aa4d82e73baed9d8eb6bb755658e8bd57652162
     }
 
 }

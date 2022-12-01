@@ -721,7 +721,6 @@ class SocialmediaController extends Controller
         ]);
     }
 
-<<<<<<< HEAD
     public function see_all_message(){
         $auth_user = auth()->user();
 
@@ -760,7 +759,7 @@ class SocialmediaController extends Controller
         $auth_user_name = auth()->user()->name;
 
         return view('customer.chat_message', compact('sender_message','reciever_message','id','messages','auth_user_name'));
-=======
+    }
     public function post_comment($id)
     {
         // dd($id);
@@ -855,7 +854,6 @@ class SocialmediaController extends Controller
         return response()->json([
             'success' => 'Comment deleted successfully!'
         ]);
->>>>>>> 5aa4d82e73baed9d8eb6bb755658e8bd57652162
     }
 
     public function comment_list(Request $request){
