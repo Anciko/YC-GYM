@@ -266,8 +266,48 @@ class SocialmediaController extends Controller
             'posts' => $posts
        ]);
     }
-        // return view('customer.socialmedia_profile',compact('user','posts','friends','friend'));
 
+    public function social_media_likes($post_id)
+    {
+        $auth = Auth()->user()->id;
+        $post_likes=UserReactPost::where('post_id',$post_id)
+                    ->with('user')
+                    ->get();
+
+        $post=Post::findOrFail($post_id);
+
+        // $friends=DB::table('friendships')->get()->toArray();
+        $friends = DB::select("SELECT * FROM `friendships` WHERE (receiver_id = $auth or sender_id = $auth)
+       ");
+
+        //dd($post_likes , $friends);
+        foreach($post_likes as $key=>$postLike)
+            {
+                foreach($friends as $fri_status){
+                    if($fri_status->sender_id == $postLike['user_id'] && $fri_status->receiver_id == $auth && $fri_status->friend_status == 2 ){
+                        $post_likes[$key]['friend_status']= 'friend';
+                    }
+                    else if($fri_status->receiver_id == $postLike['user_id'] && $fri_status->sender_id == $auth && $fri_status->friend_status == 2 ){
+                        $post_likes[$key]['friend_status']= 'friend';
+                    }
+                    else if($fri_status->receiver_id == $postLike['user_id'] && $fri_status->sender_id == $auth && $fri_status->friend_status == 1){
+                        $post_likes[$key]['friend_status']= 'cancelRequest';
+                    }
+                    else if($fri_status->sender_id == $postLike['user_id'] && $fri_status->receiver_id == $auth && $fri_status->friend_status == 1){
+                        $post_likes[$key]['friend_status']= 'Response';
+                    }
+                    else if($postLike['user_id'] == $auth){
+                        $post_likes[$key]['friend_status']= 'myself';
+                    }
+                    else if($fri_status->sender_id != $postLike['user_id'] && $fri_status->receiver_id != $auth){
+                        $post_likes[$key]['friend_status']= 'addfriend';
+                    }
+                }
+
+            }
+        return view('customer.socialmedia_likes',compact('post_likes','post'));
+    }
+        
     public function socialmedia_profile_photos(Request $request)
     {
         $user_id=$request->user_id;

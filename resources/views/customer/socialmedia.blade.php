@@ -3,45 +3,45 @@
 @section('content')
 @include('sweetalert::alert')
 
-        <div class="social-media-right-container">
-            <div class="social-media-posts-parent-container">
-                @foreach ($posts as $post)
-                <div class="social-media-post-container">
-                    <div class="social-media-post-header">
-                        <div class="social-media-post-name-container">
+    <div class="social-media-right-container">
+        <div class="social-media-posts-parent-container">
+            @foreach ($posts as $post)
+            <div class="social-media-post-container">
+                <div class="social-media-post-header">
+                    <div class="social-media-post-name-container">
+                        <a href="{{route('socialmedia.profile',$post->user_id)}}" style="text-decoration:none">
+                            <?php $profile=$post->user->profiles->where('cover_photo',null)->sortByDesc('created_at')->first() ?>
+                            @if ($profile==null)
+                                <img class="nav-profile-img" src="{{asset('img/customer/imgs/user_default.jpg')}}"/>
+                            @else
+                                <img class="nav-profile-img" src="{{asset('storage/post/'.$profile->profile_image)}}"/>
+                            @endif
+                        </a>
+                        <div class="social-media-post-name">
                             <a href="{{route('socialmedia.profile',$post->user_id)}}" style="text-decoration:none">
-                                <?php $profile=$post->user->profiles->where('cover_photo',null)->sortByDesc('created_at')->first() ?>
-                                @if ($profile==null)
-                                    <img class="nav-profile-img" src="{{asset('img/customer/imgs/user_default.jpg')}}"/>
-                                @else
-                                    <img class="nav-profile-img" src="{{asset('storage/post/'.$profile->profile_image)}}"/>
-                                @endif
+                                <p>{{$post->user->name}}</p>
                             </a>
-                            <div class="social-media-post-name">
-                                <a href="{{route('socialmedia.profile',$post->user_id)}}" style="text-decoration:none">
-                                    <p>{{$post->user->name}}</p>
-                                </a>
-                                <span>{{ \Carbon\Carbon::parse($post->created_at)->format('d M Y , g:i A')}}</span>
-                            </div>
+                            <span>{{ \Carbon\Carbon::parse($post->created_at)->format('d M Y , g:i A')}}</span>
                         </div>
+                    </div>
 
-                        <iconify-icon icon="bi:three-dots-vertical" class="social-media-post-header-icon"></iconify-icon>
+                    <iconify-icon icon="bi:three-dots-vertical" class="social-media-post-header-icon"></iconify-icon>
 
-                        <div class="post-actions-container">
-                            <a href="#" style="text-decoration:none" class="post_save" id="{{$post->id}}">
-                                <div class="post-action">
-                                    <iconify-icon icon="bi:save" class="post-action-icon"></iconify-icon>
-                                    @php
-                                        $already_save=auth()->user()->user_saved_posts->where('post_id',$post->id)->first();
-                                    @endphp
+                    <div class="post-actions-container">
+                        <a href="#" style="text-decoration:none" class="post_save" id="{{$post->id}}">
+                            <div class="post-action">
+                                <iconify-icon icon="bi:save" class="post-action-icon"></iconify-icon>
+                                @php
+                                    $already_save=auth()->user()->user_saved_posts->where('post_id',$post->id)->first();
+                                @endphp
 
-                                    @if ($already_save)
-                                        <p class="save">Unsave</p>
-                                    @else
-                                        <p class="save">Save</p>
-                                     @endif
-                                </div>
-                            </a>
+                                @if ($already_save)
+                                    <p class="save">Unsave</p>
+                                @else
+                                    <p class="save">Save</p>
+                                    @endif
+                            </div>
+                        </a>
                         @if ($post->user->id == auth()->user()->id)
 
                             <a id="edit_post" data-id="{{$post->id}}" data-bs-toggle="modal" >
@@ -62,117 +62,116 @@
                             <p>Report</p>
                         </div>
                         @endif
-
-                        </div>
-                    </div>
-                    <div class="social-media-content-container">
-                        @if ($post->media==null)
-                        <p>{{$post->caption}}</p>
-                        @else
-                        <p>{{$post->caption}}</p>
-                        <div class="social-media-media-container">
-                            <?php foreach (json_decode($post->media)as $m){?>
-                            <div class="social-media-media">
-                                @if (pathinfo($m, PATHINFO_EXTENSION) == 'mp4')
-                                    <video controls>
-                                        <source src="{{asset('storage/post/'.$m) }}">
-                                    </video>
-                                @else
-                                    <img src="{{asset('storage/post/'.$m) }}">
-                                @endif
-                            </div>
-                            <?php }?>
-                        </div>
-
-                        <div id="slider-wrapper" class="social-media-media-slider">
-                            <iconify-icon icon="akar-icons:cross" class="slider-close-icon"></iconify-icon>
-
-                            <div id="image-slider" class="image-slider">
-                                <ul class="ul-image-slider">
-
-                                    <?php foreach (json_decode($post->media)as $m){?>
-                                        @if (pathinfo($m, PATHINFO_EXTENSION) == 'mp4')
-                                        <li>
-                                            <video controls>
-                                                <source src="{{asset('storage/post/'.$m) }}">
-                                            </video>
-                                        </li>
-                                        @else
-                                            <li>
-                                                <img src="{{asset('storage/post/'.$m) }}" alt="" />
-                                            </li>
-                                        @endif
-
-                                    <?php }?>
-                                </ul>
-
-                            </div>
-
-                            <div id="thumbnail" class="img-slider-thumbnails">
-                                <ul>
-                                    {{-- <li class="active"><img src="https://40.media.tumblr.com/tumblr_m92vwz7XLZ1qf4jqio1_540.jpg" alt="" /></li> --}}
-                                    <?php foreach (json_decode($post->media)as $m){?>
-                                        @if (pathinfo($m, PATHINFO_EXTENSION) == 'mp4')
-                                        <li>
-                                            <video>
-                                                <source src="{{asset('storage/post/'.$m) }}">
-                                            </video>
-                                        </li>
-                                        @else
-                                            <li>
-                                                <img src="{{asset('storage/post/'.$m) }}" alt="" />
-                                            </li>
-                                        @endif
-
-                                    <?php }?>
-
-                                </ul>
-                            </div>
-
-                        </div>
-
-                        @endif
-                    </div>
-
-                    <div class="social-media-post-footer-container">
-                        <div class="social-media-post-like-container">
-                            @php
-                                $total_likes=$post->user_reacted_posts->count();
-                                $user=auth()->user();
-                                $already_liked=$user->user_reacted_posts->where('post_id',$post->id)->count();
-                            @endphp
-
-                            <a class="like" href="#" id="{{$post->id}}">
-
-                            @if($already_liked==0)
-                            <iconify-icon icon="mdi:cards-heart-outline" class="like-icon">
-                            </iconify-icon>
-                            @else
-                            <iconify-icon icon="mdi:cards-heart" style="color: red;" class="like-icon already-liked">
-                            </iconify-icon>
-                            @endif
-
-                            </a>
-                            <p>
-                                <span class="total_likes">
-
-                                {{$total_likes}}
-                                </span>
-                                Likes
-                            </p>
-                        </div>
-                        <div class="social-media-post-comment-container">
-                            <a href = "{{route('post.comment',$post->id)}}">
-                            <iconify-icon icon="bi:chat-right" class="comment-icon"></iconify-icon>
-                            <p><span>50</span> Comments</p>
-                            </a>
-                        </div>
                     </div>
                 </div>
-                @endforeach
+                <div class="social-media-content-container">
+                    @if ($post->media==null)
+                    <p>{{$post->caption}}</p>
+                    @else
+                    <p>{{$post->caption}}</p>
+                    <div class="social-media-media-container">
+                        <?php foreach (json_decode($post->media)as $m){?>
+                        <div class="social-media-media">
+                            @if (pathinfo($m, PATHINFO_EXTENSION) == 'mp4')
+                                <video controls>
+                                    <source src="{{asset('storage/post/'.$m) }}">
+                                </video>
+                            @else
+                                <img src="{{asset('storage/post/'.$m) }}">
+                            @endif
+                        </div>
+                        <?php }?>
+                    </div>
 
+                    <div id="slider-wrapper" class="social-media-media-slider">
+                        <iconify-icon icon="akar-icons:cross" class="slider-close-icon"></iconify-icon>
+
+                        <div id="image-slider" class="image-slider">
+                            <ul class="ul-image-slider">
+
+                                <?php foreach (json_decode($post->media)as $m){?>
+                                    @if (pathinfo($m, PATHINFO_EXTENSION) == 'mp4')
+                                    <li>
+                                        <video controls>
+                                            <source src="{{asset('storage/post/'.$m) }}">
+                                        </video>
+                                    </li>
+                                    @else
+                                        <li>
+                                            <img src="{{asset('storage/post/'.$m) }}" alt="" />
+                                        </li>
+                                    @endif
+
+                                <?php }?>
+                            </ul>
+
+                        </div>
+
+                        <div id="thumbnail" class="img-slider-thumbnails">
+                            <ul>
+                                {{-- <li class="active"><img src="https://40.media.tumblr.com/tumblr_m92vwz7XLZ1qf4jqio1_540.jpg" alt="" /></li> --}}
+                                <?php foreach (json_decode($post->media)as $m){?>
+                                    @if (pathinfo($m, PATHINFO_EXTENSION) == 'mp4')
+                                    <li>
+                                        <video>
+                                            <source src="{{asset('storage/post/'.$m) }}">
+                                        </video>
+                                    </li>
+                                    @else
+                                        <li>
+                                            <img src="{{asset('storage/post/'.$m) }}" alt="" />
+                                        </li>
+                                    @endif
+
+                                <?php }?>
+
+                            </ul>
+                        </div>
+
+                    </div>
+
+                    @endif
+                </div>
+
+                <div class="social-media-post-footer-container">
+                    <div class="social-media-post-like-container">
+                        @php
+                            $total_likes=$post->user_reacted_posts->count();
+                            $user=auth()->user();
+                            $already_liked=$user->user_reacted_posts->where('post_id',$post->id)->count();
+                        @endphp
+
+                        <a class="like" href="#" id="{{$post->id}}">
+
+                        @if($already_liked==0)
+                        <iconify-icon icon="mdi:cards-heart-outline" class="like-icon">
+                        </iconify-icon>
+                        @else
+                        <iconify-icon icon="mdi:cards-heart" style="color: red;" class="like-icon already-liked">
+                        </iconify-icon>
+                        @endif
+
+                        </a>
+                        <p>
+                            <span class="total_likes">
+
+                            {{$total_likes}}
+                            </span>
+                            <a href="{{route('social_media_likes',$post->id)}}">Likes</a>
+                        </p>
+                    </div>
+                    <div class="social-media-post-comment-container">
+                        <a href = "{{route('post.comment',$post->id)}}">
+                        <iconify-icon icon="bi:chat-right" class="comment-icon"></iconify-icon>
+                        <p><span>50</span> Comments</p>
+                        </a>
+                    </div>
+                </div>
             </div>
+            @endforeach
+
         </div>
+    </div>
 
 @endsection
 @push('scripts')
