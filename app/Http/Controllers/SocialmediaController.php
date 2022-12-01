@@ -775,27 +775,36 @@ class SocialmediaController extends Controller
 
        foreach($comments as $key=>$comm1){
                    $mentioned_user_id = json_decode($comm1->mentioned_users);
-                //    dd(count($mentioned_user_id));
-                   if($mentioned_user_id){
-                    foreach($mentioned_user_id as $id){
-                        for($i=0;count($mentioned_user_id)>$i;$i++){
-                            $main =  $comm1['comment'];
-                            if (str_contains($main,'@'.$mentioned_user_id[$i])) {
-                            $replace = str_replace("@$mentioned_user_id[$i]","<a href = '#'>"."$mentioned_user_id[$i]"."</a>",$main);
+                //    dd($users);
+                   if($mentioned_user_id != null){
 
-                            $comments[$key]['Replace']= $replace;
+                    $users = User::select('users.id','users.name')->whereIn('id',$mentioned_user_id)->get();
+
+                    $main =  $comm1['comment'];
+                    // dd(count($users));
+                    // foreach($mentioned_user_id as $id){
+                        for($i=0;count($users)>$i;$i++){
+
+                            $mentioned_user_id_id = $users[$i]['id'];
+
+                            if (str_contains($main,'@'.$users[$i]['id'])) {
+                                $replace=
+                                str_replace(['@'.$users[$i]['id']],
+                                "<a href='{{route('socialmedia.profile',$mentioned_user_id_id)}}'>".$users[$i]['name'].'</a>',$main);
+                                $main=$replace;
+                                $comments[$key]['Replace']= $main;
                             }
                         }
 
-                    }
+
+                    // }
                     }
                    else{
                     $comments[$key]['Replace']= $comm1->comment;
                    }
 
         }
-
-    // dd($comments);
+   //  dd($comments);
 
         return view('customer.comments',compact('post','comments'));
     }
@@ -863,10 +872,36 @@ class SocialmediaController extends Controller
         ->leftJoin('profiles','users.profile_id','profiles.id')
         ->where('post_id',$id)->orderBy('created_at','DESC')->get();
         foreach($comments as $key=>$comm1){
-            $main =  $comm1['comment'];
-            $replace = str_replace("@1","<a href = '#'>"."User One"."</a>",$main);
-            $comments[$key]['Replace']= $replace;
-        }
+            $mentioned_user_id = json_decode($comm1->mentioned_users);
+         //    dd($users);
+            if($mentioned_user_id != null){
+
+             $users = User::select('users.id','users.name')->whereIn('id',$mentioned_user_id)->get();
+
+             $main =  $comm1['comment'];
+             // dd(count($users));
+             // foreach($mentioned_user_id as $id){
+                 for($i=0;count($users)>$i;$i++){
+
+                     $mentioned_user_id_id = $users[$i]['id'];
+                     $url = route('socialmedia.profile',$mentioned_user_id_id);
+                     if (str_contains($main,'@'.$users[$i]['id'])) {
+                         $replace=
+                         str_replace(['@'.$users[$i]['id']],
+                         "<a href=$url>".$users[$i]['name'].'</a>',$main);
+                         $main=$replace;
+                         $comments[$key]['Replace']= $main;
+                     }
+                 }
+
+
+             // }
+             }
+            else{
+             $comments[$key]['Replace']= $comm1->comment;
+            }
+
+    }
         return response()->json([
             'comment' => $comments
         ]);
