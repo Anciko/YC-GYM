@@ -75,6 +75,9 @@
     <link rel="stylesheet" href="{{asset('css/globals.css')}}">
     <link rel="stylesheet" href="{{asset('css/adminchat/trainingcenter.css')}}">
 
+    <!--social media -->
+    <link href="{{ asset('css/socialMedia.css')}}" rel="stylesheet"/>
+
     <!--chart js-->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
@@ -329,6 +332,17 @@
 
                             <i class="fa-solid fa-ban align-middle"></i>
                             <span class="align-middle">Ban Words</span>
+
+                        </a>
+
+                    </li>
+
+                    <li class="sidebar-item @yield('social-report-active')">
+
+                        <a class="sidebar-link" href="{{ route('report.index') }}">
+
+                            <i class="fa-regular fa-file-lines"></i>
+                            <span class="align-middle">Social Media Reports</span>
 
                         </a>
 

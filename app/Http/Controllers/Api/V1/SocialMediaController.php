@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\V1;
 
+use App\Events\Chatting;
 use Carbon\Carbon;
 use Pusher\Pusher;
 use App\Models\Post;
@@ -14,6 +15,7 @@ use Illuminate\Http\Request;
 use App\Models\UserSavedPost;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use App\Models\Chat;
 use Illuminate\Support\Facades\Storage;
 
 class SocialMediaController extends Controller
@@ -842,6 +844,17 @@ class SocialMediaController extends Controller
         ]);
     }
 
+<<<<<<< HEAD
+    public function chatting(Request $request,$id){
+
+        $message = new Chat();
+        $message->to_user_id = $id;
+        $message->from_user_id = auth()->user()->id;
+        $message->text = $request->text == null ?  null : $request->text;
+        $message->save();
+
+        event(new Chatting($message, $request->sender));
+=======
 
     public function post_comment_store(Request $request){
         // dd(json_encode($request->mention));
@@ -896,6 +909,7 @@ class SocialMediaController extends Controller
         return response()->json([
             'comments' => $comments
         ]);
+>>>>>>> 5aa4d82e73baed9d8eb6bb755658e8bd57652162
     }
 
 }

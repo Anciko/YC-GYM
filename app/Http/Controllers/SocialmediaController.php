@@ -7,6 +7,7 @@ use Pusher\Pusher;
 use App\Models\Post;
 use App\Models\User;
 use App\Models\BanWord;
+use App\Models\Chat;
 use App\Models\Comment;
 use App\Models\Profile;
 use App\Models\Friendship;
@@ -720,6 +721,46 @@ class SocialmediaController extends Controller
         ]);
     }
 
+<<<<<<< HEAD
+    public function see_all_message(){
+        $auth_user = auth()->user();
+
+        $messages = Chat::where('from_user_id','!=',$auth_user->id)->where(function($qu) use ($auth_user){
+            $qu->where('to_user_id',$auth_user->id);
+        })->get();
+// dd($messages->toArray());
+        $user_id = Chat::select('from_user_id','to_user_id')->where('from_user_id', $auth_user->id)->orWhere('to_user_id',$auth_user->id)->get();
+
+        foreach($user_id as $id){
+            $chat_lists = Chat::where('from_user_id', $auth_user->id)->orWhere('to_user_id',$auth_user->id)
+                        ->with('to_user')->with('from_user')->with('to_user.profiles')->with('from_user.profiles')
+                        ->where(function($query) use ($id){
+                            $query->where('from_user_id', $id)->orWhere('to_user_id',$id);
+                        })->get();
+        }
+
+
+        return view('customer.message_seeall', compact('chat_lists', 'messages'));
+    }
+
+    public function chat_message($id){
+        $auth_user = auth()->user();
+        $sender_message = Chat::where('from_user_id',$auth_user->id)->where('to_user_id',$id)
+                        ->get();
+
+        $reciever_message = Chat::where('from_user_id',$id)->where('to_user_id',$auth_user->id)->with('to_user')->with('from_user')
+        ->get();
+
+        $messages = Chat::where(function($query) use ($auth_user){
+            $query->where('from_user_id',$auth_user->id)->orWhere('to_user_id',$auth_user->id);
+        })->where(function($que) use ($id){
+            $que->where('from_user_id',$id)->orWhere('to_user_id',$id);
+        })->with('to_user')->with('from_user')->get();
+
+        $auth_user_name = auth()->user()->name;
+
+        return view('customer.chat_message', compact('sender_message','reciever_message','id','messages','auth_user_name'));
+=======
     public function post_comment($id)
     {
         // dd($id);
@@ -814,6 +855,7 @@ class SocialmediaController extends Controller
         return response()->json([
             'success' => 'Comment deleted successfully!'
         ]);
+>>>>>>> 5aa4d82e73baed9d8eb6bb755658e8bd57652162
     }
 
     public function comment_list(Request $request){
