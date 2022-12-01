@@ -101,6 +101,7 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
 
         Route::get('/socialmedia/profile/{id}', [SocialmediaController::class, 'profile'])->name('socialmedia.profile');
 
+        Route::get('/socialmedia/likes/{post_id}',[SocialmediaController::class, 'social_media_likes'])->name('social_media_likes');
 
         Route::post('/socialmedia_profile', [SocialmediaController::class, 'social_media_profile'])->name('social_media_profile');
 
