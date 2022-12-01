@@ -3,6 +3,7 @@
 @section('content')
 @include('sweetalert::alert')
 
+
 <div class="social-media-right-container">
     <div class="social-media-all-likes-parent-container">
         <div class="social-media-post-container">
@@ -122,7 +123,9 @@
 
             </form>
 
+
             <div class="social-media-all-comments">
+
                 {{-- @forelse ($comments as $comment)
                 <div class="social-media-comment-container">
                     <img src="../imgs/trainer2.jpg">
@@ -179,10 +182,11 @@
 @push('scripts')
 <script>
     $(document).ready(function() {
-
-
-        
-
+        // $('').click(function(){
+            $(document).on('click', '.social-media-comment-icon', function(e) {
+                $(this).next().toggle()
+            })
+        fetch_comment();
                 $('#textarea').mentiony({
                 onDataRequest: function (mode, keyword, onDataRequestCompleteCallback) {
                     var search_url = "{{ route('users.mention') }}";
@@ -236,26 +240,7 @@
                 console.log(arr)
                 console.log(comment)
 
-                // for(let i = 0; i < comment.length;i++){
-                //     // console.log(comment[i])
-                //     // console.log(/^\d$/.test(comment[i]))
-                //     var commentTemplate = ``
-                //     if(comment[i] === '@' && /^\d$/.test(comment[i+1])){
-                //         console.log("change to link")
-                //         commentTemplate = commentTemplate + `<a></a>`
-                //         continue
-                //     }
 
-                //     if(/^\d$/.test(comment[i]) && comment[i-1] === '@'){
-                //         continue
-                //     }
-
-                //     console.log(comment[i])
-                // }
-
-                // [...comment].forEach(a => {
-                //     console.log(a)
-                // })
 
 
                 // <a href = "" >Trainer</a>
@@ -273,12 +258,92 @@
                         data : {'post_id':post_id,'mention' : arr , 'comment' : comment},
                         dataType: "json",
                         success: function (response) {
-                            console.log("comment")
-                             window.location.reload();
+                            fetch_comment();
+                            $('.mentiony-content').empty()
                         }
+
                     });
 
             })
+            function fetch_comment(){
+                console.log('testing testing');
+                var postid = "{{$post->id}}"
+                            var comment_url = "{{ route('comment_list',':id') }}";
+                            comment_url = comment_url.replace(':id', postid);
+                            $.post(comment_url,
+                            {
+                                _token: $('meta[name="csrf-token"]').attr('content')
+                            },
+                            function(data){
+                                table_post_row(data);
+                            });
+                        }
+                        // table row with ajax
+                        function table_post_row(res){
+                            console.log(res.comment.length)
+                        let htmlView = '';
+                            if(res.comment.length <= 0){
+                                console.log("no data");
+                                htmlView+= `
+                                No Comment.
+                                `;
+                            }
+                            console.log("data");
+                            for(let i = 0; i < res.comment.length; i++){
+                                    // for(let c = 0; c < res.comment[i].comment.length;c++){
+                                    //         //console.log(res.comment[i].comment.length)
+                                    //         //console.log(/^\d$/.test(res.comment[i].comment[c]))
+                                    //         var commentTemplate = ``
+                                    //         if(res.comment[i].comment[c] === '@' && /^\d$/.test(res.comment[i].comment[c+1])){
+                                    //             commentTemplate = commentTemplate + `<a></a>`
+                                    //             console.log(commentTemplate);
+                                    //             continue
+                                    //         }
+
+                                    //         if(/^\d$/.test(res.comment[i].comment[c]) && res.comment[i].comment[i-c] === '@'){
+                                    //             continue
+                                    //         }
+
+                                    //         // console.log(res.comment[i].comment[c] , 'test')
+                                    //         [...res.comment[i].comment[c]].forEach(a => {
+                                    //         console.log(a+commentTemplate)
+                                    //     })
+                                    //     }
+
+
+                                    htmlView += `
+                                    <div class="social-media-comment-container">
+                                        <img src="{{ asset('/storage/post/${res.comment[i].profile_image}') }}">
+                                        <div class="social-media-comment-box">
+                                            <div class="social-media-comment-box-header">
+                                                <div class="social-media-comment-box-name">
+                                                    <p>`+res.comment[i].name+`</p>
+                                                    <span>19 Sep 2022, 11:02 AM</span>
+                                                </div>
+
+                                        <iconify-icon icon="bx:dots-vertical-rounded" class="social-media-comment-icon"></iconify-icon>
+                                        <div class="comment-actions-container" >
+                                            <div class="comment-action">
+                                                <iconify-icon icon="akar-icons:edit" class="comment-action-icon"></iconify-icon>
+                                                <p>Edit</p>
+                                            </div>
+                                            <a id="delete_comment" data-id=`+res.comment[i].id+`>
+                                            <div class="comment-action">
+                                                <iconify-icon icon="fluent:delete-12-regular" class="comment-action-icon"></iconify-icon>
+                                                <p>Delete</p>
+                                            </div>
+                                            </a>
+                                        </div>
+                        </div>
+
+                        <p>`+res.comment[i].Replace+`</p>
+                    </div>
+                </div>
+
+                                    `
+                                }
+                            $('.social-media-all-comments').html(htmlView);
+            }
 
             $('.mentiony-content').on('keydown', function(event) {
                 console.log(event.which)
@@ -301,7 +366,6 @@
                 }
                 event.target.querySelectorAll('delete-highlight').forEach(function(el) { el.classList.remove('delete-highlight');})
             });
-
 
 
             $(document).on('click', '#delete_comment', function(e) {
@@ -335,8 +399,8 @@
                                     url: url,
                                     datatype: "json",
                                     success: function(data) {
-                                        console.log(data)
-                                        window.location.reload();
+                                        console.log(data);
+                                        fetch_comment();
                                     }
                                 })
 
@@ -344,6 +408,8 @@
                         })
                 $('.social-media-left-searched-items-container').empty();
                 });
+
+
     })
 </script>
 

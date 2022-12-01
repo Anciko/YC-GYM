@@ -126,6 +126,7 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
 
         Route::get('/viewFriendRequestNoti/{id}/{noti_id}', [SocialmediaController::class, 'viewFriendRequestNoti'])->name('viewFriendRequestNoti');
 
+        Route::post('post/comment/list/{id}', [SocialmediaController::class, 'comment_list'])->name('comment_list');
 
         Route::post('/post/store', [SocialmediaController::class, 'post_store'])->name('post.store');
 

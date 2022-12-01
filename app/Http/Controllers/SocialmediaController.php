@@ -732,7 +732,31 @@ class SocialmediaController extends Controller
         ->leftJoin('users','users.id','comments.user_id')
         ->leftJoin('profiles','users.profile_id','profiles.id')
         ->where('post_id',$id)->orderBy('created_at','DESC')->get();
-       // dd($comments)->toArray();
+
+       foreach($comments as $key=>$comm1){
+                   $mentioned_user_id = json_decode($comm1->mentioned_users);
+                //    dd(count($mentioned_user_id));
+                   if($mentioned_user_id){
+                    foreach($mentioned_user_id as $id){
+                        for($i=0;count($mentioned_user_id)>$i;$i++){
+                            $main =  $comm1['comment'];
+                            if (str_contains($main,'@'.$mentioned_user_id[$i])) {
+                            $replace = str_replace("@$mentioned_user_id[$i]","<a href = '#'>"."$mentioned_user_id[$i]"."</a>",$main);
+
+                            $comments[$key]['Replace']= $replace;
+                            }
+                        }
+
+                    }
+                    }
+                   else{
+                    $comments[$key]['Replace']= $comm1->comment;
+                   }
+
+        }
+
+    // dd($comments);
+
         return view('customer.comments',compact('post','comments'));
     }
 
@@ -789,6 +813,22 @@ class SocialmediaController extends Controller
 
         return response()->json([
             'success' => 'Comment deleted successfully!'
+        ]);
+    }
+
+    public function comment_list(Request $request){
+        $id = $request->id;
+        $comments = Comment::select('users.name','users.profile_id','profiles.profile_image','comments.*')
+        ->leftJoin('users','users.id','comments.user_id')
+        ->leftJoin('profiles','users.profile_id','profiles.id')
+        ->where('post_id',$id)->orderBy('created_at','DESC')->get();
+        foreach($comments as $key=>$comm1){
+            $main =  $comm1['comment'];
+            $replace = str_replace("@1","<a href = '#'>"."User One"."</a>",$main);
+            $comments[$key]['Replace']= $replace;
+        }
+        return response()->json([
+            'comment' => $comments
         ]);
     }
 }

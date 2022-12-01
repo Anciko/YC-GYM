@@ -894,7 +894,7 @@ class SocialMediaController extends Controller
         ->leftJoin('profiles','users.profile_id','profiles.id')
         ->where('post_id',$id)->orderBy('created_at','DESC')->get();
         return response()->json([
-            'success' => $comments
+            'comments' => $comments
         ]);
     }
 
