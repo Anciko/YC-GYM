@@ -20,6 +20,9 @@ use Illuminate\Support\Facades\Storage;
 
 class SocialMediaController extends Controller
 {
+
+
+
     //for user search
     public function newFeeds(){
     $user=auth()->user();
@@ -844,17 +847,16 @@ class SocialMediaController extends Controller
         ]);
     }
 
-<<<<<<< HEAD
-    public function chatting(Request $request,$id){
-
+    public function chatting(Request $request, User $user){
+        // dd($user);
         $message = new Chat();
-        $message->to_user_id = $id;
+        $message->to_user_id = $user->id;
         $message->from_user_id = auth()->user()->id;
         $message->text = $request->text == null ?  null : $request->text;
         $message->save();
 
-        event(new Chatting($message, $request->sender));
-=======
+        broadcast(new Chatting($message, $request->sender)); //receiver
+    }
 
     public function post_comment_store(Request $request){
         // dd(json_encode($request->mention));
@@ -909,7 +911,6 @@ class SocialMediaController extends Controller
         return response()->json([
             'success' => $comments
         ]);
->>>>>>> 5aa4d82e73baed9d8eb6bb755658e8bd57652162
     }
 
 }

@@ -299,9 +299,8 @@
     <script src={{asset('js/notify.js')}}></script>
 
 
-    {{-- axios --}}
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.1.3/axios.min.js" integrity="sha512-0qU9M9jfqPw6FKkPafM3gy2CBAvUWnYVOfNPDYKVuRTel1PrciTj+a9P3loJB+j0QmN2Y0JYQmkBBS8W+mbezg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-
+    {{-- axios && Echo --}}
+    <script src={{asset('js/app.js')}}></script>
     {{-- pusher --}}
     <script src="https://js.pusher.com/7.2/pusher.min.js"></script>
 

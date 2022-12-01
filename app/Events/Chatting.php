@@ -2,27 +2,34 @@
 
 namespace App\Events;
 
+use App\Models\Chat;
+use App\Models\User;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Broadcasting\Channel;
-use Illuminate\Broadcasting\InteractsWithSockets;
-use Illuminate\Broadcasting\PresenceChannel;
-use Illuminate\Broadcasting\PrivateChannel;
-use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
-use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Broadcasting\PrivateChannel;
+use Illuminate\Broadcasting\PresenceChannel;
+use Illuminate\Foundation\Events\Dispatchable;
+use Illuminate\Broadcasting\InteractsWithSockets;
+use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 
 class Chatting implements ShouldBroadcast
 {
-    use Dispatchable, InteractsWithSockets, SerializesModels;
+    use Dispatchable, InteractsWithSockets;
 
     /**
      * Create a new event instance.
      *
      * @return void
      */
+
     public $message;
     public $sender;
-    public function __construct($message, $sender)
+
+
+    public function __construct(Chat $message, $sender)
     {
+        // $this->user = $user;
         $this->message = $message;
         $this->sender = $sender;
     }
@@ -34,11 +41,12 @@ class Chatting implements ShouldBroadcast
      */
     public function broadcastOn()
     {
-        return new Channel('chatting');
+        // Log::debug("{$this->message}:{$this->user}");
+        return new PrivateChannel("chatting.{$this->message->to_user_id}");
     }
 
-    public function broadcastAs(){
-        return 'chatting-event';
-    }
+    // public function broadcastAs(){
+    //     return 'chatting-event';
+    // }
 
 }

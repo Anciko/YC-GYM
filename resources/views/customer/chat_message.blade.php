@@ -7,7 +7,7 @@
             <div class="group-chat-header-name-container">
                 <img src="../imgs/avatar.png"/>
                 <div class="group-chat-header-name-text-container">
-                    <p>Friend Name</p>
+                    <p>{{$receiver_user->name}}</p>
 
                 </div>
             </div>
@@ -48,15 +48,6 @@
                 @endif
             @empty
             @endforelse
-            {{-- @foreach ($reciever_message as $recieve_message)
-            <div class="group-chat-receiver-container">
-                <img src="../imgs/avatar.png"/>
-                <div class="group-chat-receiver-text-container">
-                    <span>{{$recieve_message->from_user->name}}</span>
-                    <p>{{$recieve_message->text}}</p>
-                </div>
-            </div>
-            @endforeach --}}
 
         </div>
 
@@ -104,7 +95,7 @@
     const groupChatImgPreview = document.querySelector('.groupChatImg');
     const cancelBtn = document.querySelector(".group-chat-img-cancel");
     const emojibutton = document.querySelector('.emoji-trigger');
-    var recieveUser_id = document.getElementById('recieveUser');
+    var recieveUser = document.getElementById('recieveUser');
 
     var messageContainer = document.querySelector('.group-chat-messages-container');
 
@@ -124,7 +115,9 @@
         e.preventDefault();
 
         var messageInput = document.querySelector('.message_input');
-        var recieveUserId = recieveUser_id.value;
+
+        var recieveUserId = recieveUser.value;
+
 
         console.log('reciever ',recieveUserId);
         console.log('sender auth user ',auth_user_id);
@@ -133,6 +126,12 @@
                     text: messageInput.value,
                     sender: auth_user_name
                 }).then();
+                messageContainer.innerHTML +=`<div class="group-chat-sender-container">
+                            <div class="group-chat-sender-text-container">
+                                <p>${messageInput.value}</p>
+                            </div>
+                            <img src="../imgs/avatar.png"/>
+                        </div>`;
                 messageInput.value = "";
             }
 
@@ -140,12 +139,8 @@
 
     })
 
-    var pusher = new Pusher('576dc7f4f561e15a42ef', {
-            cluster: 'eu',
-            encrypted: true
-        });
-    var channel = pusher.subscribe('chatting');
-    channel.bind('chatting-event', function(data){
+    Echo.private('chatting.'+auth_user_id)
+        .listen('Chatting', (data)=>{
             console.log(data);
             if(data.message.to_user_id == auth_user_id){
                 messageContainer.innerHTML +=`<div class="group-chat-receiver-container">
@@ -156,7 +151,6 @@
                         </div>
                     </div>`;
             }else{
-                if(data.message.to_user_id == auth_user_id || data.message.from_user_id == auth_user_id)
                 messageContainer.innerHTML +=`<div class="group-chat-sender-container">
                             <div class="group-chat-sender-text-container">
                                 <p>${data.message.text}</p>
@@ -165,6 +159,7 @@
                         </div>`;
             }
         })
+
 
 </script>
 @endpush

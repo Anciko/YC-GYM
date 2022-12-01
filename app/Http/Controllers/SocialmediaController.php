@@ -721,7 +721,6 @@ class SocialmediaController extends Controller
         ]);
     }
 
-<<<<<<< HEAD
     public function see_all_message(){
         $auth_user = auth()->user();
 
@@ -745,11 +744,6 @@ class SocialmediaController extends Controller
 
     public function chat_message($id){
         $auth_user = auth()->user();
-        $sender_message = Chat::where('from_user_id',$auth_user->id)->where('to_user_id',$id)
-                        ->get();
-
-        $reciever_message = Chat::where('from_user_id',$id)->where('to_user_id',$auth_user->id)->with('to_user')->with('from_user')
-        ->get();
 
         $messages = Chat::where(function($query) use ($auth_user){
             $query->where('from_user_id',$auth_user->id)->orWhere('to_user_id',$auth_user->id);
@@ -758,9 +752,11 @@ class SocialmediaController extends Controller
         })->with('to_user')->with('from_user')->get();
 
         $auth_user_name = auth()->user()->name;
+        $receiver_user = User::findOrFail($id);
 
-        return view('customer.chat_message', compact('sender_message','reciever_message','id','messages','auth_user_name'));
-=======
+        return view('customer.chat_message', compact('id','messages','auth_user_name','receiver_user'));
+    }
+
     public function post_comment($id)
     {
         // dd($id);
@@ -831,6 +827,5 @@ class SocialmediaController extends Controller
         return response()->json([
             'success' => 'Comment deleted successfully!'
         ]);
->>>>>>> 5aa4d82e73baed9d8eb6bb755658e8bd57652162
     }
 }
