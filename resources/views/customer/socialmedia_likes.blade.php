@@ -184,12 +184,12 @@
                     </div>
                     <div class="social-media-all-likes-row-btns">
                         @if($user_like_post->friend_status=='myself')
-                        
-                        @elseif($user_like_post->friend_status=='friend')
 
-                        @elseif($user_like_post->friend_status=='Response')
+                        @elseif($user_like_post->friend_status=='friend')
+                        <a class="customer-secondary-btn" href="{{route('socialmedia.profile',$user_like_post->user_id)}}" >Friend</a>
+                        @elseif($user_like_post->friend_status=='response')
                         <a class="customer-secondary-btn" href="{{route('socialmedia.profile',$user_like_post->user_id)}}" >Response</a>
-                        @elseif($user_like_post->friend_status=='cancelRequest')
+                        @elseif($user_like_post->friend_status=='cancel request')
                         <a class="customer-secondary-btn" href="{{route('socialmedia.profile',$user_like_post->user_id)}}" >Cancel</a>
                         @else
                         <a class="customer-secondary-btn add-friend" id="addfriend" href="?id={{$user_like_post->user_id}}" >Add</a>

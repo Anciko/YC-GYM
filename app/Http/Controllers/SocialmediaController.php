@@ -281,10 +281,8 @@ class SocialmediaController extends Controller
         $post=Post::findOrFail($post_id);
 
         // $friends=DB::table('friendships')->get()->toArray();
-     $friends = DB::select("SELECT * FROM `friendships` WHERE (receiver_id = $auth or sender_id = $auth)");
+        $friends = DB::select("SELECT * FROM `friendships` WHERE (receiver_id = $auth or sender_id = $auth)");
 
-        //dd($friends);
-        //dd($post_likes , $friends);
         foreach($post_likes as $key=>$value){
             foreach($friends as $fri){
                 if($value->user_id == $fri->receiver_id AND $fri->sender_id == $auth AND $fri->friend_status == 1    ){
@@ -775,7 +773,7 @@ class SocialmediaController extends Controller
         $messages = Chat::where('from_user_id','!=',$auth_user->id)->where(function($qu) use ($auth_user){
             $qu->where('to_user_id',$auth_user->id);
         })->get();
-// dd($messages->toArray());
+
         $user_id = Chat::select('from_user_id','to_user_id')->where('from_user_id', $auth_user->id)->orWhere('to_user_id',$auth_user->id)->get();
 
         foreach($user_id as $id){
