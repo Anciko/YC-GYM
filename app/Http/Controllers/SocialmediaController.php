@@ -304,7 +304,7 @@ class SocialmediaController extends Controller
                 }
 
             }
-
+            dd($post_likes);
         return view('customer.socialmedia_likes',compact('post_likes','post'));
     }
 

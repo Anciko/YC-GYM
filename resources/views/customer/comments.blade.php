@@ -3,7 +3,7 @@
 @section('content')
 @include('sweetalert::alert')
 
-<div class="modal fade" id="editCommentModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id ="editModal"  tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
@@ -23,7 +23,7 @@
 
       </div>
     </div>
-  </div>
+</div>
 
 <div class="social-media-right-container">
     <div class="social-media-all-likes-parent-container">
@@ -277,7 +277,12 @@
                 });
 
                 //edit comment start
-                $("#editComment .mentiony-content").text("sdfasdfasdf")
+                $(document).on('click', '#editCommentModal', function(e) {
+                        $('#editModal').modal('show');
+                        var id = $(this).data('id');
+
+                        $("#editComment .mentiony-content").text(id)
+                })
                 //edit comment end
 
 
@@ -384,7 +389,7 @@
 
                                         <iconify-icon icon="bx:dots-vertical-rounded" class="social-media-comment-icon"></iconify-icon>
                                         <div class="comment-actions-container" >
-                                            <div class="comment-action" data-bs-toggle="modal" data-bs-target="#editCommentModal">
+                                            <div class="comment-action" id="editCommentModal" data-id=`+res.comment[i].id+`>
                                                 <iconify-icon icon="akar-icons:edit" class="comment-action-icon"></iconify-icon>
                                                 <p>Edit</p>
                                             </div>

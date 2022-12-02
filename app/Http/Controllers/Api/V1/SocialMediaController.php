@@ -1019,7 +1019,7 @@ class SocialMediaController extends Controller
         $comments = Comment::select('users.name','users.profile_id','profiles.profile_image','comments.*')
         ->leftJoin('users','users.id','comments.user_id')
         ->leftJoin('profiles','users.profile_id','profiles.id')
-        ->where('post_id',$id)->orderBy('created_at','DESC')->get();
+        ->where('comments.post_id',$id)->orderBy('comments.created_at','DESC')->get();
         return response()->json([
             'comments' => $comments
         ]);
