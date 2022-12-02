@@ -847,27 +847,17 @@ class SocialMediaController extends Controller
         ]);
     }
 
-<<<<<<< HEAD
     public function chatting(Request $request, User $user){
         // dd($user);
-=======
-    public function chatting(Request $request,$id){
-
->>>>>>> 8cb7095a5b50655ff637d2e757aad46814ac368f
         $message = new Chat();
         $message->to_user_id = $user->id;
         $message->from_user_id = auth()->user()->id;
         $message->text = $request->text == null ?  null : $request->text;
         $message->save();
 
-<<<<<<< HEAD
         broadcast(new Chatting($message, $request->sender)); //receiver
     }
 
-=======
-        event(new Chatting($message, $request->sender));
-    }
->>>>>>> 8cb7095a5b50655ff637d2e757aad46814ac368f
     public function post_comment_store(Request $request){
         // dd(json_encode($request->mention));
         $banwords=DB::table('ban_words')->select('ban_word_english','ban_word_myanmar','ban_word_myanglish')->get();
