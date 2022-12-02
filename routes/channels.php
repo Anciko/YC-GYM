@@ -17,8 +17,8 @@ Broadcast::channel('App.Models.User.{id}', function ($user, $id) {
     return (int) $user->id === (int) $id;
 });
 
-Broadcast::channel('chatting.{receiver}', function ($user, $receiver) {
-    return (int)$user->id === (int)$receiver;
+Broadcast::channel('chatting.{sender}.{receiver}', function ($user, $receiver) {
+    return true;
  });
 
 // Broadcast::channel('trainer-message', function ($group) {

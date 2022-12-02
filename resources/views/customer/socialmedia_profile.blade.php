@@ -48,10 +48,10 @@
                         @else
                     @foreach ($friend as $friend_status)
                     @if($friend_status->friend_status == 2  )
-                        <button class="customer-primary-btn add-friend-btn">
+                        <a href="{{route('message.chat',$user->id)}}" class="customer-primary-btn add-friend-btn">
                             <iconify-icon icon="mdi:message-reply-outline" class="add-friend-icon"></iconify-icon>
                             <p>Message</p>
-                        </button>
+                        </a>
                         <a href ="?id={{$user->id}}" class="customer-red-btn add-friend-btn unfriend "  data-id = {{$user->id}}>
                             <iconify-icon icon="mdi:account-minus-outline" class="add-friend-icon"></iconify-icon>
                             <p>Unfriend</p>

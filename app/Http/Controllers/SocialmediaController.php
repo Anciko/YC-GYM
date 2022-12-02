@@ -767,18 +767,18 @@ class SocialmediaController extends Controller
         $messages = Chat::where('from_user_id','!=',$auth_user->id)->where(function($qu) use ($auth_user){
             $qu->where('to_user_id',$auth_user->id);
         })->get();
-// dd($messages->toArray());
-        $user_id = Chat::select('from_user_id','to_user_id')->where('from_user_id', $auth_user->id)->orWhere('to_user_id',$auth_user->id)->get();
+
+        $user_id = Chat::select('from_user_id', 'to_user_id')->where('from_user_id', $auth_user->id)->orWhere('to_user_id',$auth_user->id)->get();
 
         foreach($user_id as $id){
-            $chat_lists = Chat::where('from_user_id', $auth_user->id)->orWhere('to_user_id',$auth_user->id)
-                        ->with('to_user')->with('from_user')->with('to_user.profiles')->with('from_user.profiles')
-                        ->where(function($query) use ($id){
-                            $query->where('from_user_id', $id)->orWhere('to_user_id',$id);
-                        })->get();
+            $chat_lists =Chat::where(function($query) use ($auth_user){
+                $query->where('from_user_id',$auth_user->id)->orWhere('to_user_id',$auth_user->id);
+            })->where(function($que) use ($id){
+                $que->where('from_user_id',$id)->orWhere('to_user_id',$id);
+            })->get();
         }
-
-
+        // ->with('to_user')->with('from_user')->with('to_user.profiles')->with('from_user.profiles')
+            // dd($chat_lists->toArray());
         return view('customer.message_seeall', compact('chat_lists', 'messages'));
     }
 
@@ -792,9 +792,24 @@ class SocialmediaController extends Controller
         })->with('to_user')->with('from_user')->get();
 
         $auth_user_name = auth()->user()->name;
-        $receiver_user = User::findOrFail($id);
+        $receiver_user = User::where('users.id',$id)->join('profiles','profiles.user_id','users.id')->first();
+        $sender_user = Profile::where('user_id',$auth_user->id)->first();
 
-        return view('customer.chat_message', compact('id','messages','auth_user_name','receiver_user'));
+        return view('customer.chat_message', compact('id','messages','auth_user_name','receiver_user','sender_user'));
+    }
+
+    public function viewmedia_message($id){
+        $auth_user = auth()->user();
+
+        $messages = Chat::select('id','media')->where(function($query) use ($auth_user){
+            $query->where('from_user_id',$auth_user->id)->orWhere('to_user_id',$auth_user->id);
+        })->where(function($que) use ($id){
+            $que->where('from_user_id',$id)->orWhere('to_user_id',$id);
+        })->with('to_user')->with('from_user')->get();
+
+        $auth_user_name = auth()->user()->name;
+        $receiver_user = User::findOrFail($id);
+        return view('customer.chat_view_media', compact('id','messages','auth_user_name','receiver_user'));
     }
 
     public function post_comment($id)

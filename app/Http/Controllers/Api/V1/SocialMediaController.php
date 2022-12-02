@@ -847,27 +847,35 @@ class SocialMediaController extends Controller
         ]);
     }
 
-<<<<<<< HEAD
     public function chatting(Request $request, User $user){
-        // dd($user);
-=======
-    public function chatting(Request $request,$id){
+       
+        $path='';
+        if($request->file('fileInput') !=null){
+            $request->validate([
+                'fileInput' => 'required|mimes:png,jpg,jpeg,gif,mp4,mov,webm'
+                ],[
+                    'fileInput.required' => 'You can send png,jpg,jpeg,gif,mp4,mov and webm extension'
+                ]);
 
->>>>>>> 8cb7095a5b50655ff637d2e757aad46814ac368f
+            $file = $request->file('fileInput');
+            $path =uniqid().'_'. $file->getClientOriginalName();
+            $disk = Storage::disk('public');
+            $disk->put(
+                'customer_message_media/'.$path,file_get_contents($file)
+            );
+
+        }
+
         $message = new Chat();
-        $message->to_user_id = $user->id;
         $message->from_user_id = auth()->user()->id;
+        $message->to_user_id = $user->id;
         $message->text = $request->text == null ?  null : $request->text;
+        $message->media = $request->fileInput == null ? null : $path;
         $message->save();
 
-<<<<<<< HEAD
         broadcast(new Chatting($message, $request->sender)); //receiver
     }
 
-=======
-        event(new Chatting($message, $request->sender));
-    }
->>>>>>> 8cb7095a5b50655ff637d2e757aad46814ac368f
     public function post_comment_store(Request $request){
         // dd(json_encode($request->mention));
         $banwords=DB::table('ban_words')->select('ban_word_english','ban_word_myanmar','ban_word_myanglish')->get();
