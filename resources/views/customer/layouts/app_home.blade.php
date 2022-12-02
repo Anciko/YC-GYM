@@ -147,7 +147,8 @@
 
             <div class="customer-main-content-container">
                 <div class="social-media-header-btns-container margin-top">
-                    <a class="back-btn" href="{{route("socialmedia")}}">
+                    {{-- <a class="back-btn" href="{{route("socialmedia")}}"> --}}
+                    <a class="back-btn" href="javascript:history.back()">
                         <iconify-icon icon="bi:arrow-left" class="back-btn-icon"></iconify-icon>
                     </a>
                     <button class="social-media-addpost-btn customer-primary-btn" data-bs-toggle="modal" data-bs-target="#addPostModal">
@@ -469,43 +470,43 @@
                             search();
                         }
                     })
-                });
+        });
 
                 $(document).on('click', '#cancelRequest', function(e) {
-                e.preventDefault();
-                Swal.fire({
-                        text: "Are you sure?",
-                        showClass: {
-                                popup: 'animate__animated animate__fadeInDown'
-                            },
-                            hideClass: {
-                                popup: 'animate__animated animate__fadeOutUp'
-                            },
-                        showCancelButton: true,
-                        timerProgressBar: true,
-                        confirmButtonText: 'Yes',
-                        cancelButtonText: 'No',
+                        e.preventDefault();
+                        Swal.fire({
+                                text: "Are you sure?",
+                                showClass: {
+                                        popup: 'animate__animated animate__fadeInDown'
+                                    },
+                                    hideClass: {
+                                        popup: 'animate__animated animate__fadeOutUp'
+                                    },
+                                showCancelButton: true,
+                                timerProgressBar: true,
+                                confirmButtonText: 'Yes',
+                                cancelButtonText: 'No',
 
-                        }).then((result) => {
-                        /* Read more about isConfirmed, isDenied below */
-                        if (result.isConfirmed) {
-                             var url = new URL(this.href);
-                             var id = url.searchParams.get("id");
-                             var url = "{{ route('cancelRequest', [':id']) }}";
-                             url = url.replace(':id', id);
-                             $(".cancel-request-btn").attr('href','');
-                                $.ajax({
-                                    type: "GET",
-                                    url: url,
-                                    datatype: "json",
-                                    success: function(data) {
-                                        console.log(data)
-                                        search();
-                                    }
-                                })
+                                }).then((result) => {
+                                /* Read more about isConfirmed, isDenied below */
+                                if (result.isConfirmed) {
+                                    var url = new URL(this.href);
+                                    var id = url.searchParams.get("id");
+                                    var url = "{{ route('cancelRequest', [':id']) }}";
+                                    url = url.replace(':id', id);
+                                    $(".cancel-request-btn").attr('href','');
+                                        $.ajax({
+                                            type: "GET",
+                                            url: url,
+                                            datatype: "json",
+                                            success: function(data) {
+                                                console.log(data)
+                                                search();
+                                            }
+                                        })
 
-                        }
-                        })
+                                }
+                    })
                 $('.social-media-left-searched-items-container').empty();
                 });
 

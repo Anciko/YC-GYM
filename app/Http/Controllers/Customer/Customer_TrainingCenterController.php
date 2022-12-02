@@ -48,7 +48,6 @@ class Customer_TrainingCenterController extends Controller
     public function profile()
     {
         $user_id = auth()->user()->id;
-
         $user=User::findOrFail($user_id);
 
         $friends=DB::table('friendships')
