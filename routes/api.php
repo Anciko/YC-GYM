@@ -157,7 +157,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::post('profile/bio/update', [SocialmediaController::class, 'profile_update_bio']);
     Route::post('profile/photo/delete', [SocialmediaController::class, 'profile_photo_delete']);
 
-    Route::post('message/chat/{id}',[SocialMediaController::class,'chatting']);
+    Route::post('message/chat/{user}',[SocialMediaController::class,'chatting']);
     Route::post('post/comment/store', [SocialmediaController::class, 'post_comment_store']);
     Route::post('post/comment/delete', [SocialmediaController::class, 'comment_delete']);
     Route::post('post/comment/edit', [SocialmediaController::class, 'comment_edit']);

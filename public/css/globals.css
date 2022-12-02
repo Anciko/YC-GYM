@@ -471,10 +471,10 @@ z-index: 20;
 
 .group-chat-sender-text-container p{
     padding: 5px;
-    background-color: transparent;
+    background-color: #EBECF0;
     border-radius: 5px;
     color: var(--customer-text-color);
-    border: 2px solid var(--customer-primary-color);
+    /* border: 2px solid var(--customer-primary-color); */
 }
 
 .group-chat-sender-text-container img{
