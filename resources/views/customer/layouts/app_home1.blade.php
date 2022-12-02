@@ -70,7 +70,7 @@
     <!--nav bar-->
     <script src={{asset('js/navBar.js')}}></script>
     <script src={{asset('js/notify.js')}}></script>
-    <script src="https://js.pusher.com/4.1/pusher.min.js"></script>
+
     <script>
         // $(document).ready(function(){
             $( document ).ready(function() {

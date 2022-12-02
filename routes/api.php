@@ -131,7 +131,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
 
     Route::post('friends', [SocialmediaController::class, 'friends']);//
 
-    Route::post('friends_for_mention', [SocialmediaController::class, 'friends_for_mention']);//
+    Route::get('friends_for_mention', [SocialmediaController::class, 'friends_for_mention']);//
 
 
 
