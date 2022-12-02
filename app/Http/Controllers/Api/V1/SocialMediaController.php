@@ -1029,4 +1029,13 @@ class SocialMediaController extends Controller
         ]);
     }
 
+    public function user_list()
+    {
+        $user = User::select('users.id','users.name')->get();
+
+        return response()->json([
+            'data' => $user
+        ]);
+    }
+
 }
