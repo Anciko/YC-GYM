@@ -954,8 +954,6 @@ class SocialMediaController extends Controller
             }
         }
         $comments_update = Comment::findOrFail($request->id);
-        $comments_update->user_id=auth()->user()->id;
-        $comments_update->post_id=$request->post_id;
         $comments_update->comment = $request->comment;
         $comments_update->mentioned_users = json_encode($request->mention);
         $comments_update->update();
@@ -964,11 +962,14 @@ class SocialMediaController extends Controller
         ]);
     }
 
-    public function social_media_likes($post_id)
+    public function social_media_likes(Request $request)
     {
         $auth = Auth()->user()->id;
-        $post_likes=UserReactPost::where('post_id',$post_id)
-                    ->with('user')
+        $post_id = $request->post_id;
+        $post_likes=UserReactPost::select('users.name','profiles.profile_image','user_react_posts.*')
+                    ->leftJoin('users','users.id','user_react_posts.user_id')
+                    ->leftJoin('profiles','users.profile_id','profiles.id')
+                    ->where('post_id',$post_id)
                     ->get();
 
         $friends = DB::select("SELECT * FROM `friendships` WHERE (receiver_id = $auth or sender_id = $auth)

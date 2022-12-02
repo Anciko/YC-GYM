@@ -273,7 +273,6 @@ class SocialmediaController extends Controller
         $post_likes=UserReactPost::where('post_id',$post_id)
                     ->with('user')
                     ->get();
-
         $post=Post::findOrFail($post_id);
 
         // $friends=DB::table('friendships')->get()->toArray();
@@ -305,6 +304,7 @@ class SocialmediaController extends Controller
                 }
 
             }
+
         return view('customer.socialmedia_likes',compact('post_likes','post'));
     }
 
