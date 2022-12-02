@@ -975,30 +975,34 @@ class SocialMediaController extends Controller
         $friends = DB::select("SELECT * FROM `friendships` WHERE (receiver_id = $auth or sender_id = $auth)
        ");
 
-        foreach($post_likes as $key=>$postLike)
-            {
-                foreach($friends as $fri_status){
-                    if($fri_status->sender_id == $postLike['user_id'] && $fri_status->receiver_id == $auth && $fri_status->friend_status == 2 ){
-                        $post_likes[$key]['friend_status']= 'friend';
-                    }
-                    else if($fri_status->receiver_id == $postLike['user_id'] && $fri_status->sender_id == $auth && $fri_status->friend_status == 2 ){
-                        $post_likes[$key]['friend_status']= 'friend';
-                    }
-                    else if($fri_status->receiver_id == $postLike['user_id'] && $fri_status->sender_id == $auth && $fri_status->friend_status == 1){
-                        $post_likes[$key]['friend_status']= 'cancelRequest';
-                    }
-                    else if($fri_status->sender_id == $postLike['user_id'] && $fri_status->receiver_id == $auth && $fri_status->friend_status == 1){
-                        $post_likes[$key]['friend_status']= 'Response';
-                    }
-                    else if($postLike['user_id'] == $auth){
-                        $post_likes[$key]['friend_status']= 'myself';
-                    }
-                    else if($fri_status->sender_id != $postLike['user_id'] && $fri_status->receiver_id != $auth){
-                        $post_likes[$key]['friend_status']= 'addfriend';
-                    }
+        foreach($post_likes as $key=>$value){
+            foreach($friends as $fri){
+                if($value->user_id == $fri->receiver_id AND $fri->sender_id == $auth AND $fri->friend_status == 1    ){
+                    $post_likes[$key]['friend_status'] = "cancel request";
+                    break;
                 }
-
+                else if($value->user_id == $fri->sender_id AND $fri->receiver_id == $auth AND $fri->friend_status == 1    ){
+                    $post_likes[$key]['friend_status'] = "response";
+                    break;
+                }
+                else if($value->user_id == $fri->receiver_id AND $fri->sender_id == $auth AND $fri->friend_status == 2){
+                    $post_likes[$key]['friend_status'] = "friend";
+                    break;
+                }
+                else if($value->user_id == $fri->sender_id AND $fri->receiver_id == $auth AND $fri->friend_status == 2){
+                    $post_likes[$key]['friend_status'] = "friend";
+                    break;
+                }
+                else if($value->user_id == $auth){
+                    $post_likes[$key]['friend_status'] = "myself";
+                    break;
+                }
+                else{
+                    $post_likes[$key]['friend_status'] = "add friend";
+                }
             }
+        }
+
             return response()->json([
                 'data' =>  $post_likes
             ]);

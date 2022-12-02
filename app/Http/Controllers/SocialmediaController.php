@@ -270,14 +270,14 @@ class SocialmediaController extends Controller
     public function social_media_likes($post_id)
     {
         $auth = Auth()->user()->id;
-        // $post_likes=UserReactPost::where('post_id',$post_id)
-        //             ->with('user')
-        //             ->get();
-        $post_likes=UserReactPost::select('users.id','users.name','profiles.profile_image','user_react_posts.*')
-                    ->leftJoin('users','users.id','user_react_posts.user_id')
-                    ->leftJoin('profiles','users.profile_id','profiles.id')
-                    ->where('post_id',$post_id)
+        $post_likes=UserReactPost::where('post_id',$post_id)
+                    ->with('user')
                     ->get();
+        // $post_likes=UserReactPost::select('users.id','users.name','profiles.profile_image','user_react_posts.*')
+        //             ->leftJoin('users','users.id','user_react_posts.user_id')
+        //             ->leftJoin('profiles','users.profile_id','profiles.id')
+        //             ->where('post_id',$post_id)
+        //             ->get();
         $post=Post::findOrFail($post_id);
 
         // $friends=DB::table('friendships')->get()->toArray();
