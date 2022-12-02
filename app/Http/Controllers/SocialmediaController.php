@@ -273,44 +273,46 @@ class SocialmediaController extends Controller
         $post_likes=UserReactPost::where('post_id',$post_id)
                     ->with('user')
                     ->get();
-
+        // $post_likes=UserReactPost::select('users.id','users.name','profiles.profile_image','user_react_posts.*')
+        //             ->leftJoin('users','users.id','user_react_posts.user_id')
+        //             ->leftJoin('profiles','users.profile_id','profiles.id')
+        //             ->where('post_id',$post_id)
+        //             ->get();
         $post=Post::findOrFail($post_id);
 
         // $friends=DB::table('friendships')->get()->toArray();
-        $friends = DB::select("SELECT * FROM `friendships` WHERE (receiver_id = $auth or sender_id = $auth)");
-                                
-        // foreach($post_likes as $key=>$postLike)
-        //     {
-        //         foreach($friends as $fri_status){
-        //             if($fri_status->sender_id == $postLike['user_id'] && $fri_status->receiver_id == $auth && $fri_status->friend_status == 2 ){
-        //                 $post_likes[$key]['friend_status']= 'friend';
-        //             }
-        //             else if($fri_status->receiver_id == $postLike['user_id'] && $fri_status->sender_id == $auth && $fri_status->friend_status == 2 ){
-        //                 $post_likes[$key]['friend_status']= 'friend';
-        //             }
-        //             else if($fri_status->receiver_id == $postLike['user_id'] && $fri_status->sender_id == $auth && $fri_status->friend_status == 1){
-        //                 $post_likes[$key]['friend_status']= 'cancelRequest';
-        //             }
-        //             else if($fri_status->sender_id == $postLike['user_id'] && $fri_status->receiver_id == $auth && $fri_status->friend_status == 1){
-        //                 $post_likes[$key]['friend_status']= 'Response';
-        //             }
-        //             else if($postLike['user_id'] == $auth){
-        //                 $post_likes[$key]['friend_status']= 'myself';
-        //             }
-        //             else if($fri_status->sender_id != $postLike['user_id'] && $fri_status->receiver_id != $auth){
-        //                 $post_likes[$key]['friend_status']= 'addfriend';
-        //             }
-        //         }
+     $friends = DB::select("SELECT * FROM `friendships` WHERE (receiver_id = $auth or sender_id = $auth)");
 
-        //     }
-
-        foreach($post_likes as $post_like){
-            foreach($friends as $fri_status){
-
+        //dd($friends);
+        //dd($post_likes , $friends);
+        foreach($post_likes as $key=>$value){
+            foreach($friends as $fri){
+                if($value->user_id == $fri->receiver_id AND $fri->sender_id == $auth AND $fri->friend_status == 1    ){
+                    $post_likes[$key]['friend_status'] = "cancel request";
+                    break;
+                }
+                else if($value->user_id == $fri->sender_id AND $fri->receiver_id == $auth AND $fri->friend_status == 1    ){
+                    $post_likes[$key]['friend_status'] = "response";
+                    break;
+                }
+                else if($value->user_id == $fri->receiver_id AND $fri->sender_id == $auth AND $fri->friend_status == 2){
+                    $post_likes[$key]['friend_status'] = "friend";
+                    break;
+                }
+                else if($value->user_id == $fri->sender_id AND $fri->receiver_id == $auth AND $fri->friend_status == 2){
+                    $post_likes[$key]['friend_status'] = "friend";
+                    break;
+                }
+                else if($value->user_id == $auth){
+                    $post_likes[$key]['friend_status'] = "myself";
+                    break;
+                }
+                else{
+                    $post_likes[$key]['friend_status'] = "add friend";
+                }
             }
         }
 
-            dd($post_likes->toArray());
         return view('customer.socialmedia_likes',compact('post_likes','post'));
     }
 
@@ -790,11 +792,6 @@ class SocialmediaController extends Controller
 
     public function chat_message($id){
         $auth_user = auth()->user();
-        $sender_message = Chat::where('from_user_id',$auth_user->id)->where('to_user_id',$id)
-                        ->get();
-
-        $reciever_message = Chat::where('from_user_id',$id)->where('to_user_id',$auth_user->id)->with('to_user')->with('from_user')
-        ->get();
 
         $messages = Chat::where(function($query) use ($auth_user){
             $query->where('from_user_id',$auth_user->id)->orWhere('to_user_id',$auth_user->id);
@@ -803,9 +800,11 @@ class SocialmediaController extends Controller
         })->with('to_user')->with('from_user')->get();
 
         $auth_user_name = auth()->user()->name;
+        $receiver_user = User::findOrFail($id);
 
-        return view('customer.chat_message', compact('sender_message','reciever_message','id','messages','auth_user_name'));
+        return view('customer.chat_message', compact('id','messages','auth_user_name','receiver_user'));
     }
+
     public function post_comment($id)
     {
         $post=Post::select('users.name','profiles.profile_image','posts.*')
@@ -820,25 +819,36 @@ class SocialmediaController extends Controller
 
        foreach($comments as $key=>$comm1){
                    $mentioned_user_id = json_decode($comm1->mentioned_users);
+                //    dd($users);
+                   if($mentioned_user_id != null){
 
-                   if($mentioned_user_id){
-                    foreach($mentioned_user_id as $id){
-                        for($i=0;count($mentioned_user_id)>$i;$i++){
-                            $main =  $comm1['comment'];
+                    $users = User::select('users.id','users.name')->whereIn('id',$mentioned_user_id)->get();
 
-                            if (str_contains($main,'@'.$mentioned_user_id[$i])) {
-                            $replace = str_replace("@$mentioned_user_id[$i]","<a href = '#'>"."$mentioned_user_id[$i]"."</a>",$main);
+                    $main =  $comm1['comment'];
+                    // dd(count($users));
+                    // foreach($mentioned_user_id as $id){
+                        for($i=0;count($users)>$i;$i++){
 
-                            $comments[$key]['Replace']= $replace;
+                            $mentioned_user_id_id = $users[$i]['id'];
+
+                            if (str_contains($main,'@'.$users[$i]['id'])) {
+                                $replace=
+                                str_replace(['@'.$users[$i]['id']],
+                                "<a href='{{route('socialmedia.profile',$mentioned_user_id_id)}}'>".$users[$i]['name'].'</a>',$main);
+                                $main=$replace;
+                                $comments[$key]['Replace']= $main;
                             }
                         }
-                    }
+
+
+                    // }
                     }
                    else{
                     $comments[$key]['Replace']= $comm1->comment;
                    }
 
         }
+   //  dd($comments);
 
         return view('customer.comments',compact('post','comments'));
     }
@@ -906,10 +916,36 @@ class SocialmediaController extends Controller
         ->leftJoin('profiles','users.profile_id','profiles.id')
         ->where('post_id',$id)->orderBy('created_at','DESC')->get();
         foreach($comments as $key=>$comm1){
-            $main =  $comm1['comment'];
-            $replace = str_replace("@1","<a href = '#'>"."User One"."</a>",$main);
-            $comments[$key]['Replace']= $replace;
-        }
+            $mentioned_user_id = json_decode($comm1->mentioned_users);
+         //    dd($users);
+            if($mentioned_user_id != null){
+
+             $users = User::select('users.id','users.name')->whereIn('id',$mentioned_user_id)->get();
+
+             $main =  $comm1['comment'];
+             // dd(count($users));
+             // foreach($mentioned_user_id as $id){
+                 for($i=0;count($users)>$i;$i++){
+
+                     $mentioned_user_id_id = $users[$i]['id'];
+                     $url = route('socialmedia.profile',$mentioned_user_id_id);
+                     if (str_contains($main,'@'.$users[$i]['id'])) {
+                         $replace=
+                         str_replace(['@'.$users[$i]['id']],
+                         "<a href=$url>".$users[$i]['name'].'</a>',$main);
+                         $main=$replace;
+                         $comments[$key]['Replace']= $main;
+                     }
+                 }
+
+
+             // }
+             }
+            else{
+             $comments[$key]['Replace']= $comm1->comment;
+            }
+
+    }
         return response()->json([
             'comment' => $comments
         ]);

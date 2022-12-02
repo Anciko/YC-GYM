@@ -2,24 +2,28 @@
 
 namespace App\Http\Controllers\Api\V1;
 
-use App\Events\Chatting;
 use Carbon\Carbon;
 use Pusher\Pusher;
+use App\Models\Chat;
 use App\Models\Post;
 use App\Models\User;
 use App\Models\Comment;
 use App\Models\Profile;
+use App\Events\Chatting;
 use App\Models\Friendship;
 use App\Models\Notification;
 use Illuminate\Http\Request;
+use App\Models\UserReactPost;
 use App\Models\UserSavedPost;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
-use App\Models\Chat;
 use Illuminate\Support\Facades\Storage;
 
 class SocialMediaController extends Controller
 {
+
+
+
     //for user search
     public function newFeeds(){
     $user=auth()->user();
@@ -844,16 +848,17 @@ class SocialMediaController extends Controller
         ]);
     }
 
-    public function chatting(Request $request,$id){
-
+    public function chatting(Request $request, User $user){
+        // dd($user);
         $message = new Chat();
-        $message->to_user_id = $id;
+        $message->to_user_id = $user->id;
         $message->from_user_id = auth()->user()->id;
         $message->text = $request->text == null ?  null : $request->text;
         $message->save();
 
-        event(new Chatting($message, $request->sender));
+        broadcast(new Chatting($message, $request->sender)); //receiver
     }
+
     public function post_comment_store(Request $request){
         // dd(json_encode($request->mention));
         $banwords=DB::table('ban_words')->select('ban_word_english','ban_word_myanmar','ban_word_myanglish')->get();
@@ -862,8 +867,6 @@ class SocialMediaController extends Controller
            $m_banword=$b->ban_word_myanmar;
            $em_banword=$b->ban_word_myanglish;
             if (str_contains($request->comment,$e_banword)) {
-                // Alert::warning('Warning', 'Ban Ban Ban');
-                //return redirect()->back();
                 return response()->json([
                     'ban'=>'Ban',
                 ]);
@@ -888,6 +891,123 @@ class SocialMediaController extends Controller
         ]);
     }
 
+    public function user_like_post(Request $request)
+    {
+        $post_id=$request['post_id'];
+        $isLike=$request['isLike'] === true;
+
+        $update=false;
+        $post=Post::findOrFail($post_id);
+
+        if(!$post){
+            return null;
+        }
+        $user=auth()->user();
+        $react=$user->user_reacted_posts()->where('post_id',$post_id)->first();
+
+        if(!empty($react)){
+            $already_like=true;
+            $update=true;
+                // if($already_like==$isLike){
+                    $react->delete();
+                //     return null;
+
+                // }
+        }else{
+                $react=new UserReactPost();
+            }
+            $react->user_id=$user->id;
+            $react->post_id=$post_id;
+            $react->reacted_status=true;
+
+            if($update==true){
+                $react->update();
+            }else{
+                $react->save();
+            }
+
+            $total_likes=UserReactPost::where('post_id',$post_id)->count();
+
+            return response()->json([
+                'total_likes' => $total_likes,
+            ]);
+    }
+
+    public function comment_edit(Request $request){
+        $banwords=DB::table('ban_words')->select('ban_word_english','ban_word_myanmar','ban_word_myanglish')->get();
+        foreach($banwords as $b){
+           $e_banword=$b->ban_word_english;
+           $m_banword=$b->ban_word_myanmar;
+           $em_banword=$b->ban_word_myanglish;
+            if (str_contains($request->comment,$e_banword)) {
+                return response()->json([
+                    'ban'=>'Ban',
+                ]);
+            }elseif (str_contains($request->comment,$m_banword)){
+                return response()->json([
+                    'ban'=>'Ban',
+                ]);
+            }elseif (str_contains($request->comment,$em_banword)){
+                return response()->json([
+                    'ban'=>'Ban',
+                ]);
+            }
+        }
+        $comments_update = Comment::findOrFail($request->id);
+        $comments_update->comment = $request->comment;
+        $comments_update->mentioned_users = json_encode($request->mention);
+        $comments_update->update();
+        return response()->json([
+            'success' =>  'Comment updated successfully!'
+        ]);
+    }
+
+    public function social_media_likes(Request $request)
+    {
+        $auth = Auth()->user()->id;
+        $post_id = $request->post_id;
+        $post_likes=UserReactPost::select('users.name','profiles.profile_image','user_react_posts.*')
+                    ->leftJoin('users','users.id','user_react_posts.user_id')
+                    ->leftJoin('profiles','users.profile_id','profiles.id')
+                    ->where('post_id',$post_id)
+                    ->get();
+
+        $friends = DB::select("SELECT * FROM `friendships` WHERE (receiver_id = $auth or sender_id = $auth)
+       ");
+
+        foreach($post_likes as $key=>$value){
+            foreach($friends as $fri){
+                if($value->user_id == $fri->receiver_id AND $fri->sender_id == $auth AND $fri->friend_status == 1    ){
+                    $post_likes[$key]['friend_status'] = "cancel request";
+                    break;
+                }
+                else if($value->user_id == $fri->sender_id AND $fri->receiver_id == $auth AND $fri->friend_status == 1    ){
+                    $post_likes[$key]['friend_status'] = "response";
+                    break;
+                }
+                else if($value->user_id == $fri->receiver_id AND $fri->sender_id == $auth AND $fri->friend_status == 2){
+                    $post_likes[$key]['friend_status'] = "friend";
+                    break;
+                }
+                else if($value->user_id == $fri->sender_id AND $fri->receiver_id == $auth AND $fri->friend_status == 2){
+                    $post_likes[$key]['friend_status'] = "friend";
+                    break;
+                }
+                else if($value->user_id == $auth){
+                    $post_likes[$key]['friend_status'] = "myself";
+                    break;
+                }
+                else{
+                    $post_likes[$key]['friend_status'] = "add friend";
+                }
+            }
+        }
+
+            return response()->json([
+                'data' =>  $post_likes
+            ]);
+    }
+
 
     public function comment_delete(Request $request)
     {
@@ -903,7 +1023,7 @@ class SocialMediaController extends Controller
         $comments = Comment::select('users.name','users.profile_id','profiles.profile_image','comments.*')
         ->leftJoin('users','users.id','comments.user_id')
         ->leftJoin('profiles','users.profile_id','profiles.id')
-        ->where('post_id',$id)->orderBy('created_at','DESC')->get();
+        ->where('comments.post_id',$id)->orderBy('comments.created_at','DESC')->get();
         return response()->json([
             'comments' => $comments
         ]);
