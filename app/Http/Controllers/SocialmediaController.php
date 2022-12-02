@@ -805,6 +805,7 @@ class SocialmediaController extends Controller
 
     public function post_comment($id)
     {
+        // dd("dd");
         $post=Post::select('users.name','profiles.profile_image','posts.*')
         ->where('posts.id',$id)
         ->leftJoin('users','users.id','posts.user_id')
@@ -816,38 +817,33 @@ class SocialmediaController extends Controller
         ->where('post_id',$id)->orderBy('created_at','DESC')->get();
 
        foreach($comments as $key=>$comm1){
-                   $mentioned_user_id = json_decode($comm1->mentioned_users);
-                //    dd($users);
+                   $mentioned_user_id = json_decode($comm1->mentioned_users) ;
+                    //
                    if($mentioned_user_id != null){
-
-                    $users = User::select('users.id','users.name')->whereIn('id',$mentioned_user_id)->get();
-
+                    // $users = User::select('users.id','users.name')->whereIn('id',$mentioned_user_id)->get();
                     $main =  $comm1['comment'];
-                    // dd(count($users));
-                    // foreach($mentioned_user_id as $id){
-                        for($i=0;count($users)>$i;$i++){
+                   foreach($mentioned_user_id as $index=>$value){
+                        // dd(count($index));
+                         for($i=0;$value>$i;$i++){
+                            // $mentioned_user_id_id =  ;
 
-                            $mentioned_user_id_id = $users[$i]['id'];
-
-                            if (str_contains($main,'@'.$users[$i]['id'])) {
+                            $id = $mentioned_user_id[$i];
+                            if (str_contains($main,'@'.$id->id)) {
                                 $replace=
-                                str_replace(['@'.$users[$i]['id']],
-                                "<a href='{{route('socialmedia.profile',$mentioned_user_id_id)}}'>".$users[$i]['name'].'</a>',$main);
+                                str_replace(['@'.$id],
+                                "<a href='{{route('socialmedia.profile',$id)}}'>".$id.'</a>',$main);
                                 $main=$replace;
                                 $comments[$key]['Replace']= $main;
                             }
-                        }
+                         }
+                     }
 
-
-                    // }
                     }
                    else{
                     $comments[$key]['Replace']= $comm1->comment;
                    }
-
         }
-   //  dd($comments);
-
+// dd($comments);
         return view('customer.comments',compact('post','comments'));
     }
 
@@ -861,7 +857,6 @@ class SocialmediaController extends Controller
     }
 
     public function post_comment_store(Request $request){
-        // dd(json_encode($request->mention));
 
 
         $banwords=DB::table('ban_words')->select('ban_word_english','ban_word_myanmar','ban_word_myanglish')->get();

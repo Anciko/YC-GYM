@@ -21,75 +21,100 @@ use Illuminate\Support\Facades\Storage;
 
 class SocialMediaController extends Controller
 {
-
-
-
     //for user search
     public function newFeeds(){
-    $user=auth()->user();
-    $user_id=$user->id;
-    $friends=DB::table('friendships')
-                ->where('friend_status',2)
-                ->where(function($query) use ($user_id){
-                    $query->where('sender_id',$user_id)
-                        ->orWhere('receiver_id',$user_id);
-                })
-                ->get(['sender_id','receiver_id'])->toArray();
+        $user=auth()->user();
+        $user_id=$user->id;
+        $friends=DB::table('friendships')
+                    ->where('friend_status',2)
+                    ->where(function($query) use ($user_id){
+                        $query->where('sender_id',$user_id)
+                            ->orWhere('receiver_id',$user_id);
+                    })
+                    ->get(['sender_id','receiver_id'])->toArray();
 
-    if(!empty($friends)){
-        $n= array();
-        foreach($friends as $friend){
-                $f=(array)$friend;
-                array_push($n, $f['sender_id'],$f['receiver_id']);
-        }
-        $posts=Post::select('users.name','profiles.profile_image','posts.*')
-        ->whereIn('posts.user_id',$n)
-        ->leftJoin('users','users.id','posts.user_id')
-        ->leftJoin('profiles','users.profile_id','profiles.id')
-        ->orderBy('posts.created_at','DESC')
-        ->paginate(30);
-        $saved_post = UserSavedPost::select('posts.*')->leftJoin('posts','posts.id','user_saved_posts.post_id')
-        ->whereIn('user_saved_posts.user_id',$n)
-        ->get();
+        if(!empty($friends)){
+            $n= array();
+            foreach($friends as $friend){
+                    $f=(array)$friend;
+                    array_push($n, $f['sender_id'],$f['receiver_id']);
+            }
+            $posts=Post::select('users.name','profiles.profile_image','posts.*')
+            ->whereIn('posts.user_id',$n)
+            ->leftJoin('users','users.id','posts.user_id')
+            ->leftJoin('profiles','users.profile_id','profiles.id')
+            ->orderBy('posts.created_at','DESC')
+            ->paginate(30);
+            $saved_post = UserSavedPost::select('posts.*')->leftJoin('posts','posts.id','user_saved_posts.post_id')
+            ->whereIn('user_saved_posts.user_id',$n)
+            ->get();
 
-        foreach($posts as $key=>$value){
-            $posts[$key]['is_save']= 0;
-            // dd($value->id);
-                foreach($saved_post as $saved_key=>$save_value ){
+            $liked_post = UserReactPost::select('posts.*')->leftJoin('posts','posts.id','user_react_posts.post_id')
+            ->where('user_react_posts.user_id',$user_id)->get();
+            // dd($liked_post);
+            foreach($posts as $key=>$value){
+                $posts[$key]['is_save']= 0;
+                $posts[$key]['is_like']= 0;
+                // dd($value->id);
+                    foreach($saved_post as $saved_key=>$save_value){
 
-                    if($save_value->id === $value->id){
-                        $posts[$key]['is_save']= 1;
+                        if($save_value->id === $value->id){
+                            $posts[$key]['is_save']= 1;
+                            break;
+                        }
+                        else{
+                            $posts[$key]['is_save']= 0;
+                        }
+                        }
+                    foreach($liked_post as $liked_key=>$liked_value){
+                        if($liked_value->id === $value->id){
+                            $posts[$key]['is_like']= 1;
+                            break;
+                        }
+                        else{
+                            $posts[$key]['is_like']= 0;
+                        }
                     }
-                    else{
-                        $posts[$key]['is_save']= 0;
-                    }
-                    }
-        }
-    }else{
-        $posts=Post::select('users.name','profiles.profile_image','posts.*')
-        ->where('posts.user_id',$user->id)
-        ->leftJoin('users','users.id','posts.user_id')
-        ->leftJoin('profiles','users.profile_id','profiles.id')
-        ->orderBy('posts.created_at','DESC')
-        ->paginate(30);
+            }
+        }else{
+            $posts=Post::select('users.name','profiles.profile_image','posts.*')
+            ->where('posts.user_id',$user->id)
+            ->leftJoin('users','users.id','posts.user_id')
+            ->leftJoin('profiles','users.profile_id','profiles.id')
+            ->orderBy('posts.created_at','DESC')
+            ->paginate(30);
 
-        $saved_post = UserSavedPost::select('posts.*')->leftJoin('posts','posts.id','user_saved_posts.post_id')
-        ->where('user_saved_posts.user_id',$user->id)
-        ->get();
+            $saved_post = UserSavedPost::select('posts.*')->leftJoin('posts','posts.id','user_saved_posts.post_id')
+            ->where('user_saved_posts.user_id',$user->id)
+            ->get();
 
-        foreach($posts as $key=>$value){
-            $posts[$key]['is_save']= 0;
-            // dd($value->id);
-                foreach($saved_post as $saved_key=>$save_value ){
+            $liked_post = UserReactPost::select('posts.*')->leftJoin('posts','posts.id','user_react_posts.post_id')
+            ->where('user_react_posts.user_id',$user_id)->get();
+            foreach($posts as $key=>$value){
+                $posts[$key]['is_save']= 0;
+                // dd($value->id);
+                    foreach($saved_post as $saved_key=>$save_value ){
 
-                    if($save_value->id === $value->id){
-                        $posts[$key]['is_save']= 1;
+                        if($save_value->id === $value->id){
+                            $posts[$key]['is_save']= 1;
+                            break;
+                        }
+                        else{
+                            $posts[$key]['is_save']= 0;
+                        }
+                        }
+
+                        foreach($liked_post as $liked_key=>$liked_value){
+                            if($liked_value->id === $value->id){
+                                $posts[$key]['is_like']= 1;
+                                break;
+                            }
+                            else{
+                                $posts[$key]['is_like']= 0;
+                            }
+                        }
+
                     }
-                    else{
-                        $posts[$key]['is_save']= 0;
-                    }
-                    }
-                }
     }
     return response()
     ->json([
@@ -99,8 +124,8 @@ class SocialMediaController extends Controller
     public function search_users(Request $request){
         $users = User::select('users.id','users.name','profiles.profile_image')
                  ->leftJoin('profiles','users.profile_id','profiles.id')
-                 ->where('name','LIKE','%'.$request->keyword.'%')
-                        ->orWhere('phone','LIKE','%'.$request->keyword.'%')->get();
+                 ->where('users.name','LIKE','%'.$request->keyword.'%')
+                        ->orWhere('users.phone','LIKE','%'.$request->keyword.'%')->get();
         $friends=DB::table('friendships')->get();
         return response()->json([
                         'users' => $users,
@@ -251,28 +276,38 @@ class SocialMediaController extends Controller
         ->leftJoin('profiles','users.profile_id','profiles.id')
         ->orderBy('posts.created_at','DESC')
         ->paginate(30);
-        // $posts= Post::select('users.name','profiles.profile_image','posts.*')
-        //         ->where('posts.user_id',$user->id)
-        //         ->leftJoin('users','users.id','posts.user_id')
-        //         ->leftJoin('profiles','users.profile_id','profiles.id')
-        //         ->orderBy('posts.created_at','DESC')
-        //         ->paginate(30);
 
         $saved_post = UserSavedPost::select('posts.*')->leftJoin('posts','posts.id','user_saved_posts.post_id')
-                ->where('user_saved_posts.user_id',$id)
+                ->where('user_saved_posts.user_id',$auth)
                 ->get();
+
+        $liked_post = UserReactPost::select('posts.*')->leftJoin('posts','posts.id','user_react_posts.post_id')
+                ->where('user_react_posts.user_id',$auth)->get();
+
+        // dd($liked_post);
 
         foreach($posts as $key=>$value){
             $posts[$key]['is_save']= 0;
+            $posts[$key]['is_like']= 0;
             // dd($value->id);
                 foreach($saved_post as $saved_key=>$save_value ){
 
                      if($save_value->id === $value->id){
                         $posts[$key]['is_save']= 1;
+                        break;
                      }
                      else{
                         $posts[$key]['is_save']= 0;
                     }
+                    }
+                foreach($liked_post as $liked_key=>$liked_value){
+                        if($liked_value->id === $value->id){
+                            $posts[$key]['is_like']= 1;
+                            break;
+                        }
+                        else{
+                            $posts[$key]['is_like']= 0;
+                        }
                     }
                 }
         $friendships=DB::table('friendships')

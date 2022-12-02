@@ -297,7 +297,7 @@
 
                 var arr = []
                 $.each($('.mentiony-link'),function(){
-                    arr.push($(this).data('item-id'))
+                    arr.push({'id' : $(this).data('item-id'),'name' : $(this).text().split('@')[1]})
                     $(this).text(`@${$(this).data('item-id')}`)
 
                 })
