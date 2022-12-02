@@ -160,8 +160,11 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::post('message/chat/{id}',[SocialMediaController::class,'chatting']);
     Route::post('post/comment/store', [SocialmediaController::class, 'post_comment_store']);
     Route::post('post/comment/delete', [SocialmediaController::class, 'comment_delete']);
+    Route::post('post/comment/edit', [SocialmediaController::class, 'comment_edit']);
 
     Route::post('post/comment/list', [SocialmediaController::class, 'comment_list']);
+
+
 
 
 });
