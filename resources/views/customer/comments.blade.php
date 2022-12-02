@@ -3,6 +3,27 @@
 @section('content')
 @include('sweetalert::alert')
 
+<div class="modal fade" id ="editModal"  tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <form class="social-media-all-comments-input" id="editComment">
+                <textarea placeholder="Write a comment" id="editCommentTextArea">asffdfsdfd</textarea>
+                <div id="menu" class="menu" role="listbox"></div>
+                <button class="social-media-all-comments-send-btn">
+                    <iconify-icon icon="akar-icons:send" class="social-media-all-comments-send-icon"></iconify-icon>
+                </button>
+
+            </form>
+        </div>
+
+      </div>
+    </div>
+</div>
 
 <div class="social-media-right-container">
     <div class="social-media-all-likes-parent-container">
@@ -183,6 +204,7 @@
 <script>
     $(document).ready(function() {
         // $('').click(function(){
+
             $(document).on('click', '.social-media-comment-icon', function(e) {
                 $(this).next().toggle()
             })
@@ -213,12 +235,56 @@
                             // Call this to populate mention.
                             onDataRequestCompleteCallback.call(this, data);
                         }
+
+
+
+                    });
+                    console.log($("#editComment .mentiony-content") , "not edit")
+                },
+
+                });
+                $('#editCommentTextArea').mentiony({
+                onDataRequest: function (mode, keyword, onDataRequestCompleteCallback) {
+                    var search_url = "{{ route('users.mention') }}";
+                    $.ajaxSetup({
+                            headers: {
+                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                            }
+                        });
+                    $.ajax({
+                        method: "POST",
+                        url:search_url,
+                        data : keyword,
+                        dataType: "json",
+                        success: function (response) {
+                            var data = response.data;
+                            console.log(data)
+
+                            // NOTE: Assuming this filter process was done on server-side
+                            data = jQuery.grep(data, function( item ) {
+                                return item.name.toLowerCase().indexOf(keyword.toLowerCase()) > -1;
+                            });
+                            // End server-side
+
+                            // Call this to populate mention.
+                            onDataRequestCompleteCallback.call(this, data);
+                        }
                     });
 
+
                 },
-                timeOut: 500, // Timeout to show mention after press @
-                debug: 1, // show debug info
-            });
+
+                });
+
+                //edit comment start
+                $(document).on('click', '#editCommentModal', function(e) {
+                        $('#editModal').modal('show');
+                        var id = $(this).data('id');
+
+                        $("#editComment .mentiony-content").text(id)
+                })
+                //edit comment end
+
 
             $(".mentiony-container").attr('style','')
             $(".mentiony-content").attr('style','')
@@ -231,7 +297,7 @@
 
                 var arr = []
                 $.each($('.mentiony-link'),function(){
-                    arr.push($(this).data('item-id'))
+                    arr.push({'id' : $(this).data('item-id'),'name' : $(this).text().split('@')[1]})
                     $(this).text(`@${$(this).data('item-id')}`)
 
                 })
@@ -323,7 +389,7 @@
 
                                         <iconify-icon icon="bx:dots-vertical-rounded" class="social-media-comment-icon"></iconify-icon>
                                         <div class="comment-actions-container" >
-                                            <div class="comment-action">
+                                            <div class="comment-action" id="editCommentModal" data-id=`+res.comment[i].id+`>
                                                 <iconify-icon icon="akar-icons:edit" class="comment-action-icon"></iconify-icon>
                                                 <p>Edit</p>
                                             </div>
