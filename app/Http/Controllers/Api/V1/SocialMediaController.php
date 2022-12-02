@@ -2,20 +2,21 @@
 
 namespace App\Http\Controllers\Api\V1;
 
-use App\Events\Chatting;
 use Carbon\Carbon;
 use Pusher\Pusher;
+use App\Models\Chat;
 use App\Models\Post;
 use App\Models\User;
 use App\Models\Comment;
 use App\Models\Profile;
+use App\Events\Chatting;
 use App\Models\Friendship;
 use App\Models\Notification;
 use Illuminate\Http\Request;
+use App\Models\UserReactPost;
 use App\Models\UserSavedPost;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
-use App\Models\Chat;
 use Illuminate\Support\Facades\Storage;
 
 class SocialMediaController extends Controller
@@ -890,6 +891,48 @@ class SocialMediaController extends Controller
         ]);
     }
 
+    public function user_like_post(Request $request)
+    {
+        $post_id=$request['post_id'];
+        $isLike=$request['isLike'] === true;
+
+        $update=false;
+        $post=Post::findOrFail($post_id);
+
+        if(!$post){
+            return null;
+        }
+        $user=auth()->user();
+        $react=$user->user_reacted_posts()->where('post_id',$post_id)->first();
+
+        if(!empty($react)){
+            $already_like=true;
+            $update=true;
+                // if($already_like==$isLike){
+                    $react->delete();
+                //     return null;
+
+                // }
+        }else{
+                $react=new UserReactPost();
+            }
+            $react->user_id=$user->id;
+            $react->post_id=$post_id;
+            $react->reacted_status=true;
+
+            if($update==true){
+                $react->update();
+            }else{
+                $react->save();
+            }
+
+            $total_likes=UserReactPost::where('post_id',$post_id)->count();
+
+            return response()->json([
+                'total_likes' => $total_likes,
+            ]);
+    }
+
     public function comment_edit(Request $request){
         $banwords=DB::table('ban_words')->select('ban_word_english','ban_word_myanmar','ban_word_myanglish')->get();
         foreach($banwords as $b){
@@ -919,6 +962,45 @@ class SocialMediaController extends Controller
         return response()->json([
             'success' =>  'Comment updated successfully!'
         ]);
+    }
+
+    public function social_media_likes($post_id)
+    {
+        $auth = Auth()->user()->id;
+        $post_likes=UserReactPost::where('post_id',$post_id)
+                    ->with('user')
+                    ->get();
+
+        $friends = DB::select("SELECT * FROM `friendships` WHERE (receiver_id = $auth or sender_id = $auth)
+       ");
+
+        foreach($post_likes as $key=>$postLike)
+            {
+                foreach($friends as $fri_status){
+                    if($fri_status->sender_id == $postLike['user_id'] && $fri_status->receiver_id == $auth && $fri_status->friend_status == 2 ){
+                        $post_likes[$key]['friend_status']= 'friend';
+                    }
+                    else if($fri_status->receiver_id == $postLike['user_id'] && $fri_status->sender_id == $auth && $fri_status->friend_status == 2 ){
+                        $post_likes[$key]['friend_status']= 'friend';
+                    }
+                    else if($fri_status->receiver_id == $postLike['user_id'] && $fri_status->sender_id == $auth && $fri_status->friend_status == 1){
+                        $post_likes[$key]['friend_status']= 'cancelRequest';
+                    }
+                    else if($fri_status->sender_id == $postLike['user_id'] && $fri_status->receiver_id == $auth && $fri_status->friend_status == 1){
+                        $post_likes[$key]['friend_status']= 'Response';
+                    }
+                    else if($postLike['user_id'] == $auth){
+                        $post_likes[$key]['friend_status']= 'myself';
+                    }
+                    else if($fri_status->sender_id != $postLike['user_id'] && $fri_status->receiver_id != $auth){
+                        $post_likes[$key]['friend_status']= 'addfriend';
+                    }
+                }
+
+            }
+            return response()->json([
+                'data' =>  $post_likes
+            ]);
     }
 
 

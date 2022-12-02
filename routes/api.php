@@ -162,6 +162,8 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::post('post/comment/delete', [SocialmediaController::class, 'comment_delete']);
     Route::post('post/comment/edit', [SocialmediaController::class, 'comment_edit']);
 
+    Route::post('post/likes', [SocialmediaController::class, 'social_media_likes']);
+
     Route::post('post/comment/list', [SocialmediaController::class, 'comment_list']);
 
 
