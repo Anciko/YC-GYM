@@ -418,13 +418,13 @@ z-index: 20;
 }
 
 .group-chat-receiver-text-container{
-    width: 200px;
-    /* white-space: wrap; */
+    max-width: 200px;
     margin-left: 5px;
 }
 
 .group-chat-receiver-text-container span{
     /* width: 100%; */
+
     font-size: 10px;
     color: var(--customer-text-color);
 }
@@ -466,7 +466,7 @@ z-index: 20;
 
 .group-chat-sender-text-container{
     margin-right: 5px;
-    max-width: 200px;
+    max-width: 300px;
 }
 
 .group-chat-sender-text-container p{

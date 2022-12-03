@@ -953,11 +953,29 @@ class SocialMediaController extends Controller
     }
 
     public function chatting(Request $request, User $user){
-        // dd($user);
+
+        $path='';
+        if($request->file('fileInput') !=null){
+            $request->validate([
+                'fileInput' => 'required|mimes:png,jpg,jpeg,gif,mp4,mov,webm'
+                ],[
+                    'fileInput.required' => 'You can send png,jpg,jpeg,gif,mp4,mov and webm extension'
+                ]);
+
+            $file = $request->file('fileInput');
+            $path =uniqid().'_'. $file->getClientOriginalName();
+            $disk = Storage::disk('public');
+            $disk->put(
+                'customer_message_media/'.$path,file_get_contents($file)
+            );
+
+        }
+
         $message = new Chat();
-        $message->to_user_id = $user->id;
         $message->from_user_id = auth()->user()->id;
+        $message->to_user_id = $user->id;
         $message->text = $request->text == null ?  null : $request->text;
+        $message->media = $request->fileInput == null ? null : $path;
         $message->save();
 
         broadcast(new Chatting($message, $request->sender)); //receiver
