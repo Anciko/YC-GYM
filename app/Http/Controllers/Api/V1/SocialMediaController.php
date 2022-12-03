@@ -24,48 +24,115 @@ class SocialMediaController extends Controller
     //for user search
     public function newFeeds(){
         $user=auth()->user();
-        $user_id=$user->id;
-        $friends=DB::table('friendships')
-                    ->where('friend_status',2)
-                    ->where(function($query) use ($user_id){
-                        $query->where('sender_id',$user_id)
-                            ->orWhere('receiver_id',$user_id);
-                    })
-                    ->get(['sender_id','receiver_id'])->toArray();
+    $user_id=$user->id;
+    $friends=DB::table('friendships')
+                ->where('friend_status',2)
+                ->where(function($query) use ($user_id){
+                    $query->where('sender_id',$user_id)
+                        ->orWhere('receiver_id',$user_id);
+                })
+                ->get(['sender_id','receiver_id'])->toArray();
 
-        if(!empty($friends)){
-            $n= array();
-            foreach($friends as $friend){
-                    $f=(array)$friend;
-                    array_push($n, $f['sender_id'],$f['receiver_id']);
-            }
-            $posts=Post::select('users.name','profiles.profile_image','posts.*')
-            ->whereIn('posts.user_id',$n)
-            ->leftJoin('users','users.id','posts.user_id')
-            ->leftJoin('profiles','users.profile_id','profiles.id')
-            ->orderBy('posts.created_at','DESC')
-            ->paginate(30);
-            $saved_post = UserSavedPost::select('posts.*')->leftJoin('posts','posts.id','user_saved_posts.post_id')
-            ->whereIn('user_saved_posts.user_id',$n)
-            ->get();
+    if(!empty($friends)){
+        $n= array();
+        foreach($friends as $friend){
+                $f=(array)$friend;
+                array_push($n, $f['sender_id'],$f['receiver_id']);
+        }
+        $posts=Post::select('users.name','profiles.profile_image','posts.*')
+        ->whereIn('posts.user_id',$n)
+        ->leftJoin('users','users.id','posts.user_id')
+        ->leftJoin('profiles','users.profile_id','profiles.id')
+        ->orderBy('posts.created_at','DESC')
+        ->paginate(30);
+        $saved_post = UserSavedPost::select('posts.*')->leftJoin('posts','posts.id','user_saved_posts.post_id')
+        ->whereIn('user_saved_posts.user_id',$n)
+        ->get();
+        $liked_post = UserReactPost::select('posts.*')->leftJoin('posts','posts.id','user_react_posts.post_id')
+        ->where('user_react_posts.user_id',$user_id)->get();
 
-            $liked_post = UserReactPost::select('posts.*')->leftJoin('posts','posts.id','user_react_posts.post_id')
-            ->where('user_react_posts.user_id',$user_id)->get();
-            // dd($liked_post);
-            foreach($posts as $key=>$value){
-                $posts[$key]['is_save']= 0;
-                $posts[$key]['is_like']= 0;
-                // dd($value->id);
-                    foreach($saved_post as $saved_key=>$save_value){
+         $liked_post_count = DB::select("SELECT COUNT(post_id) as like_count, post_id FROM user_react_posts GROUP BY post_id");
 
-                        if($save_value->id === $value->id){
-                            $posts[$key]['is_save']= 1;
-                            break;
-                        }
-                        else{
-                            $posts[$key]['is_save']= 0;
-                        }
-                        }
+         $comment_post_count = DB::select("SELECT COUNT(post_id) as comment_count, post_id FROM comments GROUP BY post_id");
+         //dd($comment_post_count);
+        foreach($posts as $key=>$value){
+            $posts[$key]['is_save']= 0;
+            $posts[$key]['is_like']= 0;
+            $posts[$key]['like_count']= 0;
+            $posts[$key]['comment_count']= 0;
+            // dd($value->id);
+                foreach($saved_post as $saved_key=>$save_value){
+
+                    if($save_value->id === $value->id){
+                        $posts[$key]['is_save']= 1;
+                        break;
+                    }
+                    else{
+                        $posts[$key]['is_save']= 0;
+                    }
+                    }
+                foreach($liked_post as $liked_key=>$liked_value){
+                    if($liked_value->id === $value->id){
+                        $posts[$key]['is_like']= 1;
+                        break;
+                    }
+                    else{
+                        $posts[$key]['is_like']= 0;
+                    }
+                }
+                foreach($liked_post_count as $like_count){
+                    if($like_count->post_id === $value->id){
+                        $posts[$key]['like_count']= $like_count->like_count;
+                        break;
+                    }
+                    else{
+                        $posts[$key]['like_count']= 0;
+                    }
+                }
+                foreach($comment_post_count as $comment_count){
+                    if($comment_count->post_id === $value->id){
+                        $posts[$key]['comment_count']= $comment_count->comment_count;
+                        break;
+                    }
+                    else{
+                        $posts[$key]['comment_count']= 0;
+                    }
+                }
+        }
+    }else{
+        $posts=Post::select('users.name','profiles.profile_image','posts.*')
+        ->where('posts.user_id',$user->id)
+        ->leftJoin('users','users.id','posts.user_id')
+        ->leftJoin('profiles','users.profile_id','profiles.id')
+        ->orderBy('posts.created_at','DESC')
+        ->paginate(30);
+
+        $saved_post = UserSavedPost::select('posts.*')->leftJoin('posts','posts.id','user_saved_posts.post_id')
+        ->where('user_saved_posts.user_id',$user->id)
+        ->get();
+
+        $liked_post = UserReactPost::select('posts.*')->leftJoin('posts','posts.id','user_react_posts.post_id')
+        ->where('user_react_posts.user_id',$user_id)->get();
+
+        $liked_post_count = DB::select("SELECT COUNT(post_id) as like_count, post_id FROM user_react_posts GROUP BY post_id");
+
+
+        $comment_post_count = DB::select("SELECT COUNT(post_id) as comment_count, post_id FROM comments GROUP BY post_id");
+
+        foreach($posts as $key=>$value){
+            $posts[$key]['is_save']= 0;
+            // dd($value->id);
+                foreach($saved_post as $saved_key=>$save_value ){
+
+                    if($save_value->id === $value->id){
+                        $posts[$key]['is_save']= 1;
+                        break;
+                    }
+                    else{
+                        $posts[$key]['is_save']= 0;
+                    }
+                    }
+
                     foreach($liked_post as $liked_key=>$liked_value){
                         if($liked_value->id === $value->id){
                             $posts[$key]['is_like']= 1;
@@ -75,46 +142,26 @@ class SocialMediaController extends Controller
                             $posts[$key]['is_like']= 0;
                         }
                     }
-            }
-        }else{
-            $posts=Post::select('users.name','profiles.profile_image','posts.*')
-            ->where('posts.user_id',$user->id)
-            ->leftJoin('users','users.id','posts.user_id')
-            ->leftJoin('profiles','users.profile_id','profiles.id')
-            ->orderBy('posts.created_at','DESC')
-            ->paginate(30);
-
-            $saved_post = UserSavedPost::select('posts.*')->leftJoin('posts','posts.id','user_saved_posts.post_id')
-            ->where('user_saved_posts.user_id',$user->id)
-            ->get();
-
-            $liked_post = UserReactPost::select('posts.*')->leftJoin('posts','posts.id','user_react_posts.post_id')
-            ->where('user_react_posts.user_id',$user_id)->get();
-            foreach($posts as $key=>$value){
-                $posts[$key]['is_save']= 0;
-                // dd($value->id);
-                    foreach($saved_post as $saved_key=>$save_value ){
-
-                        if($save_value->id === $value->id){
-                            $posts[$key]['is_save']= 1;
+                    foreach($liked_post_count as $like_count){
+                        if($like_count->post_id === $value->id){
+                            $posts[$key]['like_count']= $like_count->like_count;
                             break;
                         }
                         else{
-                            $posts[$key]['is_save']= 0;
+                            $posts[$key]['like_count']= 0;
                         }
-                        }
-
-                        foreach($liked_post as $liked_key=>$liked_value){
-                            if($liked_value->id === $value->id){
-                                $posts[$key]['is_like']= 1;
-                                break;
-                            }
-                            else{
-                                $posts[$key]['is_like']= 0;
-                            }
-                        }
-
                     }
+                    foreach($comment_post_count as $comment_count){
+                        if($comment_count->post_id === $value->id){
+                            $posts[$key]['comment_count']= $comment_count->comment_count;
+                            break;
+                        }
+                        else{
+                            $posts[$key]['comment_count']= 0;
+                        }
+                    }
+
+                }
     }
     return response()
     ->json([
@@ -283,12 +330,16 @@ class SocialMediaController extends Controller
 
         $liked_post = UserReactPost::select('posts.*')->leftJoin('posts','posts.id','user_react_posts.post_id')
                 ->where('user_react_posts.user_id',$auth)->get();
+        $liked_post_count = DB::select("SELECT COUNT(post_id) as like_count, post_id FROM user_react_posts GROUP BY post_id");
 
+        $comment_post_count = DB::select("SELECT COUNT(post_id) as comment_count, post_id FROM comments GROUP BY post_id");
         // dd($liked_post);
 
         foreach($posts as $key=>$value){
             $posts[$key]['is_save']= 0;
             $posts[$key]['is_like']= 0;
+            $posts[$key]['like_count']= 0;
+            $posts[$key]['comment_count']= 0;
             // dd($value->id);
                 foreach($saved_post as $saved_key=>$save_value ){
 
@@ -307,6 +358,24 @@ class SocialMediaController extends Controller
                         }
                         else{
                             $posts[$key]['is_like']= 0;
+                        }
+                    }
+                foreach($liked_post_count as $like_count){
+                        if($like_count->post_id === $value->id){
+                            $posts[$key]['like_count']= $like_count->like_count;
+                            break;
+                        }
+                        else{
+                            $posts[$key]['like_count']= 0;
+                        }
+                    }
+                foreach($comment_post_count as $comment_count){
+                        if($comment_count->post_id === $value->id){
+                            $posts[$key]['comment_count']= $comment_count->comment_count;
+                            break;
+                        }
+                        else{
+                            $posts[$key]['comment_count']= 0;
                         }
                     }
                 }
@@ -340,7 +409,7 @@ class SocialMediaController extends Controller
             ->take(6)->get();
 
         $friend_status = DB::select("SELECT * FROM `friendships` WHERE (receiver_id = $auth or sender_id = $auth )
-            AND (receiver_id = $request->id or sender_id = $request->id)");
+            AND (receiver_id = $id or sender_id = $id)");
 
         return response()->json([
              'user' => $profile,
