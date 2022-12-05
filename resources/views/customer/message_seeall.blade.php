@@ -15,15 +15,15 @@
             </button>
         </div>
     </div>
-  
+
     <div class="social-media-allchats-messages-container">
         @forelse ($chat_lists as $list)
 
             @if (auth()->user()->id == $list->to_user->id)
                     <a href="{{route('message.chat',$list->from_user->id)}}" class="social-media-allchats-message-row">
                         <div class="social-media-allchats-message-img">
-                            @if ($list->from_user->profiles->profile_image != null)
-                                <img src="{{asset('storage/post'.$list->from_user->profiles->profile_image)}}">
+                            @if ($list->from_user->profiles != null || $list->from_user->profiles->profile_image != null)
+                                {{-- <img src="{{asset('storage/post'.$list->from_user->profiles->profile_image)}}"> --}}
                             @else
                                 <img class="nav-profile-img" src="{{asset('img/customer/imgs/user_default.jpg')}}"/>
                             @endif
@@ -46,11 +46,11 @@
                             <p>{{$list->to_user->name}}</p>
                         </div>
 
-                        @foreach ($messages as $message)
+                        {{-- @foreach ($messages as $message)
                             @if ($message->from_user_id == $list->to_user_id)
                                 <p>{{$message->text}}</p>
                             @endif
-                        @endforeach
+                        @endforeach --}}
                         <span>03:04 pm</span>
                     </a>
 

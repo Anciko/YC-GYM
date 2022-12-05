@@ -42,7 +42,7 @@ class Chatting implements ShouldBroadcast
     public function broadcastOn()
     {
         // Log::debug("{$this->message}:{$this->user}");
-        return new PrivateChannel("chatting.{$this->message->to_user_id}");
+        return new PrivateChannel("chatting.{$this->message->from_user_id}.{$this->message->to_user_id}");
     }
 
     // public function broadcastAs(){

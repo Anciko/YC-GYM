@@ -779,17 +779,17 @@ class SocialmediaController extends Controller
             $qu->where('to_user_id',$auth_user->id);
         })->get();
 
-        $user_id = Chat::select('from_user_id','to_user_id')->where('from_user_id', $auth_user->id)->orWhere('to_user_id',$auth_user->id)->get();
+        $user_id = Chat::select('from_user_id', 'to_user_id')->where('from_user_id', $auth_user->id)->orWhere('to_user_id',$auth_user->id)->get();
 
         foreach($user_id as $id){
-            $chat_lists = Chat::where('from_user_id', $auth_user->id)->orWhere('to_user_id',$auth_user->id)
-                        ->with('to_user')->with('from_user')->with('to_user.profiles')->with('from_user.profiles')
-                        ->where(function($query) use ($id){
-                            $query->where('from_user_id', $id)->orWhere('to_user_id',$id);
-                        })->get();
+            $chat_lists =Chat::where(function($query) use ($auth_user){
+                $query->where('from_user_id',$auth_user->id)->orWhere('to_user_id',$auth_user->id);
+            })->where(function($que) use ($id){
+                $que->where('from_user_id',$id)->orWhere('to_user_id',$id);
+            })->get();
         }
-
-
+        // ->with('to_user')->with('from_user')->with('to_user.profiles')->with('from_user.profiles')
+            // dd($chat_lists->toArray());
         return view('customer.message_seeall', compact('chat_lists', 'messages'));
     }
 
@@ -803,13 +803,29 @@ class SocialmediaController extends Controller
         })->with('to_user')->with('from_user')->get();
 
         $auth_user_name = auth()->user()->name;
-        $receiver_user = User::findOrFail($id);
+        $receiver_user = User::where('users.id',$id)->join('profiles','profiles.user_id','users.id')->first();
+        $sender_user = Profile::where('user_id',$auth_user->id)->first();
 
-        return view('customer.chat_message', compact('id','messages','auth_user_name','receiver_user'));
+        return view('customer.chat_message', compact('id','messages','auth_user_name','receiver_user','sender_user'));
+    }
+
+    public function viewmedia_message($id){
+        $auth_user = auth()->user();
+
+        $messages = Chat::select('id','media')->where(function($query) use ($auth_user){
+            $query->where('from_user_id',$auth_user->id)->orWhere('to_user_id',$auth_user->id);
+        })->where(function($que) use ($id){
+            $que->where('from_user_id',$id)->orWhere('to_user_id',$id);
+        })->with('to_user')->with('from_user')->get();
+
+        $auth_user_name = auth()->user()->name;
+        $receiver_user = User::findOrFail($id);
+        return view('customer.chat_view_media', compact('id','messages','auth_user_name','receiver_user'));
     }
 
     public function post_comment($id)
     {
+        // dd("dd");
         $post=Post::select('users.name','profiles.profile_image','posts.*')
         ->where('posts.id',$id)
         ->leftJoin('users','users.id','posts.user_id')
@@ -820,39 +836,60 @@ class SocialmediaController extends Controller
         ->leftJoin('profiles','users.profile_id','profiles.id')
         ->where('post_id',$id)->orderBy('created_at','DESC')->get();
 
-       foreach($comments as $key=>$comm1){
-                   $mentioned_user_id = json_decode($comm1->mentioned_users);
-                //    dd($users);
-                   if($mentioned_user_id != null){
-
-                    $users = User::select('users.id','users.name')->whereIn('id',$mentioned_user_id)->get();
-
-                    $main =  $comm1['comment'];
-                    // dd(count($users));
-                    // foreach($mentioned_user_id as $id){
-                        for($i=0;count($users)>$i;$i++){
-
-                            $mentioned_user_id_id = $users[$i]['id'];
-
-                            if (str_contains($main,'@'.$users[$i]['id'])) {
-                                $replace=
-                                str_replace(['@'.$users[$i]['id']],
-                                "<a href='{{route('socialmedia.profile',$mentioned_user_id_id)}}'>".$users[$i]['name'].'</a>',$main);
-                                $main=$replace;
-                                $comments[$key]['Replace']= $main;
-                            }
-                        }
 
 
-                    // }
-                    }
-                   else{
-                    $comments[$key]['Replace']= $comm1->comment;
-                   }
+    //    foreach($comments as $key=>$comm1){
+    //    $ids = json_decode($comm1->mentioned_users);
+    //    $arr = json_decode(json_encode ( $ids ) , true);
 
-        }
-   //  dd($comments);
 
+    //     if($ids != null){
+    //         $count = count($ids);
+    //         //   dd($count);
+    //         $main =  $comm1['comment'];
+    //         for($i = 0; $i < $count ; $i++){
+    //            $arr_id = json_decode(json_encode ( $ids[$i] ) , true);
+    //            $mentioned_user_id = $arr_id['id'];
+
+    //                      $url = route('socialmedia.profile',$mentioned_user_id);
+    //                      $comments[$key]['Replace']= sizeof($ids);
+    //                     if (str_contains($main,'@'.$mentioned_user_id)) {
+    //                         $replace=
+    //                          str_replace(['@'.$mentioned_user_id],
+    //                         "<a href=$url>".$arr_id['name'].'</a>',$main);
+    //                         $main=$replace;
+    //                         $comments[$key]['Replace']= $main;
+    //                  }
+    //            $comments[$key]['Replace']= $main  ;
+
+    //         }
+
+    //                 // for($i = 0; $i < sizeof($ids) ; $i++){
+    //                 //     $mentioned_user_id = $mentioned_user_id;
+
+    //                 //     $url = route('socialmedia.profile',$mentioned_user_id);
+    //                 //     $comments[$key]['Replace']= sizeof($ids);
+    //                 //     if (str_contains($main,'@'.$ids[$i]->id)) {
+    //                 //         $replace=
+    //                 //         str_replace(['@'.$ids[$i]->id],
+    //                 //         "<a href=$url>".$ids[$i]->name.'</a>',$main);
+    //                 //         $main=$replace;
+    //                 //         $comments[$key]['Replace']= $main;
+    //                 // }
+    //                 //     }
+
+    //             }
+    //     else{
+    //         $comments[$key]['Replace']= $comm1->comment;
+    //     }
+
+
+    //     //dd($arr);
+    // }
+
+    // dd($comments);
+
+        // dd($posts);
         return view('customer.comments',compact('post','comments'));
     }
 
@@ -866,7 +903,6 @@ class SocialmediaController extends Controller
     }
 
     public function post_comment_store(Request $request){
-        // dd(json_encode($request->mention));
 
 
         $banwords=DB::table('ban_words')->select('ban_word_english','ban_word_myanmar','ban_word_myanglish')->get();
@@ -898,6 +934,31 @@ class SocialmediaController extends Controller
         $comments->comment = $request->comment;
         $comments->mentioned_users = json_encode($request->mention);
         $comments->save();
+        $options = array(
+            'cluster' => env('PUSHER_APP_CLUSTER'),
+            'encrypted' => true
+            );
+            $pusher = new Pusher(
+            env('PUSHER_APP_KEY'),
+            env('PUSHER_APP_SECRET'),
+            env('PUSHER_APP_ID'),
+            $options
+            );
+            //$ids = ["4","5"];
+            $data = auth()->user()->name.' mentioned you in a comment!';
+            $ids = json_decode($comments->mentioned_users);
+            $arr = json_decode(json_encode ( $ids ) , true);
+            foreach($arr as $id){
+                $fri_noti = new Notification();
+                $fri_noti->description = $data;
+                $fri_noti->date = Carbon::Now()->toDateTimeString();
+                $fri_noti->sender_id = auth()->user()->id;
+                $fri_noti->receiver_id = $id['id'];
+                $fri_noti->comment_id = $comments->id;
+                $fri_noti->notification_status = 1;
+                $fri_noti->save();
+                $pusher->trigger('friend_request.'.$fri_noti->receiver_id , 'friendRequest', $data);
+            }
         return response()->json([
             'data' =>  $comments
         ]);
@@ -918,39 +979,164 @@ class SocialmediaController extends Controller
         ->leftJoin('users','users.id','comments.user_id')
         ->leftJoin('profiles','users.profile_id','profiles.id')
         ->where('post_id',$id)->orderBy('created_at','DESC')->get();
-        foreach($comments as $key=>$comm1){
-            $mentioned_user_id = json_decode($comm1->mentioned_users);
-         //    dd($users);
-            if($mentioned_user_id != null){
+    //     foreach($comments as $key=>$comm1){
+    //         $mentioned_user_id = json_decode($comm1->mentioned_users);
+    //      //    dd($users);
+    //         if($mentioned_user_id != null){
 
-             $users = User::select('users.id','users.name')->whereIn('id',$mentioned_user_id)->get();
+    //          $users = User::select('users.id','users.name')->whereIn('id',$mentioned_user_id)->get();
 
+    //          $main =  $comm1['comment'];
+    //          // dd(count($users));
+    //          // foreach($mentioned_user_id as $id){
+    //              for($i=0;count($users)>$i;$i++){
+
+    //                  $mentioned_user_id_id = $users[$i]['id'];
+    //                  $url = route('socialmedia.profile',$mentioned_user_id_id);
+    //                  if (str_contains($main,'@'.$users[$i]['id'])) {
+    //                      $replace=
+    //                      str_replace(['@'.$users[$i]['id']],
+    //                      "<a href=$url>".$users[$i]['name'].'</a>',$main);
+    //                      $main=$replace;
+    //                      $comments[$key]['Replace']= $main;
+    //                  }
+    //              }
+
+
+    //          // }
+    //          }
+    //         else{
+    //          $comments[$key]['Replace']= $comm1->comment;
+    //         }
+
+    // }
+    foreach($comments as $key=>$comm1){
+        $ids = json_decode($comm1->mentioned_users);
+        $arr = json_decode(json_encode ( $ids ) , true);
+
+
+         if($ids != null){
+             $count = count($ids);
+             //   dd($count);
              $main =  $comm1['comment'];
-             // dd(count($users));
-             // foreach($mentioned_user_id as $id){
-                 for($i=0;count($users)>$i;$i++){
+             for($i = 0; $i < $count ; $i++){
+                $arr_id = json_decode(json_encode ( $ids[$i] ) , true);
+                $mentioned_user_id = $arr_id['id'];
 
-                     $mentioned_user_id_id = $users[$i]['id'];
-                     $url = route('socialmedia.profile',$mentioned_user_id_id);
-                     if (str_contains($main,'@'.$users[$i]['id'])) {
-                         $replace=
-                         str_replace(['@'.$users[$i]['id']],
-                         "<a href=$url>".$users[$i]['name'].'</a>',$main);
-                         $main=$replace;
-                         $comments[$key]['Replace']= $main;
-                     }
-                 }
+                          $url = route('socialmedia.profile',$mentioned_user_id);
+                          $comments[$key]['Replace']= sizeof($ids);
+                         if (str_contains($main,'@'.$mentioned_user_id)) {
+                             $replace=
+                              str_replace(['@'.$mentioned_user_id],
+                             "<a href=$url>".$arr_id['name'].'</a>',$main);
+                             $main=$replace;
+                             $comments[$key]['Replace']= $main;
+                      }
+                $comments[$key]['Replace']= $main  ;
 
-
-             // }
              }
-            else{
-             $comments[$key]['Replace']= $comm1->comment;
-            }
 
-    }
+                     // for($i = 0; $i < sizeof($ids) ; $i++){
+                     //     $mentioned_user_id = $mentioned_user_id;
+
+                     //     $url = route('socialmedia.profile',$mentioned_user_id);
+                     //     $comments[$key]['Replace']= sizeof($ids);
+                     //     if (str_contains($main,'@'.$ids[$i]->id)) {
+                     //         $replace=
+                     //         str_replace(['@'.$ids[$i]->id],
+                     //         "<a href=$url>".$ids[$i]->name.'</a>',$main);
+                     //         $main=$replace;
+                     //         $comments[$key]['Replace']= $main;
+                     // }
+                     //     }
+
+                 }
+         else{
+             $comments[$key]['Replace']= $comm1->comment;
+         }
+        }
         return response()->json([
             'comment' => $comments
+        ]);
+    }
+    public function comment_edit($id){
+
+        $comments = Comment::findOrFail($id);
+
+        $ids = json_decode($comments->mentioned_users);
+        $arr = json_decode(json_encode ( $ids ) , true);
+
+
+         if($ids != null){
+             $count = count($ids);
+             //   dd($count);
+             $main =  $comments['comment'];
+             for($i = 0; $i < $count ; $i++){
+                $arr_id = json_decode(json_encode ( $ids[$i] ) , true);
+                $mentioned_user_id = $arr_id['id'];
+
+                          $url = route('socialmedia.profile',$mentioned_user_id);
+                          $comments['Replace']= sizeof($ids);
+                         if (str_contains($main,'@'.$mentioned_user_id)) {
+                             $replace=
+                              str_replace(['@'.$mentioned_user_id],
+                             "<a href=$url data-item-id = $mentioned_user_id class = 'mentiony-link'>".$arr_id['name'].'</a>',$main);
+                             $main=$replace;
+                             $comments['Replace']= $main;
+                      }
+                $comments['Replace']= $main  ;
+
+             }
+
+                     // for($i = 0; $i < sizeof($ids) ; $i++){
+                     //     $mentioned_user_id = $mentioned_user_id;
+
+                     //     $url = route('socialmedia.profile',$mentioned_user_id);
+                     //     $comments[$key]['Replace']= sizeof($ids);
+                     //     if (str_contains($main,'@'.$ids[$i]->id)) {
+                     //         $replace=
+                     //         str_replace(['@'.$ids[$i]->id],
+                     //         "<a href=$url>".$ids[$i]->name.'</a>',$main);
+                     //         $main=$replace;
+                     //         $comments[$key]['Replace']= $main;
+                     // }
+                     //     }
+
+                 }
+         else{
+             $comments['Replace']= $comments->comment;
+         }
+        return response()->json([
+            'data' => $comments
+        ]);
+    }
+
+    public function comment_update(Request $request){
+        $banwords=DB::table('ban_words')->select('ban_word_english','ban_word_myanmar','ban_word_myanglish')->get();
+        foreach($banwords as $b){
+           $e_banword=$b->ban_word_english;
+           $m_banword=$b->ban_word_myanmar;
+           $em_banword=$b->ban_word_myanglish;
+            if (str_contains($request->comment,$e_banword)) {
+                return response()->json([
+                    'ban'=>'Ban',
+                ]);
+            }elseif (str_contains($request->comment,$m_banword)){
+                return response()->json([
+                    'ban'=>'Ban',
+                ]);
+            }elseif (str_contains($request->comment,$em_banword)){
+                return response()->json([
+                    'ban'=>'Ban',
+                ]);
+            }
+        }
+        $comments_update = Comment::findOrFail($request->post_id);
+        $comments_update->comment = $request->comment;
+        $comments_update->mentioned_users = json_encode($request->mention);
+        $comments_update->update();
+        return response()->json([
+            'success' =>  'Comment updated successfully!'
         ]);
     }
 }
