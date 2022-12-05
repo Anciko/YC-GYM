@@ -459,11 +459,22 @@
     margin-top: 20px;
 }
 
+.social-media-post-footer-container a{
+    color: var(--customer-text-color);
+    text-decoration: none;
+}
+
 .social-media-post-like-container, .social-media-post-comment-container{
     display: flex;
     align-items: center;
     gap: 0 5px;
 
+}
+
+.social-media-post-comment-container a{
+    display: flex;
+    align-items: center;
+    gap: 0 5px;
 }
 
 .social-media-post-like-container p, .social-media-post-comment-container p{
