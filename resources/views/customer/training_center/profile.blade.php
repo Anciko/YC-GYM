@@ -85,7 +85,6 @@
 </div>
 
 <!-- View Comment Modal -->
-
 <div class="modal fade " id="view_comments_modal">
     <div class="modal-dialog">
       <div class="modal-content">
@@ -434,7 +433,7 @@
                                 </div>
                                 <div class="customer-post-comment-container">
                                     {{-- <a href = "{{route('post.comment',$post->id)}}"> --}}
-                                    <a class="viewcomments" >
+                                    <a class="viewcomments" data-id = "{{$post->id}}">
                                     <iconify-icon icon="bi:chat-right" class="comment-icon"></iconify-icon>
                                     <p id="{{$post->id}}"><span>{{$total_comments}}</span> Comments</p>
                                     </a>
@@ -2081,7 +2080,7 @@
                         data : {'post_id':post_id,'mention' : arr , 'comment' : comment},
                         dataType: "json",
                         success: function (response) {
-                            fetch_comment();
+                            viewcomments(e);
                             $('.mentiony-content').empty()
                         }
 
@@ -2097,19 +2096,25 @@
             e.preventDefault();
             $(".social-media-all-comments").empty();
             $('#view_comments_modal').modal('show');
-            var postid=e.target.id;
-            var comment_url = "{{ route('comment_list',':postid') }}";
 
-            comment_url = comment_url.replace(':postid', postid);
+            var id= e.target.id;
+
+            var postid = $(".social-media-all-comments-input").data('id',id)
+            console.log(postid, "ddd");
+            var comment_url = "{{ route('comment_list',':id') }}";
+
+            comment_url = comment_url.replace(':id', id);
             $.post(comment_url,
                     {
                         _token: $('meta[name="csrf-token"]').attr('content')
                     },
                     function(data){
-                        table_post_row(data);
-        });
+                        table_post_comment(data);
+            });
 
-            function table_post_row(res){
+        }
+
+        function table_post_comment(res){
                     let htmlView = '';
                           if(res.comment.length <= 0){
                               console.log("no data");
@@ -2153,7 +2158,6 @@
                               }
                           $('.social-media-all-comments').html(htmlView);
             }
-        }
 
         $(document).on('click', '.profile_addfriend', function(e) {
                 e.preventDefault();
@@ -2312,18 +2316,18 @@
 
         $(".social-media-all-comments-input").on('submit',function(e){
             e.preventDefault()
-            // console.log($('.mentiony-content').text())
 
+            // console.log($('.mentiony-content').text())
 
             var arr = []
             $.each($('.social-media-all-comments-input .mentiony-link'),function(){
-                arr.push({'id' : $(this).data('item-id'),'name' : $(this).text()})
-                $(this).text(`@${$(this).data('item-id')}`)
+                    arr.push({'id' : $(this).data('item-id'),'name' : $(this).text()})
+                    $(this).text(`@${$(this).data('item-id')}`)
 
-            })
+                })
 
             var comment = $('.social-media-all-comments-input .mentiony-content').text()
-            console.log(arr)
+            console.log(arr,"Comment array")
             console.log(comment)
 
 
@@ -2344,7 +2348,7 @@
                     data : {'post_id':post_id,'mention' : arr , 'comment' : comment},
                     dataType: "json",
                     success: function (response) {
-                        fetch_comment();
+                        viewcomments(e);
                         $('.mentiony-content').empty()
                     }
 
