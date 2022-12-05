@@ -1953,7 +1953,7 @@
 
         $(document).on('click', '.social-media-comment-icon', function(e) {
                 $(this).next().toggle()
-            })
+        })
 
             $('#textarea').mentiony({
                     onDataRequest: function (mode, keyword, onDataRequestCompleteCallback) {
@@ -2023,7 +2023,7 @@
 
                 //edit comment start
                 $(document).on('click', '#editCommentModal', function(e) {
-                        $('#editModal').modal('show');
+                        $('.edit_comments_modal').modal('show');
                         var id = $(this).data('id');
 
                         $(".social-media-all-comments-input-edit").data('id',id)
@@ -2066,7 +2066,7 @@
                 })
 
                 var comment = $('.social-media-all-comments-input .mentiony-content').text()
-           
+
                 var search_url = "{{ route('post.comment.store') }}";
                 var post_id = "{{$post->id}}"
                 // console.log(post_id)
@@ -2108,10 +2108,6 @@
                     function(data){
                         table_post_row(data);
         });
-        $(document).on('click', '.social-media-comment-icon', function(e) {
-            $(this).next().toggle()
-        })
-
 
             function table_post_row(res){
                     let htmlView = '';
@@ -2136,12 +2132,12 @@
 
                                       <iconify-icon icon="bx:dots-vertical-rounded" class="social-media-comment-icon"></iconify-icon>
                                       <div class="comment-actions-container" >
+                                        <a class="editcomment" href="#" >
                                           <div class="comment-action" id="editCommentModal" data-id=`+res.comment[i].id+`>
-                                            <a class="editcomment" href="#" >
                                               <iconify-icon icon="akar-icons:edit" class="comment-action-icon"></iconify-icon>
                                               <p id="`+res.comment[i].id+`">Edit</p>
-                                            </a>
                                           </div>
+                                        </a>
                                           <a id="delete_comment" data-id=`+res.comment[i].id+`>
                                           <div class="comment-action">
                                               <iconify-icon icon="fluent:delete-12-regular" class="comment-action-icon"></iconify-icon>
@@ -2282,20 +2278,22 @@
 
         }
 
-        $(document).on("click", ".editcomment", function(e){
+        //edit comment start
+        $(document).on('click', '.editcomment', function(e) {
 
-            $('#view_comments_modal').modal('hide');
-            $('#edit_comments_modal').modal('show');
-            var id=e.target.id;
-            $(".social-media-all-comments-input-edit").data('id',id)
+                $('#view_comments_modal').modal('hide');
+                $('#edit_comments_modal').modal('show');
+                var id=e.target.id;
 
-            var edit_url = "{{ route('post.comment.edit',[':id']) }}";
-            edit_url = edit_url.replace(':id', id);
-            $.ajaxSetup({
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                }
-            });
+                $(".social-media-all-comments-input-edit").data('id',id)
+
+                var edit_url = "{{ route('post.comment.edit',[':id']) }}";
+                edit_url = edit_url.replace(':id', id);
+                $.ajaxSetup({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    }
+                });
             $.ajax({
                 method: "GET",
                 url: edit_url,
@@ -2307,6 +2305,53 @@
                 }
             });
         })
+        //edit comment end
+        $(".mentiony-container").attr('style','')
+        $(".mentiony-content").attr('style','')
+
+
+        $(".social-media-all-comments-input").on('submit',function(e){
+            e.preventDefault()
+            // console.log($('.mentiony-content').text())
+
+
+            var arr = []
+            $.each($('.social-media-all-comments-input .mentiony-link'),function(){
+                arr.push({'id' : $(this).data('item-id'),'name' : $(this).text()})
+                $(this).text(`@${$(this).data('item-id')}`)
+
+            })
+
+            var comment = $('.social-media-all-comments-input .mentiony-content').text()
+            console.log(arr)
+            console.log(comment)
+
+
+
+
+            // <a href = "" >Trainer</a>
+            var search_url = "{{ route('post.comment.store') }}";
+            var post_id = "{{$post->id}}"
+            // console.log(post_id)
+                $.ajaxSetup({
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        }
+                    });
+                $.ajax({
+                    method: "POST",
+                    url:search_url,
+                    data : {'post_id':post_id,'mention' : arr , 'comment' : comment},
+                    dataType: "json",
+                    success: function (response) {
+                        fetch_comment();
+                        $('.mentiony-content').empty()
+                    }
+
+                });
+
+        })
+        //comment
 
         $('.post_save').click(function(e){
             e.preventDefault();
