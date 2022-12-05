@@ -335,75 +335,73 @@
 
         })
 
-        // $('').click(function(){
             $(document).on('click', '.social-media-comment-icon', function(e) {
                 $(this).next().toggle()
             })
-        fetch_comment();
+            fetch_comment();
                 $('#textarea').mentiony({
-                onDataRequest: function (mode, keyword, onDataRequestCompleteCallback) {
-                    var search_url = "{{ route('users.mention') }}";
-                    $.ajaxSetup({
-                            headers: {
-                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                            }
-                        });
-                    $.ajax({
-                        method: "POST",
-                        url:search_url,
-                        data : keyword,
-                        dataType: "json",
-                        success: function (response) {
-                            var data = response.data;
-                            console.log(data)
-
-                            // NOTE: Assuming this filter process was done on server-side
-                            data = jQuery.grep(data, function( item ) {
-                                return item.name.toLowerCase().indexOf(keyword.toLowerCase()) > -1;
+                    onDataRequest: function (mode, keyword, onDataRequestCompleteCallback) {
+                        var search_url = "{{ route('users.mention') }}";
+                        $.ajaxSetup({
+                                headers: {
+                                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                                }
                             });
-                            // End server-side
+                        $.ajax({
+                            method: "POST",
+                            url:search_url,
+                            data : keyword,
+                            dataType: "json",
+                            success: function (response) {
+                                var data = response.data;
+                                console.log(data)
 
-                            // Call this to populate mention.
-                            onDataRequestCompleteCallback.call(this, data);
-                        }
+                                // NOTE: Assuming this filter process was done on server-side
+                                data = jQuery.grep(data, function( item ) {
+                                    return item.name.toLowerCase().indexOf(keyword.toLowerCase()) > -1;
+                                });
+                                // End server-side
+
+                                // Call this to populate mention.
+                                onDataRequestCompleteCallback.call(this, data);
+                            }
 
 
 
-                    });
-                    console.log($("#editComment .mentiony-content") , "not edit")
-                },
-
+                        });
+                        console.log($("#editComment .mentiony-content") , "not edit")
+                    },
                 });
                 $('#editCommentTextArea').mentiony({
-                onDataRequest: function (mode, keyword, onDataRequestCompleteCallback) {
-                    var search_url = "{{ route('users.mention') }}";
-                    $.ajaxSetup({
-                            headers: {
-                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    onDataRequest: function (mode, keyword, onDataRequestCompleteCallback) {
+                        var search_url = "{{ route('users.mention') }}";
+                        $.ajaxSetup({
+                                headers: {
+                                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                                }
+                            });
+                        $.ajax({
+                            method: "POST",
+                            url:search_url,
+                            data : keyword,
+                            dataType: "json",
+                            success: function (response) {
+                                var data = response.data;
+                                console.log(data)
+
+                                // NOTE: Assuming this filter process was done on server-side
+                                data = jQuery.grep(data, function( item ) {
+                                    return item.name.toLowerCase().indexOf(keyword.toLowerCase()) > -1;
+                                });
+                                // End server-side
+
+                                // Call this to populate mention.
+                                onDataRequestCompleteCallback.call(this, data);
                             }
                         });
-                    $.ajax({
-                        method: "POST",
-                        url:search_url,
-                        data : keyword,
-                        dataType: "json",
-                        success: function (response) {
-                            var data = response.data;
-                            console.log(data)
-
-                            // NOTE: Assuming this filter process was done on server-side
-                            data = jQuery.grep(data, function( item ) {
-                                return item.name.toLowerCase().indexOf(keyword.toLowerCase()) > -1;
-                            });
-                            // End server-side
-
-                            // Call this to populate mention.
-                            onDataRequestCompleteCallback.call(this, data);
-                        }
-                    });
 
 
-                },
+                    },
 
                 });
 

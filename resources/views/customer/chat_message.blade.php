@@ -1,20 +1,157 @@
 @extends('customer.layouts.app_home')
+@section('styles')
+    <style>
+        .chat-backdrop {
+            position: fixed;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 20;
+            display: none
+        }
+
+        .modal {
+            width: 400px;
+            padding: 20px;
+            margin: 100px auto;
+            background: white;
+            border-radius: 10px;
+        }
+
+        .backdrop {
+            top: 0;
+            position: fixed;
+            background: rgba(0, 0, 0, 0.5);
+            width: 100%;
+            height: 100%;
+            z-index: 999999 !important;
+        }
+
+        #video-container, #audio-container {
+            width: 100%;
+            height: 100%;
+            /* max-width: 90vw;
+                                        max-height: 50vh; */
+            margin: 0 auto;
+            border-radius: 0.25rem;
+            position: relative;
+            box-shadow: 1px 1px 11px #9e9e9e;
+            background-color: #fff;
+        }
+
+        #audio-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+
+        #local-video {
+            width: 30%;
+            height: 30%;
+            position: absolute;
+            left: 10px;
+            bottom: 10px;
+            border: 1px solid #fff;
+            border-radius: 6px;
+            z-index: 5;
+            cursor: pointer;
+        }
+
+        #local-audio {
+            width: 30%;
+            height: 30%;
+            position: absolute;
+            left: 10px;
+            bottom: 10px;
+            border: 1px solid #fff;
+            border-radius: 6px;
+            z-index: 5;
+            cursor: pointer;
+        }
+
+        #video-main-container {
+            position: absolute;
+            top: 100px;
+            width: 100%;
+            height: 50%;
+            z-index: 21;
+        }
+
+        #remote-video {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            top: 0;
+            z-index: 3;
+            margin: 0;
+            padding: 0;
+            cursor: pointer;
+        }
+        #remote-audio {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            top: 0;
+            z-index: 3;
+            margin: 0;
+            padding: 0;
+            cursor: pointer;
+        }
+
+        .action-btns {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            margin-left: -50px;
+            z-index: 4;
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+        }
+
+        #incomingCallContainer {
+            position: absolute;
+            top: 100px;
+        }
+
+        #incoming_call {
+            position: relative;
+            z-index: 99;
+        }
+    </style>
+@endsection
 @section('content')
+    <div class="chat-backdrop"></div>
+
     <div class="social-media-right-container">
-        <!-- <div class="social-media-chat-container"> -->
+
+
         <div class="group-chat-header">
             <div class="group-chat-header-name-container">
-                <img src="{{asset('/storage/post'.$receiver_user->profile_image)}}" />
+                <img src="{{ asset('/storage/post' . $receiver_user->profile_image) }}" />
                 <div class="group-chat-header-name-text-container">
                     <p>{{ $receiver_user->name }}</p>
-
+                    <small class="active-now" style="color:#3CDD57;"></small>
                 </div>
             </div>
-            <div class="chat-header-call-icons-container">
-                <iconify-icon icon="ant-design:phone-outlined" class="chat-header-phone-icon"></iconify-icon>
-                <iconify-icon icon="eva:video-outline" class="chat-header-video-icon"></iconify-icon>
 
-                <a href="{{route('message.viewmedia',$receiver_user->id)}}" class="group-chat-view-midea-link">
+            <div class="chat-header-call-icons-container">
+                <a onclick="placeCallAudio('{{ $receiver_user->id }}','{{ $receiver_user->name }}')">
+                    <iconify-icon icon="ant-design:phone-outlined" class="chat-header-phone-icon"></iconify-icon>
+                </a>
+                <a onclick="placeCall('{{ $receiver_user->id }}','{{ $receiver_user->name }}')">
+                    <iconify-icon icon="eva:video-outline" class="chat-header-video-icon"></iconify-icon>
+                </a>
+                <a href="{{ route('message.viewmedia', $receiver_user->id) }}" class="group-chat-view-midea-link">
                     <p>View Media</p>
                     <iconify-icon icon="akar-icons:arrow-right" class="group-chat-view-midea-link-icon"></iconify-icon>
                 </a>
@@ -34,16 +171,15 @@
                             <div class="group-chat-sender-text-container">
                                 <p>{{ $send_message->text }}</p>
                             </div>
-                            <img src="../imgs/avatar.png" />
+                            <img src="{{ asset('/storage/post' . $sender_user->profile_image) }}" />
                         </div>
                     @else
                         @if (pathinfo($send_message->media, PATHINFO_EXTENSION) == 'png' ||
                             pathinfo($send_message->media, PATHINFO_EXTENSION) == 'jpg' ||
                             pathinfo($send_message->media, PATHINFO_EXTENSION) == 'jpeg')
-
                             {{-- modal --}}
-                            <div class="modal fade" id="exampleModalToggle{{$send_message->id}}" aria-hidden="true"
-                                        aria-labelledby="exampleModalToggleLabel" tabindex="-1">
+                            <div class="modal fade" id="exampleModalToggle{{ $send_message->id }}" aria-hidden="true"
+                                aria-labelledby="exampleModalToggleLabel" tabindex="-1">
                                 <div class="modal-dialog modal-dialog-centered">
                                     <div class="modal-content">
                                         <div class="modal-header">
@@ -61,36 +197,31 @@
 
                             <div class="group-chat-sender-container" id="trainer_message_el">
                                 <div class="group-chat-sender-text-container">
-                                    <a data-bs-toggle="modal" href="#exampleModalToggle{{$send_message->id}}" role="button">
-                                        <img
-                                            src="{{ asset('storage/customer_message_media/' . $send_message->media) }}">
+                                    <a data-bs-toggle="modal" href="#exampleModalToggle{{ $send_message->id }}"
+                                        role="button">
+                                        <img src="{{ asset('storage/customer_message_media/' . $send_message->media) }}">
                                     </a>
                                 </div>
-                                <img src="../imgs/avatar.png" />
+                                <img src="{{ asset('/storage/post' . $sender_user->profile_image) }}" />
                             </div>
-
-                            @elseif(pathinfo($send_message->media, PATHINFO_EXTENSION) == 'mp4' ||
-                                    pathinfo($send_message->media, PATHINFO_EXTENSION) == 'mov' ||
-                                    pathinfo($send_message->media, PATHINFO_EXTENSION) == 'webm')
-
-                                <div class="group-chat-sender-container" id="trainer_message_el">
-                                    <div class="group-chat-sender-text-container">
-                                        <video width="100%" height="100%" controls>
-                                            <source
-                                                src="{{ asset('storage/customer_message_media/' . $send_message->media) }}"
-                                                type="video/mp4">
-                                        </video>
-                                    </div>
-                                    <img src="../imgs/avatar.png" />
+                        @elseif(pathinfo($send_message->media, PATHINFO_EXTENSION) == 'mp4' ||
+                            pathinfo($send_message->media, PATHINFO_EXTENSION) == 'mov' ||
+                            pathinfo($send_message->media, PATHINFO_EXTENSION) == 'webm')
+                            <div class="group-chat-sender-container" id="trainer_message_el">
+                                <div class="group-chat-sender-text-container">
+                                    <video width="100%" height="100%" controls>
+                                        <source src="{{ asset('storage/customer_message_media/' . $send_message->media) }}"
+                                            type="video/mp4">
+                                    </video>
                                 </div>
-
+                                <img src="{{ asset('/storage/post' . $sender_user->profile_image) }}" />
+                            </div>
                         @endif
                     @endif
-
                 @elseif(auth()->user()->id != $send_message->from_user_id)
                     @if ($send_message->media == null)
                         <div class="group-chat-receiver-container">
-                            <img src="{{asset('/storage/post'.$receiver_user->profile_image)}}" />
+                            <img src="{{ asset('/storage/post' . $receiver_user->profile_image) }}" />
                             <div class="group-chat-receiver-text-container">
                                 <span>{{ $send_message->from_user->name }}</span>
                                 <p>{{ $send_message->text }}</p>
@@ -100,10 +231,9 @@
                         @if (pathinfo($send_message->media, PATHINFO_EXTENSION) == 'png' ||
                             pathinfo($send_message->media, PATHINFO_EXTENSION) == 'jpg' ||
                             pathinfo($send_message->media, PATHINFO_EXTENSION) == 'jpeg')
-
                             {{-- modal --}}
-                            <div class="modal fade" id="exampleModalToggle{{$send_message->id}}" aria-hidden="true"
-                                        aria-labelledby="exampleModalToggleLabel" tabindex="-1">
+                            <div class="modal fade" id="exampleModalToggle{{ $send_message->id }}" aria-hidden="true"
+                                aria-labelledby="exampleModalToggleLabel" tabindex="-1">
                                 <div class="modal-dialog modal-dialog-centered">
                                     <div class="modal-content">
                                         <div class="modal-header">
@@ -120,37 +250,46 @@
                             {{-- end modal --}}
 
                             <div class="group-chat-receiver-container" id="trainer_message_el">
-                                <img src="{{asset('/storage/post'.$receiver_user->profile_image)}}" />
+                                <img src="{{ asset('/storage/post' . $receiver_user->profile_image) }}" />
                                 <div class="group-chat-receiver-text-container">
                                     <span>{{ $send_message->from_user->name }}</span>
-                                    <a data-bs-toggle="modal" href="#exampleModalToggle{{$send_message->id}}" role="button">
+                                    <a data-bs-toggle="modal" href="#exampleModalToggle{{ $send_message->id }}"
+                                        role="button">
                                         <img src="{{ asset('storage/customer_message_media/' . $send_message->media) }}">
                                     </a>
                                 </div>
                             </div>
                         @elseif(pathinfo($send_message->media, PATHINFO_EXTENSION) == 'mp4' ||
-                                pathinfo($send_message->media, PATHINFO_EXTENSION) == 'mov' ||
-                                pathinfo($send_message->media, PATHINFO_EXTENSION) == 'webm')
-
-                                    <div class="group-chat-receiver-container" id="trainer_message_el">
-                                        <img src="{{asset('/storage/post'.$receiver_user->profile_image)}}" />
-                                        <div class="group-chat-receiver-text-container">
-                                            <span>{{ $send_message->from_user->name }}</span>
-                                            <video width="100%" height="100%" controls>
-                                                <source
-                                                    src="{{ asset('storage/customer_message_media/' . $send_message->media) }}"
-                                                    type="video/mp4">
-                                            </video>
-                                        </div>
-                                    </div>
-
+                            pathinfo($send_message->media, PATHINFO_EXTENSION) == 'mov' ||
+                            pathinfo($send_message->media, PATHINFO_EXTENSION) == 'webm')
+                            <div class="group-chat-receiver-container" id="trainer_message_el">
+                                <img src="{{ asset('/storage/post' . $receiver_user->profile_image) }}" />
+                                <div class="group-chat-receiver-text-container">
+                                    <span>{{ $send_message->from_user->name }}</span>
+                                    <video width="100%" height="100%" controls>
+                                        <source src="{{ asset('storage/customer_message_media/' . $send_message->media) }}"
+                                            type="video/mp4">
+                                    </video>
+                                </div>
+                            </div>
                         @endif
-
                     @endif
-
                 @endif
             @empty
             @endforelse
+
+        </div>
+
+        <!-- Incoming Call  -->
+
+
+        <!-- End of Incoming Call  -->
+
+        <div id="incomingCallContainer">
+
+        </div>
+
+        <div id="video-main-container">
 
         </div>
 
@@ -185,6 +324,9 @@
         </form>
 
     </div>
+    
+
+
 @endsection
 
 @push('scripts')
@@ -208,9 +350,11 @@
         var recieveUserId = recieveUser.value;
         var fileName;
         var receive_user_img;
+        var sender_user_img;
+
 
         $(document).ready(function() {
-                    $('.group-chat-messages-container').scrollTop($('.group-chat-messages-container')[0].scrollHeight);
+            $('.group-chat-messages-container').scrollTop($('.group-chat-messages-container')[0].scrollHeight);
         });
 
         $(document).ready(function() {
@@ -218,8 +362,8 @@
             var messageInput = document.querySelector('.message_input');
 
             ///start
-            receive_user_img = @json($receiver_user->profile_image)
-
+            receive_user_img = @json($receiver_user->profile_image);
+            sender_user_img = @json($sender_user->profile_image);
 
 
             var groupChatImgInput = document.querySelector('#groupChatImg');
@@ -304,7 +448,7 @@
 
             var formdata = new FormData(messageForm);
             formdata.append('fileInput', fileName);
-            formdata.append('sender',auth_user_name);
+            formdata.append('sender', auth_user_name);
 
             if (messageInput != null) {
                 axios.post('/api/message/chat/' + recieveUserId, {
@@ -312,21 +456,20 @@
                     sender: auth_user_name
                 }).then();
                 messageInput.value = "";
-            }else{
-                axios.post('/api/message/chat/' + recieveUserId, formdata
-                ).then();
+            } else {
+                axios.post('/api/message/chat/' + recieveUserId, formdata).then();
                 clearGroupChatImg();
             }
 
         })
 
-        Echo.private('chatting.'+auth_user_id+'.'+recieveUserId)
+        Echo.private('chatting.' + auth_user_id + '.' + recieveUserId)
             .listen('Chatting', (data) => {
                 console.log(data);
                 if (data.message.from_user_id == recieveUserId) {
 
-                                messageContainer.innerHTML += `<div class="group-chat-receiver-container">
-                        <img src="{{asset('/storage/post/receive_user_img')}}" />
+                    messageContainer.innerHTML += `<div class="group-chat-receiver-container">
+                        <img src="{{ asset('/storage/post/receive_user_img') }}" />
                         <div class="group-chat-receiver-text-container">
                             <span>${data.sender}</span>
                             <p>${data.message.text}</p>
@@ -334,12 +477,12 @@
                     </div>`;
 
                 } else {
-                    if (data.message.media == null && data.message.text == null) {}else{
-                        if(data.message.media != null){
+                    if (data.message.media == null && data.message.text == null) {} else {
+                        if (data.message.media != null) {
                             if (data.message.media.split('.').pop() === 'png' || data.message.media
-                            .split('.').pop() ===
-                            'jpg' || data.message.media.split('.').pop() === 'jpeg' || data
-                            .message.media.split('.').pop() === 'gif'){
+                                .split('.').pop() ===
+                                'jpg' || data.message.media.split('.').pop() === 'jpeg' || data
+                                .message.media.split('.').pop() === 'gif') {
                                 messageContainer.innerHTML += `<div class="modal fade" id="exampleModalToggle${data.message.id}" aria-hidden="true"
                                         aria-labelledby="exampleModalToggleLabel" tabindex="-1">
                                         <div class="modal-dialog modal-dialog-centered">
@@ -363,42 +506,43 @@
                                                     src="{{ asset('storage/customer_message_media/${data.message.media}') }}">
                                             </a>
                                         </div>
-                                        <img src="{{ asset('img/avatar.png') }}" />
+                                        <img src="{{ asset('/storage/post/sender_user_img') }}" />
                                     </div>`;
 
-                            }else if (data.message.media.split('.').pop() === 'mp4' || data.message.media.split('.').pop() ===
-                                        'mov' || data.message.media.split('.').pop() === 'webm'){
-                                            messageContainer.innerHTML += `<div class="group-chat-sender-container" id="trainer_message_el">
+                            } else if (data.message.media.split('.').pop() === 'mp4' || data.message.media.split('.')
+                                .pop() ===
+                                'mov' || data.message.media.split('.').pop() === 'webm') {
+                                messageContainer.innerHTML += `<div class="group-chat-sender-container" id="trainer_message_el">
                                                             <div class="group-chat-sender-text-container">
                                                                 <video width="100%" height="100%" controls>
                                                                     <source src="{{ asset('storage/customer_message_media/${data.message.media}') }}" type="video/mp4">
                                                                 </video>
                                                             </div>
-                                                            <img src="{{ asset('img/avatar.png') }}" />
+                                                            <img src="{{ asset('/storage/post/sender_user_img') }}" />
                                                         </div>`;
                             }
-                        } else{
-                                messageContainer.innerHTML += `<div class="group-chat-sender-container">
+                        } else {
+                            messageContainer.innerHTML += `<div class="group-chat-sender-container">
                                     <div class="group-chat-sender-text-container">
                                         <p>${data.message.text}</p>
                                     </div>
-                                    <img src="../imgs/avatar.png"/>
+                                    <img src="{{ asset('/storage/post/sender_user_img') }}" />
                                 </div>`;
-                            }
+                        }
                     }
                 }
             })
 
-            Echo.private('chatting.'+ recieveUserId+'.'+ auth_user_id)
+        Echo.private('chatting.' + recieveUserId + '.' + auth_user_id)
             .listen('Chatting', (data) => {
                 console.log(data);
                 if (data.message.from_user_id == recieveUserId) {
-                    if (data.message.media == null && data.message.text == null) {}else{
-                        if(data.message.media !=null){
+                    if (data.message.media == null && data.message.text == null) {} else {
+                        if (data.message.media != null) {
                             if (data.message.media.split('.').pop() === 'png' || data.message.media
-                            .split('.').pop() ===
-                            'jpg' || data.message.media.split('.').pop() === 'jpeg' || data
-                            .message.media.split('.').pop() === 'gif'){
+                                .split('.').pop() ===
+                                'jpg' || data.message.media.split('.').pop() === 'jpeg' || data
+                                .message.media.split('.').pop() === 'gif') {
                                 messageContainer.innerHTML += `<div class="modal fade" id="exampleModalToggle${data.message.id}" aria-hidden="true"
                                         aria-labelledby="exampleModalToggleLabel" tabindex="-1">
                                         <div class="modal-dialog modal-dialog-centered">
@@ -416,7 +560,7 @@
                                     </div>
 
                                     <div class="group-chat-receiver-container" id="trainer_message_el">
-                                        <img src="{{asset('/storage/post/receive_user_img')}}" />
+                                        <img src="{{ asset('/storage/post/receive_user_img') }}" />
                                         <div class="group-chat-receiver-text-container">
                                             <span>${data.sender}</span>
                                             <a data-bs-toggle="modal" href="#exampleModalToggle${data.message.id}" role="button">
@@ -426,10 +570,11 @@
                                         </div>
                                     </div>`;
 
-                            }else if (data.message.media.split('.').pop() === 'mp4' || data.message.media.split('.').pop() ===
-                                        'mov' || data.message.media.split('.').pop() === 'webm'){
-                                            messageContainer.innerHTML += `<div class="group-chat-receiver-container" id="trainer_message_el">
-                                                <img src="{{asset('/storage/post/receive_user_img')}}" />
+                            } else if (data.message.media.split('.').pop() === 'mp4' || data.message.media.split('.')
+                                .pop() ===
+                                'mov' || data.message.media.split('.').pop() === 'webm') {
+                                messageContainer.innerHTML += `<div class="group-chat-receiver-container" id="trainer_message_el">
+                                                <img src="{{ asset('/storage/post/receive_user_img') }}" />
                                                 <div class="group-chat-receiver-text-container">
                                                                 <span>${data.sender}</span>
                                                                 <video width="100%" height="100%" controls>
@@ -438,15 +583,15 @@
                                                             </div>
                                                         </div>`;
                             }
-                        }else{
-                                messageContainer.innerHTML += `<div class="group-chat-receiver-container">
-                                    <img src="{{asset('/storage/post/receive_user_img')}}" />
+                        } else {
+                            messageContainer.innerHTML += `<div class="group-chat-receiver-container">
+                                    <img src="{{ asset('/storage/post/receive_user_img') }}" />
                                     <div class="group-chat-receiver-text-container">
                                         <span>${data.sender}</span>
                                         <p>${data.message.text}</p>
                                     </div>
                                 </div>`;
-                            }
+                        }
                     }
                 } else {
                     // if(data.message.from_user_id == recieveUserId && data.message.to_user_id == auth_user_id){
@@ -454,7 +599,7 @@
                             <div class="group-chat-sender-text-container">
                                 <p>${data.message.text}</p>
                             </div>
-                            <img src="../imgs/avatar.png"/>
+                            <img src="{{ asset('/storage/post/sender_user_img') }}" />
                         </div>`;
                     // }
 
@@ -478,6 +623,455 @@
             document.querySelector(".group-chat-send-form-message-parent-container").append(messageInput)
             groupChatImgInput.value = ""
 
+        }
+    </script>
+
+    <script>
+        $(".chat-backdrop").hide();
+         let voice_receive_user_img = @json($receiver_user->profile_image);
+        console.log("ferer", voice_receive_user_img);
+        let onlineUsers = []
+        let client = null
+        let callPlaced = false
+        let localStream = null
+        let incomingCaller = "";
+        let agoraChannel = null
+        let incomingCall = false;
+        let incomingAudioCall = false;
+        let videoCallEvent = false;
+        let audioCallEvent = false;
+        let mutedVideo = false
+        let mutedAudio = false
+        const agora_id = 'e8d6696cc7dc449dbd78ebbd1e15ee13'
+
+        let authuser = "{{ auth()->user()->name }}"
+        let authuserId = "{{ auth()->id() }}"
+
+        let incoming_call = document.getElementById('incoming_call')
+        let video_container = document.getElementById('video-main-container')
+        let incomingCallContainer = document.querySelector('#incomingCallContainer')
+
+        let friends = @json($friends);
+
+
+        // ////////////////////////
+        Echo.join('agora-videocall')
+            .here((users) => {
+                console.log('onlineuser', users);
+                onlineUsers = users
+                console.log(onlineUsers, 'onlineuser');
+
+                users.forEach((user, index) => {
+                    friends.forEach(friend =>{
+                        if(user.id == friend.id){
+                            let element = document.querySelector('.active-now')
+                            element.innerText = 'Active Now'
+                        }
+                    })
+                })
+
+            })
+            .joining((user) => {
+                const joiningUserIndex = onlineUsers.findIndex(
+                    (data) => data.id === user.id
+                )
+                if (joiningUserIndex < 0) {
+                    onlineUsers.push(user);
+                }
+            })
+            .leaving((user) => {
+                const leavingUserIndex = onlineUsers.findIndex(
+                    (data) => data.id === user.id
+                );
+                onlineUsers.splice(leavingUserIndex, 1);
+                console.log('leeeving');
+            })
+            .listen("MakeAgoraCall", ({
+                data
+            }) => {
+                console.log('listening-------------------------', data);
+                if (parseInt(data.userToCall) === parseInt(authuserId)) {
+                    const callerIndex = onlineUsers.findIndex(
+                        (user) => user.id === data.from
+                    )
+                    console.log('caller index', callerIndex);
+                    incomingCaller = onlineUsers[callerIndex]["name"]
+                    incomingCall = true
+
+
+                    console.log('incomingcaller', incomingCaller);
+
+                    console.log('llllllrweer', incomingCall);
+
+                    console.log('incoming audio calll checkkkkk', incomingAudioCall);
+                    if (incomingCall) {
+                        $(".chat-backdrop").show();
+
+                        incomingCallContainer.innerHTML += `<div class="row my-5" id="incoming_call">
+                            <audio controls autoplay >
+                            <source src="" type="audio/mpeg">
+                            </audio>
+                                <div class="card shadow p-4 col-12">
+                                    <p>
+                                        Video Call From <span>${incomingCaller}</span>
+                                    </p>
+                                    <div class="d-flex justify-content-center gap-3">
+                                        <button type="button" class="btn btn-sm btn-danger" data-dismiss="modal" id="" onclick="declineCall()">
+                                            Decline
+                                        </button>
+                                        <button type="button" class="btn btn-sm btn-success ml-5" onclick="acceptCall()">
+                                            Accept
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>`;
+
+
+                    }
+                    agoraChannel = data.channelName
+                }
+            }).listen("MakeAgoraAudioCall", ({
+                data
+            }) => {
+                console.log('listening-------------------------', data);
+                if (parseInt(data.userToCall) === parseInt(authuserId)) {
+                    const callerIndex = onlineUsers.findIndex(
+                        (user) => user.id === data.from
+                    )
+                    console.log('caller index', callerIndex);
+                    incomingCaller = onlineUsers[callerIndex]["name"]
+                    incomingCall = true
+                    incomingAudioCall = true
+
+
+                    console.log('incomingcaller', incomingCaller);
+
+                    console.log('llllllrweer', incomingCall);
+
+                    console.log('incoming audio calll checkkkkk', incomingAudioCall);
+                    if (incomingCall) {
+                        $(".chat-backdrop").show();
+                        if (incomingAudioCall) {
+                            incomingCallContainer.innerHTML += `<div class="row my-5" id="incoming_call">
+                            <audio controls autoplay >
+                            <source src="" type="audio/mpeg">
+                            </audio>
+                                <div class="card shadow p-4 col-12">
+                                    <p>
+                                        Audio Call From <span>${incomingCaller}</span>
+                                    </p>
+                                    <div class="d-flex justify-content-center gap-3">
+                                        <button type="button" class="btn btn-sm btn-danger" data-dismiss="modal" id="" onclick="declineCall()">
+                                            Decline
+                                        </button>
+                                        <button type="button" class="btn btn-sm btn-success ml-5" onclick="acceptCall()">
+                                            Accept
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>`;
+
+                        }
+
+
+                    }
+                    agoraChannel = data.channelName
+                }
+            })
+
+        // /////////////////////////
+
+        async function placeCall(id, call_name) {
+            try {
+                const channelName = `${authuser}_${call_name}`;
+                const tokenRes = await generateToken(channelName)
+
+                console.log(tokenRes.data);
+
+                axios.post("/agora/call-user", {
+                    user_to_call: id,
+                    username: authuser,
+                    channel_name: channelName,
+                });
+                initializeAgora()
+                joinRoom(tokenRes.data, channelName)
+                callPlaced = true
+
+                videoCallEvent = true;
+
+                // if(callPlaced){
+                //     video_container.classList.remove('hide')
+                // }
+            } catch (error) {
+                console.log(error);
+            }
+        }
+
+        async function placeCallAudio(id, call_name) {
+            try {
+                const channelName = `${authuser}_${call_name}`;
+                const tokenRes = await generateToken(channelName);
+
+                console.log(tokenRes.data);
+
+                axios.post("/agora/call-audio-user", {
+                    user_to_call: id,
+                    username: authuser,
+                    channel_name: channelName,
+                });
+                initializeAgora()
+                joinRoom(tokenRes.data, channelName)
+                callPlaced = true;
+                incomingAudioCall = true;
+
+                audioCallEvent = true;
+                // if(callPlaced){
+                //     video_container.classList.remove('hide')
+                // }
+            } catch (error) {
+                console.log(error);
+            }
+        }
+
+
+        function generateToken(channelName) {
+            return axios.post("/agora/token", {
+                channelName,
+            });
+        }
+
+        function initializeAgora() {
+            client = AgoraRTC.createClient({
+                mode: "rtc",
+                codec: "h264"
+            });
+            client.init(
+                agora_id,
+                () => {
+                    console.log("AgoraRTC client initialized");
+                },
+                (err) => {
+                    console.log("AgoraRTC client init failed", err);
+                }
+            );
+        }
+
+        async function acceptCall() {
+            console.log('call accept');
+            initializeAgora();
+            const tokenRes = await generateToken(agoraChannel);
+            joinRoom(tokenRes.data, agoraChannel);
+            incomingCall = false;
+            callPlaced = true;
+            videoCallEvent = true;
+            incomingCallContainer.innerHTML = ""
+
+        }
+
+        function declineCall() {
+            incomingCall = false;
+            incomingCallContainer.innerHTML = "";
+            $(".chat-backdrop").hide()
+        }
+
+        async function joinRoom(token, channel) {
+            console.log('leeeeeee', channel);
+            client.join(
+                token,
+                channel,
+                authuser,
+                (uid) => {
+                    console.log("User " + uid + " join channel successfully");
+                    callPlaced = true
+
+                    console.log("incoming audio call lay pr", incomingAudioCall);
+
+                    if (callPlaced) {
+                        // parent.document.body.classList.add('backdrop')
+                        $(".chat-backdrop").show();
+                        if (incomingAudioCall) {
+                            video_container.innerHTML += `
+                                                    <div id="audio-container">
+                                                       <div id="local-audio"></div>
+                                                        <div id="remote-audio"></div>
+                                                    <div class="text-center ">
+                                                        <img src="{{ asset('storage/payments/636cb4795561d_kpay.png' ) }}" class="rounded-circle img-thumbnail img-fluid shadow" width="200" height="200" />
+                                                        <p class="mb-0 mt-3" style="color:#3CDD57;">Username</p>
+                                                    </div>
+                                                    <div class="action-btns">
+                                                        <button type="button" class="btn btn-info p-2 me-3" id="muteAudio" onclick="handleAudioToggle(this)">
+                                                            <i class="fa-solid fa-microphone-slash" style="width:30px"></i>
+                                                        </button>
+                                                        <button type="button" class="btn btn-danger p-2" onclick="endCall()">
+                                                            <i class="fa-solid fa-phone-slash" style="width:30px"></i>
+                                                        </button>
+                                                    </div></div>
+                                        `;
+
+                            createAudioLocalStream();
+                            initializedAgoraListeners();
+                        } else {
+                            video_container.innerHTML += `
+                                                    <div id="video-container">
+                                                        <div id="local-video"></div>
+                                                    <div id="remote-video"></div>
+                                                    <div class="action-btns">
+                                                        <button type="button" class="btn btn-info p-2" id="muteAudio" onclick="handleAudioToggle(this)">
+                                                            <i class="fa-solid fa-microphone-slash" style="width:30px"></i>
+                                                        </button>
+                                                        <button type="button" class="btn btn-primary mx-4 p-2" id="muteVideo" onclick="handleVideoToggle(this)">
+                                                            <i class="fa-solid fa-video-slash" style="width:30px"></i>
+                                                        </button>
+                                                        <button type="button" class="btn btn-danger p-2" onclick="endCall()">
+                                                            <i class="fa-solid fa-phone-slash" style="width:30px"></i>
+                                                        </button>
+                                                    </div></div>
+                                        `;
+                            createLocalStream();
+                            initializedAgoraListeners();
+                        }
+
+                    }
+
+                },
+                (err) => {
+                    console.log("Join channel failed", err);
+                }
+            );
+        }
+
+        function initializedAgoraListeners() {
+            //   Register event listeners
+            client.on("stream-published", function(evt) {
+                console.log("Publish local stream successfully");
+                console.log(evt);
+            });
+            //subscribe remote stream
+            client.on("stream-added", ({
+                stream
+            }) => {
+                console.log("New stream added: " + stream.getId());
+                client.subscribe(stream, function(err) {
+                    console.log("Subscribe stream failed", err);
+                });
+            });
+            client.on("stream-subscribed", (evt) => {
+                // Attach remote stream to the remote-video div
+                // evt.stream.play("remote-video");
+                //     client.publish(evt.stream);
+                if(videoCallEvent) {
+                    evt.stream.play("remote-video");
+                    client.publish(evt.stream);
+                }
+
+                if(audioCallEvent) {
+                    evt.stream.play("remote-audio");
+                    client.publish(evt.stream);
+                }
+
+
+
+            });
+            client.on("stream-removed", ({
+                stream
+            }) => {
+                console.log(String(stream.getId()));
+                stream.close();
+            });
+            client.on("peer-online", (evt) => {
+                console.log("peer-online", evt.uid);
+            });
+            client.on("peer-leave", (evt) => {
+                var uid = evt.uid;
+                var reason = evt.reason;
+                console.log("remote user left ", uid, "reason: ", reason);
+            });
+            client.on("stream-unpublished", (evt) => {
+                console.log(evt);
+            });
+        }
+
+
+        function createLocalStream() {
+            localStream = AgoraRTC.createStream({
+                audio: true,
+                video: true,
+            });
+            // Initialize the local stream
+            localStream.init(
+                () => {
+                    // Play the local stream
+                    localStream.play("local-video");
+                    // Publish the local stream
+                    client.publish(localStream, (data) => {
+                        console.log("publish local stream", data);
+                    });
+                },
+                (err) => {
+                    console.log(err);
+                }
+            );
+        }
+
+        function createAudioLocalStream() {
+            localStream = AgoraRTC.createStream({
+                audio: true,
+                video: false,
+            });
+            // Initialize the local stream
+            localStream.init(
+                () => {
+                    // Play the local stream
+                    localStream.play("local-audio");
+                    // Publish the local stream
+                    client.publish(localStream, (data) => {
+                        console.log("publish local stream", data);
+                    });
+                },
+                (err) => {
+                    console.log(err);
+                }
+            );
+        }
+
+        function endCall() {
+            localStream.close();
+            client.leave(
+                () => {
+                    console.log("Leave channel successfully");
+                    callPlaced = false;
+                },
+                (err) => {
+                    console.log("Leave channel failed");
+                }
+            );
+            video_container.innerHTML = "";
+            $(".chat-backdrop").hide()
+            location.reload(true)
+        }
+
+        function handleAudioToggle(e) {
+            if (mutedAudio) {
+                localStream.unmuteAudio();
+                mutedAudio = false;
+                e.innerHTML = `<i class="fa-solid fa-microphone-slash" style="width:30px"></i>`;
+            } else {
+                localStream.muteAudio();
+                mutedAudio = true;
+                e.innerHTML = `<i class="fa-solid fa-microphone" style="width:30px"></i>`;
+            }
+        }
+
+        function handleVideoToggle(e) {
+            if (mutedVideo) {
+                localStream.unmuteVideo();
+                mutedVideo = false;
+                e.innerHTML = ` <i class="fa-solid fa-video-slash" style="width:30px"></i>`;
+            } else {
+                localStream.muteVideo();
+                mutedVideo = true;
+                e.innerHTML = `<i class="fa-solid fa-video" style="width:30px"></i>`;
+            }
         }
     </script>
 @endpush
