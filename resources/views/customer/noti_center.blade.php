@@ -2,15 +2,6 @@
 
 @section('content')
 @include('sweetalert::alert')
-
-{{-- <div class="social-media-header-btns-container margin-top">
-    <a class="back-btn">
-        <iconify-icon icon="bi:arrow-left" class="back-btn-icon"></iconify-icon>
-    </a>
-
-</div> --}}
-
-
     <div class="social-media-right-container">
         <div class="social-media-noti-tabs-container">
             <p class="social-media-noti-likes-tab ">
@@ -22,53 +13,53 @@
         </div>
 
         <div class="social-media-likes-container">
+
             <div class="social-media-likes-today-container">
                 <p>Today</p>
+                @forelse ($notification as $noti)
 
                 <div class="social-media-likes-row">
                     <div class="social-media-likes-name">
-                        <img src="../imgs/trainer1.jpg">
-                        <p>User Name Liked Your Post.</p>
+                    @if($noti->profile_image == null)
+                            <img src="{{asset('img/customer/imgs/user_default.jpg')}}"/>
+                        @else
+                            <img src="{{asset('storage/post/'.$noti->profile_image)}}"/>
+                    @endif
+                        <p>{{$noti->description}}</p>
                     </div>
-
+                    @if($noti->comment_id == null)
                     <iconify-icon icon="ant-design:heart-filled" class="social-media-likes-icon"></iconify-icon>
+                    @else
+                    <iconify-icon icon="bi:chat-left-dots-fill" class="social-media-likes-icon"></iconify-icon>
+                    @endif
                 </div>
-
+                @empty
+                    <p class="text-secondary p-1">No notification</p>
+                @endforelse
             </div>
+
             <div class="social-media-likes-earlier-container">
                 <p>Earlier</p>
+                @forelse ($notification_earlier as $noti_earli)
+
                 <div class="social-media-likes-row">
                     <div class="social-media-likes-name">
-                        <img src="../imgs/trainer1.jpg">
-                        <p>User Name Liked Your Post.</p>
+                    @if($noti_earli->profile_image == null)
+                            <img src="{{asset('img/customer/imgs/user_default.jpg')}}"/>
+                        @else
+                            <img src="{{asset('storage/post/'.$noti_earli->profile_image)}}"/>
+                    @endif
+                        <p>{{$noti_earli->description}}</p>
                     </div>
-
+                    @if($noti_earli->comment_id == null)
                     <iconify-icon icon="ant-design:heart-filled" class="social-media-likes-icon"></iconify-icon>
-                </div>
-                <div class="social-media-likes-row">
-                    <div class="social-media-likes-name">
-                        <img src="../imgs/trainer1.jpg">
-                        <p>User Name Commented Your Post.</p>
-                    </div>
-
+                    @else
                     <iconify-icon icon="bi:chat-left-dots-fill" class="social-media-likes-icon"></iconify-icon>
+                    @endif
                 </div>
-                <div class="social-media-likes-row">
-                    <div class="social-media-likes-name">
-                        <img src="../imgs/trainer1.jpg">
-                        <p>User Name Liked Your Post.</p>
-                    </div>
-
-                    <iconify-icon icon="ant-design:heart-filled" class="social-media-likes-icon"></iconify-icon>
-                </div>
-                <div class="social-media-likes-row">
-                    <div class="social-media-likes-name">
-                        <img src="../imgs/trainer1.jpg">
-                        <p>User Name Liked Your Post.</p>
-                    </div>
-
-                    <iconify-icon icon="ant-design:heart-filled" class="social-media-likes-icon"></iconify-icon>
-                </div>
+                @empty
+                    <p class="text-secondary p-1">No notification</p>
+                @endforelse
             </div>
 
 
@@ -77,7 +68,7 @@
         <div class="social-media-requests-container">
             <div class="social-media-requests-today-container">
                 <p>Today</p>
-                @foreach($friend_requests as $requests)
+                @forelse($friend_requests as $requests)
                 <div class="social-media-request-row">
 
                         <div class="social-media-request-name">
@@ -93,12 +84,14 @@
                                 Decline</a>
                         </div>
 
-                </div>
-                @endforeach
+                    </div>
+                @empty
+                <p class="text-secondary p-1">No Friend Request</p>
+                @endforelse
             </div>
             <div class="social-media-requests-earlier-container">
                 <p>Earlier</p>
-                @foreach($friend_requests_earlier as $earlier)
+                @forelse($friend_requests_earlier as $earlier)
                 <div class="social-media-request-row">
                     <div class="social-media-request-name">
                         <img src="../imgs/trainer3.jpg">
@@ -113,7 +106,9 @@
                     </div>
                 </div>
 
-                @endforeach
+                @empty
+                <p class="text-secondary p-1">No Friend Request</p>
+                @endforelse
             </div>
         </div>
     </div>

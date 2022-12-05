@@ -544,8 +544,8 @@
                             }
                             console.log("data");
                             for(let i = 0; i < res.comment.length; i++){
-
-                                    htmlView += `
+                                    if(res.comment[i].profile_image != null){
+                                        htmlView += `
                                     <div class="social-media-comment-container">
                                         <img src="{{ asset('/storage/post/${res.comment[i].profile_image}') }}">
                                         <div class="social-media-comment-box">
@@ -576,8 +576,45 @@
 
                                     `
                                 }
+
+                    else{
+                        htmlView += `
+                                    <div class="social-media-comment-container">
+                                        <img src="{{ asset('img/customer/imgs/user_default.jpg') }}">
+                                        <div class="social-media-comment-box">
+                                            <div class="social-media-comment-box-header">
+                                                <div class="social-media-comment-box-name">
+                                                    <p>`+res.comment[i].name+`</p>
+                                                    <span>19 Sep 2022, 11:02 AM</span>
+                                                </div>
+
+                                        <iconify-icon icon="bx:dots-vertical-rounded" class="social-media-comment-icon"></iconify-icon>
+                                        <div class="comment-actions-container" >
+                                            <div class="comment-action" id="editCommentModal" data-id=`+res.comment[i].id+`>
+                                                <iconify-icon icon="akar-icons:edit" class="comment-action-icon"></iconify-icon>
+                                                <p>Edit</p>
+                                            </div>
+                                            <a id="delete_comment" data-id=`+res.comment[i].id+`>
+                                            <div class="comment-action">
+                                                <iconify-icon icon="fluent:delete-12-regular" class="comment-action-icon"></iconify-icon>
+                                                <p>Delete</p>
+                                            </div>
+                                            </a>
+                                        </div>
+                        </div>
+
+                        <p>`+res.comment[i].Replace+`</p>
+                    </div>
+                </div>
+
+                                    `
+                                }
+
+                }
+
                             $('.social-media-all-comments').html(htmlView);
             }
+
 
             $('.mentiony-content').on('keydown', function(event) {
                 console.log(event.which)

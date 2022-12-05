@@ -501,8 +501,7 @@ class SocialMediaController extends Controller
     }
 
     public function notification(){
-
-         $notification=Notification::select('users.id as user_id','users.name','notifications.*','profiles.profile_image')
+         $notification=Notification::select('users.id as user_id','users.name','notifications.*','profiles.         profile_image')
             ->leftJoin('users','notifications.sender_id', '=', 'users.id')
             ->leftJoin('profiles','profiles.id','users.profile_id')
             ->where('receiver_id',auth()->user()->id)
@@ -1032,7 +1031,6 @@ class SocialMediaController extends Controller
     }
 
     public function post_comment_store(Request $request){
-        // dd(json_encode($request->mention));
         $banwords=DB::table('ban_words')->select('ban_word_english','ban_word_myanmar','ban_word_myanglish')->get();
         foreach($banwords as $b){
            $e_banword=$b->ban_word_english;
@@ -1070,20 +1068,18 @@ class SocialMediaController extends Controller
             env('PUSHER_APP_ID'),
             $options
             );
-            //$ids = ["4","5"];
             $data = auth()->user()->name.' mentioned you in a comment!';
             $data2 = auth()->user()->name.' commented on your post!';
-
-            $fri_noti = new Notification();
-            $fri_noti->description = $data2;
-            $fri_noti->date = Carbon::Now()->toDateTimeString();
-            $fri_noti->sender_id = auth()->user()->id;
-            $fri_noti->receiver_id = $post_owner->user_id;
-            $fri_noti->post_id=$request->post_id;
-            $fri_noti->comment_id = $comments->id;
-            $fri_noti->notification_status = 1;
-            $fri_noti->save();
-            $pusher->trigger('friend_request.'.$post_owner->user_id , 'friendRequest',  $fri_noti);
+                    $fri_noti = new Notification();
+                    $fri_noti->description = $data2;
+                    $fri_noti->date = Carbon::Now()->toDateTimeString();
+                    $fri_noti->sender_id = auth()->user()->id;
+                    $fri_noti->receiver_id = $post_owner->user_id;
+                    $fri_noti->post_id=$request->post_id;
+                    $fri_noti->comment_id = $comments->id;
+                    $fri_noti->notification_status = 1;
+                    $fri_noti->save();
+                    $pusher->trigger('friend_request.'.$post_owner->user_id , 'friendRequest',  $fri_noti);
             if(!empty($comments->mentioned_users)){
                 $ids = json_decode($comments->mentioned_users);
                 $arr = json_decode(json_encode ( $ids ) , true);
@@ -1119,15 +1115,15 @@ class SocialMediaController extends Controller
         $user=auth()->user();
         $react=$user->user_reacted_posts()->where('post_id',$post_id)->first();
 
-        if(!empty($react)){
-            $already_like=true;
-            $update=true;
-            $comment_noti_delete = Notification::where('sender_id',auth()->user()->id)
-            ->where('receiver_id',$post->user_id)
-            ->where('post_id',$post_id);
-            $comment_noti_delete->delete();
-            $react->delete();
-        }else{
+            if(!empty($react)){
+                $already_like=true;
+                $update=true;
+                $comment_noti_delete = Notification::where('sender_id',auth()->user()->id)
+                ->where('receiver_id',$post->user_id)
+                ->where('post_id',$post_id);
+                $comment_noti_delete->delete();
+                $react->delete();
+            }else{
                 $react=new UserReactPost();
             }
                 $react->user_id=$user->id;
@@ -1151,8 +1147,6 @@ class SocialMediaController extends Controller
                     //$ids = ["4","5"];
                     $post_owner = Post::where('posts.id',$react->post_id)->first();
                     $data = auth()->user()->name.' liked your post!';
-
-
                     $fri_noti = new Notification();
                     $fri_noti->description = $data;
                     $fri_noti->date = Carbon::Now()->toDateTimeString();
@@ -1163,10 +1157,7 @@ class SocialMediaController extends Controller
                     $fri_noti->save();
                     $pusher->trigger('friend_request.'.$post_owner->user_id , 'friendRequest', $data);
             }
-
             $total_likes=UserReactPost::where('post_id',$post_id)->count();
-
-
             return response()->json([
                 'total_likes' => $total_likes,
             ]);
