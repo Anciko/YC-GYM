@@ -147,7 +147,8 @@
 
             <div class="customer-main-content-container">
                 <div class="social-media-header-btns-container margin-top">
-                    <a class="back-btn" href="{{route("socialmedia")}}">
+                    {{-- <a class="back-btn" href="{{route("socialmedia")}}"> --}}
+                    <a class="back-btn" href="javascript:history.back()">
                         <iconify-icon icon="bi:arrow-left" class="back-btn-icon"></iconify-icon>
                     </a>
                     <button class="social-media-addpost-btn customer-primary-btn" data-bs-toggle="modal" data-bs-target="#addPostModal">
@@ -184,13 +185,16 @@
 
                                     @forelse ($left_friends as $friend)
                                     <a  href="{{route('socialmedia.profile',$friend->id)}}" class="social-media-left-friends-row">
-                                        <?php $profile=$friend->profiles->where('cover_photo',null)->sortByDesc('created_at')->first() ?>
+                                        <?php $profile=$friend->profiles->first();
+                                        $profile_id=$friend->profile_id;
+                                         $img=$friend->profiles->where('id',$profile_id)->first();
+                                        ?>
 
-                                            @if ($profile==null)
-                                                <img class="nav-profile-img" src="{{asset('img/customer/imgs/user_default.jpg')}}"/>
-                                            @else
-                                                <img class="nav-profile-img" src="{{asset('storage/post/'.$profile->profile_image)}}"/>
-                                            @endif
+                                        @if ($img==null)
+                                            <img  class="nav-profile-img" src="{{asset('img/customer/imgs/user_default.jpg')}}"/>
+                                        @else
+                                            <img  class="nav-profile-img" src="{{asset('storage/post/'.$img->profile_image)}}"/>
+                                        @endif
                                         <p>{{$friend->name}}</p>
                                     </a>
                                     @empty
@@ -204,38 +208,33 @@
                             <div class="social-media-left-messages-container">
                                 <div class="social-media-left-container-header">
                                     <p>Messages</p>
-                                    <a href="#">See All <iconify-icon icon="bi:arrow-right" class="arrow-icon"></iconify-icon></a>
+                                    <a href="{{route('message.seeall')}}">See All <iconify-icon icon="bi:arrow-right" class="arrow-icon"></iconify-icon></a>
                                 </div>
 
                                 <div class="social-media-left-messages-rows-container">
-                                    <a href="#" class="social-media-left-messages-row">
-                                        <img src="{{asset('img/customer/imgs/user_default.jpg')}}">
+                                    @forelse ($left_friends as $friend)
+                                    <a href="{{route('message.chat',$friend->id)}}" class="social-media-left-messages-row">
+
+                                        <?php $profile=$friend->profiles->first();
+                                        $profile_id=$friend->profile_id;
+                                         $img=$friend->profiles->where('id',$profile_id)->first();
+                                        ?>
+
+                                        @if ($img==null)
+                                            <img  class="nav-profile-img" src="{{asset('img/customer/imgs/user_default.jpg')}}"/>
+                                        @else
+                                            <img  class="nav-profile-img" src="{{asset('storage/post/'.$img->profile_image)}}"/>
+                                        @endif
+
                                         <p>
-                                            Friend Name<br>
+                                            {{$friend->name}}<br>
                                             <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Dui hendrerit potenti pellentesque tellus urna bibendum mollis. </span>
                                         </p>
                                     </a>
-                                    <a href="#" class="social-media-left-messages-row">
-                                        <img src="{{asset('img/customer/imgs/user_default.jpg')}}">
-                                        <p>
-                                            Friend Name<br>
-                                            <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Dui hendrerit potenti pellentesque tellus urna bibendum mollis. </span>
-                                        </p>
-                                    </a>
-                                    <a href="#" class="social-media-left-messages-row">
-                                        <img src="{{asset('img/customer/imgs/user_default.jpg')}}">
-                                        <p>
-                                            Friend Name<br>
-                                            <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Dui hendrerit potenti pellentesque tellus urna bibendum mollis. </span>
-                                        </p>
-                                    </a>
-                                    <a href="#" class="social-media-left-messages-row">
-                                        <img src="{{asset('img/customer/imgs/user_default.jpg')}}">
-                                        <p>
-                                            Friend Name<br>
-                                            <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Dui hendrerit potenti pellentesque tellus urna bibendum mollis. </span>
-                                        </p>
-                                    </a>
+                                    @empty
+                                    <p class="text-secondary p-1">No Messages</p>
+                                    @endforelse
+
                                 </div>
                             </div>
 
@@ -307,7 +306,15 @@
     <!--nav bar-->
     <script src={{asset('js/navBar.js')}}></script>
     <script src={{asset('js/notify.js')}}></script>
-    <script src="https://js.pusher.com/4.1/pusher.min.js"></script>
+
+
+    {{-- axios && Echo --}}
+    <script src={{asset('js/app.js')}}></script>
+    {{-- pusher --}}
+    <script src="https://js.pusher.com/7.2/pusher.min.js"></script>
+
+    {{-- emoji --}}
+    <script src="https://cdn.jsdelivr.net/npm/@joeattardi/emoji-button@3.0.3/dist/index.min.js"></script>
 
     <script src="{{asset('js/customer/jquery.mentiony.js')}}"></script>
 
@@ -470,43 +477,45 @@
                             search();
                         }
                     })
-                });
+        });
 
                 $(document).on('click', '#cancelRequest', function(e) {
-                e.preventDefault();
-                Swal.fire({
-                        text: "Are you sure?",
-                        showClass: {
-                                popup: 'animate__animated animate__fadeInDown'
-                            },
-                            hideClass: {
-                                popup: 'animate__animated animate__fadeOutUp'
-                            },
-                        showCancelButton: true,
-                        timerProgressBar: true,
-                        confirmButtonText: 'Yes',
-                        cancelButtonText: 'No',
+                        e.preventDefault();
+                        Swal.fire({
+                                text: "Are you sure?",
+                                showClass: {
+                                        popup: 'animate__animated animate__fadeInDown'
+                                    },
+                                    hideClass: {
+                                        popup: 'animate__animated animate__fadeOutUp'
+                                    },
+                                showCancelButton: true,
+                                timerProgressBar: true,
+                                confirmButtonText: 'Yes',
+                                cancelButtonText: 'No',
 
-                        }).then((result) => {
-                        /* Read more about isConfirmed, isDenied below */
-                        if (result.isConfirmed) {
-                             var url = new URL(this.href);
-                             var id = url.searchParams.get("id");
-                             var url = "{{ route('cancelRequest', [':id']) }}";
-                             url = url.replace(':id', id);
-                             $(".cancel-request-btn").attr('href','');
-                                $.ajax({
-                                    type: "GET",
-                                    url: url,
-                                    datatype: "json",
-                                    success: function(data) {
-                                        console.log(data)
-                                        search();
-                                    }
+                                }).then((result) => {
+                                /* Read more about isConfirmed, isDenied below */
+                                if (result.isConfirmed) {
+                                    var url = new URL(this.href);
+                                    var id = url.searchParams.get("id");
+                                    var url = "{{ route('cancelRequest', [':id']) }}";
+                                    url = url.replace(':id', id);
+                                    $(".cancel-request-btn").attr('href','');
+                                        $.ajax({
+                                            type: "GET",
+                                            url: url,
+                                            datatype: "json",
+                                            success: function(data) {
+                                                console.log(data)
+                                                search();
+                                            }
+                                        })
+
+                                }
                                 })
 
-                        }
-                        })
+
                 $('.social-media-left-searched-items-container').empty();
                 });
 
@@ -1194,6 +1203,8 @@
                 });
     })
 </script>
+
+
 @stack('scripts')
 
   </body>

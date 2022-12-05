@@ -63,6 +63,27 @@
 </div>
 <!-- End Image Modal -->
 
+<!-- Like Modal -->
+<div class="modal fade " id="staticBackdrop">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="staticBackdropLabel">Likes</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <div class="social-media-all-likes-container">
+                <div class="social-media-all-likes-row">
+                    <div class="social-media-all-likes-row-img">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+      </div>
+    </div>
+</div>
+
     <a class="back-btn" href="{{route("socialmedia")}}">
         <iconify-icon icon="bi:arrow-left" class="back-btn-icon"></iconify-icon>
     </a>
@@ -181,14 +202,19 @@
                 <div class="customer-profile-friends-container">
                     @forelse ($user_friends as $friend)
                     <div class="customer-profile-friend">
-                        <?php $image=$friend->profiles()->where('cover_photo',null)->orderBy('created_at','desc')->first() ?>
-                        @if($image==null)
+
+                        <?php $profile=$friend->profiles->first();
+                        $profile_id=$friend->profile_id;
+                         $img=$friend->profiles->where('id',$profile_id)->first();
+                        ?>
+
+                        @if($img==null)
                         <a href="{{route('socialmedia.profile',$friend->id)}}" style="text-decoration:none">
                         <img src="{{asset('img/customer/imgs/user_default.jpg')}}">
                         </a>
                         @else
                         <a href="{{route('socialmedia.profile',$friend->id)}}" style="text-decoration:none">
-                        <img src="{{asset('storage/post/'.$image->profile_image)}}">
+                        <img src="{{asset('storage/post/'.$img->profile_image)}}">
                         </a>
                         @endif
                         <a href="{{route('socialmedia.profile',$friend->id)}}" style="text-decoration:none">
@@ -217,11 +243,11 @@
                         <div class="customer-post-container">
                             <div class="customer-post-header">
                                 <div class="customer-post-name-container">
-                                    <?php $profile=auth()->user()->profiles->where('cover_photo',null)->sortByDesc('created_at')->first() ?>
-                                    @if ($profile==null)
+
+                                    @if ($user_profile_image==null)
                                         <img class="nav-profile-img" src="{{asset('img/customer/imgs/user_default.jpg')}}"/>
                                     @else
-                                        <img class="nav-profile-img" src="{{asset('storage/post/'.$profile->profile_image)}}"/>
+                                        <img class="nav-profile-img" src="{{asset('storage/post/'.$user_profile_image->profile_image)}}"/>
                                     @endif
                                     <div class="customer-post-name">
                                         <p>{{$post->user->name}}</p>
@@ -231,10 +257,20 @@
 
                                 <iconify-icon icon="bi:three-dots-vertical" class="customer-post-header-icon"></iconify-icon>
                                 <div class="post-actions-container">
-                                    <div class="post-action">
-                                        <iconify-icon icon="bi:save" class="post-action-icon"></iconify-icon>
-                                        <p>Save</p>
-                                    </div>
+                                    <a href="#" style="text-decoration:none" class="post_save" id="{{$post->id}}">
+                                        <div class="post-action">
+                                            <iconify-icon icon="bi:save" class="post-action-icon"></iconify-icon>
+                                            @php
+                                                $already_save=auth()->user()->user_saved_posts->where('post_id',$post->id)->first();
+                                            @endphp
+
+                                            @if ($already_save)
+                                                <p class="save">Unsave</p>
+                                            @else
+                                                <p class="save">Save</p>
+                                             @endif
+                                        </div>
+                                    </a>
                                     <a id="edit_post" data-id="{{$post->id}}" data-bs-toggle="modal" >
                                         <div class="post-action">
                                             <iconify-icon icon="material-symbols:edit" class="post-action-icon"></iconify-icon>
@@ -294,8 +330,157 @@
 
                                     <div id="thumbnail" class="img-slider-thumbnails">
                                         <ul>
-                                            {{-- <li class="active"><img src="https://40.media.tumblr.com/tumblr_m92vwz7XLZ1qf4jqio1_540.jpg" alt="" /></li> --}}
                                             <?php foreach (json_decode($post->media)as $m){?>
+                                                @if (pathinfo($m, PATHINFO_EXTENSION) == 'mp4')
+                                                <li>
+                                                    <video>
+                                                        <source src="{{asset('storage/post/'.$m) }}">
+                                                    </video>
+                                                </li>
+                                                @else
+                                                    <li>
+                                                        <img src="{{asset('storage/post/'.$m) }}" alt="" />
+                                                    </li>
+                                                @endif
+
+                                            <?php }?>
+
+                                        </ul>
+                                    </div>
+
+                                </div>
+                                @endif
+
+                            </div>
+
+                            <div class="customer-post-footer-container">
+                                <div class="social-media-post-like-container">
+                                    @php
+                                        $total_likes=$post->user_reacted_posts->count();
+                                        $user=auth()->user();
+                                        $already_liked=$user->user_reacted_posts->where('post_id',$post->id)->count();
+                                    @endphp
+
+                                    <a class="like" href="#" id="{{$post->id}}">
+
+                                    @if($already_liked==0)
+                                    <iconify-icon icon="mdi:cards-heart-outline" class="like-icon">
+                                    </iconify-icon>
+                                    @else
+                                    <iconify-icon icon="mdi:cards-heart" style="color: red;" class="like-icon already-liked">
+                                    </iconify-icon>
+                                    @endif
+
+                                    </a>
+                                    <p>
+                                        <span class="total_likes">
+
+                                        {{$total_likes}}
+                                        </span>
+                                        <a class="viewlikes" id={{$post->id}}>Likes</a>
+                                    </p>
+                                </div>
+                                <div class="social-media-post-comment-container">
+                                    <a href = "{{route('post.comment',$post->id)}}">
+                                    <iconify-icon icon="bi:chat-right" class="comment-icon"></iconify-icon>
+                                    <p><span>50</span> Comments</p>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        @empty
+                        <p class="text-secondary p-1">No Post And Activity</p>
+                    @endforelse
+                </div>
+
+                {{-- Saved Post Start --}}
+                <div class="customer-saved-posts-container">
+                    @forelse ($save_posts->sortByDesc('created_at') as $save_post)
+                        <div class="customer-post-container">
+                            <div class="customer-post-header">
+                                <div class="customer-post-name-container">
+                                    <?php $profile=$save_post->post->user->profiles->where('cover_photo',null)->sortByDesc('created_at')->first() ?>
+                                    @if ($profile==null)
+                                        <img class="nav-profile-img" src="{{asset('img/customer/imgs/user_default.jpg')}}"/>
+                                    @else
+                                        <img class="nav-profile-img" src="{{asset('storage/post/'.$profile->profile_image)}}"/>
+                                    @endif
+                                    <div class="customer-post-name">
+                                        <p>{{$save_post->post->user->name}}</p>
+                                        <span>{{ \Carbon\Carbon::parse($save_post->post->created_at)->format('d M Y , g:i A')}}</span>
+                                    </div>
+                                </div>
+
+                                <iconify-icon icon="bi:three-dots-vertical" class="customer-post-header-icon"></iconify-icon>
+                                <div class="post-actions-container">
+                                    <a href="#" style="text-decoration:none" class="post_save" id="{{$save_post->post_id}}">
+                                        <div class="post-action">
+                                            <iconify-icon icon="bi:save" class="post-action-icon"></iconify-icon>
+                                                <p class="save">Unsave</p>
+                                        </div>
+                                    </a>
+                                    @if ($save_post->post->user->id == auth()->user()->id)
+                                        <a id="edit_post" data-id="{{$save_post->post->id}}" data-bs-toggle="modal" >
+                                            <div class="post-action">
+                                                <iconify-icon icon="material-symbols:edit" class="post-action-icon"></iconify-icon>
+                                                <p>Edit</p>
+                                            </div>
+                                        </a>
+                                        <a id="delete_post" data-id="{{$save_post->post->id}}">
+                                            <div class="post-action">
+                                            <iconify-icon icon="material-symbols:delete-forever-outline-rounded" class="post-action-icon"></iconify-icon>
+                                            <p>Delete</p>
+                                            </div>
+                                        </a>
+                                    @endif
+                                </div>
+                            </div>
+
+                            <div class="customer-content-container">
+                                @if ($save_post->post->media==null)
+                                <p>{{$save_post->post->caption}}</p>
+                                @else
+                                <p>{{$save_post->post->caption}}</p>
+                                <div class="customer-media-container">
+                                    <?php foreach (json_decode($save_post->post->media)as $m){?>
+                                        <div class="customer-media">
+                                        @if (pathinfo($m, PATHINFO_EXTENSION) == 'mp4')
+                                        <video controls>
+                                            <source src="{{asset('storage/post/'.$m) }}">
+                                        </video>
+                                        @else
+                                            <img src="{{asset('storage/post/'.$m) }}">
+                                        @endif
+                                    </div>
+                                    <?php }?>
+                                </div>
+                                <div id="slider-wrapper" class="social-media-media-slider">
+                                    <iconify-icon icon="akar-icons:cross" class="slider-close-icon"></iconify-icon>
+
+                                    <div id="image-slider" class="image-slider">
+                                        <ul class="ul-image-slider">
+
+                                            <?php foreach (json_decode($save_post->post->media)as $m){?>
+                                                @if (pathinfo($m, PATHINFO_EXTENSION) == 'mp4')
+                                                <li>
+                                                    <video controls>
+                                                        <source src="{{asset('storage/post/'.$m) }}">
+                                                    </video>
+                                                </li>
+                                                @else
+                                                    <li>
+                                                        <img src="{{asset('storage/post/'.$m) }}" alt="" />
+                                                    </li>
+                                                @endif
+
+                                            <?php }?>
+                                        </ul>
+
+                                    </div>
+
+                                    <div id="thumbnail" class="img-slider-thumbnails">
+                                        <ul>
+                                            <?php foreach (json_decode($save_post->post->media)as $m){?>
                                                 @if (pathinfo($m, PATHINFO_EXTENSION) == 'mp4')
                                                 <li>
                                                     <video>
@@ -330,12 +515,8 @@
                             </div>
                         </div>
                         @empty
-                        <p class="text-secondary p-1">No Post And Activity</p>
+                        <p class="text-secondary p-1">No Saved Post And Activity</p>
                     @endforelse
-                </div>
-
-                <div class="customer-saved-posts-container">
-                    <p>Saved Posts</p>
                 </div>
             </div>
         </div>
@@ -1534,7 +1715,6 @@
             var dinner = []
 
 
-
         }
 
         //rendering workoutList
@@ -1609,6 +1789,161 @@
         }
 
     $(document).ready(function() {
+        $('.like').click(function(e){
+            e.preventDefault();
+            $('.staticBackdrop').show();
+            var isLike=e.target.previousElementSibiling == null ? true : false;
+            var post_id=$(this).attr('id');
+            console.log(post_id)
+            var add_url = "{{ route('user.react.post', [':post_id']) }}";
+            add_url = add_url.replace(':post_id', post_id);
+            var that = $(this)
+            $.ajaxSetup({
+                            headers: {
+                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                            }
+                        });
+                    $.ajax({
+                        method: "POST",
+                        url: add_url,
+                        data:{ isLike : isLike , post_id: post_id },
+                        success:function(data){
+                            that.siblings('p').children('.total_likes').html(data.total_likes)
+
+                            if(that.children('.like-icon').hasClass("already-liked")){
+                                that.children('.like-icon').attr('style','')
+                                that.children('.like-icon').attr('class','like-icon')
+                                that.children(".like-icon").attr('icon','mdi:cards-heart-outline')
+                            }else{
+                                that.children('.like-icon').attr('style','color : red')
+                                that.children('.like-icon').attr('class','like-icon already-liked')
+                                that.children(".like-icon").attr('icon','mdi:cards-heart')
+                            }
+
+                        }
+                    })
+
+
+        })
+
+        $('.viewlikes').click(function(e){
+            viewlikes(e);
+
+        })
+
+        function viewlikes(e){
+            e.preventDefault();
+            $(".social-media-all-likes-row-img").empty();
+            $('#staticBackdrop').modal('show');
+            var post_id=$('.viewlikes').attr('id')
+
+            var add_url = "{{ route('profile.likes.view', [':post_id']) }}";
+            add_url = add_url.replace(':post_id', post_id);
+
+                    $.ajax({
+                        method: "GET",
+                        url: add_url,
+                            success: function(data) {
+                                let htmlView = '';
+                                var post_likes=data.post_likes
+                                console.log(post_likes);
+
+                                for(let i = 0; i < post_likes.length; i++){
+                                user_id = post_likes[i].user_id;
+
+                                var url = "{{ route('socialmedia.profile',[':id']) }}";
+                                url = url.replace(':id', user_id);
+
+                                if(post_likes[i].profile_image==null){
+                                    console.log(post_likes[i].name +"has no profile")
+                                    htmlView += `<a href="`+url+`" style="text-decoration:none">
+                                                <img src="{{asset('img/customer/imgs/user_default.jpg')}}"  alt="" style="width:30px;height:30px"/>
+                                            </a>`
+                                }else{
+                                    console.log(post_likes[i].name +"has profile")
+                                    htmlView += `<a href="`+url+`" style="text-decoration:none">
+                                                <img src="{{asset('storage/post/`+post_likes[i].profile_image+`') }}" alt="" style="width:30px;height:30px"/>
+                                            </a>`
+                                }
+                                htmlView += `<a href="`+url+`" style="text-decoration:none">
+                                                <p>`+post_likes[i].name+`</p>
+                                            </a>`
+
+                                if(post_likes[i].friend_status=='myself'){
+                                    htmlView += ``
+                                }else if(post_likes[i].friend_status=='friend'){
+                                    htmlView += ``
+                                }else if(post_likes[i].friend_status=='response'){
+                                    var add_url = "{{ route('socialmedia.profile', [':user_id']) }}";
+                                    var user_id=post_likes[i].user_id;
+                                    add_url = add_url.replace(':user_id', user_id);
+                                    htmlView += `<a class="customer-primary-btn" href="`+add_url+`" >Response</a><br>`
+                                }else if(post_likes[i].friend_status=='cancel request'){
+                                    htmlView += `<a class="customer-primary-btn profile_cancelrequest" id="`+user_id+`">Cancel</a><br>`
+                                }else{
+                                    htmlView += `<a class="customer-primary-btn profile_addfriend" id="`+user_id+`">Add</a><br>`
+                                }
+
+
+                            }
+                            $('.social-media-all-likes-row-img').html(htmlView);
+                            }
+                    })
+
+        }
+
+        $(document).on('click', '.profile_addfriend', function(e) {
+                e.preventDefault();
+                var id = $(this).attr("id")
+                var add_url = "{{ route('addUser', [':id']) }}";
+                add_url = add_url.replace(':id', id);
+                $.ajax({
+                    type: "GET",
+                    url: add_url,
+                    datatype: "json",
+                    success: function(data) {
+                        viewlikes(e);
+                    }
+                })
+        });
+
+        $(document).on('click', '.profile_cancelrequest', function(e) {
+                        e.preventDefault();
+                        Swal.fire({
+                                text: "Are you sure?",
+                                showClass: {
+                                        popup: 'animate__animated animate__fadeInDown'
+                                    },
+                                    hideClass: {
+                                        popup: 'animate__animated animate__fadeOutUp'
+                                    },
+                                showCancelButton: true,
+                                timerProgressBar: true,
+                                confirmButtonText: 'Yes',
+                                cancelButtonText: 'No',
+
+                                }).then((result) => {
+                                /* Read more about isConfirmed, isDenied below */
+                                if (result.isConfirmed) {
+
+                                    var id = $(this).attr("id");
+                                    var url = "{{ route('cancelRequest', [':id']) }}";
+                                    url = url.replace(':id', id);
+
+                                        $.ajax({
+                                            type: "GET",
+                                            url: url,
+                                            datatype: "json",
+                                            success: function(data) {
+                                                viewlikes(e);
+                                            }
+                                        })
+
+                                }
+                                })
+
+        });
+
         $(".customer-saved-posts-container").hide()
 
         $(".customer-profile-selector").change(function(e){
@@ -1623,9 +1958,108 @@
                 $(".customer-saved-posts-container").show()
             }
         })
-                    $('.social-media-fris-search input').on('keyup', function(){
+
+        function saved_post(){
+            var save_posts=@json($saved_posts);
+
+            $('.customer-saved-posts-container').append(`
+            ${save_posts.map((item,index) => (`
+                <div class="customer-post-container">
+                    <div class="customer-post-header">
+                        <div class="customer-post-name-container">
+                            <img class="nav-profile-img" src="{{asset('img/customer/imgs/user_default.jpg')}}"/>
+                            <div class="customer-post-name">
+                                <p>${item.name}</p>
+                                <span>dstgyergdfhgf</span>
+                            </div>
+
+                        </div>
+                            <iconify-icon icon="bi:three-dots-vertical" class="customer-post-header-icon"></iconify-icon>
+                            <div class="post-actions-container">
+                                <a href="#" style="text-decoration:none" class="post_save" id="${item.id}">
+                                    <div class="post-action">
+                                        <iconify-icon icon="bi:save" class="post-action-icon"></iconify-icon>
+                                            <p class="save">Unsave</p>
+                                    </div>
+                                </a>
+                                    <a id="edit_post" data-id="${item.id}" data-bs-toggle="modal" >
+                                        <div class="post-action">
+                                            <iconify-icon icon="material-symbols:edit" class="post-action-icon"></iconify-icon>
+                                            <p>Edit</p>
+                                        </div>
+                                    </a>
+                                    <a id="delete_post" data-id="${item.id}">
+                                        <div class="post-action">
+                                        <iconify-icon icon="material-symbols:delete-forever-outline-rounded" class="post-action-icon"></iconify-icon>
+                                        <p>Delete</p>
+                                        </div>
+                                    </a>
+                            </div>
+                    </div>
+                    <div class="customer-content-container">
+                        <p>${item.caption}</p>
+                        <div class="customer-media-container">
+                            <div class="customer-media">
+                                <div class="customer-media">
+                                    <h1>${item.media}</h1>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>`
+            ))}
+
+            `)
+
+
+        }
+
+        $('.post_save').click(function(e){
+            e.preventDefault();
+
+            var post_id=$(this).attr('id');
+            var add_url = "{{ route('socialmedia.post.save', [':post_id']) }}";
+            add_url = add_url.replace(':post_id', post_id);
+
+                    $.ajax({
+                        method: "GET",
+                        url: add_url,
+                        data:{
+                                post_id : post_id
+                            },
+                            success: function(data) {
+                                // window.location.reload();
+                                if(data.save){
+                                    Swal.fire({
+                                        text: data.save,
+                                        timerProgressBar: true,
+                                        timer: 5000,
+                                        icon: 'success',
+                                    }).then((result) => {
+                                        e.target.innerHTML = "Unsave";
+                                    })
+
+                                }else{
+                                    Swal.fire({
+                                        text: data.unsave,
+                                        timerProgressBar: true,
+                                        timer: 5000,
+                                        icon: 'success',
+                                    }).then((result) => {
+                                        e.target.innerHTML = "Save";
+                                    })
+                                }
+
+                            }
+                    })
+
+
+        })
+
+        $('.social-media-fris-search input').on('keyup', function(){
                             search();
-            });
+        });
 
                         search();
                         function search(){
@@ -1999,9 +2433,9 @@
             $('.customer-bio-form p').show()
         })
 
-        $('.customer-profile-training-center-tab').addClass("customer-profile-training-center-tab-active")
-        $('.customer-profile-training-center-container').show()
-        $('.customer-profile-socialmedia-container').hide()
+        $('.customer-profile-socialmedia-tab').addClass("customer-profile-training-center-tab-active")
+        $('.customer-profile-training-center-container').hide()
+        $('.customer-profile-socialmedia-container').show()
         $('.customer-profile-shop-container').hide()
 
         $('.customer-profile-training-center-tab').click(function(){

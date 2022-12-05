@@ -131,6 +131,10 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
 
     Route::post('friends', [SocialmediaController::class, 'friends']);//
 
+    Route::get('friends_for_mention', [SocialmediaController::class, 'friends_for_mention']);//
+
+
+
     Route::get('notification', [SocialmediaController::class, 'notification']);
 
     Route::post('viewFriendRequestNoti', [SocialmediaController::class, 'viewFriendRequestNoti'])->name('viewFriendRequestNoti');
@@ -138,6 +142,9 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::get('friend_request', [SocialmediaController::class, 'friend_request']);
     Route::get('newFeeds', [SocialmediaController::class, 'newFeeds']);
     Route::get('saved_post',[SocialmediaController::class, 'saved_post']);
+
+    Route::post('one_post',[SocialmediaController::class, 'one_post']);
+
 
     Route::post('post_create', [SocialmediaController::class, 'post_store']);
     Route::post('post_delete', [SocialmediaController::class, 'post_destroy']);
@@ -148,10 +155,18 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::post('profile/cover/update', [SocialmediaController::class, 'profile_update_cover']);
     Route::post('profile/image/update', [SocialmediaController::class, 'profile_update_profile_img']);
     Route::post('profile/bio/update', [SocialmediaController::class, 'profile_update_bio']);
-    Route::post('/profile/photo/delete', [SocialmediaController::class, 'profile_photo_delete']);
+    Route::post('profile/photo/delete', [SocialmediaController::class, 'profile_photo_delete']);
 
+    Route::post('message/chat/{user}',[SocialMediaController::class,'chatting']);
+    Route::post('post/comment/store', [SocialmediaController::class, 'post_comment_store']);
+    Route::post('post/comment/delete', [SocialmediaController::class, 'comment_delete']);
+    Route::post('post/comment/edit', [SocialmediaController::class, 'comment_edit']);
 
+    Route::post('post/like', [SocialmediaController::class, 'user_like_post']);
+    Route::post('post/like/list', [SocialmediaController::class, 'social_media_likes']);
+    Route::post('post/comment/list', [SocialmediaController::class, 'comment_list']);
 
+    Route::get('user/list', [SocialmediaController::class, 'user_list']);
 });
 
 Route::get('test', [AuthController::class, 'test']);

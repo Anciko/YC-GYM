@@ -2,9 +2,10 @@
 
 namespace App\Providers;
 
-use App\Models\Friendship;
 use App\Models\Post;
 use App\Models\User;
+use App\Models\Profile;
+use App\Models\Friendship;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\View;
@@ -91,12 +92,27 @@ class AppServiceProvider extends ServiceProvider
                         ->where('id','!=',$user_id)
                         ->paginate(6);
 
-
         //...with this variable
-        $view->with('left_friends', $left_friends );
+        $view->with('left_friends', $left_friends);
         }
+
     });
     // View::share('Auth',Auth::user()->id);
+
+    view()->composer('*',function($v){
+        if (Auth::check()) {
+            $user_id=auth()->user()->id;
+
+            $user_profileimage=DB::table('users')
+                                    ->select('users.*','profiles.profile_image as profile_image')
+                                    ->join('profiles','profiles.id','users.profile_id')
+                                    ->where('users.id',$user_id)
+                                    ->first();
+
+            $v->with('user_profileimage', $user_profileimage);
+        }
+
+    });
 
     }
 }

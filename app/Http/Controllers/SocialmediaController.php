@@ -7,6 +7,8 @@ use Pusher\Pusher;
 use App\Models\Post;
 use App\Models\User;
 use App\Models\BanWord;
+use App\Models\Chat;
+use App\Models\Comment;
 use App\Models\Profile;
 use App\Models\Friendship;
 use App\Models\NotiFriends;
@@ -48,12 +50,22 @@ class SocialmediaController extends Controller
                     ->with('user')
                     ->paginate(30);
         }
+
+        // $post_likes=UserReactPost::select('users.name','profiles.profile_image','user_react_posts.*')
+        //             ->leftJoin('users','users.id','user_react_posts.user_id')
+        //             ->leftJoin('profiles','users.profile_id','profiles.id')
+        //             ->where('post_id',$post_id)
+        //             ->get();
+
         // $left_friends=User::whereIn('id',$n)
         //                 ->where('id','!=',$user->id)
         //                 ->paginate(6);
 
                         //dd($left_friends);
         //$posts=Post::orderBy('created_at','DESC')->with('user')->paginate(10);
+        // $post_reacted=UserReactPost::groupBy('post_id')->get('post_id');
+        // dd($post_reacted->toArray());
+
         return view('customer.socialmedia',compact('posts'));
     }
 
@@ -71,13 +83,14 @@ class SocialmediaController extends Controller
         $user=auth()->user();
         $react=$user->user_reacted_posts()->where('post_id',$post_id)->first();
 
-        if($react){
+        if(!empty($react)){
             $already_like=true;
             $update=true;
-                if($already_like==$isLike){
+                // if($already_like==$isLike){
                     $react->delete();
-                    return null;
-                }
+                //     return null;
+
+                // }
         }else{
                 $react=new UserReactPost();
             }
@@ -90,7 +103,12 @@ class SocialmediaController extends Controller
             }else{
                 $react->save();
             }
-            return null;
+
+            $total_likes=UserReactPost::where('post_id',$post_id)->count();
+
+            return response()->json([
+                'total_likes' => $total_likes,
+            ]);
     }
 
     public function profile_photo_delete(Request $request)
@@ -138,10 +156,9 @@ class SocialmediaController extends Controller
                     $f=(array)$friend;
                     array_push($n, $f['sender_id'],$f['receiver_id']);
             }
-        $friends=User::select('users.name','users.id')
-                        ->whereIn('id',$n)
-                        ->where('id','!=',$user->id)
-                        ->paginate(6);
+        $friends=User::whereIn('id',$n)
+                    ->where('id','!=',$user->id)
+                    ->paginate(6);
 
         $friend = DB::select("SELECT * FROM `friendships` WHERE (receiver_id = $auth or sender_id = $auth )
                         AND (receiver_id = $id or sender_id = $id)");
@@ -203,8 +220,7 @@ class SocialmediaController extends Controller
                         $f=(array)$friend;
                         array_push($n, $f['sender_id'],$f['receiver_id']);
                 }
-            $friends=User::select('users.name','users.id')
-                            ->whereIn('id',$n)
+            $friends=User::whereIn('id',$n)
                             ->where('id','!=',$user->id)
                             ->paginate(6);
             $friend = DB::select("SELECT * FROM `friendships` WHERE (receiver_id = $auth or sender_id = $auth )
@@ -255,7 +271,53 @@ class SocialmediaController extends Controller
             'posts' => $posts
        ]);
     }
-        // return view('customer.socialmedia_profile',compact('user','posts','friends','friend'));
+
+    public function social_media_likes($post_id)
+    {
+        $auth = Auth()->user()->id;
+        $post_likes=UserReactPost::where('post_id',$post_id)
+                    ->with('user')
+                    ->get();
+        // $post_likes=UserReactPost::select('users.id','users.name','profiles.profile_image','user_react_posts.*')
+        //             ->leftJoin('users','users.id','user_react_posts.user_id')
+        //             ->leftJoin('profiles','users.profile_id','profiles.id')
+        //             ->where('post_id',$post_id)
+        //             ->get();
+        $post=Post::findOrFail($post_id);
+
+        // $friends=DB::table('friendships')->get()->toArray();
+        $friends = DB::select("SELECT * FROM `friendships` WHERE (receiver_id = $auth or sender_id = $auth)");
+
+        foreach($post_likes as $key=>$value){
+            foreach($friends as $fri){
+                if($value->user_id == $fri->receiver_id AND $fri->sender_id == $auth AND $fri->friend_status == 1    ){
+                    $post_likes[$key]['friend_status'] = "cancel request";
+                    break;
+                }
+                else if($value->user_id == $fri->sender_id AND $fri->receiver_id == $auth AND $fri->friend_status == 1    ){
+                    $post_likes[$key]['friend_status'] = "response";
+                    break;
+                }
+                else if($value->user_id == $fri->receiver_id AND $fri->sender_id == $auth AND $fri->friend_status == 2){
+                    $post_likes[$key]['friend_status'] = "friend";
+                    break;
+                }
+                else if($value->user_id == $fri->sender_id AND $fri->receiver_id == $auth AND $fri->friend_status == 2){
+                    $post_likes[$key]['friend_status'] = "friend";
+                    break;
+                }
+                else if($value->user_id == $auth){
+                    $post_likes[$key]['friend_status'] = "myself";
+                    break;
+                }
+                else{
+                    $post_likes[$key]['friend_status'] = "add friend";
+                }
+            }
+        }
+
+        return view('customer.socialmedia_likes',compact('post_likes','post'));
+    }
 
     public function socialmedia_profile_photos(Request $request)
     {
@@ -710,8 +772,371 @@ class SocialmediaController extends Controller
         ]);
     }
 
-    public function post_comment()
+    public function see_all_message(){
+        $auth_user = auth()->user();
+
+        $messages = Chat::where('from_user_id','!=',$auth_user->id)->where(function($qu) use ($auth_user){
+            $qu->where('to_user_id',$auth_user->id);
+        })->get();
+
+        $user_id = Chat::select('from_user_id', 'to_user_id')->where('from_user_id', $auth_user->id)->orWhere('to_user_id',$auth_user->id)->get();
+
+        foreach($user_id as $id){
+            $chat_lists =Chat::where(function($query) use ($auth_user){
+                $query->where('from_user_id',$auth_user->id)->orWhere('to_user_id',$auth_user->id);
+            })->where(function($que) use ($id){
+                $que->where('from_user_id',$id)->orWhere('to_user_id',$id);
+            })->get();
+        }
+        // ->with('to_user')->with('from_user')->with('to_user.profiles')->with('from_user.profiles')
+            // dd($chat_lists->toArray());
+        return view('customer.message_seeall', compact('chat_lists', 'messages'));
+    }
+
+    public function chat_message($id){
+        $auth_user = auth()->user();
+
+        $messages = Chat::where(function($query) use ($auth_user){
+            $query->where('from_user_id',$auth_user->id)->orWhere('to_user_id',$auth_user->id);
+        })->where(function($que) use ($id){
+            $que->where('from_user_id',$id)->orWhere('to_user_id',$id);
+        })->with('to_user')->with('from_user')->get();
+
+        $auth_user_name = auth()->user()->name;
+        $receiver_user = User::where('users.id',$id)->join('profiles','profiles.user_id','users.id')->first();
+        $sender_user = Profile::where('user_id',$auth_user->id)->first();
+
+        return view('customer.chat_message', compact('id','messages','auth_user_name','receiver_user','sender_user'));
+    }
+
+    public function viewmedia_message($id){
+        $auth_user = auth()->user();
+
+        $messages = Chat::select('id','media')->where(function($query) use ($auth_user){
+            $query->where('from_user_id',$auth_user->id)->orWhere('to_user_id',$auth_user->id);
+        })->where(function($que) use ($id){
+            $que->where('from_user_id',$id)->orWhere('to_user_id',$id);
+        })->with('to_user')->with('from_user')->get();
+
+        $auth_user_name = auth()->user()->name;
+        $receiver_user = User::findOrFail($id);
+        return view('customer.chat_view_media', compact('id','messages','auth_user_name','receiver_user'));
+    }
+
+    public function post_comment($id)
     {
-        return view('customer.comments');
+        // dd("dd");
+        $post=Post::select('users.name','profiles.profile_image','posts.*')
+        ->where('posts.id',$id)
+        ->leftJoin('users','users.id','posts.user_id')
+        ->leftJoin('profiles','users.profile_id','profiles.id')
+        ->first();
+        $comments = Comment::select('users.name','users.profile_id','profiles.profile_image','comments.*')
+        ->leftJoin('users','users.id','comments.user_id')
+        ->leftJoin('profiles','users.profile_id','profiles.id')
+        ->where('post_id',$id)->orderBy('created_at','DESC')->get();
+
+
+
+    //    foreach($comments as $key=>$comm1){
+    //    $ids = json_decode($comm1->mentioned_users);
+    //    $arr = json_decode(json_encode ( $ids ) , true);
+
+
+    //     if($ids != null){
+    //         $count = count($ids);
+    //         //   dd($count);
+    //         $main =  $comm1['comment'];
+    //         for($i = 0; $i < $count ; $i++){
+    //            $arr_id = json_decode(json_encode ( $ids[$i] ) , true);
+    //            $mentioned_user_id = $arr_id['id'];
+
+    //                      $url = route('socialmedia.profile',$mentioned_user_id);
+    //                      $comments[$key]['Replace']= sizeof($ids);
+    //                     if (str_contains($main,'@'.$mentioned_user_id)) {
+    //                         $replace=
+    //                          str_replace(['@'.$mentioned_user_id],
+    //                         "<a href=$url>".$arr_id['name'].'</a>',$main);
+    //                         $main=$replace;
+    //                         $comments[$key]['Replace']= $main;
+    //                  }
+    //            $comments[$key]['Replace']= $main  ;
+
+    //         }
+
+    //                 // for($i = 0; $i < sizeof($ids) ; $i++){
+    //                 //     $mentioned_user_id = $mentioned_user_id;
+
+    //                 //     $url = route('socialmedia.profile',$mentioned_user_id);
+    //                 //     $comments[$key]['Replace']= sizeof($ids);
+    //                 //     if (str_contains($main,'@'.$ids[$i]->id)) {
+    //                 //         $replace=
+    //                 //         str_replace(['@'.$ids[$i]->id],
+    //                 //         "<a href=$url>".$ids[$i]->name.'</a>',$main);
+    //                 //         $main=$replace;
+    //                 //         $comments[$key]['Replace']= $main;
+    //                 // }
+    //                 //     }
+
+    //             }
+    //     else{
+    //         $comments[$key]['Replace']= $comm1->comment;
+    //     }
+
+
+    //     //dd($arr);
+    // }
+
+    // dd($comments);
+
+        // dd($posts);
+        return view('customer.comments',compact('post','comments'));
+    }
+
+    public function users_for_mention(Request $request){
+        // dd($request->keyword);
+        $user = User::select('users.id','users.name','profiles.profile_image as avatar')
+        ->leftJoin('profiles','profiles.id','users.profile_id')->get()->toArray();
+        return response()->json([
+            'data' =>  $user
+        ]);
+    }
+
+    public function post_comment_store(Request $request){
+
+
+        $banwords=DB::table('ban_words')->select('ban_word_english','ban_word_myanmar','ban_word_myanglish')->get();
+
+        foreach($banwords as $b){
+           $e_banword=$b->ban_word_english;
+           $m_banword=$b->ban_word_myanmar;
+           $em_banword=$b->ban_word_myanglish;
+
+            if (str_contains($request->comment,$e_banword)) {
+                // Alert::warning('Warning', 'Ban Ban Ban');
+                //return redirect()->back();
+                return response()->json([
+                    'ban'=>'Ban',
+                ]);
+            }elseif (str_contains($request->comment,$m_banword)){
+                return response()->json([
+                    'ban'=>'Ban',
+                ]);
+            }elseif (str_contains($request->comment,$em_banword)){
+                return response()->json([
+                    'ban'=>'Ban',
+                ]);
+            }
+        }
+        $comments = new Comment();
+        $comments->user_id=auth()->user()->id;
+        $comments->post_id=$request->post_id;
+        $comments->comment = $request->comment;
+        $comments->mentioned_users = json_encode($request->mention);
+        $comments->save();
+        $options = array(
+            'cluster' => env('PUSHER_APP_CLUSTER'),
+            'encrypted' => true
+            );
+            $pusher = new Pusher(
+            env('PUSHER_APP_KEY'),
+            env('PUSHER_APP_SECRET'),
+            env('PUSHER_APP_ID'),
+            $options
+            );
+            //$ids = ["4","5"];
+            $data = auth()->user()->name.' mentioned you in a comment!';
+            $ids = json_decode($comments->mentioned_users);
+            $arr = json_decode(json_encode ( $ids ) , true);
+            foreach($arr as $id){
+                $fri_noti = new Notification();
+                $fri_noti->description = $data;
+                $fri_noti->date = Carbon::Now()->toDateTimeString();
+                $fri_noti->sender_id = auth()->user()->id;
+                $fri_noti->receiver_id = $id['id'];
+                $fri_noti->comment_id = $comments->id;
+                $fri_noti->notification_status = 1;
+                $fri_noti->save();
+                $pusher->trigger('friend_request.'.$fri_noti->receiver_id , 'friendRequest', $data);
+            }
+        return response()->json([
+            'data' =>  $comments
+        ]);
+    }
+
+    public function comment_delete(Request $request)
+    {
+        Comment::find($request->id)->delete($request->id);
+
+        return response()->json([
+            'success' => 'Comment deleted successfully!'
+        ]);
+    }
+
+    public function comment_list(Request $request){
+        $id = $request->id;
+        $comments = Comment::select('users.name','users.profile_id','profiles.profile_image','comments.*')
+        ->leftJoin('users','users.id','comments.user_id')
+        ->leftJoin('profiles','users.profile_id','profiles.id')
+        ->where('post_id',$id)->orderBy('created_at','DESC')->get();
+    //     foreach($comments as $key=>$comm1){
+    //         $mentioned_user_id = json_decode($comm1->mentioned_users);
+    //      //    dd($users);
+    //         if($mentioned_user_id != null){
+
+    //          $users = User::select('users.id','users.name')->whereIn('id',$mentioned_user_id)->get();
+
+    //          $main =  $comm1['comment'];
+    //          // dd(count($users));
+    //          // foreach($mentioned_user_id as $id){
+    //              for($i=0;count($users)>$i;$i++){
+
+    //                  $mentioned_user_id_id = $users[$i]['id'];
+    //                  $url = route('socialmedia.profile',$mentioned_user_id_id);
+    //                  if (str_contains($main,'@'.$users[$i]['id'])) {
+    //                      $replace=
+    //                      str_replace(['@'.$users[$i]['id']],
+    //                      "<a href=$url>".$users[$i]['name'].'</a>',$main);
+    //                      $main=$replace;
+    //                      $comments[$key]['Replace']= $main;
+    //                  }
+    //              }
+
+
+    //          // }
+    //          }
+    //         else{
+    //          $comments[$key]['Replace']= $comm1->comment;
+    //         }
+
+    // }
+    foreach($comments as $key=>$comm1){
+        $ids = json_decode($comm1->mentioned_users);
+        $arr = json_decode(json_encode ( $ids ) , true);
+
+
+         if($ids != null){
+             $count = count($ids);
+             //   dd($count);
+             $main =  $comm1['comment'];
+             for($i = 0; $i < $count ; $i++){
+                $arr_id = json_decode(json_encode ( $ids[$i] ) , true);
+                $mentioned_user_id = $arr_id['id'];
+
+                          $url = route('socialmedia.profile',$mentioned_user_id);
+                          $comments[$key]['Replace']= sizeof($ids);
+                         if (str_contains($main,'@'.$mentioned_user_id)) {
+                             $replace=
+                              str_replace(['@'.$mentioned_user_id],
+                             "<a href=$url>".$arr_id['name'].'</a>',$main);
+                             $main=$replace;
+                             $comments[$key]['Replace']= $main;
+                      }
+                $comments[$key]['Replace']= $main  ;
+
+             }
+
+                     // for($i = 0; $i < sizeof($ids) ; $i++){
+                     //     $mentioned_user_id = $mentioned_user_id;
+
+                     //     $url = route('socialmedia.profile',$mentioned_user_id);
+                     //     $comments[$key]['Replace']= sizeof($ids);
+                     //     if (str_contains($main,'@'.$ids[$i]->id)) {
+                     //         $replace=
+                     //         str_replace(['@'.$ids[$i]->id],
+                     //         "<a href=$url>".$ids[$i]->name.'</a>',$main);
+                     //         $main=$replace;
+                     //         $comments[$key]['Replace']= $main;
+                     // }
+                     //     }
+
+                 }
+         else{
+             $comments[$key]['Replace']= $comm1->comment;
+         }
+        }
+        return response()->json([
+            'comment' => $comments
+        ]);
+    }
+    public function comment_edit($id){
+
+        $comments = Comment::findOrFail($id);
+
+        $ids = json_decode($comments->mentioned_users);
+        $arr = json_decode(json_encode ( $ids ) , true);
+
+
+         if($ids != null){
+             $count = count($ids);
+             //   dd($count);
+             $main =  $comments['comment'];
+             for($i = 0; $i < $count ; $i++){
+                $arr_id = json_decode(json_encode ( $ids[$i] ) , true);
+                $mentioned_user_id = $arr_id['id'];
+
+                          $url = route('socialmedia.profile',$mentioned_user_id);
+                          $comments['Replace']= sizeof($ids);
+                         if (str_contains($main,'@'.$mentioned_user_id)) {
+                             $replace=
+                              str_replace(['@'.$mentioned_user_id],
+                             "<a href=$url data-item-id = $mentioned_user_id class = 'mentiony-link'>".$arr_id['name'].'</a>',$main);
+                             $main=$replace;
+                             $comments['Replace']= $main;
+                      }
+                $comments['Replace']= $main  ;
+
+             }
+
+                     // for($i = 0; $i < sizeof($ids) ; $i++){
+                     //     $mentioned_user_id = $mentioned_user_id;
+
+                     //     $url = route('socialmedia.profile',$mentioned_user_id);
+                     //     $comments[$key]['Replace']= sizeof($ids);
+                     //     if (str_contains($main,'@'.$ids[$i]->id)) {
+                     //         $replace=
+                     //         str_replace(['@'.$ids[$i]->id],
+                     //         "<a href=$url>".$ids[$i]->name.'</a>',$main);
+                     //         $main=$replace;
+                     //         $comments[$key]['Replace']= $main;
+                     // }
+                     //     }
+
+                 }
+         else{
+             $comments['Replace']= $comments->comment;
+         }
+        return response()->json([
+            'data' => $comments
+        ]);
+    }
+
+    public function comment_update(Request $request){
+        $banwords=DB::table('ban_words')->select('ban_word_english','ban_word_myanmar','ban_word_myanglish')->get();
+        foreach($banwords as $b){
+           $e_banword=$b->ban_word_english;
+           $m_banword=$b->ban_word_myanmar;
+           $em_banword=$b->ban_word_myanglish;
+            if (str_contains($request->comment,$e_banword)) {
+                return response()->json([
+                    'ban'=>'Ban',
+                ]);
+            }elseif (str_contains($request->comment,$m_banword)){
+                return response()->json([
+                    'ban'=>'Ban',
+                ]);
+            }elseif (str_contains($request->comment,$em_banword)){
+                return response()->json([
+                    'ban'=>'Ban',
+                ]);
+            }
+        }
+        $comments_update = Comment::findOrFail($request->post_id);
+        $comments_update->comment = $request->comment;
+        $comments_update->mentioned_users = json_encode($request->mention);
+        $comments_update->update();
+        return response()->json([
+            'success' =>  'Comment updated successfully!'
+        ]);
     }
 }

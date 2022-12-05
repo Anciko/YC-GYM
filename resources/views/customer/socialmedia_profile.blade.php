@@ -8,26 +8,31 @@
             <iconify-icon icon="bi:arrow-left" class="back-btn-icon"></iconify-icon>
         </a>
     </div> --}}
-
-
         <div class="social-media-right-container social-media-right-container-nopadding">
             <div class="social-media-profile-parent-container">
                 <div class="social-media-profile-bgimg-container">
-                    <?php $profile_cover=$user->profiles->where('profile_image',null)->sortByDesc('created_at')->first() ?>
-                    @if ($profile_cover==null)
+                    <?php $profile=$user->profiles->first();
+                    $cover_id=$user->cover_id;
+                    $cover_img=$user->profiles->where('id',$cover_id)->first();
+                    ?>
+
+                    @if ($cover_img==null)
                         <img src="{{asset('image/cover.jpg')}}">
                     @else
-                        <img class="nav-profile-img" src="{{asset('storage/post/'.$profile_cover->cover_photo)}}"/>
+                        <img class="" src="{{asset('storage/post/'.$cover_img->cover_photo)}}"/>
                     @endif
-                    <div class="social-media-profile-profileimg-container">
-                        <?php
-                        $profile=$user->profiles->where('cover_photo',null)->sortByDesc('created_at')->first();?>
-                        @if ($profile==null)
-                            <img src="{{asset('img/customer/imgs/user_default.jpg')}}">
-                        @else
-                            <img class="nav-profile-img" src="{{asset('storage/post/'.$profile->profile_image)}}"/>
-                        @endif
 
+                    <div class="social-media-profile-profileimg-container">
+
+                        <?php $profile=$user->profiles->first();
+                        $profile_id=$user->profile_id;
+                         $img=$user->profiles->where('id',$profile_id)->first();
+                        ?>
+                        @if ($img==null)
+                            <img src="{{asset('img/customer/imgs/user_default.jpg')}}"/>
+                        @else
+                            <img src="{{asset('storage/post/'.$img->profile_image)}}"/>
+                        @endif
                     </div>
                 </div>
 
@@ -48,10 +53,10 @@
                         @else
                     @foreach ($friend as $friend_status)
                     @if($friend_status->friend_status == 2  )
-                        <button class="customer-primary-btn add-friend-btn">
+                        <a href="{{route('message.chat',$user->id)}}" class="customer-primary-btn add-friend-btn">
                             <iconify-icon icon="mdi:message-reply-outline" class="add-friend-icon"></iconify-icon>
                             <p>Message</p>
-                        </button>
+                        </a>
                         <a href ="?id={{$user->id}}" class="customer-red-btn add-friend-btn unfriend "  data-id = {{$user->id}}>
                             <iconify-icon icon="mdi:account-minus-outline" class="add-friend-icon"></iconify-icon>
                             <p>Unfriend</p>
@@ -102,15 +107,16 @@
                         <div class="social-media-profile-friends-container">
                             @forelse ($friends as $friend)
                             <div class="social-media-profile-friend">
-                                <?php $image=$friend->profiles()->where('cover_photo',null)->orderBy('created_at','desc')->first() ?>
-                                @if($image==null)
-                                <a href="{{route('socialmedia.profile',$friend->id)}}" style="text-decoration:none">
-                                <img src="{{asset('img/customer/imgs/user_default.jpg')}}">
+                                <?php $profile=$friend->profiles->first();
+                                    $profile_id=$friend->profile_id;
+                                    $img=$friend->profiles->where('id',$profile_id)->first();
+                                ?>
+                                @if ($img==null)
+                                    <img style="text-decoration:none" src="{{asset('img/customer/imgs/user_default.jpg')}}"/>
                                 @else
-                                <a href="{{route('socialmedia.profile',$friend->id)}}" style="text-decoration:none">
-                                <img src="{{asset('storage/post/'.$image->profile_image)}}">
-                                </a>
+                                    <img style="text-decoration:none" src="{{asset('storage/post/'.$img->profile_image)}}"/>
                                 @endif
+
                                 <p>{{$friend->name}}</p>
                             </a>
                             </div>
@@ -134,11 +140,16 @@
                                 <div class="social-media-post-header">
                                     <div class="social-media-post-name-container">
                                         <a href="{{route('socialmedia.profile',$post->user_id)}}" style="text-decoration:none">
-                                        @if ($profile==null)
-                                            <img src="{{asset('img/customer/imgs/user_default.jpg')}}">
-                                        @else
-                                            <img class="nav-profile-img" src="{{asset('storage/post/'.$profile->profile_image)}}"/>
-                                        @endif
+
+                                            <?php $profile=$post->user->profiles->first();
+                                            $profile_id=$post->user->profile_id;
+                                             $img=$post->user->profiles->where('id',$profile_id)->first();
+                                            ?>
+                                            @if ($img==null)
+                                                <img src="{{asset('img/customer/imgs/user_default.jpg')}}"/>
+                                            @else
+                                                <img src="{{asset('storage/post/'.$img->profile_image)}}"/>
+                                            @endif
                                         </a>
                                         <div class="social-media-post-name">
                                             <a href="{{route('socialmedia.profile',$post->user_id)}}" style="text-decoration:none">
@@ -182,13 +193,78 @@
                                         <?php }?>
                                     </div>
 
+                                    <div id="slider-wrapper" class="social-media-media-slider">
+                                        <iconify-icon icon="akar-icons:cross" class="slider-close-icon"></iconify-icon>
+
+                                        <div id="image-slider" class="image-slider">
+                                            <ul class="ul-image-slider">
+
+                                                <?php foreach (json_decode($post->media)as $m){?>
+                                                    @if (pathinfo($m, PATHINFO_EXTENSION) == 'mp4')
+                                                    <li>
+                                                        <video controls>
+                                                            <source src="{{asset('storage/post/'.$m) }}">
+                                                        </video>
+                                                    </li>
+                                                    @else
+                                                        <li>
+                                                            <img src="{{asset('storage/post/'.$m) }}" alt="" />
+                                                        </li>
+                                                    @endif
+
+                                                <?php }?>
+                                            </ul>
+
+                                        </div>
+
+                                        <div id="thumbnail" class="img-slider-thumbnails">
+                                            <ul>
+                                                {{-- <li class="active"><img src="https://40.media.tumblr.com/tumblr_m92vwz7XLZ1qf4jqio1_540.jpg" alt="" /></li> --}}
+                                                <?php foreach (json_decode($post->media)as $m){?>
+                                                    @if (pathinfo($m, PATHINFO_EXTENSION) == 'mp4')
+                                                    <li>
+                                                        <video>
+                                                            <source src="{{asset('storage/post/'.$m) }}">
+                                                        </video>
+                                                    </li>
+                                                    @else
+                                                        <li>
+                                                            <img src="{{asset('storage/post/'.$m) }}" alt="" />
+                                                        </li>
+                                                    @endif
+
+                                                <?php }?>
+
+                                            </ul>
+                                        </div>
+
+                                    </div>
+
                                     @endif
                                 </div>
 
                                 <div class="social-media-post-footer-container">
                                     <div class="social-media-post-like-container">
-                                        <iconify-icon icon="akar-icons:heart" class="like-icon"></iconify-icon>
-                                        <p><span>1.1k</span> Likes</p>
+                                        @php
+                                            $total_likes=$post->user_reacted_posts->count();
+                                            $user=auth()->user();
+                                            $already_liked=$user->user_reacted_posts->where('post_id',$post->id)->count();
+                                        @endphp
+
+                                        <a class="like" href="#" id="{{$post->id}}">
+
+                                        @if($already_liked==0)
+                                        <iconify-icon icon="mdi:cards-heart-outline" class="like-icon">
+                                        </iconify-icon>
+                                        @else
+                                        <iconify-icon icon="mdi:cards-heart" style="color: red;" class="like-icon already-liked">
+                                        </iconify-icon>
+                                        @endif
+
+                                        </a>
+                                        <p><span class="total_likes">{{$total_likes}}</span>
+                                            <a href="{{route('social_media_likes',$post->id)}}">Likes</a>
+                                        </p>
                                     </div>
                                     <div class="social-media-post-comment-container">
                                         <iconify-icon icon="bi:chat-right" class="comment-icon"></iconify-icon>
@@ -209,13 +285,48 @@
 @push('scripts')
 <script>
     $(document).ready(function() {
+        $('.like').click(function(e){
+            e.preventDefault();
+            var isLike=e.target.previousElementSibiling == null ? true : false;
+            var post_id=$(this).attr('id');
+            console.log(post_id)
+            var add_url = "{{ route('user.react.post', [':post_id']) }}";
+            add_url = add_url.replace(':post_id', post_id);
+            var that = $(this)
+            $.ajaxSetup({
+                            headers: {
+                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                            }
+                        });
+                    $.ajax({
+                        method: "POST",
+                        url: add_url,
+                        data:{ isLike : isLike , post_id: post_id },
+                        success:function(data){
+                            that.siblings('p').children('.total_likes').html(data.total_likes)
+
+                            if(that.children('.like-icon').hasClass("already-liked")){
+                                that.children('.like-icon').attr('style','')
+                                that.children('.like-icon').attr('class','like-icon')
+                                that.children(".like-icon").attr('icon','mdi:cards-heart-outline')
+                            }else{
+                                that.children('.like-icon').attr('style','color : red')
+                                that.children('.like-icon').attr('class','like-icon already-liked')
+                                that.children(".like-icon").attr('icon','mdi:cards-heart')
+                            }
+
+                        }
+                    })
+
+
+        })
+
         $(document).on('click', '#Add', function(e) {
                 e.preventDefault();
                 $('.social-media-left-searched-items-container').empty();
                 var url = new URL(this.href);
 
                 var id = url.searchParams.get("id");
-                var group_id = $(this).attr("id");
 
                 var add_url = "{{ route('addUser', [':id']) }}";
                 add_url = add_url.replace(':id', id);
@@ -229,7 +340,7 @@
                         window.location.reload();
                     }
                 })
-                });
+        });
 
                 $(document).on('click', '.unfriend', function(e) {
                 e.preventDefault();

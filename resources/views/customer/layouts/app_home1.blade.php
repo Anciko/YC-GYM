@@ -70,7 +70,7 @@
     <!--nav bar-->
     <script src={{asset('js/navBar.js')}}></script>
     <script src={{asset('js/notify.js')}}></script>
-    <script src="https://js.pusher.com/4.1/pusher.min.js"></script>
+
     <script>
         // $(document).ready(function(){
             $( document ).ready(function() {
@@ -87,9 +87,10 @@
                 cluster: '{{env("PUSHER_APP_CLUSTER")}}',
                 encrypted: true
                 });
-                var channel = pusher.subscribe('friend_request.'+user_id);
+                var channel = pusher.subscribe('friend_request.'+ user_id);
                 channel.bind('friendRequest', function(data) {
                 console.log(data);
+                alert(data);
                 $.notify(data, "success",{ position:"left" });
                 });
     </script>
