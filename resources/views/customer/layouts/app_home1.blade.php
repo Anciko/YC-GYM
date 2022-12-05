@@ -76,11 +76,12 @@
             $( document ).ready(function() {
                 $('.nav-icon').click(function(){
                         $('.notis-box-container').toggle()
-                    })
+                })
+            })
 
 
             // })
-         })
+        //  })
          var user_id = {{auth()->user()->id}};
                 console.log(user_id);
                 var pusher = new Pusher('{{env("MIX_PUSHER_APP_KEY")}}', {
@@ -100,6 +101,7 @@
 
         <script>
              $(document).ready(function(){
+
                 console.log("ready");
 
 

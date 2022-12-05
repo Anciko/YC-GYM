@@ -1057,7 +1057,6 @@ class SocialMediaController extends Controller
         $comments->mentioned_users = json_encode($request->mention);
         $comments->save();
         $post_owner = Post::where('posts.id',$comments->post_id)->first();
-
         $options = array(
             'cluster' => env('PUSHER_APP_CLUSTER'),
             'encrypted' => true
@@ -1068,20 +1067,24 @@ class SocialMediaController extends Controller
             env('PUSHER_APP_ID'),
             $options
             );
+
             $data = auth()->user()->name.' mentioned you in a comment!';
             $data2 = auth()->user()->name.' commented on your post!';
-                    $fri_noti = new Notification();
-                    $fri_noti->description = $data2;
-                    $fri_noti->date = Carbon::Now()->toDateTimeString();
-                    $fri_noti->sender_id = auth()->user()->id;
-                    $fri_noti->receiver_id = $post_owner->user_id;
-                    $fri_noti->post_id=$request->post_id;
-                    $fri_noti->comment_id = $comments->id;
-                    $fri_noti->notification_status = 1;
-                    $fri_noti->save();
-                    $pusher->trigger('friend_request.'.$post_owner->user_id , 'friendRequest',  $fri_noti);
-            if(!empty($comments->mentioned_users)){
-                $ids = json_decode($comments->mentioned_users);
+            if(empty($comments->mentioned_users)){
+                //dd($comments->mentioned_users, "empty");
+                $fri_noti = new Notification();
+                $fri_noti->description = $data2;
+                $fri_noti->date = Carbon::Now()->toDateTimeString();
+                $fri_noti->sender_id = auth()->user()->id;
+                $fri_noti->receiver_id = $post_owner->user_id;
+                $fri_noti->post_id=$request->post_id;
+                $fri_noti->comment_id = $comments->id;
+                $fri_noti->notification_status = 1;
+                $fri_noti->save();
+                $pusher->trigger('friend_request.'.$post_owner->user_id , 'friendRequest', $fri_noti);
+            }
+            else{
+               $ids = json_decode($comments->mentioned_users);
                 $arr = json_decode(json_encode ( $ids ) , true);
                 foreach($arr as $id){
                     $fri_noti = new Notification();
@@ -1096,6 +1099,20 @@ class SocialMediaController extends Controller
                     $pusher->trigger('friend_request.'.$fri_noti->receiver_id , 'friendRequest', $fri_noti);
                 }
             }
+
+            $fri_noti = new Notification();
+            $fri_noti->description = $data2;
+            $fri_noti->date = Carbon::Now()->toDateTimeString();
+            $fri_noti->sender_id = auth()->user()->id;
+            $fri_noti->receiver_id = $post_owner->user_id;
+            $fri_noti->post_id=$request->post_id;
+            $fri_noti->comment_id = $comments->id;
+            $fri_noti->notification_status = 1;
+            $fri_noti->save();
+            $pusher->trigger('friend_request.'.$post_owner->user_id , 'friendRequest', $data2);
+
+
+
         return response()->json([
             'data' =>  $comments
         ]);
