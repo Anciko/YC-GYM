@@ -836,6 +836,9 @@ class SocialmediaController extends Controller
         ->leftJoin('profiles','users.profile_id','profiles.id')
         ->where('post_id',$id)->orderBy('created_at','DESC')->get();
 
+        $post_likes=UserReactPost::where('post_id',$post->id)
+                    ->with('user')
+                    ->get();
 
 
     //    foreach($comments as $key=>$comm1){
@@ -890,7 +893,7 @@ class SocialmediaController extends Controller
     // dd($comments);
 
         // dd($posts);
-        return view('customer.comments',compact('post','comments'));
+        return view('customer.comments',compact('post','comments','post_likes'));
     }
 
     public function users_for_mention(Request $request){

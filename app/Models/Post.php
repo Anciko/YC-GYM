@@ -22,6 +22,11 @@ class Post extends Model
         return $this->belongsTo(Post::class);
     }
 
+    public function comments()
+    {
+        return $this->hasMany(Comment::class, 'post_id', 'id');
+    }
+
     public function user_reacted_posts()
     {
         return $this->hasMany(UserReactPost::class, 'post_id', 'id');
