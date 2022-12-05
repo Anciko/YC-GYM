@@ -84,6 +84,50 @@
     </div>
 </div>
 
+<!-- View Comment Modal -->
+
+<div class="modal fade " id="view_comments_modal">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="staticBackdropLabel">Comments</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <div class="social-media-all-likes-container">
+                <div class="social-media-all-likes-row">
+                    <div class="social-media-all-likes-row-img">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+      </div>
+    </div>
+</div>
+
+<div class="modal fade " id="edit_comments_modal">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="staticBackdropLabel">Likes</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <div class="social-media-all-likes-container">
+                <div class="social-media-all-likes-row">
+                    <div class="social-media-all-likes-row-img">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+      </div>
+    </div>
+</div>
+
+<!-- View Comment Modal End -->
+
     <a class="back-btn" href="{{route("socialmedia")}}">
         <iconify-icon icon="bi:arrow-left" class="back-btn-icon"></iconify-icon>
     </a>
@@ -357,6 +401,7 @@
                                 <div class="customer-post-like-container">
                                     @php
                                         $total_likes=$post->user_reacted_posts->count();
+                                        $total_comments=$post->comments->count();
                                         $user=auth()->user();
                                         $already_liked=$user->user_reacted_posts->where('post_id',$post->id)->count();
                                     @endphp
@@ -381,9 +426,10 @@
                                     </p>
                                 </div>
                                 <div class="customer-post-comment-container">
-                                    <a href = "{{route('post.comment',$post->id)}}">
+                                    {{-- <a href = "{{route('post.comment',$post->id)}}"> --}}
+                                        <a class="viewcomments" id={{$post->id}}>
                                     <iconify-icon icon="bi:chat-right" class="comment-icon"></iconify-icon>
-                                    <p><span>50</span> Comments</p>
+                                    <p><span>{{$total_comments}}</span> Comments</p>
                                     </a>
                                 </div>
                             </div>
@@ -1831,12 +1877,15 @@
 
         })
 
+        $('.viewcomments').click(function(e){
+            viewcomments(e);
+        })
+
         function viewlikes(e){
             e.preventDefault();
             $(".social-media-all-likes-container").empty();
             $('#staticBackdrop').modal('show');
-            var post_id=$('.viewlikes').attr('id')
-
+            var post_id=e.target.id;
             var add_url = "{{ route('profile.likes.view', [':post_id']) }}";
             add_url = add_url.replace(':post_id', post_id);
 
@@ -1899,6 +1948,14 @@
                             }
                     })
 
+        }
+
+        function viewcomments(e){
+            e.preventDefault();
+            $(".social-media-all-likes-container").empty();
+            $('#view_comments_modal').modal('show');
+            var post_id=e.target.id;
+            console.log(post_id);
         }
 
         $(document).on('click', '.profile_addfriend', function(e) {

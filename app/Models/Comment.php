@@ -14,4 +14,15 @@ class Comment extends Model
     public function report(){
         return $this->hasOne(Report::class);
     }
+
+
+    public function post()
+    {
+        return $this->belongsTo(Post::class);
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }
