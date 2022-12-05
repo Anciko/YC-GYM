@@ -1883,6 +1883,212 @@
             viewlikes(e);
         })
 
+        function viewlikes(e){
+            e.preventDefault();
+            $(".social-media-all-likes-container").empty();
+            $('#staticBackdrop').modal('show');
+            var post_id=e.target.id;
+            var add_url = "{{ route('profile.likes.view', [':post_id']) }}";
+            add_url = add_url.replace(':post_id', post_id);
+
+                    $.ajax({
+                        method: "GET",
+                        url: add_url,
+                            success: function(data) {
+                                let htmlView = '';
+                                var finalHtmlView = ''
+                                var post_likes=data.post_likes
+                                console.log(post_likes);
+
+                                for(let i = 0; i < post_likes.length; i++){
+                                    htmlView = ''
+                                    user_id = post_likes[i].user_id;
+
+                                    var url = "{{ route('socialmedia.profile',[':id']) }}";
+                                    url = url.replace(':id', user_id);
+
+                                    if(post_likes[i].profile_image==null){
+                                        console.log(post_likes[i].name +"has no profile")
+                                        htmlView += `<a class="social-media-all-likes-row-img" href="`+url+`" style="text-decoration:none">
+                                                    <img src="{{asset('img/customer/imgs/user_default.jpg')}}"  alt="" style="width:30px;height:30px"/>
+                                                    <p>`+post_likes[i].name+`</p>
+                                                </a>`
+                                    }else{
+                                        console.log(post_likes[i].name +"has profile")
+                                        htmlView += `<a class="social-media-all-likes-row-img" href="`+url+`" style="text-decoration:none">
+                                                    <img src="{{asset('storage/post/`+post_likes[i].profile_image+`') }}" alt="" style="width:30px;height:30px"/>
+                                                    <p>`+post_likes[i].name+`</p>
+                                                </a>`
+                                    }
+
+                                    if(post_likes[i].friend_status=='myself'){
+                                        htmlView += ``
+                                    }else if(post_likes[i].friend_status=='friend'){
+                                        htmlView += ``
+                                    }else if(post_likes[i].friend_status=='response'){
+                                        var add_url = "{{ route('socialmedia.profile', [':user_id']) }}";
+                                        var user_id=post_likes[i].user_id;
+                                        add_url = add_url.replace(':user_id', user_id);
+                                        htmlView += `<a class="customer-primary-btn" href="`+add_url+`" >Response</a>`
+                                    }else if(post_likes[i].friend_status=='cancel request'){
+                                        htmlView += `<a class="customer-primary-btn profile_cancelrequest" id="`+user_id+`">Cancel</a>`
+                                    }else{
+                                        htmlView += `<a class="customer-primary-btn profile_addfriend" id="`+user_id+`">Add</a>`
+                                    }
+
+                                    finalHtmlView = `<div class="social-media-all-likes-row">
+                                        ${htmlView}
+                                    </div>`
+
+                                    $('.social-media-all-likes-container').append(finalHtmlView);
+
+                                }
+
+                            }
+                    })
+
+        }
+
+    // end like
+
+        $(document).on('click', '.social-media-comment-icon', function(e) {
+                $(this).next().toggle()
+            })
+
+            $('#textarea').mentiony({
+                    onDataRequest: function (mode, keyword, onDataRequestCompleteCallback) {
+                        var search_url = "{{ route('users.mention') }}";
+                        $.ajaxSetup({
+                                headers: {
+                                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                                }
+                            });
+                        $.ajax({
+                            method: "POST",
+                            url:search_url,
+                            data : keyword,
+                            dataType: "json",
+                            success: function (response) {
+                                var data = response.data;
+                                console.log(data)
+
+                                // NOTE: Assuming this filter process was done on server-side
+                                data = jQuery.grep(data, function( item ) {
+                                    return item.name.toLowerCase().indexOf(keyword.toLowerCase()) > -1;
+                                });
+                                // End server-side
+
+                                // Call this to populate mention.
+                                onDataRequestCompleteCallback.call(this, data);
+                            }
+
+
+
+                        });
+                        console.log($("#editComment .mentiony-content") , "not edit")
+                    },
+                });
+                $('#editCommentTextArea').mentiony({
+                    onDataRequest: function (mode, keyword, onDataRequestCompleteCallback) {
+                        var search_url = "{{ route('users.mention') }}";
+                        $.ajaxSetup({
+                                headers: {
+                                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                                }
+                            });
+                        $.ajax({
+                            method: "POST",
+                            url:search_url,
+                            data : keyword,
+                            dataType: "json",
+                            success: function (response) {
+                                var data = response.data;
+                                console.log(data)
+
+                                // NOTE: Assuming this filter process was done on server-side
+                                data = jQuery.grep(data, function( item ) {
+                                    return item.name.toLowerCase().indexOf(keyword.toLowerCase()) > -1;
+                                });
+                                // End server-side
+
+                                // Call this to populate mention.
+                                onDataRequestCompleteCallback.call(this, data);
+                            }
+                        });
+
+
+                    },
+
+                });
+
+                //edit comment start
+                $(document).on('click', '#editCommentModal', function(e) {
+                        $('#editModal').modal('show');
+                        var id = $(this).data('id');
+
+                        $(".social-media-all-comments-input-edit").data('id',id)
+
+                        var edit_url = "{{ route('post.comment.edit',[':id']) }}";
+                        edit_url = edit_url.replace(':id', id);
+                        $.ajaxSetup({
+                            headers: {
+                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                            }
+                        });
+                    $.ajax({
+                        method: "GET",
+                        url: edit_url,
+                        dataType: "json",
+                        success: function (response) {
+                            console.log(response.data);
+                            var replace = response.data.Replace
+                            $("#editComment .mentiony-content").html(replace)
+                        }
+                    });
+                })
+                //edit comment end
+
+
+            $(".mentiony-container").attr('style','')
+            $(".mentiony-content").attr('style','')
+
+
+            $(".social-media-all-comments-input").on('submit',function(e){
+                e.preventDefault()
+                // console.log($('.mentiony-content').text())
+
+
+                var arr = []
+                $.each($('.social-media-all-comments-input .mentiony-link'),function(){
+                    arr.push({'id' : $(this).data('item-id'),'name' : $(this).text()})
+                    $(this).text(`@${$(this).data('item-id')}`)
+
+                })
+
+                var comment = $('.social-media-all-comments-input .mentiony-content').text()
+           
+                var search_url = "{{ route('post.comment.store') }}";
+                var post_id = "{{$post->id}}"
+                // console.log(post_id)
+                    $.ajaxSetup({
+                            headers: {
+                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                            }
+                        });
+                    $.ajax({
+                        method: "POST",
+                        url:search_url,
+                        data : {'post_id':post_id,'mention' : arr , 'comment' : comment},
+                        dataType: "json",
+                        success: function (response) {
+                            fetch_comment();
+                            $('.mentiony-content').empty()
+                        }
+
+                    });
+
+            })
+
         $('.viewcomments').click(function(e){
             viewcomments(e);
         })
@@ -1948,72 +2154,6 @@
                               }
                           $('.social-media-all-comments').html(htmlView);
             }
-        }
-
-        function viewlikes(e){
-            e.preventDefault();
-            $(".social-media-all-likes-container").empty();
-            $('#staticBackdrop').modal('show');
-            var post_id=e.target.id;
-            var add_url = "{{ route('profile.likes.view', [':post_id']) }}";
-            add_url = add_url.replace(':post_id', post_id);
-
-                    $.ajax({
-                        method: "GET",
-                        url: add_url,
-                            success: function(data) {
-                                let htmlView = '';
-                                var finalHtmlView = ''
-                                var post_likes=data.post_likes
-                                console.log(post_likes);
-
-                                for(let i = 0; i < post_likes.length; i++){
-                                    htmlView = ''
-                                    user_id = post_likes[i].user_id;
-
-                                    var url = "{{ route('socialmedia.profile',[':id']) }}";
-                                    url = url.replace(':id', user_id);
-
-                                    if(post_likes[i].profile_image==null){
-                                        console.log(post_likes[i].name +"has no profile")
-                                        htmlView += `<a class="social-media-all-likes-row-img" href="`+url+`" style="text-decoration:none">
-                                                    <img src="{{asset('img/customer/imgs/user_default.jpg')}}"  alt="" style="width:30px;height:30px"/>
-                                                    <p>`+post_likes[i].name+`</p>
-                                                </a>`
-                                    }else{
-                                        console.log(post_likes[i].name +"has profile")
-                                        htmlView += `<a class="social-media-all-likes-row-img" href="`+url+`" style="text-decoration:none">
-                                                    <img src="{{asset('storage/post/`+post_likes[i].profile_image+`') }}" alt="" style="width:30px;height:30px"/>
-                                                    <p>`+post_likes[i].name+`</p>
-                                                </a>`
-                                    }
-
-                                    if(post_likes[i].friend_status=='myself'){
-                                        htmlView += ``
-                                    }else if(post_likes[i].friend_status=='friend'){
-                                        htmlView += ``
-                                    }else if(post_likes[i].friend_status=='response'){
-                                        var add_url = "{{ route('socialmedia.profile', [':user_id']) }}";
-                                        var user_id=post_likes[i].user_id;
-                                        add_url = add_url.replace(':user_id', user_id);
-                                        htmlView += `<a class="customer-primary-btn" href="`+add_url+`" >Response</a>`
-                                    }else if(post_likes[i].friend_status=='cancel request'){
-                                        htmlView += `<a class="customer-primary-btn profile_cancelrequest" id="`+user_id+`">Cancel</a>`
-                                    }else{
-                                        htmlView += `<a class="customer-primary-btn profile_addfriend" id="`+user_id+`">Add</a>`
-                                    }
-
-                                    finalHtmlView = `<div class="social-media-all-likes-row">
-                                        ${htmlView}
-                                    </div>`
-
-                                    $('.social-media-all-likes-container').append(finalHtmlView);
-
-                                }
-
-                            }
-                    })
-
         }
 
         $(document).on('click', '.profile_addfriend', function(e) {

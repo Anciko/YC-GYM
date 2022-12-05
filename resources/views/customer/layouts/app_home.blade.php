@@ -1100,7 +1100,6 @@
                 dtEdit.items.add(f);
             }
 
-
         });
 
         document.getElementById('editPostInput').files = dtEdit.files;
