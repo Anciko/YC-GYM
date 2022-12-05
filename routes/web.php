@@ -5,12 +5,14 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Redirect;
+use App\Http\Controllers\VideoController;
 use App\Http\Controllers\Admin\MealController;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\SocialmediaController;
 use App\Http\Controllers\Admin\MemberController;
+use App\Http\Controllers\Admin\ReportController;
 use App\Http\Controllers\Admin\PaymentController;
 use App\Http\Controllers\Admin\RequestController;
 use App\Http\Controllers\Admin\TrainerController;
@@ -21,7 +23,6 @@ use App\Http\Controllers\Auth\PassResetController;
 use App\Http\Controllers\Admin\PermissionController;
 use App\Http\Controllers\User\UserWorkoutController;
 use App\Http\Controllers\Admin\BankinginfoController;
-use App\Http\Controllers\Admin\ReportController;
 use App\Http\Controllers\Admin\TrainingGroupController;
 use App\Http\Controllers\Admin\TrainingCenterController;
 use App\Http\Controllers\Trainer\TrainerGroupController;
@@ -83,6 +84,10 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
         Route::get('/socialmedia/message/seeall',[SocialmediaController::class, 'see_all_message'])->name('message.seeall');
         Route::get('/socialmedia/message/chat/{id}',[SocialmediaController::class, 'chat_message'])->name('message.chat');
         Route::get('/socialmedia/message/viewmedia/{id}',[SocialmediaController::class, 'viewmedia_message'])->name('message.viewmedia');
+        Route::post('/agora/call-user',  [VideoController::class, 'callUser'])->name('socialmedia.videocall');
+        Route::post('/agora/call-audio-user',  [VideoController::class, 'callAudioUser'])->name('socialmedia.videocall');
+        Route::post('/agora/token',  [VideoController::class, 'token']);
+        
         // Route::get('/testing', [SocialmediaController::class, 'index'])->name('testing');
         // Route::post('/testing/store', [SocialmediaController::class, 'post_store'])->name('testing.store');
 

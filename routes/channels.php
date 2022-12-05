@@ -21,6 +21,12 @@ Broadcast::channel('chatting.{sender}.{receiver}', function ($user, $receiver) {
     return true;
  });
 
+ Broadcast::channel('agora-videocall', function ($user) {
+    if($user != null){
+        return ['id' => $user->id, 'name' => $user->name];
+    }
+});
+
 // Broadcast::channel('trainer-message', function ($group) {
 //     return true;
 // });
