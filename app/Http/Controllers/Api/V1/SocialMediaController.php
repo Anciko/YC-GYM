@@ -742,10 +742,6 @@ class SocialMediaController extends Controller
              }
 
     }
-
-
-
-
     elseif($input['addPostInput'] == null && $input['caption'] ==null){
         $caption=$input['caption'];
         $updateFilenames = $input['filenames'];
@@ -871,48 +867,44 @@ class SocialMediaController extends Controller
 
     public function one_post(Request $request){
         $id = $request->id;
+        $auth = auth()->user()->id;
         $saved_post = UserSavedPost::select('posts.*')->leftJoin('posts','posts.id','user_saved_posts.post_id')
         ->where('user_saved_posts.post_id',$id)
         ->where('user_saved_posts.user_id',auth()->user()->id)
         ->first();
-        // dd($saved_post);
+        //  dd($saved_post);
         $post=Post::select('users.name','profiles.profile_image','posts.*')
         ->where('posts.id',$id)
         ->leftJoin('users','users.id','posts.user_id')
         ->leftJoin('profiles','users.profile_id','profiles.id')
         ->first();
 
-        $saved_post = UserSavedPost::select('posts.*')->leftJoin('posts','posts.id','user_saved_posts.post_id')
-        ->where('user_saved_posts.post_id',$id)
-        ->first();
-
         $liked_post = UserReactPost::select('posts.*')->leftJoin('posts','posts.id','user_react_posts.post_id')
-                ->where('user_react_posts.post_id',$id)->first();
+                ->where('user_react_posts.post_id',$id)
+                ->where('user_react_posts.user_id',auth()->user()->id)
+                ->first();
+
         $liked_post_count = DB::select("SELECT COUNT(post_id) as like_count, post_id FROM user_react_posts WHERE post_id = $id");
 
         $comment_post_count = DB::select("SELECT COUNT(post_id) as comment_count, post_id FROM comments WHERE post_id = $id");
+        // dd($comment_post_count);
 // dd($liked_post);
 
             foreach($post as $key=>$value){
+                // dd($post);
                 $post['is_save']= 0;
                 $post['is_like']= 0;
                 $post['like_count']= 0;
                 $post['comment_count']= 0;
             // dd($value->id);
                     if(empty($saved_post)){
-                        foreach($saved_post as $value ){
                             $post['is_save']= 0;
                             }
-                        }
                     else{
-                        foreach($post as $value ){
                             $post['is_save']= 1;
-                        }
                     }
                     if(!empty($liked_post)){
-                        foreach($liked_post as $liked_key=>$liked_value){
                                 $post['is_like']= 1;
-                        }
                     }
                     else{
                         $post['like_count']= 0;
