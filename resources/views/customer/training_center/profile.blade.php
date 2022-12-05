@@ -354,7 +354,7 @@
                             </div>
 
                             <div class="customer-post-footer-container">
-                                <div class="social-media-post-like-container">
+                                <div class="customer-post-like-container">
                                     @php
                                         $total_likes=$post->user_reacted_posts->count();
                                         $user=auth()->user();
@@ -380,7 +380,7 @@
                                         <a class="viewlikes" id={{$post->id}}>Likes</a>
                                     </p>
                                 </div>
-                                <div class="social-media-post-comment-container">
+                                <div class="customer-post-comment-container">
                                     <a href = "{{route('post.comment',$post->id)}}">
                                     <iconify-icon icon="bi:chat-right" class="comment-icon"></iconify-icon>
                                     <p><span>50</span> Comments</p>
@@ -1833,7 +1833,7 @@
 
         function viewlikes(e){
             e.preventDefault();
-            $(".social-media-all-likes-row-img").empty();
+            $(".social-media-all-likes-container").empty();
             $('#staticBackdrop').modal('show');
             var post_id=$('.viewlikes').attr('id')
 
@@ -1845,48 +1845,57 @@
                         url: add_url,
                             success: function(data) {
                                 let htmlView = '';
+                                var finalHtmlView = ''
                                 var post_likes=data.post_likes
                                 console.log(post_likes);
 
                                 for(let i = 0; i < post_likes.length; i++){
-                                user_id = post_likes[i].user_id;
+                                    htmlView = ''
+                                    user_id = post_likes[i].user_id;
 
-                                var url = "{{ route('socialmedia.profile',[':id']) }}";
-                                url = url.replace(':id', user_id);
+                                    var url = "{{ route('socialmedia.profile',[':id']) }}";
+                                    url = url.replace(':id', user_id);
 
-                                if(post_likes[i].profile_image==null){
-                                    console.log(post_likes[i].name +"has no profile")
-                                    htmlView += `<a href="`+url+`" style="text-decoration:none">
-                                                <img src="{{asset('img/customer/imgs/user_default.jpg')}}"  alt="" style="width:30px;height:30px"/>
-                                            </a>`
-                                }else{
-                                    console.log(post_likes[i].name +"has profile")
-                                    htmlView += `<a href="`+url+`" style="text-decoration:none">
-                                                <img src="{{asset('storage/post/`+post_likes[i].profile_image+`') }}" alt="" style="width:30px;height:30px"/>
-                                            </a>`
+                                    if(post_likes[i].profile_image==null){
+                                        console.log(post_likes[i].name +"has no profile")
+                                        htmlView += `<a class="social-media-all-likes-row-img" href="`+url+`" style="text-decoration:none">
+                                                    <img src="{{asset('img/customer/imgs/user_default.jpg')}}"  alt="" style="width:30px;height:30px"/>
+                                                    <p>`+post_likes[i].name+`</p>
+                                                </a>`
+                                    }else{
+                                        console.log(post_likes[i].name +"has profile")
+                                        htmlView += `<a class="social-media-all-likes-row-img" href="`+url+`" style="text-decoration:none">
+                                                    <img src="{{asset('storage/post/`+post_likes[i].profile_image+`') }}" alt="" style="width:30px;height:30px"/>
+                                                    <p>`+post_likes[i].name+`</p>
+                                                </a>`
+                                    }
+                                    // htmlView += `<a href="`+url+`" style="text-decoration:none">
+                                    //                 <p>`+post_likes[i].name+`</p>
+                                    //             </a>`
+
+                                    if(post_likes[i].friend_status=='myself'){
+                                        htmlView += ``
+                                    }else if(post_likes[i].friend_status=='friend'){
+                                        htmlView += ``
+                                    }else if(post_likes[i].friend_status=='response'){
+                                        var add_url = "{{ route('socialmedia.profile', [':user_id']) }}";
+                                        var user_id=post_likes[i].user_id;
+                                        add_url = add_url.replace(':user_id', user_id);
+                                        htmlView += `<a class="customer-primary-btn" href="`+add_url+`" >Response</a>`
+                                    }else if(post_likes[i].friend_status=='cancel request'){
+                                        htmlView += `<a class="customer-primary-btn profile_cancelrequest" id="`+user_id+`">Cancel</a>`
+                                    }else{
+                                        htmlView += `<a class="customer-primary-btn profile_addfriend" id="`+user_id+`">Add</a>`
+                                    }
+
+                                    finalHtmlView = `<div class="social-media-all-likes-row">
+                                        ${htmlView}
+                                    </div>`
+
+                                    $('.social-media-all-likes-container').append(finalHtmlView);
+
                                 }
-                                htmlView += `<a href="`+url+`" style="text-decoration:none">
-                                                <p>`+post_likes[i].name+`</p>
-                                            </a>`
 
-                                if(post_likes[i].friend_status=='myself'){
-                                    htmlView += ``
-                                }else if(post_likes[i].friend_status=='friend'){
-                                    htmlView += ``
-                                }else if(post_likes[i].friend_status=='response'){
-                                    var add_url = "{{ route('socialmedia.profile', [':user_id']) }}";
-                                    var user_id=post_likes[i].user_id;
-                                    add_url = add_url.replace(':user_id', user_id);
-                                    htmlView += `<a class="customer-primary-btn" href="`+add_url+`" >Response</a><br>`
-                                }else if(post_likes[i].friend_status=='cancel request'){
-                                    htmlView += `<a class="customer-primary-btn profile_cancelrequest" id="`+user_id+`">Cancel</a><br>`
-                                }else{
-                                    htmlView += `<a class="customer-primary-btn profile_addfriend" id="`+user_id+`">Add</a><br>`
-                                }
-
-
-                            }
-                            $('.social-media-all-likes-row-img').html(htmlView);
                             }
                     })
 
