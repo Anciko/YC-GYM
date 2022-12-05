@@ -50,6 +50,13 @@ class SocialmediaController extends Controller
                     ->with('user')
                     ->paginate(30);
         }
+
+        // $post_likes=UserReactPost::select('users.name','profiles.profile_image','user_react_posts.*')
+        //             ->leftJoin('users','users.id','user_react_posts.user_id')
+        //             ->leftJoin('profiles','users.profile_id','profiles.id')
+        //             ->where('post_id',$post_id)
+        //             ->get();
+
         // $left_friends=User::whereIn('id',$n)
         //                 ->where('id','!=',$user->id)
         //                 ->paginate(6);
@@ -149,10 +156,9 @@ class SocialmediaController extends Controller
                     $f=(array)$friend;
                     array_push($n, $f['sender_id'],$f['receiver_id']);
             }
-        $friends=User::select('users.name','users.id')
-                        ->whereIn('id',$n)
-                        ->where('id','!=',$user->id)
-                        ->paginate(6);
+        $friends=User::whereIn('id',$n)
+                    ->where('id','!=',$user->id)
+                    ->paginate(6);
 
         $friend = DB::select("SELECT * FROM `friendships` WHERE (receiver_id = $auth or sender_id = $auth )
                         AND (receiver_id = $id or sender_id = $id)");
@@ -214,8 +220,7 @@ class SocialmediaController extends Controller
                         $f=(array)$friend;
                         array_push($n, $f['sender_id'],$f['receiver_id']);
                 }
-            $friends=User::select('users.name','users.id')
-                            ->whereIn('id',$n)
+            $friends=User::whereIn('id',$n)
                             ->where('id','!=',$user->id)
                             ->paginate(6);
             $friend = DB::select("SELECT * FROM `friendships` WHERE (receiver_id = $auth or sender_id = $auth )

@@ -63,6 +63,27 @@
 </div>
 <!-- End Image Modal -->
 
+<!-- Like Modal -->
+<div class="modal fade " id="staticBackdrop">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="staticBackdropLabel">Likes</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <div class="social-media-all-likes-container">
+                <div class="social-media-all-likes-row">
+                    <div class="social-media-all-likes-row-img">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+      </div>
+    </div>
+</div>
+
     <a class="back-btn" href="{{route("socialmedia")}}">
         <iconify-icon icon="bi:arrow-left" class="back-btn-icon"></iconify-icon>
     </a>
@@ -181,14 +202,19 @@
                 <div class="customer-profile-friends-container">
                     @forelse ($user_friends as $friend)
                     <div class="customer-profile-friend">
-                        <?php $image=$friend->profiles()->where('cover_photo',null)->orderBy('created_at','desc')->first() ?>
-                        @if($image==null)
+
+                        <?php $profile=$friend->profiles->first();
+                        $profile_id=$friend->profile_id;
+                         $img=$friend->profiles->where('id',$profile_id)->first();
+                        ?>
+
+                        @if($img==null)
                         <a href="{{route('socialmedia.profile',$friend->id)}}" style="text-decoration:none">
                         <img src="{{asset('img/customer/imgs/user_default.jpg')}}">
                         </a>
                         @else
                         <a href="{{route('socialmedia.profile',$friend->id)}}" style="text-decoration:none">
-                        <img src="{{asset('storage/post/'.$image->profile_image)}}">
+                        <img src="{{asset('storage/post/'.$img->profile_image)}}">
                         </a>
                         @endif
                         <a href="{{route('socialmedia.profile',$friend->id)}}" style="text-decoration:none">
@@ -217,11 +243,11 @@
                         <div class="customer-post-container">
                             <div class="customer-post-header">
                                 <div class="customer-post-name-container">
-                                    <?php $profile=auth()->user()->profiles->where('cover_photo',null)->sortByDesc('created_at')->first() ?>
-                                    @if ($profile==null)
+
+                                    @if ($user_profile_image==null)
                                         <img class="nav-profile-img" src="{{asset('img/customer/imgs/user_default.jpg')}}"/>
                                     @else
-                                        <img class="nav-profile-img" src="{{asset('storage/post/'.$profile->profile_image)}}"/>
+                                        <img class="nav-profile-img" src="{{asset('storage/post/'.$user_profile_image->profile_image)}}"/>
                                     @endif
                                     <div class="customer-post-name">
                                         <p>{{$post->user->name}}</p>
@@ -351,7 +377,7 @@
 
                                         {{$total_likes}}
                                         </span>
-                                        <a href="{{route('social_media_likes',$post->id)}}">Likes</a>
+                                        <a class="viewlikes" id={{$post->id}}>Likes</a>
                                     </p>
                                 </div>
                                 <div class="social-media-post-comment-container">
@@ -1765,6 +1791,7 @@
     $(document).ready(function() {
         $('.like').click(function(e){
             e.preventDefault();
+            $('.staticBackdrop').show();
             var isLike=e.target.previousElementSibiling == null ? true : false;
             var post_id=$(this).attr('id');
             console.log(post_id)
@@ -1798,6 +1825,124 @@
 
 
         })
+
+        $('.viewlikes').click(function(e){
+            viewlikes(e);
+
+        })
+
+        function viewlikes(e){
+            e.preventDefault();
+            $(".social-media-all-likes-row-img").empty();
+            $('#staticBackdrop').modal('show');
+            var post_id=$('.viewlikes').attr('id')
+
+            var add_url = "{{ route('profile.likes.view', [':post_id']) }}";
+            add_url = add_url.replace(':post_id', post_id);
+
+                    $.ajax({
+                        method: "GET",
+                        url: add_url,
+                            success: function(data) {
+                                let htmlView = '';
+                                var post_likes=data.post_likes
+                                console.log(post_likes);
+
+                                for(let i = 0; i < post_likes.length; i++){
+                                user_id = post_likes[i].user_id;
+
+                                var url = "{{ route('socialmedia.profile',[':id']) }}";
+                                url = url.replace(':id', user_id);
+
+                                if(post_likes[i].profile_image==null){
+                                    console.log(post_likes[i].name +"has no profile")
+                                    htmlView += `<a href="`+url+`" style="text-decoration:none">
+                                                <img src="{{asset('img/customer/imgs/user_default.jpg')}}"  alt="" style="width:30px;height:30px"/>
+                                            </a>`
+                                }else{
+                                    console.log(post_likes[i].name +"has profile")
+                                    htmlView += `<a href="`+url+`" style="text-decoration:none">
+                                                <img src="{{asset('storage/post/`+post_likes[i].profile_image+`') }}" alt="" style="width:30px;height:30px"/>
+                                            </a>`
+                                }
+                                htmlView += `<a href="`+url+`" style="text-decoration:none">
+                                                <p>`+post_likes[i].name+`</p>
+                                            </a>`
+
+                                if(post_likes[i].friend_status=='myself'){
+                                    htmlView += ``
+                                }else if(post_likes[i].friend_status=='friend'){
+                                    htmlView += ``
+                                }else if(post_likes[i].friend_status=='response'){
+                                    var add_url = "{{ route('socialmedia.profile', [':user_id']) }}";
+                                    var user_id=post_likes[i].user_id;
+                                    add_url = add_url.replace(':user_id', user_id);
+                                    htmlView += `<a class="customer-primary-btn" href="`+add_url+`" >Response</a><br>`
+                                }else if(post_likes[i].friend_status=='cancel request'){
+                                    htmlView += `<a class="customer-primary-btn profile_cancelrequest" id="`+user_id+`">Cancel</a><br>`
+                                }else{
+                                    htmlView += `<a class="customer-primary-btn profile_addfriend" id="`+user_id+`">Add</a><br>`
+                                }
+
+
+                            }
+                            $('.social-media-all-likes-row-img').html(htmlView);
+                            }
+                    })
+
+        }
+
+        $(document).on('click', '.profile_addfriend', function(e) {
+                e.preventDefault();
+                var id = $(this).attr("id")
+                var add_url = "{{ route('addUser', [':id']) }}";
+                add_url = add_url.replace(':id', id);
+                $.ajax({
+                    type: "GET",
+                    url: add_url,
+                    datatype: "json",
+                    success: function(data) {
+                        viewlikes(e);
+                    }
+                })
+        });
+
+        $(document).on('click', '.profile_cancelrequest', function(e) {
+                        e.preventDefault();
+                        Swal.fire({
+                                text: "Are you sure?",
+                                showClass: {
+                                        popup: 'animate__animated animate__fadeInDown'
+                                    },
+                                    hideClass: {
+                                        popup: 'animate__animated animate__fadeOutUp'
+                                    },
+                                showCancelButton: true,
+                                timerProgressBar: true,
+                                confirmButtonText: 'Yes',
+                                cancelButtonText: 'No',
+
+                                }).then((result) => {
+                                /* Read more about isConfirmed, isDenied below */
+                                if (result.isConfirmed) {
+
+                                    var id = $(this).attr("id");
+                                    var url = "{{ route('cancelRequest', [':id']) }}";
+                                    url = url.replace(':id', id);
+
+                                        $.ajax({
+                                            type: "GET",
+                                            url: url,
+                                            datatype: "json",
+                                            success: function(data) {
+                                                viewlikes(e);
+                                            }
+                                        })
+
+                                }
+                                })
+
+        });
 
         $(".customer-saved-posts-container").hide()
 

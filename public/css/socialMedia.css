@@ -1260,6 +1260,12 @@
     gap: 10px;
 }
 
+.social-media-all-likes-row-btns a{
+    font-size: 14px;
+    width: 110px;
+    text-align: center;
+}
+
 .social-media-all-likes-row-btns button{
     font-size: 14px;
 }
