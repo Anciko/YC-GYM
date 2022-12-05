@@ -200,7 +200,6 @@
 
             </form>
 
-
             <div class="social-media-all-comments">
 
                 {{-- @forelse ($comments as $comment)
@@ -520,7 +519,7 @@
 
             })
             function fetch_comment(){
-                console.log('testing testing');
+
                 var postid = "{{$post->id}}"
                             var comment_url = "{{ route('comment_list',':id') }}";
                             comment_url = comment_url.replace(':id', postid);

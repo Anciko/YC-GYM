@@ -94,11 +94,16 @@
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-            <div class="social-media-all-likes-container">
-                <div class="social-media-all-likes-row">
-                    <div class="social-media-all-likes-row-img">
+            <div class="social-media-all-comments-container">
+                <form class="social-media-all-comments-input">
+                    <textarea placeholder="Write a comment" id="textarea"></textarea>
+                    <div id="menu" class="menu" role="listbox"></div>
+                    <button class="social-media-all-comments-send-btn">
+                        <iconify-icon icon="akar-icons:send" class="social-media-all-comments-send-icon"></iconify-icon>
+                    </button>
 
-                    </div>
+                </form>
+                <div class="social-media-all-comments">
                 </div>
             </div>
         </div>
@@ -106,22 +111,24 @@
     </div>
 </div>
 
-<div class="modal fade " id="edit_comments_modal">
+<div class="modal fade" id ="edit_comments_modal"  tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="staticBackdropLabel">Likes</h5>
+          <h5 class="modal-title" id="exampleModalLabel">Edit Comment</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-            <div class="social-media-all-likes-container">
-                <div class="social-media-all-likes-row">
-                    <div class="social-media-all-likes-row-img">
+            <form class="social-media-all-comments-input-edit" id="editComment">
+                <textarea placeholder="Write a comment" id="editCommentTextArea"></textarea>
+                <div id="menu" class="menu" role="listbox"></div>
+                <button class="social-media-all-comments-send-btn">
+                    <iconify-icon icon="akar-icons:send" class="social-media-all-comments-send-icon"></iconify-icon>
+                </button>
 
-                    </div>
-                </div>
-            </div>
+            </form>
         </div>
+
       </div>
     </div>
 </div>
@@ -427,9 +434,9 @@
                                 </div>
                                 <div class="customer-post-comment-container">
                                     {{-- <a href = "{{route('post.comment',$post->id)}}"> --}}
-                                        <a class="viewcomments" id={{$post->id}}>
+                                    <a class="viewcomments" >
                                     <iconify-icon icon="bi:chat-right" class="comment-icon"></iconify-icon>
-                                    <p><span>{{$total_comments}}</span> Comments</p>
+                                    <p id="{{$post->id}}"><span>{{$total_comments}}</span> Comments</p>
                                     </a>
                                 </div>
                             </div>
@@ -1874,12 +1881,74 @@
 
         $('.viewlikes').click(function(e){
             viewlikes(e);
-
         })
 
         $('.viewcomments').click(function(e){
             viewcomments(e);
         })
+
+        function viewcomments(e){
+            e.preventDefault();
+            $(".social-media-all-comments").empty();
+            $('#view_comments_modal').modal('show');
+            var postid=e.target.id;
+            var comment_url = "{{ route('comment_list',':postid') }}";
+
+            comment_url = comment_url.replace(':postid', postid);
+            $.post(comment_url,
+                    {
+                        _token: $('meta[name="csrf-token"]').attr('content')
+                    },
+                    function(data){
+                        table_post_row(data);
+            });
+
+
+            function table_post_row(res){
+                    let htmlView = '';
+                          if(res.comment.length <= 0){
+                              console.log("no data");
+                              htmlView+= `
+                              No Comment.
+                              `;
+                          }
+                          console.log("data");
+                          for(let i = 0; i < res.comment.length; i++){
+
+                                  htmlView += `
+                                    <div class="social-media-comment-container">
+                                      <img src="{{ asset('/storage/post/${res.comment[i].profile_image}') }}" style="width:200px;height:200px">
+                                      <div class="social-media-comment-box">
+                                          <div class="social-media-comment-box-header">
+                                              <div class="social-media-comment-box-name">
+                                                  <p>`+res.comment[i].name+`</p>
+                                                  <span>19 Sep 2022, 11:02 AM</span>
+                                              </div>
+
+                                      <iconify-icon icon="bx:dots-vertical-rounded" class="social-media-comment-icon"></iconify-icon>
+                                      <div class="comment-actions-container" >
+                                          <div class="comment-action" id="editCommentModal" data-id=`+res.comment[i].id+`>
+                                            <a class="editcomment" href="#" >
+                                              <iconify-icon icon="akar-icons:edit" class="comment-action-icon"></iconify-icon>
+                                              <p id="`+res.comment[i].id+`">Edit</p>
+                                            </a>
+                                          </div>
+                                          <a id="delete_comment" data-id=`+res.comment[i].id+`>
+                                          <div class="comment-action">
+                                              <iconify-icon icon="fluent:delete-12-regular" class="comment-action-icon"></iconify-icon>
+                                              <p>Delete</p>
+                                          </div>
+                                          </a>
+                                      </div>
+                                    </div>
+                                    <p>`+res.comment[i].Replace+`</p>
+                                </div>
+                            </div>
+                                  `
+                              }
+                          $('.social-media-all-comments').html(htmlView);
+            }
+        }
 
         function viewlikes(e){
             e.preventDefault();
@@ -1918,9 +1987,6 @@
                                                     <p>`+post_likes[i].name+`</p>
                                                 </a>`
                                     }
-                                    // htmlView += `<a href="`+url+`" style="text-decoration:none">
-                                    //                 <p>`+post_likes[i].name+`</p>
-                                    //             </a>`
 
                                     if(post_likes[i].friend_status=='myself'){
                                         htmlView += ``
@@ -1948,14 +2014,6 @@
                             }
                     })
 
-        }
-
-        function viewcomments(e){
-            e.preventDefault();
-            $(".social-media-all-likes-container").empty();
-            $('#view_comments_modal').modal('show');
-            var post_id=e.target.id;
-            console.log(post_id);
         }
 
         $(document).on('click', '.profile_addfriend', function(e) {
@@ -2080,6 +2138,32 @@
 
 
         }
+
+        $(document).on("click", ".editcomment", function(e){
+
+            $('#view_comments_modal').modal('hide');
+            $('#edit_comments_modal').modal('show');
+            var id=e.target.id;
+            $(".social-media-all-comments-input-edit").data('id',id)
+
+            var edit_url = "{{ route('post.comment.edit',[':id']) }}";
+            edit_url = edit_url.replace(':id', id);
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+            $.ajax({
+                method: "GET",
+                url: edit_url,
+                dataType: "json",
+                success: function (response) {
+                    console.log(response.data);
+                    var replace = response.data.Replace
+                    $("#editComment .mentiony-content").html(replace)
+                }
+            });
+        })
 
         $('.post_save').click(function(e){
             e.preventDefault();
