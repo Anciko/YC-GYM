@@ -151,6 +151,40 @@
                     })
                 });
 
+                $(document).on('click', '.view_like', function(e) {
+                e.preventDefault();
+                 alert("view_post")
+                 var url = new URL(this.href);
+                 var id = url.searchParams.get("id");
+                //  console.log(id,"noti_id");
+                 var post_id = $(this).attr("id");
+                 console.log(post_id , "rererer");
+                 var like_url = "{{ route('social_media_likes',[':post_id']) }}";
+                 like_url = like_url.replace(':post_id', post_id);
+
+                var url = "{{ route('social_media_likes',[':post_id']) }}";
+                url = url.replace(':post_id', post_id);
+                $(".add-member-btn").attr('href','');
+                $.ajaxSetup({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    }
+                });
+                    $.ajax({
+                        type: "GET",
+                        url: url,
+                        datatype: "json",
+                        data : {
+                            id : post_id,
+                            noti_id : id
+                    },
+                        success: function(data) {
+                            console.log(data)
+                            window.location.href = like_url
+                        }
+                    })
+                });
+
                 var user_id = {{auth()->user()->id}};
                 console.log(user_id);
                 var pusher = new Pusher('{{env("MIX_PUSHER_APP_KEY")}}', {

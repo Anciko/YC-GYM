@@ -298,8 +298,11 @@ class SocialmediaController extends Controller
        ]);
     }
 
-    public function social_media_likes($post_id)
+    public function social_media_likes(Request $request,$post_id)
     {
+        if(!empty($request->noti_id)){
+            $noti =  DB::table('notifications')->where('id',$request->noti_id)->update(['notification_status' => 2]);
+         }
         $auth = Auth()->user()->id;
         $post_likes=UserReactPost::where('post_id',$post_id)
                     ->with('user')

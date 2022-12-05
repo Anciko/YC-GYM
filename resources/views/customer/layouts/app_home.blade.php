@@ -1246,11 +1246,11 @@
                 //  console.log(id,"noti_id");
                  var post_id = $(this).attr("id");
                  console.log(post_id , "rererer");
-                 var comment_url = "{{ route('post.comment', [':id']) }}";
-                 comment_url = comment_url.replace(':id', post_id);
+                 var like_url = "{{ route('social_media_likes',[':post_id']) }}";
+                 like_url = like_url.replace(':post_id', post_id);
 
-                var url = "{{ route('comment_list',[':id']) }}";
-                url = url.replace(':id', post_id);
+                var url = "{{ route('social_media_likes',[':post_id']) }}";
+                url = url.replace(':post_id', post_id);
                 $(".add-member-btn").attr('href','');
                 $.ajaxSetup({
                     headers: {
@@ -1258,7 +1258,7 @@
                     }
                 });
                     $.ajax({
-                        type: "POST",
+                        type: "GET",
                         url: url,
                         datatype: "json",
                         data : {
@@ -1267,7 +1267,7 @@
                     },
                         success: function(data) {
                             console.log(data)
-                            window.location.href = comment_url
+                            window.location.href = like_url
                         }
                     })
                 });

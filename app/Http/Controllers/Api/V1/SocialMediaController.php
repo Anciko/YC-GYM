@@ -797,8 +797,23 @@ class SocialMediaController extends Controller
         $edit_post->caption=$caption;
 
         $edit_post->update();
+
+        $id = $edit_post->id;
+
+        $post_one=Post::select('users.name','profiles.profile_image','posts.*')
+        ->where('posts.id',$id)
+        ->leftJoin('users','users.id','posts.user_id')
+        ->leftJoin('profiles','users.profile_id','profiles.id')
+        ->first();
+
+            foreach($post_one as $key=>$value){
+                $post_one['is_save']= 0;
+                $post_one['is_like']= 0;
+                $post_one['like_count']= 0;
+                $post_one['comment_count']= 0;
+                }
         return response()->json([
-            'message'=>'Post Update Successfully',
+            'data'=>$post_one,
         ]);
     }
 
