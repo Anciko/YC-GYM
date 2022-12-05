@@ -185,13 +185,16 @@
 
                                     @forelse ($left_friends as $friend)
                                     <a  href="{{route('socialmedia.profile',$friend->id)}}" class="social-media-left-friends-row">
-                                        <?php $profile=$friend->profiles->where('cover_photo',null)->sortByDesc('created_at')->first() ?>
+                                        <?php $profile=$friend->profiles->first();
+                                        $profile_id=$friend->profile_id;
+                                         $img=$friend->profiles->where('id',$profile_id)->first();
+                                        ?>
 
-                                            @if ($profile==null)
-                                                <img class="nav-profile-img" src="{{asset('img/customer/imgs/user_default.jpg')}}"/>
-                                            @else
-                                                <img class="nav-profile-img" src="{{asset('storage/post/'.$profile->profile_image)}}"/>
-                                            @endif
+                                        @if ($img==null)
+                                            <img  class="nav-profile-img" src="{{asset('img/customer/imgs/user_default.jpg')}}"/>
+                                        @else
+                                            <img  class="nav-profile-img" src="{{asset('storage/post/'.$img->profile_image)}}"/>
+                                        @endif
                                         <p>{{$friend->name}}</p>
                                     </a>
                                     @empty
@@ -211,13 +214,18 @@
                                 <div class="social-media-left-messages-rows-container">
                                     @forelse ($left_friends as $friend)
                                     <a href="{{route('message.chat',$friend->id)}}" class="social-media-left-messages-row">
-                                        <?php $profile=$friend->profiles->where('cover_photo',null)->sortByDesc('created_at')->first() ?>
 
-                                        @if ($profile==null)
-                                            <img class="nav-profile-img" src="{{asset('img/customer/imgs/user_default.jpg')}}"/>
+                                        <?php $profile=$friend->profiles->first();
+                                        $profile_id=$friend->profile_id;
+                                         $img=$friend->profiles->where('id',$profile_id)->first();
+                                        ?>
+
+                                        @if ($img==null)
+                                            <img  class="nav-profile-img" src="{{asset('img/customer/imgs/user_default.jpg')}}"/>
                                         @else
-                                            <img class="nav-profile-img" src="{{asset('storage/post/'.$profile->profile_image)}}"/>
+                                            <img  class="nav-profile-img" src="{{asset('storage/post/'.$img->profile_image)}}"/>
                                         @endif
+
                                         <p>
                                             {{$friend->name}}<br>
                                             <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Dui hendrerit potenti pellentesque tellus urna bibendum mollis. </span>
@@ -505,7 +513,9 @@
                                         })
 
                                 }
-                    })
+                                })
+
+
                 $('.social-media-left-searched-items-container').empty();
                 });
 

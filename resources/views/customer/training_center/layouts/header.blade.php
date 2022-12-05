@@ -21,6 +21,7 @@
         </div>
 
         <div class="customer-navlinks-container">
+
             <a href="{{route('social_media')}}">Home</a>
             @hasanyrole('System_Admin')
             <a href="{{route('home')}}">Dashboard</a>
@@ -51,13 +52,11 @@
                     <li class="customer-dropdown">
 
                     <a href="#" data-toggle="dropdown">
-                        <?php
-                        $profile=auth()->user()->profiles->where('cover_photo',null)->sortByDesc('created_at')->first()
-                        ?>
-                        @if ($profile==null)
+
+                        @if ($user_profileimage==null)
                             <img class="nav-profile-img" src="{{asset('img/user.jpg')}}"/>
                         @else
-                            <img class="nav-profile-img" src="{{asset('storage/post/'.$profile->profile_image)}}"/>
+                            <img class="nav-profile-img" src="{{asset('storage/post/'.$user_profileimage->profile_image)}}"/>
                         @endif
                         <i class="icon-arrow"></i>
                         {{-- <p class="customer-dropdown-name">{{auth()->user()->name}}</p> --}}
