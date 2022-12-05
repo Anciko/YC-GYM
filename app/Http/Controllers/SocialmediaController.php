@@ -601,7 +601,26 @@ class SocialmediaController extends Controller
             ->where('friend_status',1)
             ->where(DB::raw("(DATE_FORMAT(date,'%Y-%m-%d'))"),'!=',Carbon::Now()->toDateString())
             ->get();
-        return view('customer.noti_center',compact('friend_requests','friend_requests_earlier'));
+
+        $notification=Notification::select('users.id as user_id','users.name','notifications.*',
+        'profiles.profile_image')
+            ->leftJoin('users','notifications.sender_id', '=', 'users.id')
+            ->leftJoin('profiles','profiles.id','users.profile_id')
+            ->where('notifications.receiver_id',auth()->user()->id)
+            ->where('notifications.post_id','!=',null)
+            ->where(DB::raw("(DATE_FORMAT(date,'%Y-%m-%d'))"),Carbon::Now()->toDateString())
+            ->get();
+
+        $notification_earlier=Notification::select('users.id as user_id','users.name','notifications.*',
+        'profiles.profile_image')
+            ->leftJoin('users','notifications.sender_id', '=', 'users.id')
+            ->leftJoin('profiles','profiles.id','users.profile_id')
+            ->where('notifications.receiver_id',auth()->user()->id)
+            ->where('notifications.post_id','!=',null)
+            ->where(DB::raw("(DATE_FORMAT(date,'%Y-%m-%d'))"),'!=',Carbon::Now()->toDateString())
+            ->get();
+            // dd($notification);
+        return view('customer.noti_center',compact('friend_requests','friend_requests_earlier','notification','notification_earlier'));
     }
 
     public function addUser(Request $request)
