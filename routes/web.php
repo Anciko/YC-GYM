@@ -94,6 +94,7 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
         Route::get('customer/personal_infos', [CustomerRegisterController::class, 'personal_info'])->name('customer-personal_infos');
 
         Route::get('/profile', [Customer_TrainingCenterController::class, 'profile'])->name('customer-profile');
+        Route::get('/profile/likes/{post_id}',[Customer_TrainingCenterController::class, 'profile_post_likes'])->name('profile.likes.view');
 
         Route::post('customer/profile/update', [Customer_TrainingCenterController::class, 'profile_update'])->name('customer-profile.update');
         Route::post('customer/profile/name/update', [Customer_TrainingCenterController::class, 'profile_update_name'])->name('customer-profile-name.update');
@@ -146,6 +147,8 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
 
         Route::post('/post/comment/store', [SocialmediaController::class, 'post_comment_store'])->name('post.comment.store');
         Route::post('/post/comment/delete/{id}', [SocialmediaController::class, 'comment_delete'])->name('post.comment.delete');
+        Route::get('/post/comment/edit/{id}', [SocialmediaController::class, 'comment_edit'])->name('post.comment.edit');
+        Route::post('post/comment/update', [SocialmediaController::class, 'comment_update'])->name('post.comment.update');
 });
     Route::get('customer/register', [App\Http\Controllers\HomeController::class, 'customer_register'])->name('customer_register');
     //Route::post('customer/register', [App\Http\Controllers\Auth\RegisterController::class, 'register'])->name('customer_register');

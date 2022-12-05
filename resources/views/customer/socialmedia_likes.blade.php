@@ -9,11 +9,14 @@
             <div class="social-media-post-header">
                 <div class="social-media-post-name-container">
                 <a href="{{route('socialmedia.profile',$post->user_id)}}" style="text-decoration:none">
-                    <?php $profile=$post->user->profiles->where('cover_photo',null)->sortByDesc('created_at')->first() ?>
-                    @if ($profile==null)
+                    <?php $profile=$post->user->profiles->first();
+                        $profile_id=$post->user->profile_id;
+                         $img=$post->user->profiles->where('id',$profile_id)->first();
+                        ?>
+                    @if ($img==null)
                         <img class="nav-profile-img" src="{{asset('img/customer/imgs/user_default.jpg')}}"/>
                     @else
-                        <img class="nav-profile-img" src="{{asset('storage/post/'.$profile->profile_image)}}"/>
+                        <img class="nav-profile-img" src="{{asset('storage/post/'.$img->profile_image)}}"/>
                     @endif
                 </a>
                     <div class="social-media-post-name">
@@ -137,6 +140,7 @@
                 <div class="social-media-post-like-container">
                     @php
                         $total_likes=$post->user_reacted_posts->count();
+                        $total_comments=$post->comments->count();
                         $user=auth()->user();
                         $already_liked=$user->user_reacted_posts->where('post_id',$post->id)->count();
                     @endphp
@@ -155,8 +159,10 @@
                     <p><span class="total_likes">{{$post_likes->count()}}</span> Likes</p>
                 </div>
                 <div class="social-media-post-comment-container">
-                    <iconify-icon icon="bi:chat-right" class="comment-icon"></iconify-icon>
-                    <p><span>50</span> Comments</p>
+                    <a href = "{{route('post.comment',$post->id)}}">
+                        <iconify-icon icon="bi:chat-right" class="comment-icon"></iconify-icon>
+                        <p><span>{{$total_comments}}</span> Comments</p>
+                    </a>
                 </div>
             </div>
         </div>
@@ -165,8 +171,12 @@
                 @forelse ($post_likes as $user_like_post)
                 <div class="social-media-all-likes-row">
                     <div class="social-media-all-likes-row-img">
-                        <?php $image=$user_like_post->user->profiles()->where('cover_photo',null)->orderBy('created_at','desc')->first() ?>
-                        @if($image==null)
+                        <?php $profile=$user_like_post->user->profiles->first();
+                        $profile_id=$user_like_post->user->profile_id;
+                         $img=$user_like_post->user->profiles->where('id',$profile_id)->first();
+                        ?>
+
+                        @if($img==null)
                         <a href="{{route('socialmedia.profile',$user_like_post->user_id)}}" style="text-decoration:none">
                         <img src="{{asset('img/customer/imgs/user_default.jpg')}}">
                         </a>
@@ -175,38 +185,26 @@
                         </a>
                         @else
                         <a href="{{route('socialmedia.profile',$user_like_post->user_id)}}" style="text-decoration:none">
-                        <img src="{{asset('storage/post/'.$image->profile_image)}}">
+                        <img src="{{asset('storage/post/'.$img->profile_image)}}">
                         </a>
                         <a href="{{route('socialmedia.profile',$user_like_post->user_id)}}" style="text-decoration:none">
                         <p>{{$user_like_post->user->name}}</p>
                         </a>
                         @endif
+
                     </div>
                     <div class="social-media-all-likes-row-btns">
                         @if($user_like_post->friend_status=='myself')
 
                         @elseif($user_like_post->friend_status=='friend')
-                        <a class="customer-secondary-btn" href="{{route('socialmedia.profile',$user_like_post->user_id)}}" >Friend</a>
+                        {{-- <a class="customer-primary-btn" href="{{route('socialmedia.profile',$user_like_post->user_id)}}" >Friend</a> --}}
                         @elseif($user_like_post->friend_status=='response')
-                        <a class="customer-secondary-btn" href="{{route('socialmedia.profile',$user_like_post->user_id)}}" >Response</a>
+                        <a class="customer-primary-btn" href="{{route('socialmedia.profile',$user_like_post->user_id)}}" >Response</a>
                         @elseif($user_like_post->friend_status=='cancel request')
-                        <a class="customer-secondary-btn" href="{{route('socialmedia.profile',$user_like_post->user_id)}}" >Cancel</a>
+                        <a class="customer-primary-btn" id="cancelrequest" href="?id={{$user_like_post->user_id}}" >Cancel</a>
                         @else
-                        <a class="customer-secondary-btn add-friend" id="addfriend" href="?id={{$user_like_post->user_id}}" >Add</a>
+                        <a class="customer-primary-btn add-friend" id="addfriend" href="?id={{$user_like_post->user_id}}" >Add</a>
                         @endif
-
-                        {{-- @elseif($user_like_post->friend_status=='cancelRequest')
-                            <button class="customer-primary-btn">Requested</button>
-                            <a class="customer-secondary-btn" href="{{route('socialmedia.profile',$user_like_post->user_id)}}" style="text-decoration:none">
-                                View Profile
-                            </a>
-
-                        @elseif($user_like_post->friend_status=='Response')
-                            <button class="customer-primary-btn">Accept</button>
-                            <a class="customer-secondary-btn" href="{{route('socialmedia.profile',$user_like_post->user_id)}}" style="text-decoration:none">
-                                Decline
-                            </a>
-                        @endif --}}
                     </div>
                 </div>
                 @empty
@@ -311,11 +309,46 @@
                     url: add_url,
                     datatype: "json",
                     success: function(data) {
-                        console.log(data)
                         window.location.reload();
                     }
                 })
         });
+
+        $('#cancelrequest').click(function(e) {
+                        e.preventDefault();
+                        Swal.fire({
+                                text: "Are you sure?",
+                                showClass: {
+                                        popup: 'animate__animated animate__fadeInDown'
+                                    },
+                                    hideClass: {
+                                        popup: 'animate__animated animate__fadeOutUp'
+                                    },
+                                showCancelButton: true,
+                                timerProgressBar: true,
+                                confirmButtonText: 'Yes',
+                                cancelButtonText: 'No',
+
+                                }).then((result) => {
+                                /* Read more about isConfirmed, isDenied below */
+                                if (result.isConfirmed) {
+                                    var url = new URL(this.href);
+                                    var id = url.searchParams.get("id");
+                                    var url = "{{ route('cancelRequest', [':id']) }}";
+                                    url = url.replace(':id', id);
+                                    $(".cancel-request-btn").attr('href','');
+                                        $.ajax({
+                                            type: "GET",
+                                            url: url,
+                                            datatype: "json",
+                                            success: function(data) {
+                                                window.location.reload();
+                                            }
+                                        })
+
+                                }
+                })
+        })
    })
 </script>
 @endpush

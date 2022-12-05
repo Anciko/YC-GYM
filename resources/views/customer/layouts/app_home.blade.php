@@ -187,13 +187,16 @@
 
                                     @forelse ($left_friends as $friend)
                                     <a  href="{{route('socialmedia.profile',$friend->id)}}" class="social-media-left-friends-row">
-                                        <?php $profile=$friend->profiles->where('cover_photo',null)->sortByDesc('created_at')->first() ?>
+                                        <?php $profile=$friend->profiles->first();
+                                        $profile_id=$friend->profile_id;
+                                         $img=$friend->profiles->where('id',$profile_id)->first();
+                                        ?>
 
-                                            @if ($profile==null)
-                                                <img class="nav-profile-img" src="{{asset('img/customer/imgs/user_default.jpg')}}"/>
-                                            @else
-                                                <img class="nav-profile-img" src="{{asset('storage/post/'.$profile->profile_image)}}"/>
-                                            @endif
+                                        @if ($img==null)
+                            <img  class="nav-profile-img" src="{{asset('img/customer/imgs/user_default.jpg')}}"/>
+                                        @else
+                            <img  class="nav-profile-img" src="{{asset('storage/post/'.$img->profile_image)}}"/>
+                                        @endif
                                         <p>{{$friend->name}}</p>
                                     </a>
                                     @empty
@@ -213,13 +216,18 @@
                                 <div class="social-media-left-messages-rows-container">
                                     @forelse ($left_friends as $friend)
                                     <a href="{{route('message.chat',$friend->id)}}" class="social-media-left-messages-row">
-                                        <?php $profile=$friend->profiles->where('cover_photo',null)->sortByDesc('created_at')->first() ?>
 
-                                        @if ($profile==null)
-                                            <img class="nav-profile-img" src="{{asset('img/customer/imgs/user_default.jpg')}}"/>
+                                        <?php $profile=$friend->profiles->first();
+                                        $profile_id=$friend->profile_id;
+                                         $img=$friend->profiles->where('id',$profile_id)->first();
+                                        ?>
+
+                                        @if ($img==null)
+                                            <img  class="nav-profile-img" src="{{asset('img/customer/imgs/user_default.jpg')}}"/>
                                         @else
-                                            <img class="nav-profile-img" src="{{asset('storage/post/'.$profile->profile_image)}}"/>
+                                            <img  class="nav-profile-img" src="{{asset('storage/post/'.$img->profile_image)}}"/>
                                         @endif
+
                                         <p>
                                             {{$friend->name}}<br>
                                             <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Dui hendrerit potenti pellentesque tellus urna bibendum mollis. </span>
@@ -507,7 +515,9 @@
                                         })
 
                                 }
-                    })
+                                })
+
+
                 $('.social-media-left-searched-items-container').empty();
                 });
 
@@ -1190,6 +1200,76 @@
                         success: function(data) {
                             console.log(data)
                             window.location.href = social_url
+                        }
+                    })
+                });
+
+
+                $(document).on('click', '.view_comment', function(e) {
+                e.preventDefault();
+                 alert("view_post")
+                 var url = new URL(this.href);
+                 var id = url.searchParams.get("id");
+                //  console.log(id,"noti_id");
+                 var post_id = $(this).attr("id");
+                 console.log(post_id , "rererer");
+                 var comment_url = "{{ route('post.comment', [':id']) }}";
+                 comment_url = comment_url.replace(':id', post_id);
+
+                var url = "{{ route('comment_list',[':id']) }}";
+                url = url.replace(':id', post_id);
+                $(".add-member-btn").attr('href','');
+                $.ajaxSetup({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    }
+                });
+                    $.ajax({
+                        type: "POST",
+                        url: url,
+                        datatype: "json",
+                        data : {
+                            id : post_id,
+                            noti_id : id
+                    },
+                        success: function(data) {
+                            console.log(data)
+                            window.location.href = comment_url
+                        }
+                    })
+                });
+
+
+                $(document).on('click', '.view_like', function(e) {
+                e.preventDefault();
+                 alert("view_post")
+                 var url = new URL(this.href);
+                 var id = url.searchParams.get("id");
+                //  console.log(id,"noti_id");
+                 var post_id = $(this).attr("id");
+                 console.log(post_id , "rererer");
+                 var like_url = "{{ route('social_media_likes',[':post_id']) }}";
+                 like_url = like_url.replace(':post_id', post_id);
+
+                var url = "{{ route('social_media_likes',[':post_id']) }}";
+                url = url.replace(':post_id', post_id);
+                $(".add-member-btn").attr('href','');
+                $.ajaxSetup({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    }
+                });
+                    $.ajax({
+                        type: "GET",
+                        url: url,
+                        datatype: "json",
+                        data : {
+                            id : post_id,
+                            noti_id : id
+                    },
+                        success: function(data) {
+                            console.log(data)
+                            window.location.href = like_url
                         }
                     })
                 });

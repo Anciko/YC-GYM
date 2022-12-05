@@ -76,20 +76,22 @@
             $( document ).ready(function() {
                 $('.nav-icon').click(function(){
                         $('.notis-box-container').toggle()
-                    })
+                })
+            })
 
 
             // })
-         })
+        //  })
          var user_id = {{auth()->user()->id}};
                 console.log(user_id);
                 var pusher = new Pusher('{{env("MIX_PUSHER_APP_KEY")}}', {
                 cluster: '{{env("PUSHER_APP_CLUSTER")}}',
                 encrypted: true
                 });
-                var channel = pusher.subscribe('friend_request.'+user_id);
+                var channel = pusher.subscribe('friend_request.'+ user_id);
                 channel.bind('friendRequest', function(data) {
                 console.log(data);
+                alert(data);
                 $.notify(data, "success",{ position:"left" });
                 });
     </script>
@@ -99,6 +101,7 @@
 
         <script>
              $(document).ready(function(){
+
                 console.log("ready");
 
 

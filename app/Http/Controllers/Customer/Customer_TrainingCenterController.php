@@ -12,12 +12,13 @@ use App\Models\Workout;
 use App\Models\MealPlan;
 use App\Models\WaterTracked;
 use Illuminate\Http\Request;
+use App\Models\UserReactPost;
+use App\Models\UserSavedPost;
 use App\Models\WeightHistory;
 use App\Models\PersonalMealInfo;
 use Illuminate\Support\Facades\DB;
 use App\Models\PersonalWorkOutInfo;
 use App\Http\Controllers\Controller;
-use App\Models\UserSavedPost;
 use RealRashid\SweetAlert\Facades\Alert;
 
 class Customer_TrainingCenterController extends Controller
@@ -169,8 +170,54 @@ class Customer_TrainingCenterController extends Controller
 
                         //dd($saved_posts);
 
+
         return view('customer.training_center.profile', compact('saved_posts','save_posts','user','posts','user_friends','user_profile_cover','user_profile_image','year','workouts', 'workout_date', 'cal_sum', 'time_min', 'time_sec', 'weight_history', 'newDate'));
     }
+
+    public function profile_post_likes($post_id)
+    {
+        $auth=auth()->user()->id;
+        $post_likes=UserReactPost::select('users.name','profiles.profile_image','user_react_posts.*')
+                    ->leftJoin('users','users.id','user_react_posts.user_id')
+                    ->leftJoin('profiles','users.profile_id','profiles.id')
+                    ->where('post_id',$post_id)
+                    ->get();
+        $friends = DB::select("SELECT * FROM `friendships` WHERE (receiver_id = $auth or sender_id = $auth)");
+
+                    foreach($post_likes as $key=>$value){
+                        foreach($friends as $fri){
+                            if($value->user_id == $fri->receiver_id AND $fri->sender_id == $auth AND $fri->friend_status == 1    ){
+                                $post_likes[$key]['friend_status'] = "cancel request";
+                                break;
+                            }
+                            else if($value->user_id == $fri->sender_id AND $fri->receiver_id == $auth AND $fri->friend_status == 1    ){
+                                $post_likes[$key]['friend_status'] = "response";
+                                break;
+                            }
+                            else if($value->user_id == $fri->receiver_id AND $fri->sender_id == $auth AND $fri->friend_status == 2){
+                                $post_likes[$key]['friend_status'] = "friend";
+                                break;
+                            }
+                            else if($value->user_id == $fri->sender_id AND $fri->receiver_id == $auth AND $fri->friend_status == 2){
+                                $post_likes[$key]['friend_status'] = "friend";
+                                break;
+                            }
+                            else if($value->user_id == $auth){
+                                $post_likes[$key]['friend_status'] = "myself";
+                                break;
+                            }
+                            else{
+                                $post_likes[$key]['friend_status'] = "add friend";
+                            }
+                        }
+                    }
+
+        return response()
+        ->json([
+            'post_likes'=>$post_likes
+                    ]);
+    }
+
     public function member_plan()
     {
         $members = Member::orderBy('price', 'ASC')->get();

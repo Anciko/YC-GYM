@@ -63,6 +63,78 @@
 </div>
 <!-- End Image Modal -->
 
+<!-- Like Modal -->
+<div class="modal fade " id="staticBackdrop">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="staticBackdropLabel">Likes</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <div class="social-media-all-likes-container">
+                <div class="social-media-all-likes-row">
+                    <div class="social-media-all-likes-row-img">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+      </div>
+    </div>
+</div>
+
+<!-- View Comment Modal -->
+
+<div class="modal fade " id="view_comments_modal">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="staticBackdropLabel">Comments</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <div class="social-media-all-comments-container">
+                <form class="social-media-all-comments-input">
+                    <textarea placeholder="Write a comment" id="textarea"></textarea>
+                    <div id="menu" class="menu" role="listbox"></div>
+                    <button class="social-media-all-comments-send-btn">
+                        <iconify-icon icon="akar-icons:send" class="social-media-all-comments-send-icon"></iconify-icon>
+                    </button>
+
+                </form>
+                <div class="social-media-all-comments">
+                </div>
+            </div>
+        </div>
+      </div>
+    </div>
+</div>
+
+<div class="modal fade" id ="edit_comments_modal"  tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Edit Comment</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <form class="social-media-all-comments-input-edit" id="editComment">
+                <textarea placeholder="Write a comment" id="editCommentTextArea"></textarea>
+                <div id="menu" class="menu" role="listbox"></div>
+                <button class="social-media-all-comments-send-btn">
+                    <iconify-icon icon="akar-icons:send" class="social-media-all-comments-send-icon"></iconify-icon>
+                </button>
+
+            </form>
+        </div>
+
+      </div>
+    </div>
+</div>
+
+<!-- View Comment Modal End -->
+
     <a class="back-btn" href="{{route("socialmedia")}}">
         <iconify-icon icon="bi:arrow-left" class="back-btn-icon"></iconify-icon>
     </a>
@@ -181,14 +253,19 @@
                 <div class="customer-profile-friends-container">
                     @forelse ($user_friends as $friend)
                     <div class="customer-profile-friend">
-                        <?php $image=$friend->profiles()->where('cover_photo',null)->orderBy('created_at','desc')->first() ?>
-                        @if($image==null)
+
+                        <?php $profile=$friend->profiles->first();
+                        $profile_id=$friend->profile_id;
+                         $img=$friend->profiles->where('id',$profile_id)->first();
+                        ?>
+
+                        @if($img==null)
                         <a href="{{route('socialmedia.profile',$friend->id)}}" style="text-decoration:none">
                         <img src="{{asset('img/customer/imgs/user_default.jpg')}}">
                         </a>
                         @else
                         <a href="{{route('socialmedia.profile',$friend->id)}}" style="text-decoration:none">
-                        <img src="{{asset('storage/post/'.$image->profile_image)}}">
+                        <img src="{{asset('storage/post/'.$img->profile_image)}}">
                         </a>
                         @endif
                         <a href="{{route('socialmedia.profile',$friend->id)}}" style="text-decoration:none">
@@ -217,11 +294,11 @@
                         <div class="customer-post-container">
                             <div class="customer-post-header">
                                 <div class="customer-post-name-container">
-                                    <?php $profile=auth()->user()->profiles->where('cover_photo',null)->sortByDesc('created_at')->first() ?>
-                                    @if ($profile==null)
+
+                                    @if ($user_profile_image==null)
                                         <img class="nav-profile-img" src="{{asset('img/customer/imgs/user_default.jpg')}}"/>
                                     @else
-                                        <img class="nav-profile-img" src="{{asset('storage/post/'.$profile->profile_image)}}"/>
+                                        <img class="nav-profile-img" src="{{asset('storage/post/'.$user_profile_image->profile_image)}}"/>
                                     @endif
                                     <div class="customer-post-name">
                                         <p>{{$post->user->name}}</p>
@@ -328,9 +405,10 @@
                             </div>
 
                             <div class="customer-post-footer-container">
-                                <div class="social-media-post-like-container">
+                                <div class="customer-post-like-container">
                                     @php
                                         $total_likes=$post->user_reacted_posts->count();
+                                        $total_comments=$post->comments->count();
                                         $user=auth()->user();
                                         $already_liked=$user->user_reacted_posts->where('post_id',$post->id)->count();
                                     @endphp
@@ -351,13 +429,14 @@
 
                                         {{$total_likes}}
                                         </span>
-                                        <a href="{{route('social_media_likes',$post->id)}}">Likes</a>
+                                        <a class="viewlikes" id={{$post->id}}>Likes</a>
                                     </p>
                                 </div>
-                                <div class="social-media-post-comment-container">
-                                    <a href = "{{route('post.comment',$post->id)}}">
+                                <div class="customer-post-comment-container">
+                                    {{-- <a href = "{{route('post.comment',$post->id)}}"> --}}
+                                    <a class="viewcomments" >
                                     <iconify-icon icon="bi:chat-right" class="comment-icon"></iconify-icon>
-                                    <p><span>50</span> Comments</p>
+                                    <p id="{{$post->id}}"><span>{{$total_comments}}</span> Comments</p>
                                     </a>
                                 </div>
                             </div>
@@ -1765,6 +1844,7 @@
     $(document).ready(function() {
         $('.like').click(function(e){
             e.preventDefault();
+            $('.staticBackdrop').show();
             var isLike=e.target.previousElementSibiling == null ? true : false;
             var post_id=$(this).attr('id');
             console.log(post_id)
@@ -1798,6 +1878,321 @@
 
 
         })
+
+        $('.viewlikes').click(function(e){
+            viewlikes(e);
+        })
+
+        $('.viewcomments').click(function(e){
+            viewcomments(e);
+        })
+
+        function viewcomments(e){
+            e.preventDefault();
+            $(".social-media-all-comments").empty();
+            $('#view_comments_modal').modal('show');
+            var postid=e.target.id;
+            var comment_url = "{{ route('comment_list',':postid') }}";
+
+            comment_url = comment_url.replace(':postid', postid);
+            $.post(comment_url,
+                    {
+                        _token: $('meta[name="csrf-token"]').attr('content')
+                    },
+                    function(data){
+                        table_post_row(data);
+        });
+        $(document).on('click', '.social-media-comment-icon', function(e) {
+            $(this).next().toggle()
+        })
+
+        $('#textarea').mentiony({
+                onDataRequest: function (mode, keyword, onDataRequestCompleteCallback) {
+                    var search_url = "{{ route('users.mention') }}";
+                    $.ajaxSetup({
+                            headers: {
+                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                            }
+                        });
+                    $.ajax({
+                        method: "POST",
+                        url:search_url,
+                        data : keyword,
+                        dataType: "json",
+                        success: function (response) {
+                            var data = response.data;
+                            console.log(data)
+
+                            // NOTE: Assuming this filter process was done on server-side
+                            data = jQuery.grep(data, function( item ) {
+                                return item.name.toLowerCase().indexOf(keyword.toLowerCase()) > -1;
+                            });
+                            // End server-side
+
+                            // Call this to populate mention.
+                            onDataRequestCompleteCallback.call(this, data);
+                        }
+
+
+
+                    });
+                    console.log($("#editComment .mentiony-content") , "not edit")
+                },
+
+        });
+
+        $('#editCommentTextArea').mentiony({
+                onDataRequest: function (mode, keyword, onDataRequestCompleteCallback) {
+                    var search_url = "{{ route('users.mention') }}";
+                    $.ajaxSetup({
+                            headers: {
+                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                            }
+                        });
+                    $.ajax({
+                        method: "POST",
+                        url:search_url,
+                        data : keyword,
+                        dataType: "json",
+                        success: function (response) {
+                            var data = response.data;
+                            console.log(data)
+
+                            // NOTE: Assuming this filter process was done on server-side
+                            data = jQuery.grep(data, function( item ) {
+                                return item.name.toLowerCase().indexOf(keyword.toLowerCase()) > -1;
+                            });
+                            // End server-side
+
+                            // Call this to populate mention.
+                            onDataRequestCompleteCallback.call(this, data);
+                        }
+                    });
+
+
+                },
+
+                });
+
+        //edit comment start
+        $(document).on('click', '#editCommentModal', function(e) {
+                        $('#editModal').modal('show');
+                        var id = $(this).data('id');
+
+                        $(".social-media-all-comments-input-edit").data('id',id)
+
+                        var edit_url = "{{ route('post.comment.edit',[':id']) }}";
+                        edit_url = edit_url.replace(':id', id);
+                        $.ajaxSetup({
+                            headers: {
+                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                            }
+                        });
+                    $.ajax({
+                        method: "GET",
+                        url: edit_url,
+                        dataType: "json",
+                        success: function (response) {
+                            console.log(response.data);
+                            var replace = response.data.Replace
+                            $("#editComment .mentiony-content").html(replace)
+                        }
+                    });
+        })
+        //edit comment end
+
+        $(".mentiony-container").attr('style','')
+        $(".mentiony-content").attr('style','')
+
+        //mention delete the whole a tag start
+        $('.mentiony-content').on('keydown', function(event) {
+                console.log(event.which)
+                if (event.which == 8 || event.which == 46) {
+                    s = window.getSelection();
+                    r = s.getRangeAt(0)
+                    el = r.startContainer.parentElement
+
+                    console.log(el.classList.contains('mentiony-link') || el.classList.contains('mention-area') || el.classList.contains('highlight'))
+                    console.log(el)
+                    if (el.classList.contains('mentiony-link') || el.classList.contains('mention-area') || el.classList.contains('highlight')) {
+                        console.log('delete mention')
+
+
+                                el.remove();
+
+                            return;
+
+                    }
+                }
+                event.target.querySelectorAll('delete-highlight').forEach(function(el) { el.classList.remove('delete-highlight');})
+            });
+        //mention delete the whole a tag end
+
+
+            function table_post_row(res){
+                    let htmlView = '';
+                          if(res.comment.length <= 0){
+                              console.log("no data");
+                              htmlView+= `
+                              No Comment.
+                              `;
+                          }
+                          console.log("data");
+                          for(let i = 0; i < res.comment.length; i++){
+
+                                  htmlView += `
+                                    <div class="social-media-comment-container">
+                                      <img src="{{ asset('/storage/post/${res.comment[i].profile_image}') }}" >
+                                      <div class="social-media-comment-box">
+                                          <div class="social-media-comment-box-header">
+                                              <div class="social-media-comment-box-name">
+                                                  <p>`+res.comment[i].name+`</p>
+                                                  <span>19 Sep 2022, 11:02 AM</span>
+                                              </div>
+
+                                      <iconify-icon icon="bx:dots-vertical-rounded" class="social-media-comment-icon"></iconify-icon>
+                                      <div class="comment-actions-container" >
+                                          <div class="comment-action" id="editCommentModal" data-id=`+res.comment[i].id+`>
+                                            <a class="editcomment" href="#" >
+                                              <iconify-icon icon="akar-icons:edit" class="comment-action-icon"></iconify-icon>
+                                              <p id="`+res.comment[i].id+`">Edit</p>
+                                            </a>
+                                          </div>
+                                          <a id="delete_comment" data-id=`+res.comment[i].id+`>
+                                          <div class="comment-action">
+                                              <iconify-icon icon="fluent:delete-12-regular" class="comment-action-icon"></iconify-icon>
+                                              <p>Delete</p>
+                                          </div>
+                                          </a>
+                                      </div>
+                                    </div>
+                                    <p>`+res.comment[i].Replace+`</p>
+                                </div>
+                            </div>
+                                  `
+                              }
+                          $('.social-media-all-comments').html(htmlView);
+            }
+        }
+
+
+        function viewlikes(e){
+            e.preventDefault();
+            $(".social-media-all-likes-container").empty();
+            $('#staticBackdrop').modal('show');
+            var post_id=e.target.id;
+            var add_url = "{{ route('profile.likes.view', [':post_id']) }}";
+            add_url = add_url.replace(':post_id', post_id);
+
+                    $.ajax({
+                        method: "GET",
+                        url: add_url,
+                            success: function(data) {
+                                let htmlView = '';
+                                var finalHtmlView = ''
+                                var post_likes=data.post_likes
+                                console.log(post_likes);
+
+                                for(let i = 0; i < post_likes.length; i++){
+                                    htmlView = ''
+                                    user_id = post_likes[i].user_id;
+
+                                    var url = "{{ route('socialmedia.profile',[':id']) }}";
+                                    url = url.replace(':id', user_id);
+
+                                    if(post_likes[i].profile_image==null){
+                                        console.log(post_likes[i].name +"has no profile")
+                                        htmlView += `<a class="social-media-all-likes-row-img" href="`+url+`" style="text-decoration:none">
+                                                    <img src="{{asset('img/customer/imgs/user_default.jpg')}}"  alt="" style="width:30px;height:30px"/>
+                                                    <p>`+post_likes[i].name+`</p>
+                                                </a>`
+                                    }else{
+                                        console.log(post_likes[i].name +"has profile")
+                                        htmlView += `<a class="social-media-all-likes-row-img" href="`+url+`" style="text-decoration:none">
+                                                    <img src="{{asset('storage/post/`+post_likes[i].profile_image+`') }}" alt="" style="width:30px;height:30px"/>
+                                                    <p>`+post_likes[i].name+`</p>
+                                                </a>`
+                                    }
+
+                                    if(post_likes[i].friend_status=='myself'){
+                                        htmlView += ``
+                                    }else if(post_likes[i].friend_status=='friend'){
+                                        htmlView += ``
+                                    }else if(post_likes[i].friend_status=='response'){
+                                        var add_url = "{{ route('socialmedia.profile', [':user_id']) }}";
+                                        var user_id=post_likes[i].user_id;
+                                        add_url = add_url.replace(':user_id', user_id);
+                                        htmlView += `<a class="customer-primary-btn" href="`+add_url+`" >Response</a>`
+                                    }else if(post_likes[i].friend_status=='cancel request'){
+                                        htmlView += `<a class="customer-primary-btn profile_cancelrequest" id="`+user_id+`">Cancel</a>`
+                                    }else{
+                                        htmlView += `<a class="customer-primary-btn profile_addfriend" id="`+user_id+`">Add</a>`
+                                    }
+
+                                    finalHtmlView = `<div class="social-media-all-likes-row">
+                                        ${htmlView}
+                                    </div>`
+
+                                    $('.social-media-all-likes-container').append(finalHtmlView);
+
+                                }
+
+                            }
+                    })
+
+        }
+
+        $(document).on('click', '.profile_addfriend', function(e) {
+                e.preventDefault();
+                var id = $(this).attr("id")
+                var add_url = "{{ route('addUser', [':id']) }}";
+                add_url = add_url.replace(':id', id);
+                $.ajax({
+                    type: "GET",
+                    url: add_url,
+                    datatype: "json",
+                    success: function(data) {
+                        viewlikes(e);
+                    }
+                })
+        });
+
+        $(document).on('click', '.profile_cancelrequest', function(e) {
+                        e.preventDefault();
+                        Swal.fire({
+                                text: "Are you sure?",
+                                showClass: {
+                                        popup: 'animate__animated animate__fadeInDown'
+                                    },
+                                    hideClass: {
+                                        popup: 'animate__animated animate__fadeOutUp'
+                                    },
+                                showCancelButton: true,
+                                timerProgressBar: true,
+                                confirmButtonText: 'Yes',
+                                cancelButtonText: 'No',
+
+                                }).then((result) => {
+                                /* Read more about isConfirmed, isDenied below */
+                                if (result.isConfirmed) {
+
+                                    var id = $(this).attr("id");
+                                    var url = "{{ route('cancelRequest', [':id']) }}";
+                                    url = url.replace(':id', id);
+
+                                        $.ajax({
+                                            type: "GET",
+                                            url: url,
+                                            datatype: "json",
+                                            success: function(data) {
+                                                viewlikes(e);
+                                            }
+                                        })
+
+                                }
+                                })
+
+        });
 
         $(".customer-saved-posts-container").hide()
 
@@ -1869,6 +2264,32 @@
 
 
         }
+
+        $(document).on("click", ".editcomment", function(e){
+
+            $('#view_comments_modal').modal('hide');
+            $('#edit_comments_modal').modal('show');
+            var id=e.target.id;
+            $(".social-media-all-comments-input-edit").data('id',id)
+
+            var edit_url = "{{ route('post.comment.edit',[':id']) }}";
+            edit_url = edit_url.replace(':id', id);
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+            $.ajax({
+                method: "GET",
+                url: edit_url,
+                dataType: "json",
+                success: function (response) {
+                    console.log(response.data);
+                    var replace = response.data.Replace
+                    $("#editComment .mentiony-content").html(replace)
+                }
+            });
+        })
 
         $('.post_save').click(function(e){
             e.preventDefault();
