@@ -140,6 +140,7 @@
                 <div class="social-media-post-like-container">
                     @php
                         $total_likes=$post->user_reacted_posts->count();
+                        $total_comments=$post->comments->count();
                         $user=auth()->user();
                         $already_liked=$user->user_reacted_posts->where('post_id',$post->id)->count();
                     @endphp
@@ -158,8 +159,10 @@
                     <p><span class="total_likes">{{$post_likes->count()}}</span> Likes</p>
                 </div>
                 <div class="social-media-post-comment-container">
-                    <iconify-icon icon="bi:chat-right" class="comment-icon"></iconify-icon>
-                    <p><span>50</span> Comments</p>
+                    <a href = "{{route('post.comment',$post->id)}}">
+                        <iconify-icon icon="bi:chat-right" class="comment-icon"></iconify-icon>
+                        <p><span>{{$total_comments}}</span> Comments</p>
+                    </a>
                 </div>
             </div>
         </div>
