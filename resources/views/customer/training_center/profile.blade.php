@@ -2107,7 +2107,10 @@
                     },
                     function(data){
                         table_post_row(data);
-            });
+        });
+        $(document).on('click', '.social-media-comment-icon', function(e) {
+            $(this).next().toggle()
+        })
 
 
             function table_post_row(res){
@@ -2123,7 +2126,7 @@
 
                                   htmlView += `
                                     <div class="social-media-comment-container">
-                                      <img src="{{ asset('/storage/post/${res.comment[i].profile_image}') }}" style="width:200px;height:200px">
+                                      <img src="{{ asset('/storage/post/${res.comment[i].profile_image}') }}" >
                                       <div class="social-media-comment-box">
                                           <div class="social-media-comment-box-header">
                                               <div class="social-media-comment-box-name">

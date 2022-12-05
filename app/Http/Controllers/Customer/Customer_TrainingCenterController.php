@@ -177,21 +177,11 @@ class Customer_TrainingCenterController extends Controller
     public function profile_post_likes($post_id)
     {
         $auth=auth()->user()->id;
-
-        // $post_likes=UserReactPost::select('users.name','profiles.profile_image','user_react_posts.*')
-        //             ->leftJoin('users','users.id','user_react_posts.user_id')
-        //             ->leftJoin('profiles','users.profile_id','profiles.id')
-        //             ->where('profiles.cover_photo',null)
-        //             ->where('post_id',$post_id)
-        //             ->orderBy('profiles.created_at','DESC')
-        //             ->get();
-
         $post_likes=UserReactPost::select('users.name','profiles.profile_image','user_react_posts.*')
                     ->leftJoin('users','users.id','user_react_posts.user_id')
                     ->leftJoin('profiles','users.profile_id','profiles.id')
                     ->where('post_id',$post_id)
                     ->get();
-
         $friends = DB::select("SELECT * FROM `friendships` WHERE (receiver_id = $auth or sender_id = $auth)");
 
                     foreach($post_likes as $key=>$value){

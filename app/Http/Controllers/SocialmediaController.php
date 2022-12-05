@@ -298,8 +298,11 @@ class SocialmediaController extends Controller
        ]);
     }
 
-    public function social_media_likes($post_id)
+    public function social_media_likes(Request $request,$post_id)
     {
+        if(!empty($request->noti_id)){
+            $noti =  DB::table('notifications')->where('id',$request->noti_id)->update(['notification_status' => 2]);
+         }
         $auth = Auth()->user()->id;
         $post_likes=UserReactPost::where('post_id',$post_id)
                     ->with('user')
@@ -995,22 +998,24 @@ class SocialmediaController extends Controller
             env('PUSHER_APP_ID'),
             $options
             );
-            //$ids = ["4","5"];
+
             $data = auth()->user()->name.' mentioned you in a comment!';
             $data2 = auth()->user()->name.' commented on your post!';
-
-            $fri_noti = new Notification();
-            $fri_noti->description = $data2;
-            $fri_noti->date = Carbon::Now()->toDateTimeString();
-            $fri_noti->sender_id = auth()->user()->id;
-            $fri_noti->receiver_id = $post_owner->user_id;
-            $fri_noti->post_id=$request->post_id;
-            $fri_noti->comment_id = $comments->id;
-            $fri_noti->notification_status = 1;
-            $fri_noti->save();
-            $pusher->trigger('friend_request.'.$post_owner->user_id , 'friendRequest', $data2);
-            if(!empty($comments->mentioned_users)){
-                $ids = json_decode($comments->mentioned_users);
+            if($comments->mentioned_users == "null"){
+                //dd($comments->mentioned_users, "empty");
+                $fri_noti = new Notification();
+                $fri_noti->description = $data2;
+                $fri_noti->date = Carbon::Now()->toDateTimeString();
+                $fri_noti->sender_id = auth()->user()->id;
+                $fri_noti->receiver_id = $post_owner->user_id;
+                $fri_noti->post_id=$request->post_id;
+                $fri_noti->comment_id = $comments->id;
+                $fri_noti->notification_status = 1;
+                $fri_noti->save();
+                $pusher->trigger('friend_request.'.$post_owner->user_id , 'friendRequest', $data2);
+            }
+            else{
+               $ids = json_decode($comments->mentioned_users);
                 $arr = json_decode(json_encode ( $ids ) , true);
                 foreach($arr as $id){
                     $fri_noti = new Notification();
@@ -1022,9 +1027,23 @@ class SocialmediaController extends Controller
                     $fri_noti->comment_id = $comments->id;
                     $fri_noti->notification_status = 1;
                     $fri_noti->save();
-                    $pusher->trigger('friend_request.'.$fri_noti->receiver_id , 'friendRequest', $fri_noti);
+                    $pusher->trigger('friend_request.'.$fri_noti->receiver_id , 'friendRequest', $data);
                 }
             }
+
+            $fri_noti = new Notification();
+            $fri_noti->description = $data2;
+            $fri_noti->date = Carbon::Now()->toDateTimeString();
+            $fri_noti->sender_id = auth()->user()->id;
+            $fri_noti->receiver_id = $post_owner->user_id;
+            $fri_noti->post_id=$request->post_id;
+            $fri_noti->comment_id = $comments->id;
+            $fri_noti->notification_status = 1;
+            $fri_noti->save();
+            $pusher->trigger('friend_request.'.$post_owner->user_id , 'friendRequest', $data2);
+
+
+
         return response()->json([
             'data' =>  $comments
         ]);
@@ -1040,50 +1059,18 @@ class SocialmediaController extends Controller
     }
 
     public function comment_list(Request $request){
+        if(!empty($request->noti_id)){
+            $noti =  DB::table('notifications')->where('id',$request->noti_id)->update(['notification_status' => 2]);
+         }
         $id = $request->id;
         $comments = Comment::select('users.name','users.profile_id','profiles.profile_image','comments.*')
         ->leftJoin('users','users.id','comments.user_id')
         ->leftJoin('profiles','users.profile_id','profiles.id')
         ->where('post_id',$id)->orderBy('created_at','DESC')->get();
-    //     foreach($comments as $key=>$comm1){
-    //         $mentioned_user_id = json_decode($comm1->mentioned_users);
-    //      //    dd($users);
-    //         if($mentioned_user_id != null){
-
-    //          $users = User::select('users.id','users.name')->whereIn('id',$mentioned_user_id)->get();
-
-    //          $main =  $comm1['comment'];
-    //          // dd(count($users));
-    //          // foreach($mentioned_user_id as $id){
-    //              for($i=0;count($users)>$i;$i++){
-
-    //                  $mentioned_user_id_id = $users[$i]['id'];
-    //                  $url = route('socialmedia.profile',$mentioned_user_id_id);
-    //                  if (str_contains($main,'@'.$users[$i]['id'])) {
-    //                      $replace=
-    //                      str_replace(['@'.$users[$i]['id']],
-    //                      "<a href=$url>".$users[$i]['name'].'</a>',$main);
-    //                      $main=$replace;
-    //                      $comments[$key]['Replace']= $main;
-    //                  }
-    //              }
-
-
-    //          // }
-    //          }
-    //         else{
-    //          $comments[$key]['Replace']= $comm1->comment;
-    //         }
-
-    // }
-    foreach($comments as $key=>$comm1){
+        foreach($comments as $key=>$comm1){
         $ids = json_decode($comm1->mentioned_users);
-        $arr = json_decode(json_encode ( $ids ) , true);
-
-
          if($ids != null){
              $count = count($ids);
-             //   dd($count);
              $main =  $comm1['comment'];
              for($i = 0; $i < $count ; $i++){
                 $arr_id = json_decode(json_encode ( $ids[$i] ) , true);
@@ -1101,21 +1088,6 @@ class SocialmediaController extends Controller
                 $comments[$key]['Replace']= $main  ;
 
              }
-
-                     // for($i = 0; $i < sizeof($ids) ; $i++){
-                     //     $mentioned_user_id = $mentioned_user_id;
-
-                     //     $url = route('socialmedia.profile',$mentioned_user_id);
-                     //     $comments[$key]['Replace']= sizeof($ids);
-                     //     if (str_contains($main,'@'.$ids[$i]->id)) {
-                     //         $replace=
-                     //         str_replace(['@'.$ids[$i]->id],
-                     //         "<a href=$url>".$ids[$i]->name.'</a>',$main);
-                     //         $main=$replace;
-                     //         $comments[$key]['Replace']= $main;
-                     // }
-                     //     }
-
                  }
          else{
              $comments[$key]['Replace']= $comm1->comment;
@@ -1130,9 +1102,6 @@ class SocialmediaController extends Controller
         $comments = Comment::findOrFail($id);
 
         $ids = json_decode($comments->mentioned_users);
-        $arr = json_decode(json_encode ( $ids ) , true);
-
-
          if($ids != null){
              $count = count($ids);
              //   dd($count);
