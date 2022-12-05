@@ -30,6 +30,9 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert-dev.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
+    <!--comment mention--->
+    <link href="{{asset('css/customer/jquery.mentiony.css')}}" rel="stylesheet"/>
+
     <title>YC-Training Center</title>
   </head>
   <body class="customer-loggedin-bg">
@@ -75,6 +78,7 @@
 
       <!--chart js-->
       <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+      <script src="{{asset('js/customer/jquery.mentiony.js')}}"></script>
       <script>
                     $( document ).ready(function() {
                 $('.nav-icon').click(function(){

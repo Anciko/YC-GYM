@@ -1906,6 +1906,128 @@
             $(this).next().toggle()
         })
 
+        $('#textarea').mentiony({
+                onDataRequest: function (mode, keyword, onDataRequestCompleteCallback) {
+                    var search_url = "{{ route('users.mention') }}";
+                    $.ajaxSetup({
+                            headers: {
+                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                            }
+                        });
+                    $.ajax({
+                        method: "POST",
+                        url:search_url,
+                        data : keyword,
+                        dataType: "json",
+                        success: function (response) {
+                            var data = response.data;
+                            console.log(data)
+
+                            // NOTE: Assuming this filter process was done on server-side
+                            data = jQuery.grep(data, function( item ) {
+                                return item.name.toLowerCase().indexOf(keyword.toLowerCase()) > -1;
+                            });
+                            // End server-side
+
+                            // Call this to populate mention.
+                            onDataRequestCompleteCallback.call(this, data);
+                        }
+
+
+
+                    });
+                    console.log($("#editComment .mentiony-content") , "not edit")
+                },
+
+        });
+
+        $('#editCommentTextArea').mentiony({
+                onDataRequest: function (mode, keyword, onDataRequestCompleteCallback) {
+                    var search_url = "{{ route('users.mention') }}";
+                    $.ajaxSetup({
+                            headers: {
+                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                            }
+                        });
+                    $.ajax({
+                        method: "POST",
+                        url:search_url,
+                        data : keyword,
+                        dataType: "json",
+                        success: function (response) {
+                            var data = response.data;
+                            console.log(data)
+
+                            // NOTE: Assuming this filter process was done on server-side
+                            data = jQuery.grep(data, function( item ) {
+                                return item.name.toLowerCase().indexOf(keyword.toLowerCase()) > -1;
+                            });
+                            // End server-side
+
+                            // Call this to populate mention.
+                            onDataRequestCompleteCallback.call(this, data);
+                        }
+                    });
+
+
+                },
+
+                });
+
+        //edit comment start
+        $(document).on('click', '#editCommentModal', function(e) {
+                        $('#editModal').modal('show');
+                        var id = $(this).data('id');
+
+                        $(".social-media-all-comments-input-edit").data('id',id)
+
+                        var edit_url = "{{ route('post.comment.edit',[':id']) }}";
+                        edit_url = edit_url.replace(':id', id);
+                        $.ajaxSetup({
+                            headers: {
+                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                            }
+                        });
+                    $.ajax({
+                        method: "GET",
+                        url: edit_url,
+                        dataType: "json",
+                        success: function (response) {
+                            console.log(response.data);
+                            var replace = response.data.Replace
+                            $("#editComment .mentiony-content").html(replace)
+                        }
+                    });
+        })
+        //edit comment end
+
+        $(".mentiony-container").attr('style','')
+        $(".mentiony-content").attr('style','')
+
+        //mention delete the whole a tag start
+        $('.mentiony-content').on('keydown', function(event) {
+                console.log(event.which)
+                if (event.which == 8 || event.which == 46) {
+                    s = window.getSelection();
+                    r = s.getRangeAt(0)
+                    el = r.startContainer.parentElement
+
+                    console.log(el.classList.contains('mentiony-link') || el.classList.contains('mention-area') || el.classList.contains('highlight'))
+                    console.log(el)
+                    if (el.classList.contains('mentiony-link') || el.classList.contains('mention-area') || el.classList.contains('highlight')) {
+                        console.log('delete mention')
+
+
+                                el.remove();
+
+                            return;
+
+                    }
+                }
+                event.target.querySelectorAll('delete-highlight').forEach(function(el) { el.classList.remove('delete-highlight');})
+            });
+        //mention delete the whole a tag end
+
 
             function table_post_row(res){
                     let htmlView = '';
@@ -1952,6 +2074,7 @@
                           $('.social-media-all-comments').html(htmlView);
             }
         }
+
 
         function viewlikes(e){
             e.preventDefault();
