@@ -4,19 +4,21 @@ namespace App\Http\Controllers;
 
 use Carbon\Carbon;
 use Pusher\Pusher;
+use App\Models\Chat;
 use App\Models\Post;
 use App\Models\User;
 use App\Models\BanWord;
-use App\Models\Chat;
 use App\Models\Comment;
 use App\Models\Profile;
 use App\Models\Friendship;
 use App\Models\NotiFriends;
 use App\Models\Notification;
+use Illuminate\Http\Request;
 use App\Models\UserReactPost;
 use App\Models\UserSavedPost;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Response;
 use RealRashid\SweetAlert\Facades\Alert;
 
 class SocialmediaController extends Controller
@@ -798,11 +800,38 @@ class SocialmediaController extends Controller
         })->with('to_user')->with('from_user')->get();
 
         $auth_user_name = auth()->user()->name;
-        $receiver_user = User::where('users.id',$id)->join('profiles','profiles.user_id','users.id')->first();
+        $receiver_user = User::select('users.id','users.name','profiles.profile_image')->where('users.id',$id)->join('profiles','profiles.user_id','users.id')->first();
+
         $sender_user = Profile::where('user_id',$auth_user->id)->first();
 
-        return view('customer.chat_message', compact('id','messages','auth_user_name','receiver_user','sender_user'));
+        //active friend
+        $auth = Auth()->user()->id;
+        $user = User::where('id',$auth)->first();
+
+        $friendships=DB::table('friendships')
+                    ->where('friend_status',2)
+                    ->where(function($query) use ($id){
+                        $query->where('sender_id',$id)
+                            ->orWhere('receiver_id',$id);
+                    })
+                    ->join('users as sender','sender.id','friendships.sender_id')
+                    ->join('users as receiver','receiver.id','friendships.receiver_id')
+                    ->get(['sender_id','receiver_id'])->toArray();
+                    //dd($friends);
+        $n= array();
+        foreach($friendships as $friend){
+                    $f=(array)$friend;
+                    array_push($n, $f['sender_id'],$f['receiver_id']);
+            }
+        $friends=User::select('users.name','users.id')
+                        ->whereIn('id',$n)
+                        ->where('id','!=',$user->id)
+                        ->get();
+
+
+        return view('customer.chat_message', compact('id','messages','auth_user_name','receiver_user','sender_user','friends'));
     }
+
 
     public function viewmedia_message($id){
         $auth_user = auth()->user();
