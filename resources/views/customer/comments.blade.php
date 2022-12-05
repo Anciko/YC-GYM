@@ -11,7 +11,7 @@
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-            <form class="social-media-all-comments-input" id="editComment">
+            <form class="social-media-all-comments-input-edit" id="editComment">
                 <textarea placeholder="Write a comment" id="editCommentTextArea">asffdfsdfd</textarea>
                 <div id="menu" class="menu" role="listbox"></div>
                 <button class="social-media-all-comments-send-btn">
@@ -204,7 +204,6 @@
 <script>
     $(document).ready(function() {
         // $('').click(function(){
-
             $(document).on('click', '.social-media-comment-icon', function(e) {
                 $(this).next().toggle()
             })
@@ -281,7 +280,25 @@
                         $('#editModal').modal('show');
                         var id = $(this).data('id');
 
-                        $("#editComment .mentiony-content").text(id)
+                        $(".social-media-all-comments-input-edit").data('id',id)
+
+                        var edit_url = "{{ route('post.comment.edit',[':id']) }}";
+                        edit_url = edit_url.replace(':id', id);
+                        $.ajaxSetup({
+                            headers: {
+                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                            }
+                        });
+                    $.ajax({
+                        method: "GET",
+                        url: edit_url,
+                        dataType: "json",
+                        success: function (response) {
+                            console.log(response.data);
+                            var replace = response.data.Replace
+                            $("#editComment .mentiony-content").html(replace)
+                        }
+                    });
                 })
                 //edit comment end
 
@@ -292,17 +309,17 @@
 
             $(".social-media-all-comments-input").on('submit',function(e){
                 e.preventDefault()
-                console.log($('.mentiony-content').text())
+                // console.log($('.mentiony-content').text())
 
 
                 var arr = []
-                $.each($('.mentiony-link'),function(){
-                    arr.push({'id' : $(this).data('item-id'),'name' : $(this).text().split('@')[1]})
+                $.each($('.social-media-all-comments-input .mentiony-link'),function(){
+                    arr.push({'id' : $(this).data('item-id'),'name' : $(this).text()})
                     $(this).text(`@${$(this).data('item-id')}`)
 
                 })
 
-                var comment = $('.mentiony-content').text()
+                var comment = $('.social-media-all-comments-input .mentiony-content').text()
                 console.log(arr)
                 console.log(comment)
 
@@ -326,6 +343,44 @@
                         success: function (response) {
                             fetch_comment();
                             $('.mentiony-content').empty()
+                        }
+
+                    });
+
+            })
+            $(".social-media-all-comments-input-edit").on('submit',function(e){
+                e.preventDefault()
+                // console.log($('.mentiony-content').text())
+                console.log($(".social-media-all-comments-input-edit").data('id'))
+
+
+                var arr = []
+                $.each($('.social-media-all-comments-input-edit .mentiony-link'),function(){
+                    arr.push({'id' : $(this).data('item-id'),'name' : $(this).text()})
+                    $(this).text(`@${$(this).data('item-id')}`)
+
+                })
+                var post_id = $(".social-media-all-comments-input-edit").data('id');
+
+                var comment = $('.social-media-all-comments-input-edit .mentiony-content').text()
+                console.log(arr)
+                console.log(comment)
+                // <a href = "" >Trainer</a>
+                var search_url = "{{ route('post.comment.update') }}";
+                //var post_id = "{{$post->id}}"
+                // console.log(post_id)
+                    $.ajaxSetup({
+                            headers: {
+                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                            }
+                        });
+                    $.ajax({
+                        method: "POST",
+                        url:search_url,
+                        data : {'post_id':post_id,'mention' : arr , 'comment' : comment},
+                        dataType: "json",
+                        success: function (response) {
+                            window.location.reload()
                         }
 
                     });
@@ -356,26 +411,6 @@
                             }
                             console.log("data");
                             for(let i = 0; i < res.comment.length; i++){
-                                    // for(let c = 0; c < res.comment[i].comment.length;c++){
-                                    //         //console.log(res.comment[i].comment.length)
-                                    //         //console.log(/^\d$/.test(res.comment[i].comment[c]))
-                                    //         var commentTemplate = ``
-                                    //         if(res.comment[i].comment[c] === '@' && /^\d$/.test(res.comment[i].comment[c+1])){
-                                    //             commentTemplate = commentTemplate + `<a></a>`
-                                    //             console.log(commentTemplate);
-                                    //             continue
-                                    //         }
-
-                                    //         if(/^\d$/.test(res.comment[i].comment[c]) && res.comment[i].comment[i-c] === '@'){
-                                    //             continue
-                                    //         }
-
-                                    //         // console.log(res.comment[i].comment[c] , 'test')
-                                    //         [...res.comment[i].comment[c]].forEach(a => {
-                                    //         console.log(a+commentTemplate)
-                                    //     })
-                                    //     }
-
 
                                     htmlView += `
                                     <div class="social-media-comment-container">

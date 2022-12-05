@@ -141,6 +141,8 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
 
         Route::post('/post/comment/store', [SocialmediaController::class, 'post_comment_store'])->name('post.comment.store');
         Route::post('/post/comment/delete/{id}', [SocialmediaController::class, 'comment_delete'])->name('post.comment.delete');
+        Route::get('/post/comment/edit/{id}', [SocialmediaController::class, 'comment_edit'])->name('post.comment.edit');
+        Route::post('post/comment/update', [SocialmediaController::class, 'comment_update'])->name('post.comment.update');
 });
     Route::get('customer/register', [App\Http\Controllers\HomeController::class, 'customer_register'])->name('customer_register');
     //Route::post('customer/register', [App\Http\Controllers\Auth\RegisterController::class, 'register'])->name('customer_register');

@@ -87,9 +87,10 @@
                 cluster: '{{env("PUSHER_APP_CLUSTER")}}',
                 encrypted: true
                 });
-                var channel = pusher.subscribe('friend_request.'+user_id);
+                var channel = pusher.subscribe('friend_request.'+ user_id);
                 channel.bind('friendRequest', function(data) {
                 console.log(data);
+                alert(data);
                 $.notify(data, "success",{ position:"left" });
                 });
     </script>

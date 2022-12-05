@@ -929,6 +929,31 @@ class SocialmediaController extends Controller
         $comments->comment = $request->comment;
         $comments->mentioned_users = json_encode($request->mention);
         $comments->save();
+        $options = array(
+            'cluster' => env('PUSHER_APP_CLUSTER'),
+            'encrypted' => true
+            );
+            $pusher = new Pusher(
+            env('PUSHER_APP_KEY'),
+            env('PUSHER_APP_SECRET'),
+            env('PUSHER_APP_ID'),
+            $options
+            );
+            //$ids = ["4","5"];
+            $data = auth()->user()->name.' mentioned you in a comment!';
+            $ids = json_decode($comments->mentioned_users);
+            $arr = json_decode(json_encode ( $ids ) , true);
+            foreach($arr as $id){
+                $fri_noti = new Notification();
+                $fri_noti->description = $data;
+                $fri_noti->date = Carbon::Now()->toDateTimeString();
+                $fri_noti->sender_id = auth()->user()->id;
+                $fri_noti->receiver_id = $id['id'];
+                $fri_noti->comment_id = $comments->id;
+                $fri_noti->notification_status = 1;
+                $fri_noti->save();
+                $pusher->trigger('friend_request.'.$fri_noti->receiver_id , 'friendRequest', $data);
+            }
         return response()->json([
             'data' =>  $comments
         ]);
@@ -1027,6 +1052,86 @@ class SocialmediaController extends Controller
         }
         return response()->json([
             'comment' => $comments
+        ]);
+    }
+    public function comment_edit($id){
+
+        $comments = Comment::findOrFail($id);
+
+        $ids = json_decode($comments->mentioned_users);
+        $arr = json_decode(json_encode ( $ids ) , true);
+
+
+         if($ids != null){
+             $count = count($ids);
+             //   dd($count);
+             $main =  $comments['comment'];
+             for($i = 0; $i < $count ; $i++){
+                $arr_id = json_decode(json_encode ( $ids[$i] ) , true);
+                $mentioned_user_id = $arr_id['id'];
+
+                          $url = route('socialmedia.profile',$mentioned_user_id);
+                          $comments['Replace']= sizeof($ids);
+                         if (str_contains($main,'@'.$mentioned_user_id)) {
+                             $replace=
+                              str_replace(['@'.$mentioned_user_id],
+                             "<a href=$url data-item-id = $mentioned_user_id class = 'mentiony-link'>".$arr_id['name'].'</a>',$main);
+                             $main=$replace;
+                             $comments['Replace']= $main;
+                      }
+                $comments['Replace']= $main  ;
+
+             }
+
+                     // for($i = 0; $i < sizeof($ids) ; $i++){
+                     //     $mentioned_user_id = $mentioned_user_id;
+
+                     //     $url = route('socialmedia.profile',$mentioned_user_id);
+                     //     $comments[$key]['Replace']= sizeof($ids);
+                     //     if (str_contains($main,'@'.$ids[$i]->id)) {
+                     //         $replace=
+                     //         str_replace(['@'.$ids[$i]->id],
+                     //         "<a href=$url>".$ids[$i]->name.'</a>',$main);
+                     //         $main=$replace;
+                     //         $comments[$key]['Replace']= $main;
+                     // }
+                     //     }
+
+                 }
+         else{
+             $comments['Replace']= $comments->comment;
+         }
+        return response()->json([
+            'data' => $comments
+        ]);
+    }
+
+    public function comment_update(Request $request){
+        $banwords=DB::table('ban_words')->select('ban_word_english','ban_word_myanmar','ban_word_myanglish')->get();
+        foreach($banwords as $b){
+           $e_banword=$b->ban_word_english;
+           $m_banword=$b->ban_word_myanmar;
+           $em_banword=$b->ban_word_myanglish;
+            if (str_contains($request->comment,$e_banword)) {
+                return response()->json([
+                    'ban'=>'Ban',
+                ]);
+            }elseif (str_contains($request->comment,$m_banword)){
+                return response()->json([
+                    'ban'=>'Ban',
+                ]);
+            }elseif (str_contains($request->comment,$em_banword)){
+                return response()->json([
+                    'ban'=>'Ban',
+                ]);
+            }
+        }
+        $comments_update = Comment::findOrFail($request->post_id);
+        $comments_update->comment = $request->comment;
+        $comments_update->mentioned_users = json_encode($request->mention);
+        $comments_update->update();
+        return response()->json([
+            'success' =>  'Comment updated successfully!'
         ]);
     }
 }
