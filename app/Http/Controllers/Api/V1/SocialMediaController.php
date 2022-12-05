@@ -652,13 +652,14 @@ class SocialMediaController extends Controller
         $post->user_id=$user->id;
         $post->caption=$caption;
         $post->save();
+
         $id = $post->id;
         $saved_post = UserSavedPost::select('posts.*')->leftJoin('posts','posts.id','user_saved_posts.post_id')
         ->where('user_saved_posts.post_id',$id)
         ->where('user_saved_posts.user_id',auth()->user()->id)
         ->first();
         // dd($saved_post);
-        $post=Post::select('users.name','profiles.profile_image','posts.*')
+        $post_one=Post::select('users.name','profiles.profile_image','posts.*')
         ->where('posts.id',$id)
         ->leftJoin('users','users.id','posts.user_id')
         ->leftJoin('profiles','users.profile_id','profiles.id')
@@ -674,51 +675,51 @@ class SocialMediaController extends Controller
 
         $comment_post_count = DB::select("SELECT COUNT(post_id) as comment_count, post_id FROM comments WHERE post_id = $id");
 
-            foreach($post as $key=>$value){
-                $post['is_save']= 0;
-                $post['is_like']= 0;
-                $posts['like_count']= 0;
-                $posts['comment_count']= 0;
+            foreach($post_one as $key=>$value){
+                $post_one['is_save']= 0;
+                $post_one['is_like']= 0;
+                $post_one['like_count']= 0;
+                $post_one['comment_count']= 0;
             // dd($value->id);
                     if(empty($saved_post)){
-                        foreach($post as $value ){
-                            $post['is_save']= 0;
+                        foreach($saved_post as $value ){
+                            $post_one['is_save']= 0;
                             }
                         }
                     else{
-                        foreach($post as $value ){
-                            $post['is_save']= 1;
+                        foreach($saved_post as $value ){
+                            $post_one['is_save']= 1;
                         }
                     }
                     if(!empty($liked_post)){
                         foreach($liked_post as $liked_key=>$liked_value){
-                                $post['is_like']= 1;
+                                $post_one['is_like']= 1;
                         }
                     }
                     else{
-                        $post['like_count']= 0;
+                        $post_one['like_count']= 0;
                     }
                     if(!empty($liked_post_count)){
                         foreach($liked_post_count as $like_count){
-                                $post['like_count']= $like_count->like_count;
+                                $post_one['like_count']= $like_count->like_count;
                         }
                     }
                     else{
-                        $post['like_count']= 0;
+                        $post_one['like_count']= 0;
                     }
 
                     if(!empty($comment_post_count)){
                         foreach($comment_post_count as $comment_count){
-                                $post['comment_count']= $comment_count->comment_count;
+                                $post_one['comment_count']= $comment_count->comment_count;
                         }
                     }
                     else{
-                        $post['comment_count']= 0;
+                        $post_one['comment_count']= 0;
                     }
 
                 }
         return response()->json([
-            'data'=>$post
+            'data'=>$post_one
         ]);
     }
 
@@ -946,11 +947,11 @@ class SocialMediaController extends Controller
             foreach($post as $key=>$value){
                 $post['is_save']= 0;
                 $post['is_like']= 0;
-                $posts['like_count']= 0;
-                $posts['comment_count']= 0;
+                $post['like_count']= 0;
+                $post['comment_count']= 0;
             // dd($value->id);
                     if(empty($saved_post)){
-                        foreach($post as $value ){
+                        foreach($saved_post as $value ){
                             $post['is_save']= 0;
                             }
                         }
