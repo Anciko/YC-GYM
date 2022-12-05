@@ -654,69 +654,18 @@ class SocialMediaController extends Controller
         $post->save();
 
         $id = $post->id;
-        $saved_post = UserSavedPost::select('posts.*')->leftJoin('posts','posts.id','user_saved_posts.post_id')
-        ->where('user_saved_posts.post_id',$id)
-        ->where('user_saved_posts.user_id',auth()->user()->id)
-        ->first();
-        // dd($saved_post);
+
         $post_one=Post::select('users.name','profiles.profile_image','posts.*')
         ->where('posts.id',$id)
         ->leftJoin('users','users.id','posts.user_id')
         ->leftJoin('profiles','users.profile_id','profiles.id')
         ->first();
 
-        $saved_post = UserSavedPost::select('posts.*')->leftJoin('posts','posts.id','user_saved_posts.post_id')
-        ->where('user_saved_posts.post_id',$id)
-        ->first();
-
-        $liked_post = UserReactPost::select('posts.*')->leftJoin('posts','posts.id','user_react_posts.post_id')
-                ->where('user_react_posts.post_id',$id)->first();
-        $liked_post_count = DB::select("SELECT COUNT(post_id) as like_count, post_id FROM user_react_posts WHERE post_id = $id");
-
-        $comment_post_count = DB::select("SELECT COUNT(post_id) as comment_count, post_id FROM comments WHERE post_id = $id");
-
             foreach($post_one as $key=>$value){
                 $post_one['is_save']= 0;
                 $post_one['is_like']= 0;
                 $post_one['like_count']= 0;
                 $post_one['comment_count']= 0;
-            // dd($value->id);
-                    if(empty($saved_post)){
-                        foreach($saved_post as $value ){
-                            $post_one['is_save']= 0;
-                            }
-                        }
-                    else{
-                        foreach($saved_post as $value ){
-                            $post_one['is_save']= 1;
-                        }
-                    }
-                    if(!empty($liked_post)){
-                        foreach($liked_post as $liked_key=>$liked_value){
-                                $post_one['is_like']= 1;
-                        }
-                    }
-                    else{
-                        $post_one['like_count']= 0;
-                    }
-                    if(!empty($liked_post_count)){
-                        foreach($liked_post_count as $like_count){
-                                $post_one['like_count']= $like_count->like_count;
-                        }
-                    }
-                    else{
-                        $post_one['like_count']= 0;
-                    }
-
-                    if(!empty($comment_post_count)){
-                        foreach($comment_post_count as $comment_count){
-                                $post_one['comment_count']= $comment_count->comment_count;
-                        }
-                    }
-                    else{
-                        $post_one['comment_count']= 0;
-                    }
-
                 }
         return response()->json([
             'data'=>$post_one
