@@ -1270,11 +1270,8 @@ class SocialMediaController extends Controller
             env('PUSHER_APP_ID'),
             $options
             );
-
-            $data = auth()->user()->name.' mentioned you in a comment!';
-            $data2 = auth()->user()->name.' commented on your post!';
-            if(empty($comments->mentioned_users)){
-                //dd($comments->mentioned_users, "empty");
+        if($post_owner->user_id != auth()->user()->id AND $comments->mentioned_users == "null"){
+                $data2 = auth()->user()->name.' commented on your post!';
                 $fri_noti = new Notification();
                 $fri_noti->description = $data2;
                 $fri_noti->date = Carbon::Now()->toDateTimeString();
@@ -1284,38 +1281,27 @@ class SocialMediaController extends Controller
                 $fri_noti->comment_id = $comments->id;
                 $fri_noti->notification_status = 1;
                 $fri_noti->save();
-                $pusher->trigger('friend_request.'.$post_owner->user_id , 'friendRequest', $fri_noti);
+                $pusher->trigger('friend_request.'.$post_owner->user_id , 'friendRequest', $data2);
+        }
+        elseif($comments->mentioned_users != "null"){
+           $data = auth()->user()->name.' mentioned you in a comment!';
+           $ids = json_decode($comments->mentioned_users);
+           $arr = json_decode(json_encode ( $ids ) , true);
+            foreach($arr as $id){
+                if($id['id'] != auth()->user()->id){
+                $fri_noti = new Notification();
+                $fri_noti->description = $data;
+                $fri_noti->date = Carbon::Now()->toDateTimeString();
+                $fri_noti->sender_id = auth()->user()->id;
+                $fri_noti->post_id=$request->post_id;
+                $fri_noti->receiver_id = $id['id'];
+                $fri_noti->comment_id = $comments->id;
+                $fri_noti->notification_status = 1;
+                $fri_noti->save();
+                $pusher->trigger('friend_request.'.$fri_noti->receiver_id , 'friendRequest', $data);
             }
-            else{
-               $ids = json_decode($comments->mentioned_users);
-                $arr = json_decode(json_encode ( $ids ) , true);
-                foreach($arr as $id){
-                    $fri_noti = new Notification();
-                    $fri_noti->description = $data;
-                    $fri_noti->date = Carbon::Now()->toDateTimeString();
-                    $fri_noti->sender_id = auth()->user()->id;
-                    $fri_noti->post_id=$request->post_id;
-                    $fri_noti->receiver_id = $id['id'];
-                    $fri_noti->comment_id = $comments->id;
-                    $fri_noti->notification_status = 1;
-                    $fri_noti->save();
-                    $pusher->trigger('friend_request.'.$fri_noti->receiver_id , 'friendRequest', $fri_noti);
-                }
-            }
-
-            $fri_noti = new Notification();
-            $fri_noti->description = $data2;
-            $fri_noti->date = Carbon::Now()->toDateTimeString();
-            $fri_noti->sender_id = auth()->user()->id;
-            $fri_noti->receiver_id = $post_owner->user_id;
-            $fri_noti->post_id=$request->post_id;
-            $fri_noti->comment_id = $comments->id;
-            $fri_noti->notification_status = 1;
-            $fri_noti->save();
-            $pusher->trigger('friend_request.'.$post_owner->user_id , 'friendRequest', $data2);
-
-
-
+           }
+        }
         return response()->json([
             'data' =>  $comments
         ]);
@@ -1364,18 +1350,19 @@ class SocialMediaController extends Controller
                     env('PUSHER_APP_ID'),
                     $options
                     );
-                    //$ids = ["4","5"];
                     $post_owner = Post::where('posts.id',$react->post_id)->first();
-                    $data = auth()->user()->name.' liked your post!';
-                    $fri_noti = new Notification();
-                    $fri_noti->description = $data;
-                    $fri_noti->date = Carbon::Now()->toDateTimeString();
-                    $fri_noti->sender_id = auth()->user()->id;
-                    $fri_noti->receiver_id = $post_owner->user_id;
-                    $fri_noti->post_id=$request->post_id;
-                    $fri_noti->notification_status = 1;
-                    $fri_noti->save();
-                    $pusher->trigger('friend_request.'.$post_owner->user_id , 'friendRequest', $data);
+                    if($post_owner->user_id != auth()->user()->id){
+                        $data = auth()->user()->name.' liked your post!';
+                        $fri_noti = new Notification();
+                        $fri_noti->description = $data;
+                        $fri_noti->date = Carbon::Now()->toDateTimeString();
+                        $fri_noti->sender_id = auth()->user()->id;
+                        $fri_noti->receiver_id = $post_owner->user_id;
+                        $fri_noti->post_id=$request->post_id;
+                        $fri_noti->notification_status = 1;
+                        $fri_noti->save();
+                        $pusher->trigger('friend_request.'.$post_owner->user_id , 'friendRequest', $data);
+                    }
             }
             $total_likes=UserReactPost::where('post_id',$post_id)->count();
             return response()->json([
