@@ -558,11 +558,11 @@
                         <div class="customer-post-footer-container">
                             <div class="customer-post-like-container">
                                 <iconify-icon icon="akar-icons:heart" class="like-icon"></iconify-icon>
-                                <p><span>1.1k</span> Likes</p>
+                                <p><span>2</span> Likes</p>
                             </div>
                             <div class="customer-post-comment-container">
                                 <iconify-icon icon="bi:chat-right" class="comment-icon"></iconify-icon>
-                                <p><span>50</span> Comments</p>
+                                <p><span>3</span> Comments</p>
                             </div>
                         </div>
                     </div>

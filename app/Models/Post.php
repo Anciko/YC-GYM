@@ -37,7 +37,8 @@ class Post extends Model
         return $this->hasMany(UserSavedPost::class, 'post_id', 'id');
     }
 
-    public function report(){
-        return $this->hasOne(Report::class);
+    public function reports()
+    {
+        return $this->hasMany(Report::class, 'post_id', 'id');
     }
 }
