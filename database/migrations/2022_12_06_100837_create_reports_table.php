@@ -15,11 +15,9 @@ class CreateReportsTable extends Migration
     {
         Schema::create('reports', function (Blueprint $table) {
             $table->id();
-            $table->longText('description');
-            $table->integer('report_count');
-            $table->foreignId('post_id')->constrained()->onDelete('CASCADE');
-            $table->integer('comment_id');
-            $table->foreignId('user_id')->constrained()->onDelete('CASCADE');
+            $table->text('description')->nullable();
+            $table->integer('post_id');
+            $table->integer('user_id');
             $table->timestamps();
         });
     }

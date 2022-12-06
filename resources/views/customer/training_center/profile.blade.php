@@ -85,7 +85,6 @@
 </div>
 
 <!-- View Comment Modal -->
-
 <div class="modal fade " id="view_comments_modal">
     <div class="modal-dialog">
       <div class="modal-content">
@@ -98,6 +97,11 @@
                 <form class="social-media-all-comments-input">
                     <textarea placeholder="Write a comment" id="textarea"></textarea>
                     <div id="menu" class="menu" role="listbox"></div>
+                    <button type="button" id="emoji-button" class="emoji-trigger">
+                        <iconify-icon icon="bi:emoji-smile" class="group-chat-send-form-emoji-icon"></iconify-icon>
+                    </button>
+                    <div id="emojis">
+                    </div>
                     <button class="social-media-all-comments-send-btn">
                         <iconify-icon icon="akar-icons:send" class="social-media-all-comments-send-icon"></iconify-icon>
                     </button>
@@ -439,7 +443,7 @@
                                 </div>
                                 <div class="customer-post-comment-container">
                                     {{-- <a href = "{{route('post.comment',$post->id)}}"> --}}
-                                    <a class="viewcomments" >
+                                    <a class="viewcomments" id = "{{$post->id}}">
                                     <iconify-icon icon="bi:chat-right" class="comment-icon"></iconify-icon>
                                     <p id="{{$post->id}}"><span>{{$total_comments}}</span> Comments</p>
                                     </a>
@@ -454,127 +458,153 @@
                 {{-- Saved Post Start --}}
                 <div class="customer-saved-posts-container">
                     @forelse ($save_posts->sortByDesc('created_at') as $save_post)
-                        <div class="customer-post-container">
-                            <div class="customer-post-header">
-                                <div class="customer-post-name-container">
-                                    <?php $profile=$save_post->post->user->profiles->where('cover_photo',null)->sortByDesc('created_at')->first() ?>
-                                    @if ($profile==null)
-                                        <img class="nav-profile-img" src="{{asset('img/customer/imgs/user_default.jpg')}}"/>
-                                    @else
-                                        <img class="nav-profile-img" src="{{asset('storage/post/'.$profile->profile_image)}}"/>
-                                    @endif
-                                    <div class="customer-post-name">
-                                        <p>{{$save_post->post->user->name}}</p>
-                                        <span>{{ \Carbon\Carbon::parse($save_post->post->created_at)->format('d M Y , g:i A')}}</span>
-                                    </div>
+                    <div class="customer-post-container">
+                        <div class="customer-post-header">
+                            <div class="customer-post-name-container">
+                                <?php $profile=$save_post->post->user->profiles->where('cover_photo',null)->sortByDesc('created_at')->first() ?>
+                                @if ($profile==null)
+                                    <img class="nav-profile-img" src="{{asset('img/customer/imgs/user_default.jpg')}}"/>
+                                @else
+                                    <img class="nav-profile-img" src="{{asset('storage/post/'.$profile->profile_image)}}"/>
+                                @endif
+                                <div class="customer-post-name">
+                                    <p>{{$save_post->post->user->name}}</p>
+                                    <span>{{ \Carbon\Carbon::parse($save_post->post->created_at)->format('d M Y , g:i A')}}</span>
                                 </div>
+                            </div>
 
-                                <iconify-icon icon="bi:three-dots-vertical" class="customer-post-header-icon"></iconify-icon>
-                                <div class="post-actions-container">
-                                    <a href="#" style="text-decoration:none" class="post_save" id="{{$save_post->post_id}}">
+                            <iconify-icon icon="bi:three-dots-vertical" class="customer-post-header-icon"></iconify-icon>
+                            <div class="post-actions-container">
+                                <a href="#" style="text-decoration:none" class="post_save" id="{{$save_post->post_id}}">
+                                    <div class="post-action">
+                                        <iconify-icon icon="bi:save" class="post-action-icon"></iconify-icon>
+                                            <p class="save">Unsave</p>
+                                    </div>
+                                </a>
+                                @if ($save_post->post->user->id == auth()->user()->id)
+                                    <a id="edit_post" data-id="{{$save_post->post->id}}" data-bs-toggle="modal" >
                                         <div class="post-action">
-                                            <iconify-icon icon="bi:save" class="post-action-icon"></iconify-icon>
-                                                <p class="save">Unsave</p>
+                                            <iconify-icon icon="material-symbols:edit" class="post-action-icon"></iconify-icon>
+                                            <p>Edit</p>
                                         </div>
                                     </a>
-                                    @if ($save_post->post->user->id == auth()->user()->id)
-                                        <a id="edit_post" data-id="{{$save_post->post->id}}" data-bs-toggle="modal" >
-                                            <div class="post-action">
-                                                <iconify-icon icon="material-symbols:edit" class="post-action-icon"></iconify-icon>
-                                                <p>Edit</p>
-                                            </div>
-                                        </a>
-                                        <a id="delete_post" data-id="{{$save_post->post->id}}">
-                                            <div class="post-action">
-                                            <iconify-icon icon="material-symbols:delete-forever-outline-rounded" class="post-action-icon"></iconify-icon>
-                                            <p>Delete</p>
-                                            </div>
-                                        </a>
-                                    @endif
-                                </div>
-                            </div>
-
-                            <div class="customer-content-container">
-                                @if ($save_post->post->media==null)
-                                <p>{{$save_post->post->caption}}</p>
-                                @else
-                                <p>{{$save_post->post->caption}}</p>
-                                <div class="customer-media-container">
-                                    <?php foreach (json_decode($save_post->post->media)as $m){?>
-                                        <div class="customer-media">
-                                        @if (pathinfo($m, PATHINFO_EXTENSION) == 'mp4')
-                                        <video controls>
-                                            <source src="{{asset('storage/post/'.$m) }}">
-                                        </video>
-                                        @else
-                                            <img src="{{asset('storage/post/'.$m) }}">
-                                        @endif
-                                    </div>
-                                    <?php }?>
-                                </div>
-                                <div id="slider-wrapper" class="social-media-media-slider">
-                                    <iconify-icon icon="akar-icons:cross" class="slider-close-icon"></iconify-icon>
-
-                                    <div id="image-slider" class="image-slider">
-                                        <ul class="ul-image-slider">
-
-                                            <?php foreach (json_decode($save_post->post->media)as $m){?>
-                                                @if (pathinfo($m, PATHINFO_EXTENSION) == 'mp4')
-                                                <li>
-                                                    <video controls>
-                                                        <source src="{{asset('storage/post/'.$m) }}">
-                                                    </video>
-                                                </li>
-                                                @else
-                                                    <li>
-                                                        <img src="{{asset('storage/post/'.$m) }}" alt="" />
-                                                    </li>
-                                                @endif
-
-                                            <?php }?>
-                                        </ul>
-
-                                    </div>
-
-                                    <div id="thumbnail" class="img-slider-thumbnails">
-                                        <ul>
-                                            <?php foreach (json_decode($save_post->post->media)as $m){?>
-                                                @if (pathinfo($m, PATHINFO_EXTENSION) == 'mp4')
-                                                <li>
-                                                    <video>
-                                                        <source src="{{asset('storage/post/'.$m) }}">
-                                                    </video>
-                                                </li>
-                                                @else
-                                                    <li>
-                                                        <img src="{{asset('storage/post/'.$m) }}" alt="" />
-                                                    </li>
-                                                @endif
-
-                                            <?php }?>
-
-                                        </ul>
-                                    </div>
-
-                                </div>
+                                    <a id="delete_post" data-id="{{$save_post->post->id}}">
+                                        <div class="post-action">
+                                        <iconify-icon icon="material-symbols:delete-forever-outline-rounded" class="post-action-icon"></iconify-icon>
+                                        <p>Delete</p>
+                                        </div>
+                                    </a>
                                 @endif
-
-                            </div>
-
-                            <div class="customer-post-footer-container">
-                                <div class="customer-post-like-container">
-                                    <iconify-icon icon="akar-icons:heart" class="like-icon"></iconify-icon>
-                                    <p><span>1.1k</span> Likes</p>
-                                </div>
-                                <div class="customer-post-comment-container">
-                                    <iconify-icon icon="bi:chat-right" class="comment-icon"></iconify-icon>
-                                    <p><span>50</span> Comments</p>
-                                </div>
                             </div>
                         </div>
-                        @empty
-                        <p class="text-secondary p-1">No Saved Post And Activity</p>
-                    @endforelse
+
+                        <div class="customer-content-container">
+                            @if ($save_post->post->media==null)
+                            <p>{{$save_post->post->caption}}</p>
+                            @else
+                            <p>{{$save_post->post->caption}}</p>
+                            <div class="customer-media-container">
+                                <?php foreach (json_decode($save_post->post->media)as $m){?>
+                                    <div class="customer-media">
+                                    @if (pathinfo($m, PATHINFO_EXTENSION) == 'mp4')
+                                    <video controls>
+                                        <source src="{{asset('storage/post/'.$m) }}">
+                                    </video>
+                                    @else
+                                        <img src="{{asset('storage/post/'.$m) }}">
+                                    @endif
+                                </div>
+                                <?php }?>
+                            </div>
+                            <div id="slider-wrapper" class="social-media-media-slider">
+                                <iconify-icon icon="akar-icons:cross" class="slider-close-icon"></iconify-icon>
+
+                                <div id="image-slider" class="image-slider">
+                                    <ul class="ul-image-slider">
+
+                                        <?php foreach (json_decode($save_post->post->media)as $m){?>
+                                            @if (pathinfo($m, PATHINFO_EXTENSION) == 'mp4')
+                                            <li>
+                                                <video controls>
+                                                    <source src="{{asset('storage/post/'.$m) }}">
+                                                </video>
+                                            </li>
+                                            @else
+                                                <li>
+                                                    <img src="{{asset('storage/post/'.$m) }}" alt="" />
+                                                </li>
+                                            @endif
+
+                                        <?php }?>
+                                    </ul>
+
+                                </div>
+
+                                <div id="thumbnail" class="img-slider-thumbnails">
+                                    <ul>
+                                        <?php foreach (json_decode($save_post->post->media)as $m){?>
+                                            @if (pathinfo($m, PATHINFO_EXTENSION) == 'mp4')
+                                            <li>
+                                                <video>
+                                                    <source src="{{asset('storage/post/'.$m) }}">
+                                                </video>
+                                            </li>
+                                            @else
+                                                <li>
+                                                    <img src="{{asset('storage/post/'.$m) }}" alt="" />
+                                                </li>
+                                            @endif
+
+                                        <?php }?>
+
+                                    </ul>
+                                </div>
+
+                            </div>
+                            @endif
+
+                        </div>
+
+                        <div class="customer-post-footer-container">
+                            <div class="customer-post-like-container">
+                                @php
+                                    $total_likes=$post->user_reacted_posts->count();
+                                    $total_comments=$post->comments->count();
+                                    $user=auth()->user();
+                                    $already_liked=$user->user_reacted_posts->where('post_id',$post->id)->count();
+                                @endphp
+
+                                <a class="like" href="#" id="{{$post->id}}">
+
+                                @if($already_liked==0)
+                                <iconify-icon icon="mdi:cards-heart-outline" class="like-icon">
+                                </iconify-icon>
+                                @else
+                                <iconify-icon icon="mdi:cards-heart" style="color: red;" class="like-icon already-liked">
+                                </iconify-icon>
+                                @endif
+
+                                </a>
+                                <p>
+                                    <span class="total_likes">
+
+                                    {{$total_likes}}
+                                    </span>
+                                    <a class="viewlikes" id={{$post->id}}>Likes</a>
+                                </p>
+                            </div>
+                            <div class="customer-post-comment-container">
+                                {{-- <a href = "{{route('post.comment',$post->id)}}"> --}}
+                                <a class="viewcomments" id = "{{$post->id}}">
+                                <iconify-icon icon="bi:chat-right" class="comment-icon"></iconify-icon>
+                                <p id="{{$post->id}}"><span>{{$total_comments}}</span> Comments</p>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    @empty
+                    <p class="text-secondary p-1">No Saved Post And Activity</p>
+                @endforelse
                 </div>
             </div>
         </div>
@@ -631,94 +661,6 @@
            </div>
 
            <div class="social-media-fris-list-container">
-            {{-- <div class="social-media-fris-fri-row">
-                <div class="social-media-fris-fri-img">
-                    <img src="../imgs/cover.jpg">
-                    <p>Friend Name</p>
-                </div>
-
-                <div class="social-media-fris-fri-btns-container">
-                    <a href="#" class="customer-primary-btn">Message</a>
-                    <button class="customer-red-btn">Remove</button>
-                </div>
-            </div>
-            <div class="social-media-fris-fri-row">
-                <div class="social-media-fris-fri-img">
-                    <img src="../imgs/cover.jpg">
-                    <p>Friend Name</p>
-                </div>
-
-                <div class="social-media-fris-fri-btns-container">
-                    <a href="#" class="customer-primary-btn">Message</a>
-                    <button class="customer-red-btn">Remove</button>
-                </div>
-            </div>
-            <div class="social-media-fris-fri-row">
-                <div class="social-media-fris-fri-img">
-                    <img src="../imgs/cover.jpg">
-                    <p>Friend Name</p>
-                </div>
-
-                <div class="social-media-fris-fri-btns-container">
-                    <a href="#" class="customer-primary-btn">Message</a>
-                    <button class="customer-red-btn">Remove</button>
-                </div>
-            </div>
-            <div class="social-media-fris-fri-row">
-                <div class="social-media-fris-fri-img">
-                    <img src="../imgs/cover.jpg">
-                    <p>Friend Name</p>
-                </div>
-
-                <div class="social-media-fris-fri-btns-container">
-                    <a href="#" class="customer-primary-btn">Message</a>
-                    <button class="customer-red-btn">Remove</button>
-                </div>
-            </div>
-            <div class="social-media-fris-fri-row">
-                <div class="social-media-fris-fri-img">
-                    <img src="../imgs/cover.jpg">
-                    <p>Friend Name</p>
-                </div>
-
-                <div class="social-media-fris-fri-btns-container">
-                    <a href="#" class="customer-primary-btn">Message</a>
-                    <button class="customer-red-btn">Remove</button>
-                </div>
-            </div>
-            <div class="social-media-fris-fri-row">
-                <div class="social-media-fris-fri-img">
-                    <img src="../imgs/cover.jpg">
-                    <p>Friend Name</p>
-                </div>
-
-                <div class="social-media-fris-fri-btns-container">
-                    <a href="#" class="customer-primary-btn">Message</a>
-                    <button class="customer-red-btn">Remove</button>
-                </div>
-            </div>
-            <div class="social-media-fris-fri-row">
-                <div class="social-media-fris-fri-img">
-                    <img src="../imgs/cover.jpg">
-                    <p>Friend Name</p>
-                </div>
-
-                <div class="social-media-fris-fri-btns-container">
-                    <a href="#" class="customer-primary-btn">Message</a>
-                    <button class="customer-red-btn">Remove</button>
-                </div>
-            </div>
-            <div class="social-media-fris-fri-row">
-                <div class="social-media-fris-fri-img">
-                    <img src="../imgs/cover.jpg">
-                    <p>Friend Name Friend Name Friend Name</p>
-                </div>
-
-                <div class="social-media-fris-fri-btns-container">
-                    <a href="#" class="customer-primary-btn">Message</a>
-                    <button class="customer-red-btn">Remove</button>
-                </div>
-            </div> --}}
 
            </div>
         </div>
@@ -1888,225 +1830,6 @@
             viewlikes(e);
         })
 
-        $('.viewcomments').click(function(e){
-            viewcomments(e);
-        })
-
-        function viewcomments(e){
-            e.preventDefault();
-            $(".social-media-all-comments").empty();
-            $('#view_comments_modal').modal('show');
-            var postid=e.target.id;
-            var comment_url = "{{ route('comment_list',':postid') }}";
-
-            comment_url = comment_url.replace(':postid', postid);
-            $.post(comment_url,
-                    {
-                        _token: $('meta[name="csrf-token"]').attr('content')
-                    },
-                    function(data){
-                        table_post_row(data);
-        });
-
-        $(document).on('click', '.social-media-comment-icon', function(e) {
-            $(this).next().toggle()
-        })
-
-        $('#textarea').mentiony({
-                onDataRequest: function (mode, keyword, onDataRequestCompleteCallback) {
-                    var search_url = "{{ route('users.mention') }}";
-                    $.ajaxSetup({
-                            headers: {
-                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                            }
-                        });
-                    $.ajax({
-                        method: "POST",
-                        url:search_url,
-                        data : keyword,
-                        dataType: "json",
-                        success: function (response) {
-                            var data = response.data;
-                            console.log(data)
-
-                            // NOTE: Assuming this filter process was done on server-side
-                            data = jQuery.grep(data, function( item ) {
-                                return item.name.toLowerCase().indexOf(keyword.toLowerCase()) > -1;
-                            });
-                            // End server-side
-
-                            // Call this to populate mention.
-                            onDataRequestCompleteCallback.call(this, data);
-                        }
-
-
-
-                    });
-                    console.log($("#editComment .mentiony-content") , "not edit")
-                },
-
-        });
-
-        $('#editCommentTextArea').mentiony({
-                onDataRequest: function (mode, keyword, onDataRequestCompleteCallback) {
-                    var search_url = "{{ route('users.mention') }}";
-                    $.ajaxSetup({
-                            headers: {
-                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                            }
-                        });
-                    $.ajax({
-                        method: "POST",
-                        url:search_url,
-                        data : keyword,
-                        dataType: "json",
-                        success: function (response) {
-                            var data = response.data;
-                            console.log(data)
-
-                            // NOTE: Assuming this filter process was done on server-side
-                            data = jQuery.grep(data, function( item ) {
-                                return item.name.toLowerCase().indexOf(keyword.toLowerCase()) > -1;
-                            });
-                            // End server-side
-
-                            // Call this to populate mention.
-                            onDataRequestCompleteCallback.call(this, data);
-                        }
-                    });
-
-
-                },
-
-                });
-
-        //edit comment start
-        $(document).on('click', '#editCommentModal', function(e) {
-                        $('#editModal').modal('show');
-                        var id = $(this).data('id');
-
-                        $(".social-media-all-comments-input-edit").data('id',id)
-
-                        var edit_url = "{{ route('post.comment.edit',[':id']) }}";
-                        edit_url = edit_url.replace(':id', id);
-                        $.ajaxSetup({
-                            headers: {
-                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                            }
-                        });
-                    $.ajax({
-                        method: "GET",
-                        url: edit_url,
-                        dataType: "json",
-                        success: function (response) {
-                            console.log(response.data);
-                            var replace = response.data.Replace
-                            $("#editComment .mentiony-content").html(replace)
-                        }
-                    });
-        })
-        //edit comment end
-
-        $(".mentiony-container").attr('style','')
-        $(".mentiony-content").attr('style','')
-
-        // //emoji start
-        $("#emojis").disMojiPicker()
-                $("#emojis").picker(emoji => {
-                    // console.log($(".social-media-all-comments-input .mentiony-content"))
-                    $(".social-media-all-comments-input .mentiony-content").append(emoji)
-                });
-                $("#edit-emojis").disMojiPicker()
-                $("#edit-emojis").picker(emoji => {
-                    // console.log($(".social-media-all-comments-input .mentiony-content"))
-                    $(".social-media-all-comments-input-edit .mentiony-content").append(emoji)
-                });
-                twemoji.parse(document.body);
-
-                $.each($(".emoji-trigger"), function(index,value){
-                    // console.log($(this))
-                    $(this).click(function(){
-                        // console.log($(this).siblings("#emojis"))
-                        $(this).siblings("#emojis").toggle()
-                        $(this).siblings("#edit-emojis").toggle()
-                    })
-                })
-
-
-        // //emoji end
-
-        //mention delete the whole a tag start
-        $('.mentiony-content').on('keydown', function(event) {
-                console.log(event.which)
-                if (event.which == 8 || event.which == 46) {
-                    s = window.getSelection();
-                    r = s.getRangeAt(0)
-                    el = r.startContainer.parentElement
-
-                    console.log(el.classList.contains('mentiony-link') || el.classList.contains('mention-area') || el.classList.contains('highlight'))
-                    console.log(el)
-                    if (el.classList.contains('mentiony-link') || el.classList.contains('mention-area') || el.classList.contains('highlight')) {
-                        console.log('delete mention')
-
-
-                                el.remove();
-
-                            return;
-
-                    }
-                }
-                event.target.querySelectorAll('delete-highlight').forEach(function(el) { el.classList.remove('delete-highlight');})
-            });
-        //mention delete the whole a tag end
-
-
-            function table_post_row(res){
-                    let htmlView = '';
-                          if(res.comment.length <= 0){
-                              console.log("no data");
-                              htmlView+= `
-                              No Comment.
-                              `;
-                          }
-                          console.log("data");
-                          for(let i = 0; i < res.comment.length; i++){
-
-                                  htmlView += `
-                                    <div class="social-media-comment-container">
-                                      <img src="{{ asset('/storage/post/${res.comment[i].profile_image}') }}" >
-                                      <div class="social-media-comment-box">
-                                          <div class="social-media-comment-box-header">
-                                              <div class="social-media-comment-box-name">
-                                                  <p>`+res.comment[i].name+`</p>
-                                                  <span>19 Sep 2022, 11:02 AM</span>
-                                              </div>
-
-                                      <iconify-icon icon="bx:dots-vertical-rounded" class="social-media-comment-icon"></iconify-icon>
-                                      <div class="comment-actions-container" >
-                                          <div class="comment-action" id="editCommentModal" data-id=`+res.comment[i].id+`>
-                                            <a class="editcomment" href="#" >
-                                              <iconify-icon icon="akar-icons:edit" class="comment-action-icon"></iconify-icon>
-                                              <p id="`+res.comment[i].id+`">Edit</p>
-                                            </a>
-                                          </div>
-                                          <a id="delete_comment" data-id=`+res.comment[i].id+`>
-                                          <div class="comment-action">
-                                              <iconify-icon icon="fluent:delete-12-regular" class="comment-action-icon"></iconify-icon>
-                                              <p>Delete</p>
-                                          </div>
-                                          </a>
-                                      </div>
-                                    </div>
-                                    <p>`+res.comment[i].Replace+`</p>
-                                </div>
-                            </div>
-                                  `
-                              }
-                          $('.social-media-all-comments').html(htmlView);
-            }
-        }
-
-
         function viewlikes(e){
             e.preventDefault();
             $(".social-media-all-likes-container").empty();
@@ -2173,6 +1896,308 @@
 
         }
 
+    // end like
+
+        $(document).on('click', '.social-media-comment-icon', function(e) {
+                $(this).next().toggle()
+        })
+
+                $('#textarea').mentiony({
+                    onDataRequest: function (mode, keyword, onDataRequestCompleteCallback) {
+                        var search_url = "{{ route('users.mention') }}";
+                        $.ajaxSetup({
+                                headers: {
+                                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                                }
+                            });
+                        $.ajax({
+                            method: "POST",
+                            url:search_url,
+                            data : keyword,
+                            dataType: "json",
+                            success: function (response) {
+                                var data = response.data;
+                                console.log(data)
+
+                                // NOTE: Assuming this filter process was done on server-side
+                                data = jQuery.grep(data, function( item ) {
+                                    return item.name.toLowerCase().indexOf(keyword.toLowerCase()) > -1;
+                                });
+                                // End server-side
+
+                                // Call this to populate mention.
+                                onDataRequestCompleteCallback.call(this, data);
+                            }
+
+
+
+                        });
+                        console.log($("#editComment .mentiony-content") , "not edit")
+                    },
+                });
+                $('#editCommentTextArea').mentiony({
+                    onDataRequest: function (mode, keyword, onDataRequestCompleteCallback) {
+                        var search_url = "{{ route('users.mention') }}";
+                        $.ajaxSetup({
+                                headers: {
+                                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                                }
+                            });
+                        $.ajax({
+                            method: "POST",
+                            url:search_url,
+                            data : keyword,
+                            dataType: "json",
+                            success: function (response) {
+                                var data = response.data;
+                                console.log(data)
+
+                                // NOTE: Assuming this filter process was done on server-side
+                                data = jQuery.grep(data, function( item ) {
+                                    return item.name.toLowerCase().indexOf(keyword.toLowerCase()) > -1;
+                                });
+                                // End server-side
+
+                                // Call this to populate mention.
+                                onDataRequestCompleteCallback.call(this, data);
+                            }
+                        });
+
+
+                    },
+
+                });
+
+
+
+                //edit comment start
+                $(document).on('click', '#editCommentModal', function(e) {
+                    $('#view_comments_modal').modal('hide')
+                        $('#edit_comments_modal').modal('show');
+                        var id = $(this).data('id');
+                        $(".social-media-all-comments-input-edit").data('id',id)
+                        var edit_url = "{{ route('post.comment.edit',[':id']) }}";
+                        edit_url = edit_url.replace(':id', id);
+                        $.ajaxSetup({
+                            headers: {
+                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                            }
+                        });
+                    $.ajax({
+                        method: "GET",
+                        url: edit_url,
+                        dataType: "json",
+                        success: function (response) {
+                            console.log(response.data);
+                            var replace = response.data.Replace
+                            $("#editComment .mentiony-content").html(replace)
+                        }
+                    });
+                })
+                //edit comment end
+
+                // //emoji start
+                $("#edit-emojis").disMojiPicker()
+                $("#edit-emojis").picker(emoji => {
+                    // console.log($(".social-media-all-comments-input .mentiony-content"))
+                    $(".social-media-all-comments-input-edit .mentiony-content").append(emoji)
+                });
+
+                $("#emojis").disMojiPicker()
+                $("#emojis").picker(emoji => {
+                    // console.log($(".social-media-all-comments-input .mentiony-content"))
+                    $(".social-media-all-comments-input .mentiony-content").append(emoji)
+                });
+
+
+                twemoji.parse(document.body);
+
+                $.each($(".emoji-trigger"), function(index,value){
+                    // console.log($(this))
+                    $(this).click(function(){
+                        // console.log($(this).siblings("#emojis"))
+                        $(this).siblings("#emojis").toggle()
+                        $(this).siblings("#edit-emojis").toggle()
+                    })
+                })
+                // //emoji end
+
+                $(".social-media-all-comments-input-edit").on('submit',function(e){
+                e.preventDefault()
+                // console.log($('.mentiony-content').text())
+                console.log($(".social-media-all-comments-input-edit").data('id') , "dddddddddd")
+
+
+                var arr = []
+                $.each($('.social-media-all-comments-input-edit .mentiony-link'),function(){
+                    arr.push({'id' : $(this).data('item-id'),'name' : $(this).text()})
+                    $(this).text(`@${$(this).data('item-id')}`)
+
+                })
+                var post_id = $(".social-media-all-comments-input-edit").data('id');
+
+                var comment = $('.social-media-all-comments-input-edit .mentiony-content').text()
+                console.log(arr)
+                console.log(comment)
+                // <a href = "" >Trainer</a>
+                var search_url = "{{ route('post.comment.update') }}";
+                //var post_id = "{{$post->id}}"
+                // console.log(post_id)
+                    $.ajaxSetup({
+                            headers: {
+                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                            }
+                        });
+                    $.ajax({
+                        method: "POST",
+                        url:search_url,
+                        data : {'post_id':post_id,'mention' : arr , 'comment' : comment},
+                        dataType: "json",
+                        success: function (response) {
+                            window.location.reload()
+                        }
+
+                    });
+
+            })
+
+
+            $(".mentiony-container").attr('style','')
+            $(".mentiony-content").attr('style','')
+            $('.mentiony-content').on('keydown', function(event) {
+                console.log(event.which)
+                if (event.which == 8 || event.which == 46) {
+                    s = window.getSelection();
+                    r = s.getRangeAt(0)
+                    el = r.startContainer.parentElement
+
+                    console.log(el.classList.contains('mentiony-link') || el.classList.contains('mention-area') || el.classList.contains('highlight'))
+                    console.log(el)
+                    if (el.classList.contains('mentiony-link') || el.classList.contains('mention-area') || el.classList.contains('highlight')) {
+                        console.log('delete mention')
+
+
+                                el.remove();
+
+                            return;
+
+                    }
+                }
+                event.target.querySelectorAll('delete-highlight').forEach(function(el) { el.classList.remove('delete-highlight');})
+            });
+
+            $(".social-media-all-comments-input").on('submit',function(e){
+                e.preventDefault()
+                // console.log($('.mentiony-content').text())
+
+
+                var arr = []
+                $.each($('.social-media-all-comments-input .mentiony-link'),function(){
+                    arr.push({'id' : $(this).data('item-id'),'name' : $(this).text()})
+                    $(this).text(`@${$(this).data('item-id')}`)
+
+                })
+
+                var comment = $('.social-media-all-comments-input .mentiony-content').text()
+                console.log(arr)
+                console.log(comment)
+
+
+
+
+                // <a href = "" >Trainer</a>
+                var search_url = "{{ route('post.comment.store') }}";
+                var post_id = $(".social-media-all-comments-input").data('id');
+                // console.log(post_id)
+                    $.ajaxSetup({
+                            headers: {
+                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                            }
+                        });
+                    $.ajax({
+                        method: "POST",
+                        url:search_url,
+                        data : {'post_id':post_id,'mention' : arr , 'comment' : comment},
+                        dataType: "json",
+                        success: function (response) {
+                            viewcomments();
+                            $('.mentiony-content').empty()
+                        }
+
+                    });
+
+            })
+
+        $('.viewcomments').click(function(e){
+            e.preventDefault();
+            var post_id = $(this).attr("id");
+            var postid = $(".social-media-all-comments-input").data('id',post_id)
+            viewcomments()
+        })
+
+        function viewcomments(){
+            $(".social-media-all-comments").empty();
+            $('#view_comments_modal').modal('show');
+            var postid = $(".social-media-all-comments-input").data('id');
+
+            var comment_url = "{{ route('comment_list',':id') }}";
+            comment_url = comment_url.replace(':id', postid);
+            $.post(comment_url,
+                    {
+                        _token: $('meta[name="csrf-token"]').attr('content')
+                    },
+                    function(data){
+                        table_post_comment(data);
+            });
+
+            function table_post_comment(res){
+                        let htmlView = '';
+                            if(res.comment.length <= 0){
+                                console.log("no data");
+                                htmlView+= `
+                                No Comment.
+                                `;
+                            }
+                            console.log("data");
+                            for(let i = 0; i < res.comment.length; i++){
+                                  htmlView += `
+                                    <div class="social-media-comment-container">
+                                      <img src="{{ asset('/storage/post/${res.comment[i].profile_image}') }}" >
+                                      <div class="social-media-comment-box">
+                                          <div class="social-media-comment-box-header">
+                                              <div class="social-media-comment-box-name">
+                                                  <p>`+res.comment[i].name+`</p>
+                                                  <span>`+res.comment[i].date+`</span>
+                                              </div>
+
+
+                                        <iconify-icon icon="bx:dots-vertical-rounded" class="social-media-comment-icon"></iconify-icon>
+                                        <div class="comment-actions-container" >
+
+                                            <div class="comment-action" id="editCommentModal"
+                                            data-id=`+res.comment[i].id+`>
+                                                <iconify-icon icon="akar-icons:edit" class="comment-action-icon"></iconify-icon>
+                                                <p id="`+res.comment[i].id+`">Edit</p>
+                                            </div>
+
+                                            <a id="delete_comment" data-id=`+res.comment[i].id+`>
+                                            <div class="comment-action">
+                                                <iconify-icon icon="fluent:delete-12-regular" class="comment-action-icon"></iconify-icon>
+                                                <p>Delete</p>
+                                            </div>
+                                            </a>
+                                        </div>
+                                        </div>
+                                        <p>`+res.comment[i].Replace+`</p>
+                                    </div>
+                                </div>
+                                    `
+                                }
+                            $('.social-media-all-comments').html(htmlView);
+            }
+
+        }
+
         $(document).on('click', '.profile_addfriend', function(e) {
                 e.preventDefault();
                 var id = $(this).attr("id")
@@ -2226,6 +2251,7 @@
         });
 
         $(".customer-saved-posts-container").hide()
+        // saved post
 
         $(".customer-profile-selector").change(function(e){
             console.log(e.target.value)
@@ -2238,7 +2264,10 @@
                 $(".customer-all-posts-container").hide()
                 $(".customer-saved-posts-container").show()
             }
+
         })
+
+
 
         function saved_post(){
             var save_posts=@json($saved_posts);
@@ -2296,31 +2325,13 @@
 
         }
 
-        $(document).on("click", ".editcomment", function(e){
 
-            $('#view_comments_modal').modal('hide');
-            $('#edit_comments_modal').modal('show');
-            var id=e.target.id;
-            $(".social-media-all-comments-input-edit").data('id',id)
+        $(".mentiony-container").attr('style','')
+        $(".mentiony-content").attr('style','')
 
-            var edit_url = "{{ route('post.comment.edit',[':id']) }}";
-            edit_url = edit_url.replace(':id', id);
-            $.ajaxSetup({
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                }
-            });
-            $.ajax({
-                method: "GET",
-                url: edit_url,
-                dataType: "json",
-                success: function (response) {
-                    console.log(response.data);
-                    var replace = response.data.Replace
-                    $("#editComment .mentiony-content").html(replace)
-                }
-            });
-        })
+
+
+        //comment
 
         $('.post_save').click(function(e){
             e.preventDefault();

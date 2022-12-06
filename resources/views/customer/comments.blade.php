@@ -12,7 +12,7 @@
         </div>
         <div class="modal-body">
             <form class="social-media-all-comments-input-edit" id="editComment">
-                <textarea placeholder="Write a comment" id="editCommentTextArea">asffdfsdfd</textarea>
+                <textarea placeholder="Write a comment" id="editCommentTextArea"></textarea>
                 <div id="menu" class="menu" role="listbox"></div>
                 <button type="button" id="emoji-button" class="emoji-trigger">
                     <iconify-icon icon="bi:emoji-smile" class="group-chat-send-form-emoji-icon"></iconify-icon>
@@ -349,75 +349,73 @@
 
         })
 
-        // $('').click(function(){
             $(document).on('click', '.social-media-comment-icon', function(e) {
                 $(this).next().toggle()
             })
-        fetch_comment();
+            fetch_comment();
                 $('#textarea').mentiony({
-                onDataRequest: function (mode, keyword, onDataRequestCompleteCallback) {
-                    var search_url = "{{ route('users.mention') }}";
-                    $.ajaxSetup({
-                            headers: {
-                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                            }
-                        });
-                    $.ajax({
-                        method: "POST",
-                        url:search_url,
-                        data : keyword,
-                        dataType: "json",
-                        success: function (response) {
-                            var data = response.data;
-                            console.log(data)
-
-                            // NOTE: Assuming this filter process was done on server-side
-                            data = jQuery.grep(data, function( item ) {
-                                return item.name.toLowerCase().indexOf(keyword.toLowerCase()) > -1;
+                    onDataRequest: function (mode, keyword, onDataRequestCompleteCallback) {
+                        var search_url = "{{ route('users.mention') }}";
+                        $.ajaxSetup({
+                                headers: {
+                                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                                }
                             });
-                            // End server-side
+                        $.ajax({
+                            method: "POST",
+                            url:search_url,
+                            data : keyword,
+                            dataType: "json",
+                            success: function (response) {
+                                var data = response.data;
+                                console.log(data)
 
-                            // Call this to populate mention.
-                            onDataRequestCompleteCallback.call(this, data);
-                        }
+                                // NOTE: Assuming this filter process was done on server-side
+                                data = jQuery.grep(data, function( item ) {
+                                    return item.name.toLowerCase().indexOf(keyword.toLowerCase()) > -1;
+                                });
+                                // End server-side
+
+                                // Call this to populate mention.
+                                onDataRequestCompleteCallback.call(this, data);
+                            }
 
 
 
-                    });
-                    console.log($("#editComment .mentiony-content") , "not edit")
-                },
-
+                        });
+                        console.log($("#editComment .mentiony-content") , "not edit")
+                    },
                 });
                 $('#editCommentTextArea').mentiony({
-                onDataRequest: function (mode, keyword, onDataRequestCompleteCallback) {
-                    var search_url = "{{ route('users.mention') }}";
-                    $.ajaxSetup({
-                            headers: {
-                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    onDataRequest: function (mode, keyword, onDataRequestCompleteCallback) {
+                        var search_url = "{{ route('users.mention') }}";
+                        $.ajaxSetup({
+                                headers: {
+                                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                                }
+                            });
+                        $.ajax({
+                            method: "POST",
+                            url:search_url,
+                            data : keyword,
+                            dataType: "json",
+                            success: function (response) {
+                                var data = response.data;
+                                console.log(data)
+
+                                // NOTE: Assuming this filter process was done on server-side
+                                data = jQuery.grep(data, function( item ) {
+                                    return item.name.toLowerCase().indexOf(keyword.toLowerCase()) > -1;
+                                });
+                                // End server-side
+
+                                // Call this to populate mention.
+                                onDataRequestCompleteCallback.call(this, data);
                             }
                         });
-                    $.ajax({
-                        method: "POST",
-                        url:search_url,
-                        data : keyword,
-                        dataType: "json",
-                        success: function (response) {
-                            var data = response.data;
-                            console.log(data)
-
-                            // NOTE: Assuming this filter process was done on server-side
-                            data = jQuery.grep(data, function( item ) {
-                                return item.name.toLowerCase().indexOf(keyword.toLowerCase()) > -1;
-                            });
-                            // End server-side
-
-                            // Call this to populate mention.
-                            onDataRequestCompleteCallback.call(this, data);
-                        }
-                    });
 
 
-                },
+                    },
 
                 });
 
@@ -427,6 +425,7 @@
                     // console.log($(".social-media-all-comments-input .mentiony-content"))
                     $(".social-media-all-comments-input .mentiony-content").append(emoji)
                 });
+
                 $("#edit-emojis").disMojiPicker()
                 $("#edit-emojis").picker(emoji => {
                     // console.log($(".social-media-all-comments-input .mentiony-content"))
@@ -450,9 +449,8 @@
                 $(document).on('click', '#editCommentModal', function(e) {
                         $('#editModal').modal('show');
                         var id = $(this).data('id');
-
                         $(".social-media-all-comments-input-edit").data('id',id)
-
+                        console.log($(".social-media-all-comments-input-edit").data('id',id),'opop');
                         var edit_url = "{{ route('post.comment.edit',[':id']) }}";
                         edit_url = edit_url.replace(':id', id);
                         $.ajaxSetup({
@@ -519,10 +517,11 @@
                     });
 
             })
+
             $(".social-media-all-comments-input-edit").on('submit',function(e){
                 e.preventDefault()
                 // console.log($('.mentiony-content').text())
-                console.log($(".social-media-all-comments-input-edit").data('id'))
+                console.log($(".social-media-all-comments-input-edit").data('id') , "dddddddddd")
 
 
                 var arr = []
@@ -590,7 +589,7 @@
                                             <div class="social-media-comment-box-header">
                                                 <div class="social-media-comment-box-name">
                                                     <p>`+res.comment[i].name+`</p>
-                                                    <span>19 Sep 2022, 11:02 AM</span>
+                                                    <span>`+res.comment[i].date+`</span>
                                                 </div>
 
                                         <iconify-icon icon="bx:dots-vertical-rounded" class="social-media-comment-icon"></iconify-icon>
@@ -623,7 +622,7 @@
                                             <div class="social-media-comment-box-header">
                                                 <div class="social-media-comment-box-name">
                                                     <p>`+res.comment[i].name+`</p>
-                                                    <span>19 Sep 2022, 11:02 AM</span>
+                                                    <span>`+res.comment[i].date+`</span>
                                                 </div>
 
                                         <iconify-icon icon="bx:dots-vertical-rounded" class="social-media-comment-icon"></iconify-icon>

@@ -16,8 +16,8 @@ class ReportController extends Controller
      */
     public function index()
     {
-        $report_posts = Post::with('report')->with('user')->get();
-        // dd($report_posts->toArray());
+        $report_posts = Post::with('reports')->with('user')->get();
+
         return view('admin.socialmedia_report.index', compact('report_posts'));
     }
 

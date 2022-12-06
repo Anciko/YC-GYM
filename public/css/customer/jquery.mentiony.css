@@ -7,7 +7,7 @@
 }
 
 .social-media-all-comments-input .mentiony-container{
-    max-width: 450px;
+    max-width: 350px;
 }
 
 .mentiony-container{
@@ -84,7 +84,7 @@
 		max-width: 400px;
 	}
 	.social-media-all-comments-input .mentiony-container{
-		max-width: 400px;
+        max-width: 350px;
 	}
 }
 @media screen and (max-width:600px){
