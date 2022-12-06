@@ -33,6 +33,9 @@
     <!--comment mention--->
     <link href="{{asset('css/customer/jquery.mentiony.css')}}" rel="stylesheet"/>
 
+    <!--comment emoji-->
+    <link href="{{asset('css/customer/emojis.css')}}" rel="stylesheet"/>
+
     <title>YC-Training Center</title>
   </head>
   <body class="customer-loggedin-bg">
@@ -79,6 +82,10 @@
       <!--chart js-->
       <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
       <script src="{{asset('js/customer/jquery.mentiony.js')}}"></script>
+
+      {{-- comment emoji --}}
+        <script src="https://twemoji.maxcdn.com/v/latest/twemoji.min.js" crossorigin="anonymous"></script>
+        <script src="{{asset('js/customer/DisMojiPicker.js')}}"></script>
       <script>
                     $( document ).ready(function() {
                 $('.nav-icon').click(function(){

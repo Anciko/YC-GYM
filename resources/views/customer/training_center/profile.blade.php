@@ -122,6 +122,11 @@
             <form class="social-media-all-comments-input-edit" id="editComment">
                 <textarea placeholder="Write a comment" id="editCommentTextArea"></textarea>
                 <div id="menu" class="menu" role="listbox"></div>
+                <button type="button" id="emoji-button" class="emoji-trigger">
+                    <iconify-icon icon="bi:emoji-smile" class="group-chat-send-form-emoji-icon"></iconify-icon>
+                </button>
+                <div id="edit-emojis">
+                </div>
                 <button class="social-media-all-comments-send-btn">
                     <iconify-icon icon="akar-icons:send" class="social-media-all-comments-send-icon"></iconify-icon>
                 </button>
@@ -1902,6 +1907,7 @@
                     function(data){
                         table_post_row(data);
         });
+
         $(document).on('click', '.social-media-comment-icon', function(e) {
             $(this).next().toggle()
         })
@@ -2003,6 +2009,31 @@
 
         $(".mentiony-container").attr('style','')
         $(".mentiony-content").attr('style','')
+
+        // //emoji start
+        $("#emojis").disMojiPicker()
+                $("#emojis").picker(emoji => {
+                    // console.log($(".social-media-all-comments-input .mentiony-content"))
+                    $(".social-media-all-comments-input .mentiony-content").append(emoji)
+                });
+                $("#edit-emojis").disMojiPicker()
+                $("#edit-emojis").picker(emoji => {
+                    // console.log($(".social-media-all-comments-input .mentiony-content"))
+                    $(".social-media-all-comments-input-edit .mentiony-content").append(emoji)
+                });
+                twemoji.parse(document.body);
+
+                $.each($(".emoji-trigger"), function(index,value){
+                    // console.log($(this))
+                    $(this).click(function(){
+                        // console.log($(this).siblings("#emojis"))
+                        $(this).siblings("#emojis").toggle()
+                        $(this).siblings("#edit-emojis").toggle()
+                    })
+                })
+
+
+        // //emoji end
 
         //mention delete the whole a tag start
         $('.mentiony-content').on('keydown', function(event) {

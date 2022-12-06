@@ -489,7 +489,7 @@ z-index: 20;
 }
 
 .emoji-trigger{
-    display: block;
+    /* display: block; */
     background-color: transparent;
     border: none;
     /* width: 100%; */
@@ -497,6 +497,7 @@ z-index: 20;
     /* flex-shrink: 1; */
    /* width: fit-content; */
    text-align: center;
+   height: auto;
 }
 
 .group-chat-send-form-img-icon, .group-chat-send-form-emoji-icon{
