@@ -506,6 +506,7 @@ class SocialMediaController extends Controller
             ->leftJoin('users','notifications.sender_id', '=', 'users.id')
             ->leftJoin('profiles','profiles.id','users.profile_id')
             ->where('receiver_id',auth()->user()->id)
+            ->orderBy('created_at','DESC')
             ->paginate(10);
         return response()->json([
             'notification' => $notification

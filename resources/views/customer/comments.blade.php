@@ -12,7 +12,7 @@
         </div>
         <div class="modal-body">
             <form class="social-media-all-comments-input-edit" id="editComment">
-                <textarea placeholder="Write a comment" id="editCommentTextArea">asffdfsdfd</textarea>
+                <textarea placeholder="Write a comment" id="editCommentTextArea"></textarea>
                 <div id="menu" class="menu" role="listbox"></div>
                 <button class="social-media-all-comments-send-btn">
                     <iconify-icon icon="akar-icons:send" class="social-media-all-comments-send-icon"></iconify-icon>
@@ -409,9 +409,8 @@
                 $(document).on('click', '#editCommentModal', function(e) {
                         $('#editModal').modal('show');
                         var id = $(this).data('id');
-
                         $(".social-media-all-comments-input-edit").data('id',id)
-
+                        console.log($(".social-media-all-comments-input-edit").data('id',id),'opop');
                         var edit_url = "{{ route('post.comment.edit',[':id']) }}";
                         edit_url = edit_url.replace(':id', id);
                         $.ajaxSetup({
@@ -478,10 +477,11 @@
                     });
 
             })
+
             $(".social-media-all-comments-input-edit").on('submit',function(e){
                 e.preventDefault()
                 // console.log($('.mentiony-content').text())
-                console.log($(".social-media-all-comments-input-edit").data('id'))
+                console.log($(".social-media-all-comments-input-edit").data('id') , "dddddddddd")
 
 
                 var arr = []

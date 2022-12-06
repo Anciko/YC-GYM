@@ -984,7 +984,7 @@ class SocialmediaController extends Controller
 
     public function post_comment_store(Request $request){
 
-
+       // dd($request->post_id);
         $banwords=DB::table('ban_words')->select('ban_word_english','ban_word_myanmar','ban_word_myanglish')->get();
 
         foreach($banwords as $b){
