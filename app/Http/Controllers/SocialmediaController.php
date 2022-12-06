@@ -116,25 +116,22 @@ class SocialmediaController extends Controller
                     env('PUSHER_APP_ID'),
                     $options
                     );
-                    //$ids = ["4","5"];
+
                     $post_owner = Post::where('posts.id',$react->post_id)->first();
-                    $data = auth()->user()->name.' liked your post!';
-
-
-                    $fri_noti = new Notification();
-                    $fri_noti->description = $data;
-                    $fri_noti->date = Carbon::Now()->toDateTimeString();
-                    $fri_noti->sender_id = auth()->user()->id;
-                    $fri_noti->receiver_id = $post_owner->user_id;
-                    $fri_noti->post_id=$request->post_id;
-                    $fri_noti->notification_status = 1;
-                    $fri_noti->save();
-                    $pusher->trigger('friend_request.'.$post_owner->user_id , 'friendRequest', $data);
+                    if($post_owner->user_id != auth()->user()->id){
+                        $data = auth()->user()->name.' liked your post!';
+                        $fri_noti = new Notification();
+                        $fri_noti->description = $data;
+                        $fri_noti->date = Carbon::Now()->toDateTimeString();
+                        $fri_noti->sender_id = auth()->user()->id;
+                        $fri_noti->receiver_id = $post_owner->user_id;
+                        $fri_noti->post_id=$request->post_id;
+                        $fri_noti->notification_status = 1;
+                        $fri_noti->save();
+                        $pusher->trigger('friend_request.'.$post_owner->user_id , 'friendRequest', $data);
+                    }
             }
-
             $total_likes=UserReactPost::where('post_id',$post_id)->count();
-
-
             return response()->json([
                 'total_likes' => $total_likes,
             ]);
@@ -923,7 +920,6 @@ class SocialmediaController extends Controller
     //    $ids = json_decode($comm1->mentioned_users);
     //    $arr = json_decode(json_encode ( $ids ) , true);
 
-
     //     if($ids != null){
     //         $count = count($ids);
     //         //   dd($count);
@@ -941,7 +937,7 @@ class SocialmediaController extends Controller
     //                         $main=$replace;
     //                         $comments[$key]['Replace']= $main;
     //                  }
-    //            $comments[$key]['Replace']= $main  ;
+    //            $comments[$key]['Replace']= $main;
 
     //         }
 
@@ -976,8 +972,34 @@ class SocialmediaController extends Controller
 
     public function users_for_mention(Request $request){
         // dd($request->keyword);
-        $user = User::select('users.id','users.name','profiles.profile_image as avatar')
-        ->leftJoin('profiles','profiles.id','users.profile_id')->get()->toArray();
+        $id = auth()->user()->id;
+        $friendships=DB::table('friendships')
+        ->where('friend_status',2)
+        ->where(function($query) use ($id){
+            $query->where('sender_id',$id)
+                ->orWhere('receiver_id',$id);
+        })
+        ->join('users as sender','sender.id','friendships.sender_id')
+        ->join('users as receiver','receiver.id','friendships.receiver_id')
+        ->get(['sender_id','receiver_id'])->toArray();
+        //dd($friends);
+        $n= array();
+            foreach($friendships as $friend){
+                    $f=(array)$friend;
+                    array_push($n, $f['sender_id'],$f['receiver_id']);
+            }
+            $user = User::select('users.id','users.name','friendships.date','profiles.profile_image as avatar')
+            ->leftjoin('friendships', function ($join) {
+                $join->on('friendships.receiver_id', '=', 'users.id')
+            ->orOn('friendships.sender_id', '=', 'users.id');})
+            ->leftJoin('profiles','profiles.id','users.profile_id')
+            ->where('users.id','!=',$id)
+            ->where('friendships.friend_status',2)
+            ->where('friendships.receiver_id',$id)
+            ->orWhere('friendships.sender_id',$id)
+            ->whereIn('users.id',$n)
+            ->where('users.id','!=',$id)
+            ->get()->toArray();
         return response()->json([
             'data' =>  $user
         ]);
@@ -1015,9 +1037,7 @@ class SocialmediaController extends Controller
         $comments->comment = $request->comment;
         $comments->mentioned_users = json_encode($request->mention);
         $comments->save();
-
         $post_owner = Post::where('posts.id',$comments->post_id)->first();
-
         $options = array(
             'cluster' => env('PUSHER_APP_CLUSTER'),
             'encrypted' => true
@@ -1028,11 +1048,8 @@ class SocialmediaController extends Controller
             env('PUSHER_APP_ID'),
             $options
             );
-
-            $data = auth()->user()->name.' mentioned you in a comment!';
-            $data2 = auth()->user()->name.' commented on your post!';
-            if($comments->mentioned_users == "null"){
-                //dd($comments->mentioned_users, "empty");
+        if($post_owner->user_id != auth()->user()->id AND $comments->mentioned_users == "null"){
+                $data2 = auth()->user()->name.' commented on your post!';
                 $fri_noti = new Notification();
                 $fri_noti->description = $data2;
                 $fri_noti->date = Carbon::Now()->toDateTimeString();
@@ -1043,35 +1060,26 @@ class SocialmediaController extends Controller
                 $fri_noti->notification_status = 1;
                 $fri_noti->save();
                 $pusher->trigger('friend_request.'.$post_owner->user_id , 'friendRequest', $data2);
+        }
+        elseif($comments->mentioned_users != "null"){
+           $data = auth()->user()->name.' mentioned you in a comment!';
+           $ids = json_decode($comments->mentioned_users);
+           $arr = json_decode(json_encode ( $ids ) , true);
+            foreach($arr as $id){
+                if($id['id'] != auth()->user()->id){
+                $fri_noti = new Notification();
+                $fri_noti->description = $data;
+                $fri_noti->date = Carbon::Now()->toDateTimeString();
+                $fri_noti->sender_id = auth()->user()->id;
+                $fri_noti->post_id=$request->post_id;
+                $fri_noti->receiver_id = $id['id'];
+                $fri_noti->comment_id = $comments->id;
+                $fri_noti->notification_status = 1;
+                $fri_noti->save();
+                $pusher->trigger('friend_request.'.$fri_noti->receiver_id , 'friendRequest', $data);
             }
-            else{
-               $ids = json_decode($comments->mentioned_users);
-                $arr = json_decode(json_encode ( $ids ) , true);
-                foreach($arr as $id){
-                    $fri_noti = new Notification();
-                    $fri_noti->description = $data;
-                    $fri_noti->date = Carbon::Now()->toDateTimeString();
-                    $fri_noti->sender_id = auth()->user()->id;
-                    $fri_noti->post_id=$request->post_id;
-                    $fri_noti->receiver_id = $id['id'];
-                    $fri_noti->comment_id = $comments->id;
-                    $fri_noti->notification_status = 1;
-                    $fri_noti->save();
-                    $pusher->trigger('friend_request.'.$fri_noti->receiver_id , 'friendRequest', $data);
-                }
-            }
-
-            $fri_noti = new Notification();
-            $fri_noti->description = $data2;
-            $fri_noti->date = Carbon::Now()->toDateTimeString();
-            $fri_noti->sender_id = auth()->user()->id;
-            $fri_noti->receiver_id = $post_owner->user_id;
-            $fri_noti->post_id=$request->post_id;
-            $fri_noti->comment_id = $comments->id;
-            $fri_noti->notification_status = 1;
-            $fri_noti->save();
-            $pusher->trigger('friend_request.'.$post_owner->user_id , 'friendRequest', $data2);
-
+           }
+        }
 
 
         return response()->json([
@@ -1098,10 +1106,13 @@ class SocialmediaController extends Controller
         ->leftJoin('profiles','users.profile_id','profiles.id')
         ->where('post_id',$id)->orderBy('created_at','DESC')->get();
         foreach($comments as $key=>$comm1){
+        $date = $comm1['created_at'];
+        $comments[$key]['date']= $date->toDayDateTimeString();
         $ids = json_decode($comm1->mentioned_users);
          if($ids != null){
              $count = count($ids);
              $main =  $comm1['comment'];
+             $date = $comm1['created_at'];
              for($i = 0; $i < $count ; $i++){
                 $arr_id = json_decode(json_encode ( $ids[$i] ) , true);
                 $mentioned_user_id = $arr_id['id'];
@@ -1115,7 +1126,7 @@ class SocialmediaController extends Controller
                              $main=$replace;
                              $comments[$key]['Replace']= $main;
                       }
-                $comments[$key]['Replace']= $main  ;
+                $comments[$key]['Replace']= $main;
 
              }
                  }
