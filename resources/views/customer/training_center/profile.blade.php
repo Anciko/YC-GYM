@@ -2112,9 +2112,7 @@
                         table_post_comment(data);
             });
 
-        }
-
-        function table_post_comment(res){
+            function table_post_comment(res){
                     let htmlView = '';
                           if(res.comment.length <= 0){
                               console.log("no data");
@@ -2158,6 +2156,8 @@
                               }
                           $('.social-media-all-comments').html(htmlView);
             }
+
+        }
 
         $(document).on('click', '.profile_addfriend', function(e) {
                 e.preventDefault();
