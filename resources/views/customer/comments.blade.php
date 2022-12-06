@@ -549,7 +549,7 @@
                                             <div class="social-media-comment-box-header">
                                                 <div class="social-media-comment-box-name">
                                                     <p>`+res.comment[i].name+`</p>
-                                                    <span>19 Sep 2022, 11:02 AM</span>
+                                                    <span>`+res.comment[i].date+`</span>
                                                 </div>
 
                                         <iconify-icon icon="bx:dots-vertical-rounded" class="social-media-comment-icon"></iconify-icon>
@@ -582,7 +582,7 @@
                                             <div class="social-media-comment-box-header">
                                                 <div class="social-media-comment-box-name">
                                                     <p>`+res.comment[i].name+`</p>
-                                                    <span>19 Sep 2022, 11:02 AM</span>
+                                                    <span>`+res.comment[i].date+`</span>
                                                 </div>
 
                                         <iconify-icon icon="bx:dots-vertical-rounded" class="social-media-comment-icon"></iconify-icon>

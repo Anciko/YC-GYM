@@ -922,7 +922,6 @@ class SocialmediaController extends Controller
     //    $ids = json_decode($comm1->mentioned_users);
     //    $arr = json_decode(json_encode ( $ids ) , true);
 
-
     //     if($ids != null){
     //         $count = count($ids);
     //         //   dd($count);
@@ -940,7 +939,7 @@ class SocialmediaController extends Controller
     //                         $main=$replace;
     //                         $comments[$key]['Replace']= $main;
     //                  }
-    //            $comments[$key]['Replace']= $main  ;
+    //            $comments[$key]['Replace']= $main;
 
     //         }
 
@@ -1097,10 +1096,13 @@ class SocialmediaController extends Controller
         ->leftJoin('profiles','users.profile_id','profiles.id')
         ->where('post_id',$id)->orderBy('created_at','DESC')->get();
         foreach($comments as $key=>$comm1){
+        $date = $comm1['created_at'];
+        $comments[$key]['date']= $date->toDayDateTimeString();
         $ids = json_decode($comm1->mentioned_users);
          if($ids != null){
              $count = count($ids);
              $main =  $comm1['comment'];
+             $date = $comm1['created_at'];
              for($i = 0; $i < $count ; $i++){
                 $arr_id = json_decode(json_encode ( $ids[$i] ) , true);
                 $mentioned_user_id = $arr_id['id'];
@@ -1114,7 +1116,7 @@ class SocialmediaController extends Controller
                              $main=$replace;
                              $comments[$key]['Replace']= $main;
                       }
-                $comments[$key]['Replace']= $main  ;
+                $comments[$key]['Replace']= $main;
 
              }
                  }

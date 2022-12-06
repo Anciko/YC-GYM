@@ -557,12 +557,38 @@
 
                         <div class="customer-post-footer-container">
                             <div class="customer-post-like-container">
-                                <iconify-icon icon="akar-icons:heart" class="like-icon"></iconify-icon>
-                                <p><span>1.1k</span> Likes</p>
+                                @php
+                                    $total_likes=$post->user_reacted_posts->count();
+                                    $total_comments=$post->comments->count();
+                                    $user=auth()->user();
+                                    $already_liked=$user->user_reacted_posts->where('post_id',$post->id)->count();
+                                @endphp
+
+                                <a class="like" href="#" id="{{$post->id}}">
+
+                                @if($already_liked==0)
+                                <iconify-icon icon="mdi:cards-heart-outline" class="like-icon">
+                                </iconify-icon>
+                                @else
+                                <iconify-icon icon="mdi:cards-heart" style="color: red;" class="like-icon already-liked">
+                                </iconify-icon>
+                                @endif
+
+                                </a>
+                                <p>
+                                    <span class="total_likes">
+
+                                    {{$total_likes}}
+                                    </span>
+                                    <a class="viewlikes" id={{$post->id}}>Likes</a>
+                                </p>
                             </div>
                             <div class="customer-post-comment-container">
+                                {{-- <a href = "{{route('post.comment',$post->id)}}"> --}}
+                                <a class="viewcomments" id = "{{$post->id}}">
                                 <iconify-icon icon="bi:chat-right" class="comment-icon"></iconify-icon>
-                                <p><span>50</span> Comments</p>
+                                <p id="{{$post->id}}"><span>{{$total_comments}}</span> Comments</p>
+                                </a>
                             </div>
                         </div>
                     </div>
@@ -2083,7 +2109,7 @@
                                           <div class="social-media-comment-box-header">
                                               <div class="social-media-comment-box-name">
                                                   <p>`+res.comment[i].name+`</p>
-                                                  <span>19 Sep 2022, 11:02 AM</span>
+                                                  <span>`+res.comment[i].date+`</span>
                                               </div>
 
                                       <iconify-icon icon="bx:dots-vertical-rounded" class="social-media-comment-icon"></iconify-icon>
