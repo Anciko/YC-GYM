@@ -17,6 +17,7 @@ use Illuminate\Http\Request;
 use App\Models\UserReactPost;
 use App\Models\UserSavedPost;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Response;
 use RealRashid\SweetAlert\Facades\Alert;
@@ -879,6 +880,8 @@ class SocialmediaController extends Controller
                         ->get();
 
 
+        //dd($messages);
+
         return view('customer.chat_message', compact('id','messages','auth_user_name','receiver_user','sender_user','friends'));
     }
 
@@ -913,59 +916,70 @@ class SocialmediaController extends Controller
         $post_likes=UserReactPost::where('post_id',$post->id)
                     ->with('user')
                     ->get();
+                    $auth = Auth()->user()->id;
 
+                    $friend_request =DB::table('friendships')
+                    ->where('friend_status',2)
+                    ->where(function($query) use ($auth){
+                        $query->where('sender_id',$auth)
+                            ->orWhere('receiver_id',$auth);
+                    })
+                    ->join('users as sender','sender.id','friendships.sender_id')
+                    ->join('users as receiver','receiver.id','friendships.receiver_id')
+                    ->get(['sender_id','receiver_id'])->toArray();
 
-    //    foreach($comments as $key=>$comm1){
-    //    $ids = json_decode($comm1->mentioned_users);
-    //    $arr = json_decode(json_encode ( $ids ) , true);
+                    // dd($friend_request);
+                    $request= array();
+                        foreach($friend_request as $req){
+                                $r=(array)$req;
+                                array_push($request, $r['sender_id'],$r['receiver_id']);
+                        }
+                    $request_profile_id = DB::table('profiles')
+                        ->groupBy('user_id')
+                        ->select(DB::raw('max(id) as id'))
+                        ->where('cover_photo',null)
+                        ->whereIn('user_id',$request)
+                        ->get()
+                        ->pluck('id')->toArray();
 
-    //     if($ids != null){
-    //         $count = count($ids);
-    //         //   dd($count);
-    //         $main =  $comm1['comment'];
-    //         for($i = 0; $i < $count ; $i++){
-    //            $arr_id = json_decode(json_encode ( $ids[$i] ) , true);
-    //            $mentioned_user_id = $arr_id['id'];
+                    $latest_sms = DB::table('chats')
+                        ->select(DB::raw('max(id) as id'))
+                        ->where('from_user_id',$auth)
+                        ->orWhere('to_user_id',$auth)
+                        ->groupBy('from_user_id','to_user_id')
+                        ->get()
+                        ->pluck('id')->toArray();
 
-    //                      $url = route('socialmedia.profile',$mentioned_user_id);
-    //                      $comments[$key]['Replace']= sizeof($ids);
-    //                     if (str_contains($main,'@'.$mentioned_user_id)) {
-    //                         $replace=
-    //                          str_replace(['@'.$mentioned_user_id],
-    //                         "<a href=$url>".$arr_id['name'].'</a>',$main);
-    //                         $main=$replace;
-    //                         $comments[$key]['Replace']= $main;
-    //                  }
-    //            $comments[$key]['Replace']= $main;
+                    $latest = DB::table('chats')
+                              ->whereIn('id',$latest_sms)
+                              ->get();
+                        // dd($latest)->toArray();
 
-    //         }
+                        $user_id=auth()->user()->id;
 
-    //                 // for($i = 0; $i < sizeof($ids) ; $i++){
-    //                 //     $mentioned_user_id = $mentioned_user_id;
-
-    //                 //     $url = route('socialmedia.profile',$mentioned_user_id);
-    //                 //     $comments[$key]['Replace']= sizeof($ids);
-    //                 //     if (str_contains($main,'@'.$ids[$i]->id)) {
-    //                 //         $replace=
-    //                 //         str_replace(['@'.$ids[$i]->id],
-    //                 //         "<a href=$url>".$ids[$i]->name.'</a>',$main);
-    //                 //         $main=$replace;
-    //                 //         $comments[$key]['Replace']= $main;
-    //                 // }
-    //                 //     }
-
-    //             }
-    //     else{
-    //         $comments[$key]['Replace']= $comm1->comment;
-    //     }
-
-
-    //     //dd($arr);
-    // }
-
-    // dd($comments);
-
-        // dd($posts);
+                        $messages =DB::select("SELECT users.id,users.name,profiles.profile_image,chats.text
+                        from
+                            chats
+                          join
+                            (select user, max(created_at) m
+                                from
+                                   (
+                                     (select id, to_user_id user, created_at
+                                       from chats
+                                       where from_user_id= $user_id )
+                                   union
+                                     (select id, from_user_id user, created_at
+                                       from chats
+                                       where to_user_id= $user_id)
+                                    ) t1
+                               group by user) t2
+                         on ((from_user_id= $user_id and to_user_id=user) or
+                             (from_user_id=user and to_user_id= $user_id)) and
+                             (created_at = m)
+                        left join users on users.id = user
+                        left join profiles on users.profile_id = profiles.id
+                       order by chats.created_at desc limit  3");
+                      // dd($messages);
         return view('customer.comments',compact('post','comments','post_likes'));
     }
 

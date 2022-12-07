@@ -214,23 +214,17 @@
                                 </div>
 
                                 <div class="social-media-left-messages-rows-container">
-                                    @forelse ($left_friends as $friend)
+                                    @forelse ($latest_messages as $friend)
                                     <a href="{{route('message.chat',$friend->id)}}" class="social-media-left-messages-row">
-
-                                        <?php $profile=$friend->profiles->first();
-                                        $profile_id=$friend->profile_id;
-                                         $img=$friend->profiles->where('id',$profile_id)->first();
-                                        ?>
-
-                                        @if ($img==null)
+                                        @if ($friend->profile_image==null)
                                             <img  class="nav-profile-img" src="{{asset('img/customer/imgs/user_default.jpg')}}"/>
                                         @else
-                                            <img  class="nav-profile-img" src="{{asset('storage/post/'.$img->profile_image)}}"/>
+                                            <img  class="nav-profile-img" src="{{asset('storage/post/'.$friend->profile_image)}}"/>
                                         @endif
 
                                         <p>
                                             {{$friend->name}}<br>
-                                            <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Dui hendrerit potenti pellentesque tellus urna bibendum mollis. </span>
+                                            <span>{{$friend->text}} </span>
                                         </p>
                                     </a>
                                     @empty

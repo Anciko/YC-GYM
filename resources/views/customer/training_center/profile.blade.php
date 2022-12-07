@@ -2000,10 +2000,8 @@
                 var comment = $('.social-media-all-comments-input-edit .mentiony-content').text()
                 console.log(arr)
                 console.log(comment)
-                // <a href = "" >Trainer</a>
                 var search_url = "{{ route('post.comment.update') }}";
-                //var post_id = "{{$post->id}}"
-                // console.log(post_id)
+
                     $.ajaxSetup({
                             headers: {
                                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
