@@ -197,7 +197,7 @@
         </div>
 
         <div class="social-media-all-comments-container">
-            <form class="social-media-all-comments-input">
+            <form class="social-media-all-comments-input comment-main-input">
                 <textarea placeholder="Write a comment" id="textarea"></textarea>
                 <div id="menu" class="menu" role="listbox"></div>
                 <button type="button" id="emoji-button" class="emoji-trigger">

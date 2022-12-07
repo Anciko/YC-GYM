@@ -12,7 +12,7 @@ img {
     display: none;
     position: absolute;
     right: 0;
-    bottom: -20px;
+    bottom: -400px;
     z-index: 15;
     /* width: fit-content; */
 }
@@ -20,7 +20,7 @@ img {
     display: none;
     position: absolute;
     right: 0;
-    bottom: -20px;
+    bottom: -400px;
     z-index: 15;
     /* width: fit-content; */
 }
