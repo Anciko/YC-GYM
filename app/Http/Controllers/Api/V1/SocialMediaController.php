@@ -1277,9 +1277,13 @@ class SocialMediaController extends Controller
                             ->where('users.id',$id)
                             ->join('profiles','profiles.id','users.profile_id')->first();
 
+
+        foreach($messages as $key=>$value){
+                    $messages[$key]['profile_image'] = $receiver_user->profile_image;
+        }
+
         return response()->json([
             'messages' => $messages,
-            'receiver' => $receiver_user
         ]);
     }
 

@@ -839,6 +839,10 @@ class SocialmediaController extends Controller
         // }
         // // ->with('to_user')->with('from_user')->with('to_user.profiles')->with('from_user.profiles')
         // //     dd($chat_lists->toArray());
+
+
+
+
             $user_id=auth()->user()->id;
 
             $messages =DB::select("SELECT users.id,users.name,profiles.profile_image,chats.text,chats.created_at
@@ -863,6 +867,8 @@ class SocialmediaController extends Controller
             left join users on users.id = user
             left join profiles on users.profile_id = profiles.id
            order by chats.created_at desc");
+
+
             // dd($messages);
         return view('customer.message_seeall', compact('messages'));
     }
