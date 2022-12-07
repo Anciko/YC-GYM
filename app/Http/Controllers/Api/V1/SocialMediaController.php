@@ -1220,7 +1220,6 @@ class SocialMediaController extends Controller
             $disk->put(
                 'customer_message_media/'.$path,file_get_contents($file)
             );
-
         }
 
         $message = new Chat();
@@ -1231,6 +1230,57 @@ class SocialMediaController extends Controller
         $message->save();
 
         broadcast(new Chatting($message, $request->sender)); //receiver
+    }
+
+    public function chat(Request $request){
+        $message = new Chat();
+        $input = $request->all();
+        $to_user_id = $request->receiver;
+        if($input['images']) {
+
+            $images=$input['images'];
+            $filenames = $input['filenames'];
+            foreach($images as $index=>$file)
+            {
+                $tmp = base64_decode($file);
+                $file_name = $filenames[$index];
+                Storage::disk('public')->put(
+                    'customer_message_media/' . $file_name,
+                    $tmp
+                );
+                 $imgData[] = $file_name;
+                 $message->media = json_encode($imgData);
+            }
+         }
+        $message->from_user_id = auth()->user()->id;
+        $message->to_user_id = $to_user_id;
+        $message->text = $request->text == null ?  null : $request->text;
+        $message->save();
+        broadcast(new Chatting($message, $request->sender));
+        return response()->json([
+            'success' =>  'success'
+        ]);
+    }
+
+    public function chat_messages(Request $request){
+        $id = $request->id;
+        $auth_user = auth()->user();
+
+        $messages = Chat::where(function($query) use ($auth_user){
+            $query->where('from_user_id',$auth_user->id)->orWhere('to_user_id',$auth_user->id);
+        })->where(function($que) use ($id){
+            $que->where('from_user_id',$id)->orWhere('to_user_id',$id);
+        })->with('to_user')->with('from_user')->paginate(20);
+
+
+        $receiver_user = User::select('users.id','users.name','profiles.profile_image')
+                            ->where('users.id',$id)
+                            ->join('profiles','profiles.id','users.profile_id')->first();
+
+        return response()->json([
+            'messages' => $messages,
+            'receiver' => $receiver_user
+        ]);
     }
 
     public function post_comment_store(Request $request){
@@ -1281,7 +1331,7 @@ class SocialMediaController extends Controller
                 $fri_noti->comment_id = $comments->id;
                 $fri_noti->notification_status = 1;
                 $fri_noti->save();
-                $pusher->trigger('friend_request.'.$post_owner->user_id , 'friendRequest', $data2);
+                $pusher->trigger('friend_request.'.$post_owner->user_id , 'friendRequest', $fri_noti);
         }
         elseif($comments->mentioned_users != "null"){
            $data = auth()->user()->name.' mentioned you in a comment!';
@@ -1298,7 +1348,7 @@ class SocialMediaController extends Controller
                 $fri_noti->comment_id = $comments->id;
                 $fri_noti->notification_status = 1;
                 $fri_noti->save();
-                $pusher->trigger('friend_request.'.$fri_noti->receiver_id , 'friendRequest', $data);
+                $pusher->trigger('friend_request.'.$fri_noti->receiver_id , 'friendRequest', $fri_noti);
             }
            }
         }
@@ -1361,7 +1411,7 @@ class SocialMediaController extends Controller
                         $fri_noti->post_id=$request->post_id;
                         $fri_noti->notification_status = 1;
                         $fri_noti->save();
-                        $pusher->trigger('friend_request.'.$post_owner->user_id , 'friendRequest', $data);
+                        $pusher->trigger('friend_request.'.$post_owner->user_id , 'friendRequest', $fri_noti);
                     }
             }
             $total_likes=UserReactPost::where('post_id',$post_id)->count();

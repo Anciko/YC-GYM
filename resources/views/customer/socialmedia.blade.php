@@ -17,33 +17,53 @@
                 <form id="report_form" value="">
                     <label class="form-label text-secondary" style="font-size:0.75em">Your report is anonymous,except if you're reporting an intellectual property infringement.</label>
                     <input type="hidden" value="" id="post_id">
-                    <input type="radio" id="nudity" name="report_msg" value="nudity">
-                    <label for="nudity">Nudity</label><br>
 
-                    <input type="radio" id="violence" name="report_msg" value="violence">
-                    <label for="violence">Violence</label><br>
+                    <label class="report-option">
+                        <input type="radio" id="nudity" name="report_msg" value="nudity">
+                        <label for="nudity">Nudity</label>
+                    </label>
+                    <label class="report-option">
+                        <input type="radio" id="violence" name="report_msg" value="violence">
+                        <label for="violence">Violence</label>
+                    </label>
 
-                    <input type="radio" id="harassment" name="report_msg" value="harassment">
-                    <label for="harassment">Harassment</label><br>
+                    <label class="report-option">
+                        <input type="radio" id="harassment" name="report_msg" value="harassment">
+                        <label for="harassment">Harassment</label>
+                    </label>
 
-                    <input type="radio" id="suicide" name="report_msg" value="suicide or self-injury">
-                    <label for="suicide">Suicide or self-injury</label><br>
+                    <label class="report-option">
+                        <input type="radio" id="suicide" name="report_msg" value="suicide or self-injury">
+                        <label for="suicide">Suicide or self-injury</label>
+                    </label>
 
-                    <input type="radio" id="false" name="report_msg" value="false information">
-                    <label for="false">false information</label><br>
+                    <label class="report-option">
+                        <input type="radio" id="false" name="report_msg" value="false information">
+                        <label for="false">false information</label>
+                    </label>
 
-                    <input type="radio" id="spam" name="report_msg" value="spam">
-                    <label for="spam">Spam</label><br>
 
-                    <input type="radio" id="Hate speech" name="report_msg" value="hate speech">
-                    <label for="Hate speech">Hate speech</label><br>
+                    <label class="report-option">
+                        <input type="radio" id="spam" name="report_msg" value="spam">
+                        <label for="spam">Spam</label>
+                    </label>
 
-                    <input type="radio" id="terrorism" name="report_msg" value="terrorism">
-                    <label for="terrorism">Terrorism</label><br>
 
-                    <input type="radio" id="other" name="report_msg" value="other">
-                    <label for="other">Other</label><br>
-                    <input type="text" id="other_msg" name="other_report_msg"><br><br>
+                    <label class="report-option">
+                        <input type="radio" id="Hate speech" name="report_msg" value="hate speech">
+                        <label for="Hate speech">Hate speech</label>
+                    </label>
+
+                    <label class="report-option">
+                        <input type="radio" id="terrorism" name="report_msg" value="terrorism">
+                        <label for="terrorism">Terrorism</label>
+                    </label>
+
+                    <label class="report-option">
+                        <input type="radio" id="other" name="report_msg" value="other">
+                        <label for="other">Other</label>
+                    </label>
+                    <textarea id="other_msg" name="other_report_msg"></textarea>
 
                     <button type="submit" class="btn btn-primary disabled" id="report_submit">Submit</button>
                 </form>

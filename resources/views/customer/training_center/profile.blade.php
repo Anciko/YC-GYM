@@ -97,6 +97,11 @@
                 <form class="social-media-all-comments-input">
                     <textarea placeholder="Write a comment" id="textarea"></textarea>
                     <div id="menu" class="menu" role="listbox"></div>
+                    <button type="button" id="emoji-button" class="emoji-trigger">
+                        <iconify-icon icon="bi:emoji-smile" class="group-chat-send-form-emoji-icon"></iconify-icon>
+                    </button>
+                    <div id="emojis">
+                    </div>
                     <button class="social-media-all-comments-send-btn">
                         <iconify-icon icon="akar-icons:send" class="social-media-all-comments-send-icon"></iconify-icon>
                     </button>
@@ -121,6 +126,11 @@
             <form class="social-media-all-comments-input-edit" id="editComment">
                 <textarea placeholder="Write a comment" id="editCommentTextArea"></textarea>
                 <div id="menu" class="menu" role="listbox"></div>
+                <button type="button" id="emoji-button" class="emoji-trigger">
+                    <iconify-icon icon="bi:emoji-smile" class="group-chat-send-form-emoji-icon"></iconify-icon>
+                </button>
+                <div id="edit-emojis">
+                </div>
                 <button class="social-media-all-comments-send-btn">
                     <iconify-icon icon="akar-icons:send" class="social-media-all-comments-send-icon"></iconify-icon>
                 </button>
@@ -1892,7 +1902,7 @@
                 $(this).next().toggle()
         })
 
-            $('#textarea').mentiony({
+                $('#textarea').mentiony({
                     onDataRequest: function (mode, keyword, onDataRequestCompleteCallback) {
                         var search_url = "{{ route('users.mention') }}";
                         $.ajaxSetup({
@@ -1958,6 +1968,8 @@
 
                 });
 
+
+
                 //edit comment start
                 $(document).on('click', '#editCommentModal', function(e) {
                     $('#view_comments_modal').modal('hide')
@@ -1984,6 +1996,32 @@
                 })
                 //edit comment end
 
+                // //emoji start
+                $("#edit-emojis").disMojiPicker()
+                $("#edit-emojis").picker(emoji => {
+                    // console.log($(".social-media-all-comments-input .mentiony-content"))
+                    $(".social-media-all-comments-input-edit .mentiony-content").append(emoji)
+                });
+
+                $("#emojis").disMojiPicker()
+                $("#emojis").picker(emoji => {
+                    // console.log($(".social-media-all-comments-input .mentiony-content"))
+                    $(".social-media-all-comments-input .mentiony-content").append(emoji)
+                });
+
+
+                twemoji.parse(document.body);
+
+                $.each($(".emoji-trigger"), function(index,value){
+                    // console.log($(this))
+                    $(this).click(function(){
+                        // console.log($(this).siblings("#emojis"))
+                        $(this).siblings("#emojis").toggle()
+                        $(this).siblings("#edit-emojis").toggle()
+                    })
+                })
+                // //emoji end
+
                 $(".social-media-all-comments-input-edit").on('submit',function(e){
                 e.preventDefault()
                 // console.log($('.mentiony-content').text())
@@ -2001,10 +2039,8 @@
                 var comment = $('.social-media-all-comments-input-edit .mentiony-content').text()
                 console.log(arr)
                 console.log(comment)
-                // <a href = "" >Trainer</a>
                 var search_url = "{{ route('post.comment.update') }}";
-                //var post_id = "{{$post->id}}"
-                // console.log(post_id)
+
                     $.ajaxSetup({
                             headers: {
                                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -2026,6 +2062,27 @@
 
             $(".mentiony-container").attr('style','')
             $(".mentiony-content").attr('style','')
+            $('.mentiony-content').on('keydown', function(event) {
+                console.log(event.which)
+                if (event.which == 8 || event.which == 46) {
+                    s = window.getSelection();
+                    r = s.getRangeAt(0)
+                    el = r.startContainer.parentElement
+
+                    console.log(el.classList.contains('mentiony-link') || el.classList.contains('mention-area') || el.classList.contains('highlight'))
+                    console.log(el)
+                    if (el.classList.contains('mentiony-link') || el.classList.contains('mention-area') || el.classList.contains('highlight')) {
+                        console.log('delete mention')
+
+
+                                el.remove();
+
+                            return;
+
+                    }
+                }
+                event.target.querySelectorAll('delete-highlight').forEach(function(el) { el.classList.remove('delete-highlight');})
+            });
 
             $(".social-media-all-comments-input").on('submit',function(e){
                 e.preventDefault()
