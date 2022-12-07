@@ -1481,6 +1481,7 @@ border-radius: 50%;
     justify-content: space-between;
     margin-bottom: 20px;
     gap: 0 5px;
+    position: relative;
 }
 
 .social-media-all-comments-input-edit{
@@ -1543,6 +1544,7 @@ border-radius: 50%;
     background-color: #ECECEC;
     padding: 10px 5px;
     border-radius: 5px;
+    flex: 1;
 }
 
 .social-media-comment-box-header{

@@ -543,6 +543,10 @@ z-index: 20;
     pointer-events: none;
 }
 
+.modal-body .group-chat-send-form-emoji-icon{
+    color: black;
+}
+
 .group-chat-send-form-input{
     border: none;
     /* border-left: 1px solid black; */

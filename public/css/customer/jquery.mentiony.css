@@ -9,6 +9,13 @@
 .social-media-all-comments-input .mentiony-container{
     max-width: 350px;
 }
+.social-media-all-comments-input-edit .mentiony-container{
+    max-width: 350px;
+}
+
+.comment-main-input .mentiony-container{
+    max-width: 400px;
+}
 
 .mentiony-container{
 	position:relative;
@@ -80,35 +87,53 @@
 }
 
 @media screen and (max-width:1000px){
-	.mentiony-container{
-		max-width: 400px;
-	}
+
 	.social-media-all-comments-input .mentiony-container{
         max-width: 350px;
 	}
+	.social-media-all-comments-input-edit .mentiony-container{
+        max-width: 350px;
+	}
+    .comment-main-input .mentiony-container{
+		max-width: 380px;
+	}
 }
 @media screen and (max-width:600px){
-	.mentiony-container{
-		max-width: 320px;
-	}
+
 	.social-media-all-comments-input .mentiony-container{
 		max-width: 320px;
+	}
+	.social-media-all-comments-input-edit .mentiony-container{
+		max-width: 320px;
+	}
+    .comment-main-input .mentiony-container{
+		max-width: 310px;
 	}
 }
 @media screen and (max-width:500px){
-	.mentiony-container{
-		max-width: 240px;
-	}
+
 	.social-media-all-comments-input .mentiony-container{
 		max-width: 240px;
+	}
+	.social-media-all-comments-input-edit .mentiony-container{
+		max-width: 240px;
+	}
+
+    .comment-main-input .mentiony-container{
+		max-width: 220px;
 	}
 }
 @media screen and (max-width:400px){
-	.mentiony-container{
-		max-width: 200px;
-	}
+
 	.social-media-all-comments-input .mentiony-container{
 		max-width: 200px;
+	}
+	.social-media-all-comments-input-edit .mentiony-container{
+		max-width: 200px;
+	}
+
+    .comment-main-input .mentiony-container{
+		max-width: 180px;
 	}
 }
 @media screen and (max-width:350px){
@@ -116,6 +141,9 @@
 		max-width: 140px;
 	}
 	.social-media-all-comments-input .mentiony-container{
+		max-width: 140px;
+	}
+	.social-media-all-comments-input-edit .mentiony-container{
 		max-width: 140px;
 	}
 }
