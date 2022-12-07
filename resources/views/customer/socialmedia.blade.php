@@ -257,12 +257,14 @@
        $('input[name="report_msg"]').on('click', function() {
         if ($(this).val() == 'other') {
             $('#other_msg').show();
-            if($('#other_msg')!=null){
-                $('#report_submit').attr("class",'btn btn-primary')
-            }else{
-                $('#report_submit').attr("class",'btn btn-primary disabled')
-            }
-            $('#report_submit').attr("class",'btn btn-primary')
+            $('#other_msg').keydown(function() {
+                if(!$('#other_msg').val()){
+                    $('#report_submit').attr("class",'btn btn-primary disabled')
+                }else{
+                    $('#report_submit').attr("class",'btn btn-primary')
+                }
+            })
+
         }else if ($(this).val() == 'nudity'){
             $('#other_msg').hide();
             $('#other_msg').val('');

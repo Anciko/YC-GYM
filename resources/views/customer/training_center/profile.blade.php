@@ -2100,9 +2100,6 @@
                 console.log(arr)
                 console.log(comment)
 
-
-
-
                 // <a href = "" >Trainer</a>
                 var search_url = "{{ route('post.comment.store') }}";
                 var post_id = $(".social-media-all-comments-input").data('id');
