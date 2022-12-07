@@ -107,6 +107,10 @@ class User extends Authenticatable
     public function friendship(){
     return $this->belongsTo(Friendship::class);
     }
+
+    public function user_profile(){
+        return $this->belongsTo(Profile::class,'profile_id','id');
+    }
     // public function Sender(){
     //     return $this->hasMany(Friendship::class,'receiver_id');
     // }

@@ -36,6 +36,8 @@
     <!--comment mention--->
     <link href="{{asset('css/customer/jquery.mentiony.css')}}" rel="stylesheet"/>
 
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+
     @yield('styles')
 
     <title>YC-fitness</title>
@@ -247,34 +249,26 @@
                                 </div>
 
                                 <div class="social-media-left-gpmessages-rows-container">
-                                    <a href="#" class="social-media-left-gpmessages-row">
-                                        <img src="{{asset('img/customer/imgs/user_default.jpg')}}">
-                                        <p>
-                                            Group Name<br>
-                                            <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Dui hendrerit potenti pellentesque tellus urna bibendum mollis. </span>
-                                        </p>
-                                    </a>
-                                    <a href="#" class="social-media-left-gpmessages-row">
-                                        <img src="{{asset('img/customer/imgs/user_default.jpg')}}">
-                                        <p>
-                                            Group Name<br>
-                                            <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Dui hendrerit potenti pellentesque tellus urna bibendum mollis. </span>
-                                        </p>
-                                    </a>
-                                    <a href="#" class="social-media-left-gpmessages-row">
-                                        <img src="{{asset('img/customer/imgs/user_default.jpg')}}">
-                                        <p>
-                                            Group Name<br>
-                                            <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Dui hendrerit potenti pellentesque tellus urna bibendum mollis. </span>
-                                        </p>
-                                    </a>
-                                    <a href="#" class="social-media-left-gpmessages-row">
-                                        <img src="{{asset('img/customer/imgs/user_default.jpg')}}">
-                                        <p>
-                                            Group Name<br>
-                                            <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Dui hendrerit potenti pellentesque tellus urna bibendum mollis. </span>
-                                        </p>
-                                    </a>
+                                    @foreach ($chat_group as $group)
+                                    @if ($group->group_id != null)
+                                        <a href="{{route('socialmedia.group',$group->group_id)}}" class="social-media-left-gpmessages-row">
+                                            <img src="{{asset('img/customer/imgs/user_default.jpg')}}">
+                                            <p>
+                                            {{$group->group_name}}<br>
+                                                <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Dui hendrerit potenti pellentesque tellus urna bibendum mollis. </span>
+                                            </p>
+                                        </a>
+                                    @else
+                                        <a href="{{route('socialmedia.group',$group->id)}}" class="social-media-left-gpmessages-row">
+                                            <img src="{{asset('img/customer/imgs/user_default.jpg')}}">
+                                            <p>
+                                            {{$group->group_name}}<br>
+                                                <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Dui hendrerit potenti pellentesque tellus urna bibendum mollis. </span>
+                                            </p>
+                                        </a>
+                                    @endif
+
+                                @endforeach
                                 </div>
                             </div>
                         </div>
@@ -317,6 +311,8 @@
 
     {{-- emoji --}}
     <script src="https://cdn.jsdelivr.net/npm/@joeattardi/emoji-button@3.0.3/dist/index.min.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
     <script src="{{asset('js/customer/jquery.mentiony.js')}}"></script>
 

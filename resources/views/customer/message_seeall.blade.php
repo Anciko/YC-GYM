@@ -3,6 +3,39 @@
 @section('content')
 
 <div class="social-media-right-container ">
+
+    <div class="modal fade" id="createGroupModal" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">Create Group</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <form action="{{route('socialmedia.group.create')}}" class="create-group-form" method="POST">
+                @csrf
+                <div class="create-group-name">
+                    <p>Group Name</p>
+                    <input type="text" name="group_name" required>
+                </div>
+                {{-- <div class="create-group-addfris">
+                    <p>Add Your Friends</p>
+                    <select class="js-example-basic-multiple" name="members[]" multiple="multiple">
+                        @foreach ($friends as $friend)
+                            <option value="{{$friend->id}}">{{$friend->name}}</option>
+                        @endforeach
+                      </select>
+                </div> --}}
+
+                <button type="submit" class="customer-primary-btn create-group-submit-btn">Create</button>
+              </form>
+            </div>
+
+          </div>
+        </div>
+    </div>
+
+
     <div class="social-media-allchats-header">
         <p>Messages</p>
         <div class="social-media-allchats-header-btn-container">
@@ -17,50 +50,39 @@
     </div>
 
     <div class="social-media-allchats-messages-container">
-        @forelse ($chat_lists as $list)
-
-            @if (auth()->user()->id == $list->to_user->id)
-                    <a href="{{route('message.chat',$list->from_user->id)}}" class="social-media-allchats-message-row">
-                        <div class="social-media-allchats-message-img">
-                            @if ($list->from_user->profiles != null || $list->from_user->profiles->profile_image != null)
-                                {{-- <img src="{{asset('storage/post'.$list->from_user->profiles->profile_image)}}"> --}}
-                            @else
-                                <img class="nav-profile-img" src="{{asset('img/customer/imgs/user_default.jpg')}}"/>
-                            @endif
-
-                            <p>{{$list->from_user->name}}</p>
-                        </div>
-
-                        <p>{{$list->text}}</p>
-
-                        <span>03:04 pm</span>
-                    </a>
+        @foreach ($friends as $list)
+            <a href="{{route('message.chat',$list->id)}}" class="social-media-allchats-message-row">
+                <div class="social-media-allchats-message-img">
+                    @if ($list->profiles[0]->profile_image != null)
+                        <img src="{{asset('storage/post'.$list->profiles[0]->profile_image)}}">
                     @else
-                    <a href="{{route('message.chat',$list->to_user->id)}}" class="social-media-allchats-message-row">
-                        <div class="social-media-allchats-message-img">
-                            @if ($list->to_user->profile_image != null)
-                                <img src="{{asset('storage/post'.$list->to_user->profile_image)}}">
-                            @else
-                                <img class="nav-profile-img" src="{{asset('img/customer/imgs/user_default.jpg')}}"/>
-                            @endif
-                            <p>{{$list->to_user->name}}</p>
-                        </div>
+                        <img class="nav-profile-img" src="{{asset('img/customer/imgs/user_default.jpg')}}"/>
+                    @endif
 
-                        {{-- @foreach ($messages as $message)
-                            @if ($message->from_user_id == $list->to_user_id)
-                                <p>{{$message->text}}</p>
-                            @endif
-                        @endforeach --}}
-                        <span>03:04 pm</span>
-                    </a>
+                    <p>{{$list->name}}</p>
+                </div>
+            </a>
 
-            @endif
-        @empty
 
-        @endforelse
+        @endforeach
 
 
     </div>
 </div>
 
 @endsection
+
+@push('scripts')
+<script>
+
+    $(document).ready(function(){
+        $('.js-example-basic-multiple').select2(
+                { dropdownParent: "#createGroupModal" }
+        );
+
+        $('.select2-container').attr('style', '');
+    })
+
+</script>
+@endpush
+

@@ -10,6 +10,7 @@ use App\Models\User;
 use App\Models\Comment;
 use App\Models\Profile;
 use App\Events\Chatting;
+use App\Events\GroupChatting;
 use App\Models\Friendship;
 use App\Models\Notification;
 use Illuminate\Http\Request;
@@ -17,6 +18,7 @@ use App\Models\UserReactPost;
 use App\Models\UserSavedPost;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use App\Models\ChatGroupMessage;
 use Illuminate\Support\Facades\Storage;
 
 class SocialMediaController extends Controller
@@ -1043,6 +1045,17 @@ class SocialMediaController extends Controller
         $message->save();
 
         broadcast(new Chatting($message, $request->sender)); //receiver
+    }
+
+    public function group_chatting(Request $request, $id){
+
+        $message = new ChatGroupMessage();
+        $message->group_id = $id;
+        $message->sender_id = $request->senderId;
+        $message->text = $request->text;
+        $message->save();
+
+        broadcast(new GroupChatting($message,$request->senderImg, $request->senderName));
     }
 
     public function post_comment_store(Request $request){

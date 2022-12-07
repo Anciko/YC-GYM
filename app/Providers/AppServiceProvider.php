@@ -5,6 +5,7 @@ namespace App\Providers;
 use App\Models\Post;
 use App\Models\User;
 use App\Models\Profile;
+use App\Models\ChatGroup;
 use App\Models\Friendship;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -92,8 +93,19 @@ class AppServiceProvider extends ServiceProvider
                         ->where('id','!=',$user_id)
                         ->paginate(6);
 
+        //yak
+        $chat_group = ChatGroup::select('group_owner_id')->get();
+
+        foreach($chat_group as $chat){
+            if($chat->group_owner_id == $user_id){
+                $chat_groups = ChatGroup::where('group_owner_id',$user_id)->get();
+            }else{
+                $chat_groups = ChatGroup::where('chat_group_members.member_id',$user_id)->join('chat_group_members','chat_group_members.group_id','chat_groups.id')->get();
+            }
+        }
+
         //...with this variable
-        $view->with('left_friends', $left_friends);
+        $view->with(['left_friends'=> $left_friends, 'chat_group'=>$chat_groups]);
         }
 
     });

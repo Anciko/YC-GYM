@@ -137,7 +137,12 @@
 
         <div class="group-chat-header">
             <div class="group-chat-header-name-container">
-                <img src="{{ asset('/storage/post' . $receiver_user->profile_image) }}" />
+                @if ($receiver_user->user_profile == null)
+                    <img class="nav-profile-img" src="{{asset('img/customer/imgs/user_default.jpg')}}"/>
+                @else
+                    <img src="{{ asset('/storage/post' . $receiver_user->user_profile->profile_image) }}" />
+                @endif
+
                 <div class="group-chat-header-name-text-container">
                     <p>{{ $receiver_user->name }}</p>
                     <small class="active-now" style="color:#3CDD57;"></small>
@@ -171,7 +176,11 @@
                             <div class="group-chat-sender-text-container">
                                 <p>{{ $send_message->text }}</p>
                             </div>
-                            <img src="{{ asset('/storage/post' . $sender_user->profile_image) }}" />
+                            @if ($sender_user->user_profile ==null)
+                                <img class="nav-profile-img" src="{{asset('img/customer/imgs/user_default.jpg')}}"/>
+                            @else
+                                <img src="{{ asset('/storage/post' . $sender_user->user_profile->profile_image) }}" />
+                            @endif
                         </div>
                     @else
                         @if (pathinfo($send_message->media, PATHINFO_EXTENSION) == 'png' ||
@@ -214,14 +223,22 @@
                                             type="video/mp4">
                                     </video>
                                 </div>
-                                <img src="{{ asset('/storage/post' . $sender_user->profile_image) }}" />
+                                @if ($sender_user->user_profile ==null)
+                                    <img class="nav-profile-img" src="{{asset('img/customer/imgs/user_default.jpg')}}"/>
+                                @else
+                                    <img src="{{ asset('/storage/post' . $sender_user->user_profile->profile_image) }}" />
+                                @endif
                             </div>
                         @endif
                     @endif
                 @elseif(auth()->user()->id != $send_message->from_user_id)
                     @if ($send_message->media == null)
                         <div class="group-chat-receiver-container">
-                            <img src="{{ asset('/storage/post' . $receiver_user->profile_image) }}" />
+                            @if ($receiver_user->user_profile == null)
+                                <img class="nav-profile-img" src="{{asset('img/customer/imgs/user_default.jpg')}}"/>
+                            @else
+                                <img src="{{ asset('/storage/post' . $receiver_user->user_profile->profile_image) }}" />
+                            @endif
                             <div class="group-chat-receiver-text-container">
                                 <span>{{ $send_message->from_user->name }}</span>
                                 <p>{{ $send_message->text }}</p>
@@ -250,7 +267,12 @@
                             {{-- end modal --}}
 
                             <div class="group-chat-receiver-container" id="trainer_message_el">
-                                <img src="{{ asset('/storage/post' . $receiver_user->profile_image) }}" />
+                                @if ($receiver_user->user_profile == null)
+                                    <img class="nav-profile-img" src="{{asset('img/customer/imgs/user_default.jpg')}}"/>
+                                @else
+                                    <img src="{{ asset('/storage/post' . $receiver_user->user_profile->profile_image) }}" />
+                                @endif
+
                                 <div class="group-chat-receiver-text-container">
                                     <span>{{ $send_message->from_user->name }}</span>
                                     <a data-bs-toggle="modal" href="#exampleModalToggle{{ $send_message->id }}"
@@ -263,7 +285,12 @@
                             pathinfo($send_message->media, PATHINFO_EXTENSION) == 'mov' ||
                             pathinfo($send_message->media, PATHINFO_EXTENSION) == 'webm')
                             <div class="group-chat-receiver-container" id="trainer_message_el">
-                                <img src="{{ asset('/storage/post' . $receiver_user->profile_image) }}" />
+                                @if ($receiver_user->user_profile == null)
+                                    <img class="nav-profile-img" src="{{asset('img/customer/imgs/user_default.jpg')}}"/>
+                                @else
+                                    <img src="{{ asset('/storage/post' . $receiver_user->user_profile->profile_image) }}" />
+                                @endif
+
                                 <div class="group-chat-receiver-text-container">
                                     <span>{{ $send_message->from_user->name }}</span>
                                     <video width="100%" height="100%" controls>
@@ -324,7 +351,7 @@
         </form>
 
     </div>
-    
+
 
 
 @endsection

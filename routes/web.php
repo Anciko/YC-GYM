@@ -87,7 +87,13 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
         Route::post('/agora/call-user',  [VideoController::class, 'callUser'])->name('socialmedia.videocall');
         Route::post('/agora/call-audio-user',  [VideoController::class, 'callAudioUser'])->name('socialmedia.videocall');
         Route::post('/agora/token',  [VideoController::class, 'token']);
-        
+
+        Route::post('/socialmedia/group/create',[SocialmediaController::class,'group_create'])->name('socialmedia.group.create');
+        Route::get('/socialmedia/group/{id}',[SocialmediaController::class,'group'])->name('socialmedia.group');
+        Route::post('/socialmedia/group/{id}/addmember',[SocialmediaController::class,'addmember'])->name('socialmedia.group.addmember');
+        Route::get('/socialmedia/group/detail/{id}',[SocialmediaController::class,'group_detail'])->name('socialmedia.group.detail');
+        Route::post('/socialmedia/group/member/kick',[SocialmediaController::class,'group_member_kick'])->name('socialmedia.group.memberkick');
+
         // Route::get('/testing', [SocialmediaController::class, 'index'])->name('testing');
         // Route::post('/testing/store', [SocialmediaController::class, 'post_store'])->name('testing.store');
 
