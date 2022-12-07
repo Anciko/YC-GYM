@@ -16,6 +16,8 @@ class CreateReportsTable extends Migration
         Schema::create('reports', function (Blueprint $table) {
             $table->id();
             $table->text('description')->nullable();
+            $table->string('action_message')->nullable();
+            $table->integer('status')->default(0);
             $table->integer('post_id');
             $table->integer('user_id');
             $table->timestamps();
