@@ -1270,7 +1270,7 @@ class SocialMediaController extends Controller
             $query->where('from_user_id',$auth_user->id)->orWhere('to_user_id',$auth_user->id);
         })->where(function($que) use ($id){
             $que->where('from_user_id',$id)->orWhere('to_user_id',$id);
-        })->with('to_user')->with('from_user')->paginate(20);
+        })->get();
 
 
         $receiver_user = User::select('users.id','users.name','profiles.profile_image')
@@ -1283,6 +1283,48 @@ class SocialMediaController extends Controller
         ]);
     }
 
+    public function view_media_message(Request $request){
+        $auth_user = auth()->user();
+        $id = $request->id;
+        $messages = Chat::select('id','media')->where(function($query) use ($auth_user){
+            $query->where('from_user_id',$auth_user->id)->orWhere('to_user_id',$auth_user->id);
+        })->where(function($que) use ($id){
+            $que->where('from_user_id',$id)->orWhere('to_user_id',$id);
+        })->with('to_user')->with('from_user')->get();
+
+        return response()->json([
+            'messages' => $messages
+        ]);
+    }
+    public function see_all_message(){
+            $user_id=auth()->user()->id;
+            $messages =DB::select("SELECT users.id,users.name,profiles.profile_image,chats.text,chats.created_at
+            from
+                chats
+              join
+                (select user, max(created_at) m
+                    from
+                       (
+                         (select id, to_user_id user, created_at
+                           from chats
+                           where from_user_id= $user_id )
+                       union
+                         (select id, from_user_id user, created_at
+                           from chats
+                           where to_user_id= $user_id)
+                        ) t1
+                   group by user) t2
+            on ((from_user_id= $user_id and to_user_id=user) or
+                 (from_user_id=user and to_user_id= $user_id)) and
+                 (created_at = m)
+            left join users on users.id = user
+            left join profiles on users.profile_id = profiles.id
+            order by chats.created_at desc");
+
+                return response()->json([
+                    'all_messages' => $messages
+                ]);
+    }
     public function post_comment_store(Request $request){
         $banwords=DB::table('ban_words')->select('ban_word_english','ban_word_myanmar','ban_word_myanglish')->get();
         foreach($banwords as $b){

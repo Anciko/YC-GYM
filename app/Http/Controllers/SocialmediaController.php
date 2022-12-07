@@ -822,24 +822,49 @@ class SocialmediaController extends Controller
     }
 
     public function see_all_message(){
-        $auth_user = auth()->user();
+        // $auth_user = auth()->user();
 
-        $messages = Chat::where('from_user_id','!=',$auth_user->id)->where(function($qu) use ($auth_user){
-            $qu->where('to_user_id',$auth_user->id);
-        })->get();
+        // // $messages = Chat::where('from_user_id','!=',$auth_user->id)->where(function($qu) use ($auth_user){
+        // //     $qu->where('to_user_id',$auth_user->id);
+        // // })->get();
 
-        $user_id = Chat::select('from_user_id', 'to_user_id')->where('from_user_id', $auth_user->id)->orWhere('to_user_id',$auth_user->id)->get();
+        // $user_id = Chat::select('from_user_id', 'to_user_id')->where('from_user_id', $auth_user->id)->orWhere('to_user_id',$auth_user->id)->get();
 
-        foreach($user_id as $id){
-            $chat_lists =Chat::where(function($query) use ($auth_user){
-                $query->where('from_user_id',$auth_user->id)->orWhere('to_user_id',$auth_user->id);
-            })->where(function($que) use ($id){
-                $que->where('from_user_id',$id)->orWhere('to_user_id',$id);
-            })->get();
-        }
-        // ->with('to_user')->with('from_user')->with('to_user.profiles')->with('from_user.profiles')
-            // dd($chat_lists->toArray());
-        return view('customer.message_seeall', compact('chat_lists', 'messages'));
+        // foreach($user_id as $id){
+        //     $chat_lists =Chat::where(function($query) use ($auth_user){
+        //         $query->where('from_user_id',$auth_user->id)->orWhere('to_user_id',$auth_user->id);
+        //     })->where(function($que) use ($id){
+        //         $que->where('from_user_id',$id)->orWhere('to_user_id',$id);
+        //     })->get();
+        // }
+        // // ->with('to_user')->with('from_user')->with('to_user.profiles')->with('from_user.profiles')
+        // //     dd($chat_lists->toArray());
+            $user_id=auth()->user()->id;
+
+            $messages =DB::select("SELECT users.id,users.name,profiles.profile_image,chats.text,chats.created_at
+            from
+                chats
+              join
+                (select user, max(created_at) m
+                    from
+                       (
+                         (select id, to_user_id user, created_at
+                           from chats
+                           where from_user_id= $user_id )
+                       union
+                         (select id, from_user_id user, created_at
+                           from chats
+                           where to_user_id= $user_id)
+                        ) t1
+                   group by user) t2
+             on ((from_user_id= $user_id and to_user_id=user) or
+                 (from_user_id=user and to_user_id= $user_id)) and
+                 (created_at = m)
+            left join users on users.id = user
+            left join profiles on users.profile_id = profiles.id
+           order by chats.created_at desc");
+            // dd($messages);
+        return view('customer.message_seeall', compact('messages'));
     }
 
     public function chat_message($id){

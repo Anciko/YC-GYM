@@ -162,9 +162,11 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::post('chat',[SocialMediaController::class,'chat']);
 
     Route::post('chat/messages',[SocialMediaController::class,'chat_messages']);
+    Route::post('chat/messages/view_media',[SocialMediaController::class,'view_media_message']);
+    Route::get('chat/messages/all_messages',[SocialMediaController::class,'see_all_message']);
 
 
-    Route::post('message/oneChat',[SocialMediaController::class,'chat']); //for mobile
+
     Route::post('post/comment/store', [SocialmediaController::class, 'post_comment_store']);
     Route::post('post/comment/delete', [SocialmediaController::class, 'comment_delete']);
     Route::post('post/comment/edit', [SocialmediaController::class, 'comment_edit']);
