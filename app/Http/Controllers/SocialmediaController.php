@@ -8,6 +8,9 @@ use App\Models\Chat;
 use App\Models\Post;
 use App\Models\User;
 use App\Models\BanWord;
+use App\Models\ChatGroup;
+use App\Models\ChatGroupMember;
+use App\Models\ChatGroupMessage;
 use App\Models\Comment;
 use App\Models\Profile;
 use App\Models\Friendship;
@@ -824,6 +827,51 @@ class SocialmediaController extends Controller
     public function see_all_message(){
         // $auth_user = auth()->user();
 
+<<<<<<< HEAD
+//         $messages = Chat::where('from_user_id','!=',$auth_user->id)->where(function($qu) use ($auth_user){
+//             $qu->where('to_user_id',$auth_user->id);
+//         })->get();
+
+//         $user_id = Chat::select('from_user_id', 'to_user_id','text')->where('from_user_id', $auth_user->id)->orWhere('to_user_id',$auth_user->id)->get();
+// dd($user_id->toArray());
+//         foreach($user_id as $id){
+//             $chat_lists =Chat::where(function($query) use ($auth_user){
+//                 $query->where('from_user_id',$auth_user->id)->orWhere('to_user_id',$auth_user->id);
+//             })->where(function($que) use ($id){
+//                 $que->where('from_user_id',$id)->orWhere('to_user_id',$id);
+//             })->get();
+//         }
+        // ->with('to_user')->with('from_user')->with('to_user.profiles')->with('from_user.profiles')
+            // dd($chat_lists->toArray());
+
+            // dd($chat_lists->toArray());
+
+            $auth = Auth()->user()->id;
+            $user = User::where('id',$auth)->first();
+
+            $friendships=DB::table('friendships')
+                        ->where('friend_status',2)
+                        ->where(function($query) use ($auth){
+                            $query->where('sender_id',$auth)
+                                ->orWhere('receiver_id',$auth);
+                        })
+                        ->join('users as sender','sender.id','friendships.sender_id')
+                        ->join('users as receiver','receiver.id','friendships.receiver_id')
+                        ->get(['sender_id','receiver_id'])->toArray();
+                        //dd($friends);
+            $n= array();
+            foreach($friendships as $friend){
+                        $f=(array)$friend;
+                        array_push($n, $f['sender_id'],$f['receiver_id']);
+                }
+            $friends=User::select('users.name','users.id')->whereIn('id',$n)
+                            ->where('id','!=',$user->id)->with('profiles')
+                            ->get();
+
+
+                            // dd($friends->toArray());
+        return view('customer.message_seeall', compact('friends'));
+=======
         // // $messages = Chat::where('from_user_id','!=',$auth_user->id)->where(function($qu) use ($auth_user){
         // //     $qu->where('to_user_id',$auth_user->id);
         // // })->get();
@@ -871,6 +919,7 @@ class SocialmediaController extends Controller
 
             // dd($messages);
         return view('customer.message_seeall', compact('messages'));
+>>>>>>> 6e2859e21c9895c2720af0116996fdcd93926e2e
     }
 
     public function chat_message($id){
@@ -883,9 +932,9 @@ class SocialmediaController extends Controller
         })->with('to_user')->with('from_user')->get();
 
         $auth_user_name = auth()->user()->name;
-        $receiver_user = User::select('users.id','users.name','profiles.profile_image')->where('users.id',$id)->join('profiles','profiles.user_id','users.id')->first();
+        $receiver_user = User::where('users.id',$id)->with('user_profile')->first();
 
-        $sender_user = Profile::where('user_id',$auth_user->id)->first();
+        $sender_user = User::where('id',$auth_user->id)->with('user_profile')->first();
 
         //active friend
         $auth = Auth()->user()->id;
@@ -911,9 +960,12 @@ class SocialmediaController extends Controller
                         ->where('id','!=',$user->id)
                         ->get();
 
+<<<<<<< HEAD
+=======
 
         //dd($messages);
 
+>>>>>>> 6e2859e21c9895c2720af0116996fdcd93926e2e
         return view('customer.chat_message', compact('id','messages','auth_user_name','receiver_user','sender_user','friends'));
     }
 
@@ -1261,6 +1313,78 @@ class SocialmediaController extends Controller
         ]);
     }
 
+<<<<<<< HEAD
+    public function group_create(Request $request){
+        $groupName = $request->group_name;
+        $groupOwner = auth()->user()->id;
+        ChatGroup::create(['group_name'=>$groupName,'group_owner_id'=>$groupOwner]);
+
+        return view('customer.group_chat_message', compact('groupName'));
+    }
+
+    public function group($id){
+        $group = ChatGroup::findOrFail($id);
+        $gp_messages = ChatGroupMessage::where('group_id', $id)->with('user')->with('user.user_profile')->get();
+        $auth_user_data = User::where('id',auth()->user()->id)->with('user_profile')->first();
+
+        return view('customer.group_chat_message',compact('group','gp_messages','auth_user_data'));
+    }
+
+    public function addmember(Request $request, $id){
+        $members =$request->members;
+
+        for($i= 0; $i<count($members); $i++){
+            $memberId = $members[$i];
+            $user =User::findOrFail($memberId);
+            $user->ingroup=1;
+            $user->save();
+            ChatGroupMember::create(['group_id'=>$id, 'member_id'=>$memberId]);
+         }
+         return back();
+    }
+
+    public function group_detail($id){
+        $auth = Auth()->user()->id;
+            $user = User::where('id',$auth)->first();
+
+            $friendships=DB::table('friendships')
+                        ->where('friend_status',2)
+                        ->where(function($query) use ($auth){
+                            $query->where('sender_id',$auth)
+                                ->orWhere('receiver_id',$auth);
+                        })
+                        ->join('users as sender','sender.id','friendships.sender_id')
+                        ->join('users as receiver','receiver.id','friendships.receiver_id')
+                        ->get(['sender_id','receiver_id'])->toArray();
+                        //dd($friends);
+            $n= array();
+            foreach($friendships as $friend){
+                        $f=(array)$friend;
+                        array_push($n, $f['sender_id'],$f['receiver_id']);
+                }
+
+          $group = ChatGroup::findOrFail($id);
+
+            $friends=User::select('users.name','users.id')->whereIn('users.id',$n)
+            ->where('users.id','!=',$user->id)->where('users.ingroup',0)
+            ->get();
+
+        $members = ChatGroupMember::where('group_id', $id)->with('user')->with('user.profiles')->get();
+
+        return view('customer.group_chat-detail', compact('friends','id','members','group'));
+    }
+
+    public function group_member_kick(Request $request){
+        $member = ChatGroupMember::where('group_id', $request->groupId)->where('member_id', $request->memberId)->first();
+        $user =User::findOrFail($request->memberId);
+        $user->ingroup=0;
+        $user->save();
+        $member->delete();
+        return back();
+
+    }
+
+=======
     public function post_report(Request $request)
     {
       //  dd($request->all());
@@ -1276,4 +1400,5 @@ class SocialmediaController extends Controller
         'success' => 'Reported Success'
     ]);
     }
+>>>>>>> 6e2859e21c9895c2720af0116996fdcd93926e2e
 }

@@ -10,6 +10,7 @@ use App\Models\User;
 use App\Models\Comment;
 use App\Models\Profile;
 use App\Events\Chatting;
+use App\Events\GroupChatting;
 use App\Models\Friendship;
 use App\Models\Notification;
 use Illuminate\Http\Request;
@@ -17,6 +18,7 @@ use App\Models\UserReactPost;
 use App\Models\UserSavedPost;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use App\Models\ChatGroupMessage;
 use Illuminate\Support\Facades\Storage;
 
 class SocialMediaController extends Controller
@@ -1232,6 +1234,19 @@ class SocialMediaController extends Controller
         broadcast(new Chatting($message, $request->sender)); //receiver
     }
 
+<<<<<<< HEAD
+    public function group_chatting(Request $request, $id){
+
+        $message = new ChatGroupMessage();
+        $message->group_id = $id;
+        $message->sender_id = $request->senderId;
+        $message->text = $request->text;
+        $message->save();
+
+        broadcast(new GroupChatting($message,$request->senderImg, $request->senderName));
+    }
+
+=======
     public function chat(Request $request){
         $message = new Chat();
         $input = $request->all();
@@ -1329,6 +1344,7 @@ class SocialMediaController extends Controller
                     'all_messages' => $messages
                 ]);
     }
+>>>>>>> 6e2859e21c9895c2720af0116996fdcd93926e2e
     public function post_comment_store(Request $request){
         $banwords=DB::table('ban_words')->select('ban_word_english','ban_word_myanmar','ban_word_myanglish')->get();
         foreach($banwords as $b){

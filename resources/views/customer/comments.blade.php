@@ -431,7 +431,8 @@
                     // console.log($(".social-media-all-comments-input .mentiony-content"))
                     $(".social-media-all-comments-input-edit .mentiony-content").append(emoji)
                 });
-                twemoji.parse(document.body);
+                // console.log(document.body)
+                twemoji.parse(document.querySelector("#emojis"));
 
                 $.each($(".emoji-trigger"), function(index,value){
                     // console.log($(this))

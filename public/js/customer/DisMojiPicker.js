@@ -1,7 +1,7 @@
 (function ($) {
 
     const selectables = function(obj) {
-        $(obj).append(`<div class="emoji-picker">
+        $(obj).append(`<div class="emoji-picker-comment">
                         <div class="emoji-selectables">
                             <span class="picker-emoji-sel emoji-smileys active" data-emoji="smileys">😀</span>
                             <span class="picker-emoji-sel emoji-gestures" data-emoji="gestures">👌</span>
