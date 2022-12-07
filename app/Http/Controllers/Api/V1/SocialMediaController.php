@@ -1234,7 +1234,6 @@ class SocialMediaController extends Controller
         broadcast(new Chatting($message, $request->sender)); //receiver
     }
 
-<<<<<<< HEAD
     public function group_chatting(Request $request, $id){
 
         $message = new ChatGroupMessage();
@@ -1246,7 +1245,6 @@ class SocialMediaController extends Controller
         broadcast(new GroupChatting($message,$request->senderImg, $request->senderName));
     }
 
-=======
     public function chat(Request $request){
         $message = new Chat();
         $input = $request->all();
@@ -1315,6 +1313,7 @@ class SocialMediaController extends Controller
             'messages' => $messages
         ]);
     }
+
     public function see_all_message(){
             $user_id=auth()->user()->id;
             $messages =DB::select("SELECT users.id,users.name,profiles.profile_image,chats.text,chats.created_at
@@ -1344,7 +1343,6 @@ class SocialMediaController extends Controller
                     'all_messages' => $messages
                 ]);
     }
->>>>>>> 6e2859e21c9895c2720af0116996fdcd93926e2e
     public function post_comment_store(Request $request){
         $banwords=DB::table('ban_words')->select('ban_word_english','ban_word_myanmar','ban_word_myanglish')->get();
         foreach($banwords as $b){
