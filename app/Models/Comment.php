@@ -11,10 +11,10 @@ class Comment extends Model
 {
     use HasFactory,SoftDeletes;
 
-    public function report(){
-        return $this->hasOne(Report::class);
+    public function reports()
+    {
+        return $this->hasMany(Report::class, 'comment_id', 'id');
     }
-
 
     public function post()
     {

@@ -97,6 +97,11 @@
                 <form class="social-media-all-comments-input">
                     <textarea placeholder="Write a comment" id="textarea"></textarea>
                     <div id="menu" class="menu" role="listbox"></div>
+                    <button type="button" id="emoji-button" class="emoji-trigger">
+                        <iconify-icon icon="bi:emoji-smile" class="group-chat-send-form-emoji-icon"></iconify-icon>
+                    </button>
+                    <div id="emojis">
+                    </div>
                     <button class="social-media-all-comments-send-btn">
                         <iconify-icon icon="akar-icons:send" class="social-media-all-comments-send-icon"></iconify-icon>
                     </button>
@@ -121,6 +126,11 @@
             <form class="social-media-all-comments-input-edit" id="editComment">
                 <textarea placeholder="Write a comment" id="editCommentTextArea"></textarea>
                 <div id="menu" class="menu" role="listbox"></div>
+                <button type="button" id="emoji-button" class="emoji-trigger">
+                    <iconify-icon icon="bi:emoji-smile" class="group-chat-send-form-emoji-icon"></iconify-icon>
+                </button>
+                <div id="edit-emojis">
+                </div>
                 <button class="social-media-all-comments-send-btn">
                     <iconify-icon icon="akar-icons:send" class="social-media-all-comments-send-icon"></iconify-icon>
                 </button>
@@ -1892,7 +1902,7 @@
                 $(this).next().toggle()
         })
 
-            $('#textarea').mentiony({
+                $('#textarea').mentiony({
                     onDataRequest: function (mode, keyword, onDataRequestCompleteCallback) {
                         var search_url = "{{ route('users.mention') }}";
                         $.ajaxSetup({
@@ -1958,8 +1968,11 @@
 
                 });
 
+
+
                 //edit comment start
                 $(document).on('click', '#editCommentModal', function(e) {
+                    $('#view_comments_modal').modal('hide')
                         $('#edit_comments_modal').modal('show');
                         var id = $(this).data('id');
                         $(".social-media-all-comments-input-edit").data('id',id)
@@ -1982,6 +1995,32 @@
                     });
                 })
                 //edit comment end
+
+                // //emoji start
+                $("#edit-emojis").disMojiPicker()
+                $("#edit-emojis").picker(emoji => {
+                    // console.log($(".social-media-all-comments-input .mentiony-content"))
+                    $(".social-media-all-comments-input-edit .mentiony-content").append(emoji)
+                });
+
+                $("#emojis").disMojiPicker()
+                $("#emojis").picker(emoji => {
+                    // console.log($(".social-media-all-comments-input .mentiony-content"))
+                    $(".social-media-all-comments-input .mentiony-content").append(emoji)
+                });
+
+
+                twemoji.parse(document.body);
+
+                $.each($(".emoji-trigger"), function(index,value){
+                    // console.log($(this))
+                    $(this).click(function(){
+                        // console.log($(this).siblings("#emojis"))
+                        $(this).siblings("#emojis").toggle()
+                        $(this).siblings("#edit-emojis").toggle()
+                    })
+                })
+                // //emoji end
 
                 $(".social-media-all-comments-input-edit").on('submit',function(e){
                 e.preventDefault()
@@ -2023,6 +2062,27 @@
 
             $(".mentiony-container").attr('style','')
             $(".mentiony-content").attr('style','')
+            $('.mentiony-content').on('keydown', function(event) {
+                console.log(event.which)
+                if (event.which == 8 || event.which == 46) {
+                    s = window.getSelection();
+                    r = s.getRangeAt(0)
+                    el = r.startContainer.parentElement
+
+                    console.log(el.classList.contains('mentiony-link') || el.classList.contains('mention-area') || el.classList.contains('highlight'))
+                    console.log(el)
+                    if (el.classList.contains('mentiony-link') || el.classList.contains('mention-area') || el.classList.contains('highlight')) {
+                        console.log('delete mention')
+
+
+                                el.remove();
+
+                            return;
+
+                    }
+                }
+                event.target.querySelectorAll('delete-highlight').forEach(function(el) { el.classList.remove('delete-highlight');})
+            });
 
             $(".social-media-all-comments-input").on('submit',function(e){
                 e.preventDefault()
@@ -2087,19 +2147,17 @@
                     function(data){
                         table_post_comment(data);
             });
-        }
 
-        function table_post_comment(res){
-                    let htmlView = '';
-                          if(res.comment.length <= 0){
-                              console.log("no data");
-                              htmlView+= `
-                              No Comment.
-                              `;
-                          }
-                          console.log("data");
-                          for(let i = 0; i < res.comment.length; i++){
-
+            function table_post_comment(res){
+                        let htmlView = '';
+                            if(res.comment.length <= 0){
+                                console.log("no data");
+                                htmlView+= `
+                                No Comment.
+                                `;
+                            }
+                            console.log("data");
+                            for(let i = 0; i < res.comment.length; i++){
                                   htmlView += `
                                     <div class="social-media-comment-container">
                                       <img src="{{ asset('/storage/post/${res.comment[i].profile_image}') }}" >
@@ -2110,30 +2168,33 @@
                                                   <span>`+res.comment[i].date+`</span>
                                               </div>
 
-                                      <iconify-icon icon="bx:dots-vertical-rounded" class="social-media-comment-icon"></iconify-icon>
-                                      <div class="comment-actions-container" >
 
-                                          <div class="comment-action" id="editCommentModal"
-                                          data-id=`+res.comment[i].id+`>
-                                              <iconify-icon icon="akar-icons:edit" class="comment-action-icon"></iconify-icon>
-                                              <p id="`+res.comment[i].id+`">Edit</p>
-                                          </div>
+                                        <iconify-icon icon="bx:dots-vertical-rounded" class="social-media-comment-icon"></iconify-icon>
+                                        <div class="comment-actions-container" >
 
-                                          <a id="delete_comment" data-id=`+res.comment[i].id+`>
-                                          <div class="comment-action">
-                                              <iconify-icon icon="fluent:delete-12-regular" class="comment-action-icon"></iconify-icon>
-                                              <p>Delete</p>
-                                          </div>
-                                          </a>
-                                      </div>
+                                            <div class="comment-action" id="editCommentModal"
+                                            data-id=`+res.comment[i].id+`>
+                                                <iconify-icon icon="akar-icons:edit" class="comment-action-icon"></iconify-icon>
+                                                <p id="`+res.comment[i].id+`">Edit</p>
+                                            </div>
+
+                                            <a id="delete_comment" data-id=`+res.comment[i].id+`>
+                                            <div class="comment-action">
+                                                <iconify-icon icon="fluent:delete-12-regular" class="comment-action-icon"></iconify-icon>
+                                                <p>Delete</p>
+                                            </div>
+                                            </a>
+                                        </div>
+                                        </div>
+                                        <p>`+res.comment[i].Replace+`</p>
                                     </div>
-                                    <p>`+res.comment[i].Replace+`</p>
                                 </div>
-                            </div>
-                                  `
-                              }
-                          $('.social-media-all-comments').html(htmlView);
+                                    `
+                                }
+                            $('.social-media-all-comments').html(htmlView);
             }
+
+        }
 
         $(document).on('click', '.profile_addfriend', function(e) {
                 e.preventDefault();
@@ -2189,9 +2250,6 @@
 
         $(".customer-saved-posts-container").hide()
         // saved post
-
-
-
 
         $(".customer-profile-selector").change(function(e){
             console.log(e.target.value)

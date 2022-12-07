@@ -3,6 +3,56 @@
 @section('content')
 @include('sweetalert::alert')
 
+<!-- Report Modal -->
+<div class="modal fade " id="reportmodal">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="reportLabel">Report</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <div>
+                <h6 class="text-bold">Please select a problem</h6>
+                <form id="report_form" value="">
+                    <label class="form-label text-secondary" style="font-size:0.75em">Your report is anonymous,except if you're reporting an intellectual property infringement.</label>
+                    <input type="hidden" value="" id="post_id">
+                    <input type="radio" id="nudity" name="report_msg" value="nudity">
+                    <label for="nudity">Nudity</label><br>
+
+                    <input type="radio" id="violence" name="report_msg" value="violence">
+                    <label for="violence">Violence</label><br>
+
+                    <input type="radio" id="harassment" name="report_msg" value="harassment">
+                    <label for="harassment">Harassment</label><br>
+
+                    <input type="radio" id="suicide" name="report_msg" value="suicide or self-injury">
+                    <label for="suicide">Suicide or self-injury</label><br>
+
+                    <input type="radio" id="false" name="report_msg" value="false information">
+                    <label for="false">false information</label><br>
+
+                    <input type="radio" id="spam" name="report_msg" value="spam">
+                    <label for="spam">Spam</label><br>
+
+                    <input type="radio" id="Hate speech" name="report_msg" value="hate speech">
+                    <label for="Hate speech">Hate speech</label><br>
+
+                    <input type="radio" id="terrorism" name="report_msg" value="terrorism">
+                    <label for="terrorism">Terrorism</label><br>
+
+                    <input type="radio" id="other" name="report_msg" value="other">
+                    <label for="other">Other</label><br>
+                    <input type="text" id="other_msg" name="other_report_msg"><br><br>
+
+                    <button type="submit" class="btn btn-primary disabled" id="report_submit">Submit</button>
+                </form>
+            </div>
+        </div>
+      </div>
+    </div>
+</div>
+
     <div class="social-media-right-container">
         <div class="social-media-posts-parent-container">
             @foreach ($posts as $post)
@@ -60,7 +110,7 @@
                                 </div>
                             </a>
                         @else
-                        <div class="post-action">
+                        <div class="post-action" id="report" data-id="{{$post->id}}">
                             <iconify-icon icon="material-symbols:report-outline" class="post-action-icon"></iconify-icon>
                             <p>Report</p>
                         </div>
@@ -180,6 +230,55 @@
 @push('scripts')
 <script>
     $(document).ready(function() {
+        $('#other_msg').hide();
+        $('#report_submit').attr("class",'btn btn-primary disabled')
+        console.log($("input[name='report_msg']:checked").val());
+
+       $('input[name="report_msg"]').on('click', function() {
+        if ($(this).val() == 'other') {
+            $('#other_msg').show();
+            if($('#other_msg')!=null){
+                $('#report_submit').attr("class",'btn btn-primary')
+            }else{
+                $('#report_submit').attr("class",'btn btn-primary disabled')
+            }
+            $('#report_submit').attr("class",'btn btn-primary')
+        }else if ($(this).val() == 'nudity'){
+            $('#other_msg').hide();
+            $('#other_msg').val('');
+            $('#report_submit').attr("class",'btn btn-primary')
+
+        }else if ($(this).val() == 'violence'){
+            $('#other_msg').hide();
+            $('#other_msg').val('')
+            $('#report_submit').attr("class",'btn btn-primary')
+        }else if ($(this).val() == 'harassment'){
+            $('#other_msg').hide();
+            $('#other_msg').val('')
+            $('#report_submit').attr("class",'btn btn-primary')
+        }else if ($(this).val() == 'suicide'){
+            $('#other_msg').hide();
+            $('#other_msg').val('')
+            $('#report_submit').attr("class",'btn btn-primary')
+        }else if ($(this).val() == 'false'){
+            $('#other_msg').hide();
+            $('#other_msg').val('');
+            $('#report_submit').attr("class",'btn btn-primary')
+        }else if ($(this).val() == 'spam'){
+            $('#other_msg').hide();
+            $('#other_msg').val('')
+            $('#report_submit').attr("class",'btn btn-primary')
+        }else if ($(this).val() == 'hate speech'){
+            $('#other_msg').hide();
+            $('#other_msg').val('')
+            $('#report_submit').attr("class",'btn btn-primary')
+        }else if ($(this).val() == 'terrorism'){
+            $('#other_msg').hide();
+            $('#other_msg').val('')
+            $('#report_submit').attr("class",'btn btn-primary')
+        }
+    });
+
 
         $('.like').click(function(e){
             e.preventDefault();
@@ -255,6 +354,60 @@
                             }
                     })
 
+
+        })
+
+        $(document).on('click', '#report', function(e){
+            var post_id=$(this).data('id')
+            $('#post_id').val(post_id)
+            $('input[name="report_msg"]').prop('checked', false);
+            $('#other_msg').hide();
+            $('#other_msg').val('');
+            $('#report_submit').attr("class",'btn btn-primary disabled')
+            $('#reportmodal').modal('show');
+
+        })
+
+        $(document).on('submit','#report_form',function(e){
+            e.preventDefault()
+            var report_msg
+            var post_id=$('#post_id').val();
+            $('#post_id').val('')
+            var user_id={{auth()->user()->id}}
+
+            if($('input[name="report_msg"]:checked').val()=='other'){
+                report_msg=$("input[name='other_report_msg']").val();
+
+            } else{
+                 report_msg=$("input[name='report_msg']:checked").val();
+            }
+
+            var add_url = "{{ route('socialmedia.report')}}";
+            $.ajaxSetup({
+                            headers: {
+                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                            }
+                        });
+                    $.ajax({
+                        method: "POST",
+                        url: add_url,
+                        data:{ post_id : post_id , user_id:user_id ,report_msg:report_msg},
+                        success:function(data){
+                            if(data.success){
+                                Swal.fire({
+                                        text: data.success,
+                                        timerProgressBar: true,
+                                        timer: 3000,
+                                        icon: 'success',
+                                    }).then((result) => {
+                                        $('input[name="report_msg"]').prop('checked', false);
+                                        $('#reportmodal').modal('hide');
+                                        $('#other_msg').hide();
+                                        $('#other_msg').val('');
+                                    })
+                            }
+                        }
+                    })
 
         })
     });

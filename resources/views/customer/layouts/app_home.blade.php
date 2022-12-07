@@ -36,6 +36,9 @@
     <!--comment mention--->
     <link href="{{asset('css/customer/jquery.mentiony.css')}}" rel="stylesheet"/>
 
+    <!--comment emoji-->
+    <link href="{{asset('css/customer/emojis.css')}}" rel="stylesheet"/>
+
     @yield('styles')
 
     <title>YC-fitness</title>
@@ -311,6 +314,12 @@
 
     {{-- emoji --}}
     <script src="https://cdn.jsdelivr.net/npm/@joeattardi/emoji-button@3.0.3/dist/index.min.js"></script>
+
+    {{-- comment emoji --}}
+    <script src="https://twemoji.maxcdn.com/v/latest/twemoji.min.js" crossorigin="anonymous"></script>
+    <script src="{{asset('js/customer/DisMojiPicker.js')}}"></script>
+
+
 
     <script src="{{asset('js/customer/jquery.mentiony.js')}}"></script>
 

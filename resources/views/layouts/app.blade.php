@@ -79,14 +79,9 @@
     <link href="{{ asset('css/socialMedia.css')}}" rel="stylesheet"/>
 
 
-
-
     @yield('styles')
 
-
-
 </head>
-
 
 
 <body>

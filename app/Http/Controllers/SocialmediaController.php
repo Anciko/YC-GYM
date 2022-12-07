@@ -13,6 +13,7 @@ use App\Models\Profile;
 use App\Models\Friendship;
 use App\Models\NotiFriends;
 use App\Models\Notification;
+use App\Models\Report;
 use Illuminate\Http\Request;
 use App\Models\UserReactPost;
 use App\Models\UserSavedPost;
@@ -1227,5 +1228,21 @@ class SocialmediaController extends Controller
         return response()->json([
             'success' =>  'Comment updated successfully!'
         ]);
+    }
+
+    public function post_report(Request $request)
+    {
+      //  dd($request->all());
+       $user_id=$request->user_id;
+       $post_id=$request->post_id;
+       $description=$request->report_msg;
+       $report=New Report();
+       $report->user_id=$user_id;
+       $report->post_id=$post_id;
+       $report->description=$description;
+       $report->save();
+       return response()->json([
+        'success' => 'Reported Success'
+    ]);
     }
 }

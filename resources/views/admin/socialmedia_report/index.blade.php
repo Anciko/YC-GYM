@@ -38,7 +38,10 @@
                     </div>
 
                     <div class="social-media-content-container">
-                        <span class="text-danger">Report status : {{$report_post->report->description}}</span>
+                        <span class="text-danger">Report status :
+                            {{$report_post->reports->description}}
+                            Lorem ipsum dolor sit, amet consectetur adipisicing elit. Ab saepe tempora aspernatur consectetur corrupti doloribus vitae aliquid omnis officiis adipisci expedita quis et, sequi itaque cumque quam harum, rerum maxime.
+                        </span>
                         <p>{{$report_post->caption}}</p>
 
                         @if ($report_post->media == null || $report_post->media == 0)
@@ -47,18 +50,6 @@
                             <div class="social-media-media-container">
                                 <div class="social-media-media">
                                     <img src="https://images.pexels.com/photos/3813491/pexels-photo-3813491.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1">
-                                </div>
-                                <div class="social-media-media">
-                                    <img src="https://images.pexels.com/photos/14190098/pexels-photo-14190098.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1">
-                                </div>
-                                <div class="social-media-media">
-                                    <img src="https://images.pexels.com/photos/6033962/pexels-photo-6033962.jpeg?auto=compress&cs=tinysrgb&w=1600&lazy=load">
-                                </div>
-                                <div class="social-media-media">
-                                    <img src="https://images.pexels.com/photos/9452717/pexels-photo-9452717.jpeg?auto=compress&cs=tinysrgb&w=1600&lazy=load">
-                                </div>
-                                <div class="social-media-media">
-                                    <img src="https://images.pexels.com/photos/13920607/pexels-photo-13920607.jpeg?auto=compress&cs=tinysrgb&w=1600&lazy=load">
                                 </div>
                             </div>
                         @endif
@@ -71,7 +62,7 @@
                 <div class="social-media-post-container">
                     <h3>Not Have Any Report!</h3>
                 </div>
-                
+
             @endforelse
         </div>
     </div>
