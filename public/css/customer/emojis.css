@@ -25,7 +25,7 @@ img {
     /* width: fit-content; */
 }
 
-.emoji-picker {
+.emoji-picker-comment {
     background-color: #303841;
     width: 400px;
     /* margin: 50px; */
@@ -123,7 +123,7 @@ img {
 }
 
 @media screen and (max-width:1000px){
-    .emoji-picker{
+    .emoji-picker-comment{
         width: 250px !important;
     }
     .emoji-content span img{

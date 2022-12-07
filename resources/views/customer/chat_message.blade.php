@@ -353,6 +353,8 @@
         var receive_user_img;
         var sender_user_img;
 
+        var messageInput = document.querySelector('.message_input');
+
 
         $(document).ready(function() {
             $('.group-chat-messages-container').scrollTop($('.group-chat-messages-container')[0].scrollHeight);
@@ -375,7 +377,7 @@
             console.log($("#selectFilesM").length);
             //image and video select end
 
-            var messageInput = document.querySelector('.message_input');
+
 
             ///start
             receive_user_img = @json($receiver_user->profile_image);
@@ -471,7 +473,7 @@
             var device = $(e.target).data("device");
 
             filesArr.forEach(function(f) {
-                console.log(f);
+                // console.log(f);
                 if (f.type.match("image.*")) {
                     storedFiles.push(f);
 
@@ -509,6 +511,14 @@
 
             document.getElementById('groupChatImg_message').files = dt_message.files;
             console.log(document.getElementById('groupChatImg_message').files+" Add Post Input")
+            console.log(storedFiles.length,"stored files")
+
+            if(storedFiles.length === 0){
+                $('.group-chat-send-form-message-parent-container').append(messageInput)
+
+            }else{
+                messageInput.remove()
+            }
 
         }
 
@@ -579,6 +589,16 @@
                 }
             }
             $(this).parent().remove();
+
+            console.log(storedFiles.length)
+
+            if(storedFiles.length === 0){
+                console.log($('.group-chat-send-form-message-parent-container'))
+                $('.group-chat-send-form-message-parent-container').append(messageInput)
+
+            }else{
+                messageInput.remove()
+            }
         }
         // function removeFileFromEditInput(e) {
         //     var file = $(this).data("file");
@@ -607,13 +627,7 @@
             $(".group-chat-img-preview-container").empty();
         }
 
-        // function clearEditPost(){
-        //     storedFilesEdit = []
-        //     dtEdit.clearData()
-        //     document.getElementById('editPostInput').files = dtEdit.files;
-        //     $(".editpost-photo-video-imgpreview-container").empty();
 
-        // }
 
         //image and video select end
 
