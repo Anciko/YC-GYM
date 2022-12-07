@@ -45,8 +45,8 @@ class Chatting implements ShouldBroadcast
         return new PrivateChannel("chatting.{$this->message->from_user_id}.{$this->message->to_user_id}");
     }
 
-    // public function broadcastAs(){
-    //     return 'chatting-event';
-    // }
+    public function broadcastAs(){
+        return 'chatting-event';
+    }
 
 }

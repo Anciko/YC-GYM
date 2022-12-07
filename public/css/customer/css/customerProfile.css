@@ -1472,22 +1472,26 @@ border-radius: 50%;
 
 .social-media-all-comments-container{
     /* padding: 10px; */
+    position: relative;
 }
 
 .social-media-all-comments-input{
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     justify-content: space-between;
     margin-bottom: 20px;
     gap: 0 5px;
+    position: relative;
 }
 
 .social-media-all-comments-input-edit{
     display: flex;
-    align-items: center;
+    /* align-items: center; */
+    align-items: flex-start;
     justify-content: space-between;
     margin-bottom: 20px;
     gap: 0 5px;
+    position: relative;
 }
 
 .social-media-all-comments-input textarea{
@@ -1540,6 +1544,7 @@ border-radius: 50%;
     background-color: #ECECEC;
     padding: 10px 5px;
     border-radius: 5px;
+    flex: 1;
 }
 
 .social-media-comment-box-header{
@@ -1568,6 +1573,8 @@ border-radius: 50%;
 .social-media-comment-box > p{
     font-size: 14px;
     margin-bottom: 0;
+    width: 100%;
+    word-break: break-word;
 }
 
 .post-owner-comment .social-media-comment-box{

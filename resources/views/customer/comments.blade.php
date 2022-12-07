@@ -12,8 +12,14 @@
         </div>
         <div class="modal-body">
             <form class="social-media-all-comments-input-edit" id="editComment">
-                <textarea placeholder="Write a comment" id="editCommentTextArea">asffdfsdfd</textarea>
+                <textarea placeholder="Write a comment" id="editCommentTextArea"></textarea>
                 <div id="menu" class="menu" role="listbox"></div>
+                <button type="button" id="emoji-button" class="emoji-trigger">
+                    <iconify-icon icon="bi:emoji-smile" class="group-chat-send-form-emoji-icon"></iconify-icon>
+                </button>
+                <div id="edit-emojis">
+                </div>
+
                 <button class="social-media-all-comments-send-btn">
                     <iconify-icon icon="akar-icons:send" class="social-media-all-comments-send-icon"></iconify-icon>
                 </button>
@@ -191,14 +197,21 @@
         </div>
 
         <div class="social-media-all-comments-container">
-            <form class="social-media-all-comments-input">
+            <form class="social-media-all-comments-input comment-main-input">
                 <textarea placeholder="Write a comment" id="textarea"></textarea>
                 <div id="menu" class="menu" role="listbox"></div>
+                <button type="button" id="emoji-button" class="emoji-trigger">
+                    <iconify-icon icon="bi:emoji-smile" class="group-chat-send-form-emoji-icon"></iconify-icon>
+                </button>
+                <div id="emojis">
+                </div>
                 <button class="social-media-all-comments-send-btn">
                     <iconify-icon icon="akar-icons:send" class="social-media-all-comments-send-icon"></iconify-icon>
                 </button>
 
             </form>
+
+
 
             <div class="social-media-all-comments">
 
@@ -258,6 +271,7 @@
 @push('scripts')
 <script>
     $(document).ready(function() {
+
 
         $('.like').click(function(e){
                 e.preventDefault();
@@ -335,85 +349,109 @@
 
         })
 
-        // $('').click(function(){
             $(document).on('click', '.social-media-comment-icon', function(e) {
                 $(this).next().toggle()
             })
-        fetch_comment();
+            fetch_comment();
                 $('#textarea').mentiony({
-                onDataRequest: function (mode, keyword, onDataRequestCompleteCallback) {
-                    var search_url = "{{ route('users.mention') }}";
-                    $.ajaxSetup({
-                            headers: {
-                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                            }
-                        });
-                    $.ajax({
-                        method: "POST",
-                        url:search_url,
-                        data : keyword,
-                        dataType: "json",
-                        success: function (response) {
-                            var data = response.data;
-                            console.log(data)
-
-                            // NOTE: Assuming this filter process was done on server-side
-                            data = jQuery.grep(data, function( item ) {
-                                return item.name.toLowerCase().indexOf(keyword.toLowerCase()) > -1;
+                    onDataRequest: function (mode, keyword, onDataRequestCompleteCallback) {
+                        var search_url = "{{ route('users.mention') }}";
+                        $.ajaxSetup({
+                                headers: {
+                                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                                }
                             });
-                            // End server-side
+                        $.ajax({
+                            method: "POST",
+                            url:search_url,
+                            data : keyword,
+                            dataType: "json",
+                            success: function (response) {
+                                var data = response.data;
+                                console.log(data)
 
-                            // Call this to populate mention.
-                            onDataRequestCompleteCallback.call(this, data);
-                        }
+                                // NOTE: Assuming this filter process was done on server-side
+                                data = jQuery.grep(data, function( item ) {
+                                    return item.name.toLowerCase().indexOf(keyword.toLowerCase()) > -1;
+                                });
+                                // End server-side
+
+                                // Call this to populate mention.
+                                onDataRequestCompleteCallback.call(this, data);
+                            }
 
 
 
-                    });
-                    console.log($("#editComment .mentiony-content") , "not edit")
-                },
-
+                        });
+                        console.log($("#editComment .mentiony-content") , "not edit")
+                    },
                 });
                 $('#editCommentTextArea').mentiony({
-                onDataRequest: function (mode, keyword, onDataRequestCompleteCallback) {
-                    var search_url = "{{ route('users.mention') }}";
-                    $.ajaxSetup({
-                            headers: {
-                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    onDataRequest: function (mode, keyword, onDataRequestCompleteCallback) {
+                        var search_url = "{{ route('users.mention') }}";
+                        $.ajaxSetup({
+                                headers: {
+                                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                                }
+                            });
+                        $.ajax({
+                            method: "POST",
+                            url:search_url,
+                            data : keyword,
+                            dataType: "json",
+                            success: function (response) {
+                                var data = response.data;
+                                console.log(data)
+
+                                // NOTE: Assuming this filter process was done on server-side
+                                data = jQuery.grep(data, function( item ) {
+                                    return item.name.toLowerCase().indexOf(keyword.toLowerCase()) > -1;
+                                });
+                                // End server-side
+
+                                // Call this to populate mention.
+                                onDataRequestCompleteCallback.call(this, data);
                             }
                         });
-                    $.ajax({
-                        method: "POST",
-                        url:search_url,
-                        data : keyword,
-                        dataType: "json",
-                        success: function (response) {
-                            var data = response.data;
-                            console.log(data)
-
-                            // NOTE: Assuming this filter process was done on server-side
-                            data = jQuery.grep(data, function( item ) {
-                                return item.name.toLowerCase().indexOf(keyword.toLowerCase()) > -1;
-                            });
-                            // End server-side
-
-                            // Call this to populate mention.
-                            onDataRequestCompleteCallback.call(this, data);
-                        }
-                    });
 
 
-                },
+                    },
 
                 });
+
+                // //emoji start
+                $("#emojis").disMojiPicker()
+                $("#emojis").picker(emoji => {
+                    // console.log($(".social-media-all-comments-input .mentiony-content"))
+                    $(".social-media-all-comments-input .mentiony-content").append(emoji)
+                });
+
+                $("#edit-emojis").disMojiPicker()
+                $("#edit-emojis").picker(emoji => {
+                    // console.log($(".social-media-all-comments-input .mentiony-content"))
+                    $(".social-media-all-comments-input-edit .mentiony-content").append(emoji)
+                });
+                // console.log(document.body)
+                twemoji.parse(document.querySelector("#emojis"));
+
+                $.each($(".emoji-trigger"), function(index,value){
+                    // console.log($(this))
+                    $(this).click(function(){
+                        // console.log($(this).siblings("#emojis"))
+                        $(this).siblings("#emojis").toggle()
+                        $(this).siblings("#edit-emojis").toggle()
+                    })
+                })
+
+
+                // //emoji end
 
                 //edit comment start
                 $(document).on('click', '#editCommentModal', function(e) {
                         $('#editModal').modal('show');
                         var id = $(this).data('id');
-
                         $(".social-media-all-comments-input-edit").data('id',id)
-
+                        console.log($(".social-media-all-comments-input-edit").data('id',id),'opop');
                         var edit_url = "{{ route('post.comment.edit',[':id']) }}";
                         edit_url = edit_url.replace(':id', id);
                         $.ajaxSetup({
@@ -480,10 +518,11 @@
                     });
 
             })
+
             $(".social-media-all-comments-input-edit").on('submit',function(e){
                 e.preventDefault()
                 // console.log($('.mentiony-content').text())
-                console.log($(".social-media-all-comments-input-edit").data('id'))
+                console.log($(".social-media-all-comments-input-edit").data('id') , "dddddddddd")
 
 
                 var arr = []
@@ -551,7 +590,7 @@
                                             <div class="social-media-comment-box-header">
                                                 <div class="social-media-comment-box-name">
                                                     <p>`+res.comment[i].name+`</p>
-                                                    <span>19 Sep 2022, 11:02 AM</span>
+                                                    <span>`+res.comment[i].date+`</span>
                                                 </div>
 
                                         <iconify-icon icon="bx:dots-vertical-rounded" class="social-media-comment-icon"></iconify-icon>
@@ -584,7 +623,7 @@
                                             <div class="social-media-comment-box-header">
                                                 <div class="social-media-comment-box-name">
                                                     <p>`+res.comment[i].name+`</p>
-                                                    <span>19 Sep 2022, 11:02 AM</span>
+                                                    <span>`+res.comment[i].date+`</span>
                                                 </div>
 
                                         <iconify-icon icon="bx:dots-vertical-rounded" class="social-media-comment-icon"></iconify-icon>

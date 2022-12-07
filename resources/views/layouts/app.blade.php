@@ -46,7 +46,7 @@
 
 
     <!-- Datepicker -->
-    <link rel="stylesheet" href=" https://code.jquery.com/ui/1.12.1/jquery-ui.js">
+
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 
     {{-- <link rel="stylesheet" href="{{ asset('css/sidebar.css') }}"> --}}
@@ -78,18 +78,10 @@
     <!--social media -->
     <link href="{{ asset('css/socialMedia.css')}}" rel="stylesheet"/>
 
-    <!--chart js-->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-
-
 
     @yield('styles')
 
-
-
 </head>
-
 
 
 <body>
@@ -427,7 +419,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 
 
-
+    <script src=" https://code.jquery.com/ui/1.12.1/jquery-ui.js"> </script>
      <!-- Scripts -->
 
      <script src="{{ asset('js/app.js') }}" defer></script>
@@ -460,6 +452,9 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
 
+
+    <!--chart js-->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 
     {{-- datepicker --}}

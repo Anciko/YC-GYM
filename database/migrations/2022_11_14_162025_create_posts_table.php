@@ -16,11 +16,11 @@ class CreatePostsTable extends Migration
         Schema::create('posts', function (Blueprint $table) {
             $table->id();
             $table->integer('user_id');
-            $table->integer('ban_word_id');
             $table->string('caption');
             $table->longText('media');
             $table->boolean('favourite_status');
             $table->integer('viewers')->default(0);
+            $table->integer('report_status')->default(0);
             $table->softDeletes();
             $table->timestamps();
         });

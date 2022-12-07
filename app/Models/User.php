@@ -93,6 +93,10 @@ class User extends Authenticatable
     {
         return $this->hasMany(PersonalWorkOutInfo::class, 'user_id', 'id');
     }
+    public function reports()
+    {
+        return $this->hasMany(Report::class, 'user_id', 'id');
+    }
 
     public function trainingUser(){
         return $this->hasMany(TrainingUser::class,'user_id','id');

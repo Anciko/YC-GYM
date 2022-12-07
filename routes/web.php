@@ -75,6 +75,7 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
 
         Route::get('/socialmedia/post/save/', [SocialmediaController::class, 'post_save'])->name('socialmedia.post.save');
 
+        Route::post('/socialmedia/report',[SocialmediaController::class,'post_report'])->name('socialmedia.report');
 
         Route::post('/socialmedia/delete/{id}', [SocialmediaController::class, 'post_destroy'])->name('post.destroy');
         Route::post('/socialmedia/edit/{id}', [SocialmediaController::class, 'post_edit'])->name('post.edit');
@@ -109,6 +110,8 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
         Route::post('customer/profile/cover/update', [Customer_TrainingCenterController::class, 'profile_update_cover'])->name('customer-profile-cover.update');
 
         Route::post('customer/profile/image/update', [Customer_TrainingCenterController::class, 'profile_update_profile_img'])->name('customer-profile-img.update');
+
+        Route::post('customer/profile/saved_post', [Customer_TrainingCenterController::class, 'saved_post'])->name('saved.post');
 
         Route::get('customer/profile/year/{year}', [Customer_TrainingCenterController::class, 'year_filter'])->name('customer-profile.year');
         Route::get('/home', [App\Http\Controllers\HomeController::class, 'home'])->name('social_media');
@@ -235,6 +238,10 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
             Route::resource('role', RoleController::class);
             Route::get('admin/role/datatable/ssd', [RoleController::class, 'ssd']);
 
+            Route::get('admin/report/datatable/ssd', [ReportController::class, 'ssd']);
+
+            Route::get('admin/report/{id}/view', [ReportController::class, 'view_post'])->name('admin.view.report');
+                Route::get('admin/report/accept/{report_id}',[ReportController::class, 'accept_report'])->name('admin.accept.report');
             // Meal Plan
             Route::resource('mealplan', MealPlanController::class);
             Route::get('admin/getmealplan', [MealPlanController::class, 'getmealplan'])->name('getmealplan');

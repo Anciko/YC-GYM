@@ -327,7 +327,7 @@
                         <iconify-icon icon="bi:images" class="group-chat-send-form-img-icon">
 
                         </iconify-icon>
-                        <input type="file" id="groupChatImg" name="fileInput">
+                        <input type="file" id="groupChatImg_message" name="fileInput" multiple="multiple">
                     </label>
                     <button type="button" id="emoji-button" class="emoji-trigger">
                         <iconify-icon icon="bi:emoji-smile" class="group-chat-send-form-emoji-icon"></iconify-icon>
@@ -336,13 +336,14 @@
                 </div>
 
                 <textarea id="mytextarea" class="group-chat-send-form-input message_input" placeholder="Message..." required></textarea>
-                <img class="group-chat-img-preview groupChatImg">
+                <div class="group-chat-img-preview-container"></div>
+                {{-- <img class="group-chat-img-preview groupChatImg">
                 <div style="display: none;" class='video-prev'>
                     <video height="200" width="300" class="video-preview" controls="controls"></video>
                 </div>
                 <button type="reset" class="group-chat-img-cancel" onclick="clearGroupChatImg()">
                     <iconify-icon icon="charm:cross" class="group-chat-img-cancel-icon"></iconify-icon>
-                </button>
+                </button> --}}
             </div>
 
             <button type="button" class="group-chat-send-form-submit-btn">
@@ -362,10 +363,10 @@
 
         var sendMessage = document.querySelector('.group-chat-send-form-submit-btn')
 
-        var groupChatImgInput = document.querySelector('#groupChatImg');
+        // var groupChatImgInput = document.querySelector('#groupChatImg');
 
-        const groupChatImgPreview = document.querySelector('.groupChatImg');
-        const cancelBtn = document.querySelector(".group-chat-img-cancel");
+        // const groupChatImgPreview = document.querySelector('.groupChatImg');
+        // const cancelBtn = document.querySelector(".group-chat-img-cancel");
         const emojibutton = document.querySelector('.emoji-trigger');
         var recieveUser = document.getElementById('recieveUser');
 
@@ -379,24 +380,41 @@
         var receive_user_img;
         var sender_user_img;
 
+        var messageInput = document.querySelector('.message_input');
+
 
         $(document).ready(function() {
             $('.group-chat-messages-container').scrollTop($('.group-chat-messages-container')[0].scrollHeight);
         });
 
         $(document).ready(function() {
+            // console.log("image preview")
+            //image and video select start
+            $("#groupChatImg_message").on("change",handleFileSelect);
 
-            var messageInput = document.querySelector('.message_input');
+            // $("#editPostInput").on("change", handleFileSelectEdit);
+
+            selDiv = $(".group-chat-img-preview-container");
+
+            console.log(selDiv);
+
+            $("body").on("click", ".group-chat-img-cancel", removeFile);
+            // $("body").on("click", ".delete-preview-edit-input-icon", removeFileFromEditInput);
+
+            console.log($("#selectFilesM").length);
+            //image and video select end
+
+
 
             ///start
             receive_user_img = @json($receiver_user->profile_image);
             sender_user_img = @json($sender_user->profile_image);
 
 
-            var groupChatImgInput = document.querySelector('#groupChatImg');
+            // var groupChatImgInput = document.querySelector('#groupChatImg');
 
-            const groupChatImgPreview = document.querySelector('.groupChatImg');
-            const cancelBtn = document.querySelector(".group-chat-img-cancel");
+            // const groupChatImgPreview = document.querySelector('.groupChatImg');
+            // const cancelBtn = document.querySelector(".group-chat-img-cancel");
             const emojibutton = document.querySelector('.emoji-trigger');
 
             const picker = new EmojiButton();
@@ -411,58 +429,234 @@
             });
 
 
-            if (groupChatImgPreview != null) {
-                if (!groupChatImgPreview.hasAttribute("src")) {
-                    groupChatImgPreview.remove()
-                    //$('.video-prev').remove();
-                    cancelBtn.remove()
-                }
-            }
+            // if (groupChatImgPreview != null) {
+            //     if (!groupChatImgPreview.hasAttribute("src")) {
+            //         groupChatImgPreview.remove()
+            //         //$('.video-prev').remove();
+            //         cancelBtn.remove()
+            //     }
+            // }
 
 
-            groupChatImgInput.addEventListener('change', (e) => {
-                console.log('lahsdjk');
-                fileName = groupChatImgInput.files[0];
-                console.log(fileName);
-                var fileExtension;
+            // groupChatImgInput.addEventListener('change', (e) => {
+            //     console.log('lahsdjk');
+            //     fileName = groupChatImgInput.files[0];
+            //     console.log(fileName);
+            //     var fileExtension;
 
-                fileExtension = e.target.value.replace(/^.*\./, '');
-                console.log(fileExtension)
-                if (fileExtension === "jpg" || fileExtension === "jpeg" || fileExtension ===
-                    "png" || fileExtension ===
-                    "gif") {
-                    const reader = new FileReader();
-                    reader.onloadend = e => groupChatImgPreview.setAttribute('src', e.target
-                        .result);
-                    reader.readAsDataURL(groupChatImgInput.files[0]);
-                    groupChatImgInput.value = ""
-                    $('.video-preview').removeAttr("src")
-                    $('.video-prev').hide();
-                    // if(groupChatImgPreview.hasAttribute("src")){
-                    console.log(reader)
-                    messageInput.remove()
-                    document.querySelector(".group-chat-send-form-message-parent-container")
-                        .append(groupChatImgPreview)
-                    document.querySelector(".group-chat-send-form-message-parent-container")
-                        .append(cancelBtn)
-                    // }
-                }
+            //     fileExtension = e.target.value.replace(/^.*\./, '');
+            //     console.log(fileExtension)
+            //     if (fileExtension === "jpg" || fileExtension === "jpeg" || fileExtension ===
+            //         "png" || fileExtension ===
+            //         "gif") {
+            //         const reader = new FileReader();
+            //         reader.onloadend = e => groupChatImgPreview.setAttribute('src', e.target
+            //             .result);
+            //         reader.readAsDataURL(groupChatImgInput.files[0]);
+            //         groupChatImgInput.value = ""
+            //         $('.video-preview').removeAttr("src")
+            //         $('.video-prev').hide();
+            //         // if(groupChatImgPreview.hasAttribute("src")){
+            //         console.log(reader)
+            //         messageInput.remove()
+            //         document.querySelector(".group-chat-send-form-message-parent-container")
+            //             .append(groupChatImgPreview)
+            //         document.querySelector(".group-chat-send-form-message-parent-container")
+            //             .append(cancelBtn)
+            //         // }
+            //     }
 
-                if (fileExtension === "mp4") {
-                    var fileUrl = window.URL.createObjectURL(groupChatImgInput.files[0]);
-                    $(".video-preview").attr("src", fileUrl)
-                    groupChatImgInput.value = ""
-                    groupChatImgPreview.removeAttribute("src")
-                    groupChatImgPreview.remove()
-                    messageInput.remove()
-                    document.querySelector(".group-chat-send-form-message-parent-container")
-                        .append(cancelBtn)
-                    // document.querySelector(".group-chat-send-form-message-parent-container").append($(".video-prev"))
-                    $(".video-prev").show()
-                }
-            }); // //
+            //     if (fileExtension === "mp4") {
+            //         var fileUrl = window.URL.createObjectURL(groupChatImgInput.files[0]);
+            //         $(".video-preview").attr("src", fileUrl)
+            //         groupChatImgInput.value = ""
+            //         groupChatImgPreview.removeAttribute("src")
+            //         groupChatImgPreview.remove()
+            //         messageInput.remove()
+            //         document.querySelector(".group-chat-send-form-message-parent-container")
+            //             .append(cancelBtn)
+            //         // document.querySelector(".group-chat-send-form-message-parent-container").append($(".video-prev"))
+            //         $(".video-prev").show()
+            //     }
+            // }); // //
 
         })
+
+        //image and video select start
+        var selDiv = "";
+
+        var storedFiles = [];
+        var storedFilesEdit = [];
+        const dt_message = new DataTransfer();
+        // const dtEdit = new DataTransfer();
+
+        function handleFileSelect(e) {
+
+            var files = e.target.files;
+            console.log(files)
+
+            var filesArr = Array.prototype.slice.call(files);
+
+            var device = $(e.target).data("device");
+
+            filesArr.forEach(function(f) {
+                // console.log(f);
+                if (f.type.match("image.*")) {
+                    storedFiles.push(f);
+
+                    var reader = new FileReader();
+                    reader.onload = function(e) {
+                    var html = "<div class='addpost-preview'><iconify-icon icon='akar-icons:cross' data-file='" + f.name + "' class='delete-preview-icon'></iconify-icon><img src=\"" + e.target.result + "\" data-file='" + f.name + "' class='selFile' title='Click to remove'></div>";
+
+                    if (device == "mobile") {
+                        $("#selectedFilesM").append(html);
+                    } else {
+                        $(".group-chat-img-preview-container").append(html);
+                    }
+                    }
+                    reader.readAsDataURL(f);
+                    dt_message.items.add(f);
+                }else if(f.type.match("video.*")){
+                    storedFiles.push(f);
+
+                    var reader = new FileReader();
+                    reader.onload = function(e) {
+                    var html = "<div class='addpost-preview'><iconify-icon icon='akar-icons:cross' data-file='" + f.name + "' class='delete-preview-icon'></iconify-icon><video controls><source src=\"" + e.target.result + "\" data-file='" + f.name + "' class='selFile' title='Click to remove'>" + f.name + "<br clear=\"left\"/><video></div>";
+
+                    if (device == "mobile") {
+                        $("#selectedFilesM").append(html);
+                    } else {
+                        $(".group-chat-img-preview-container").append(html);
+                    }
+                    }
+                    reader.readAsDataURL(f);
+                    dt_message.items.add(f);
+                }
+
+
+            });
+
+            document.getElementById('groupChatImg_message').files = dt_message.files;
+            console.log(document.getElementById('groupChatImg_message').files+" Add Post Input")
+            console.log(storedFiles.length,"stored files")
+
+            if(storedFiles.length === 0){
+                $('.group-chat-send-form-message-parent-container').append(messageInput)
+
+            }else{
+                messageInput.remove()
+            }
+
+        }
+
+        // function handleFileSelectEdit(e) {
+
+        //     var files = e.target.files;
+        //     console.log(files)
+
+        //     var filesArr = Array.prototype.slice.call(files);
+
+        //     var device = $(e.target).data("device");
+
+        //     filesArr.forEach(function(f) {
+
+        //         if (f.type.match("image.*")) {
+        //             storedFilesEdit.push(f);
+
+        //             var reader = new FileReader();
+        //             reader.onload = function(e) {
+        //             var html = "<div class='addpost-preview'><iconify-icon icon='akar-icons:cross' data-file='" + f.name + "' class='delete-preview-edit-input-icon'></iconify-icon><img src=\"" + e.target.result + "\" data-file='" + f.name + "' class='selFile' title='Click to remove'></div>";
+
+        //             if (device == "mobile") {
+        //                 $("#selectedFilesM").append(html);
+        //             } else {
+        //                 $(".editpost-photo-video-imgpreview-container").append(html);
+        //             }
+        //             }
+        //             reader.readAsDataURL(f);
+        //             // dtEdit.items.add(f);
+        //         }else if(f.type.match("video.*")){
+        //             storedFilesEdit.push(f);
+
+        //             var reader = new FileReader();
+        //             reader.onload = function(e) {
+        //             var html = "<div class='addpost-preview'><iconify-icon icon='akar-icons:cross' data-file='" + f.name + "' class='delete-preview-edit-input-icon'></iconify-icon><video controls><source src=\"" + e.target.result + "\" data-file='" + f.name + "' class='selFile' title='Click to remove'>" + f.name + "<br clear=\"left\"/><video></div>";
+
+        //             if (device == "mobile") {
+        //                 $("#selectedFilesM").append(html);
+        //             } else {
+        //                 $(".editpost-photo-video-imgpreview-container").append(html);
+        //             }
+        //             }
+        //             reader.readAsDataURL(f);
+        //             // dtEdit.items.add(f);
+        //         }
+
+        //     });
+
+        //     document.getElementById('editPostInput').files = dtEdit.files;
+        //     console.log(document.getElementById('editPostInput').files+" Edit Post Input")
+
+        // }
+
+        function removeFile(e) {
+            var file = $(this).data("file");
+            var names = [];
+            for(let i = 0; i < dt_message.items.length; i++){
+                if(file === dt_message.items[i].getAsFile().name){
+                    dt_message.items.remove(i);
+                }
+            }
+            document.getElementById('groupChatImg_message').files = dt_message.files;
+
+            for (var i = 0; i < storedFiles.length; i++) {
+                if (storedFiles[i].name === file) {
+                storedFiles.splice(i, 1);
+                break;
+                }
+            }
+            $(this).parent().remove();
+
+            console.log(storedFiles.length)
+
+            if(storedFiles.length === 0){
+                console.log($('.group-chat-send-form-message-parent-container'))
+                $('.group-chat-send-form-message-parent-container').append(messageInput)
+
+            }else{
+                messageInput.remove()
+            }
+        }
+        // function removeFileFromEditInput(e) {
+        //     var file = $(this).data("file");
+        //     var names = [];
+        //     for(let i = 0; i < dtEdit.items.length; i++){
+        //         if(file === dtEdit.items[i].getAsFile().name){
+        //             dtEdit.items.remove(i);
+        //         }
+        //     }
+        //     document.getElementById('editPostInput').files = dtEdit.files;
+
+        //     for (var i = 0; i < storedFilesEdit.length; i++) {
+        //         if (storedFilesEdit[i].name === file) {
+        //         storedFilesEdit.splice(i, 1);
+        //         break;
+        //         }
+        //     }
+        //     $(this).parent().remove();
+        // }
+
+
+        function clearAddPost(){
+            storedFiles = []
+            dt_message.clearData()
+            document.getElementById('groupChatImg_message').files = dt_message.files;
+            $(".group-chat-img-preview-container").empty();
+        }
+
+
+
+        //image and video select end
 
 
 
@@ -636,21 +830,21 @@
 
 
 
-        var messageInput = document.querySelector('.message_input');
+        // var messageInput = document.querySelector('.message_input');
 
-        var groupChatImgInput = document.querySelector('#groupChatImg');
+        // var groupChatImgInput = document.querySelector('#groupChatImg');
 
-        function clearGroupChatImg() {
-            console.log("clear img preview")
-            groupChatImgPreview.removeAttribute("src")
-            groupChatImgPreview.remove()
-            cancelBtn.remove()
-            $('.video-preview').removeAttr("src")
-            $('.video-prev').hide();
-            document.querySelector(".group-chat-send-form-message-parent-container").append(messageInput)
-            groupChatImgInput.value = ""
+        // function clearGroupChatImg() {
+        //     console.log("clear img preview")
+        //     groupChatImgPreview.removeAttribute("src")
+        //     groupChatImgPreview.remove()
+        //     cancelBtn.remove()
+        //     $('.video-preview').removeAttr("src")
+        //     $('.video-prev').hide();
+        //     document.querySelector(".group-chat-send-form-message-parent-container").append(messageInput)
+        //     groupChatImgInput.value = ""
 
-        }
+        // }
     </script>
 
     <script>

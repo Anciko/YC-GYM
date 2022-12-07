@@ -36,7 +36,12 @@
     <!--comment mention--->
     <link href="{{asset('css/customer/jquery.mentiony.css')}}" rel="stylesheet"/>
 
+<<<<<<< HEAD
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+=======
+    <!--comment emoji-->
+    <link href="{{asset('css/customer/emojis.css')}}" rel="stylesheet"/>
+>>>>>>> 6e2859e21c9895c2720af0116996fdcd93926e2e
 
     @yield('styles')
 
@@ -216,23 +221,17 @@
                                 </div>
 
                                 <div class="social-media-left-messages-rows-container">
-                                    @forelse ($left_friends as $friend)
+                                    @forelse ($latest_messages as $friend)
                                     <a href="{{route('message.chat',$friend->id)}}" class="social-media-left-messages-row">
-
-                                        <?php $profile=$friend->profiles->first();
-                                        $profile_id=$friend->profile_id;
-                                         $img=$friend->profiles->where('id',$profile_id)->first();
-                                        ?>
-
-                                        @if ($img==null)
+                                        @if ($friend->profile_image==null)
                                             <img  class="nav-profile-img" src="{{asset('img/customer/imgs/user_default.jpg')}}"/>
                                         @else
-                                            <img  class="nav-profile-img" src="{{asset('storage/post/'.$img->profile_image)}}"/>
+                                            <img  class="nav-profile-img" src="{{asset('storage/post/'.$friend->profile_image)}}"/>
                                         @endif
 
                                         <p>
                                             {{$friend->name}}<br>
-                                            <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Dui hendrerit potenti pellentesque tellus urna bibendum mollis. </span>
+                                            <span>{{$friend->text}} </span>
                                         </p>
                                     </a>
                                     @empty
@@ -312,7 +311,15 @@
     {{-- emoji --}}
     <script src="https://cdn.jsdelivr.net/npm/@joeattardi/emoji-button@3.0.3/dist/index.min.js"></script>
 
+<<<<<<< HEAD
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+=======
+    {{-- comment emoji --}}
+    <script src="https://twemoji.maxcdn.com/v/latest/twemoji.min.js" crossorigin="anonymous"></script>
+    <script src="{{asset('js/customer/DisMojiPicker.js')}}"></script>
+
+
+>>>>>>> 6e2859e21c9895c2720af0116996fdcd93926e2e
 
     <script src="{{asset('js/customer/jquery.mentiony.js')}}"></script>
 
@@ -1097,7 +1104,6 @@
                 reader.readAsDataURL(f);
                 dtEdit.items.add(f);
             }
-
 
         });
 
