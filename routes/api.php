@@ -163,6 +163,8 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
 
     Route::post('chat/messages',[SocialMediaController::class,'chat_messages']);
     Route::post('chat/messages/view_media',[SocialMediaController::class,'view_media_message']);
+    Route::get('chat/messages/all_messages',[SocialMediaController::class,'see_all_message']);
+
 
 
     Route::post('post/comment/store', [SocialmediaController::class, 'post_comment_store']);
