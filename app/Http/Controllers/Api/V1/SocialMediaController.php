@@ -1283,6 +1283,21 @@ class SocialMediaController extends Controller
         ]);
     }
 
+    public function view_media_message(Request $request){
+        $auth_user = auth()->user();
+        $id = $request->id;
+        $messages = Chat::select('id','media')->where(function($query) use ($auth_user){
+            $query->where('from_user_id',$auth_user->id)->orWhere('to_user_id',$auth_user->id);
+        })->where(function($que) use ($id){
+            $que->where('from_user_id',$id)->orWhere('to_user_id',$id);
+        })->with('to_user')->with('from_user')->get();
+
+        return response()->json([
+            'messages' => $messages
+        ]);
+
+    }
+
     public function post_comment_store(Request $request){
         $banwords=DB::table('ban_words')->select('ban_word_english','ban_word_myanmar','ban_word_myanglish')->get();
         foreach($banwords as $b){
