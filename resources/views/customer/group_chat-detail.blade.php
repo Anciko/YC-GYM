@@ -66,11 +66,13 @@
                 <input type="text" value="{{$member->member_id}}" name="memberId" hidden>
                 <div class="social-media-view-memers-row">
                     <div class="social-media-view-memers-row-name">
-                        @if ($member->user->profiles[0]->profile_image != null)
+
+                        {{-- @if ($member->user->profiles[0]->profile_image != null)
                             <img src="{{asset('storage/post'.$member->user->profiles[0]->profile_image)}}">
                         @else
                             <img class="nav-profile-img" src="{{asset('img/customer/imgs/user_default.jpg')}}"/>
-                        @endif
+                        @endif --}}
+                        <img class="nav-profile-img" src="{{asset('img/customer/imgs/user_default.jpg')}}"/>
                         <p>{{$member->user->name}}</p>
                     </div>
                     <div class="social-media-view-members-row-btns">

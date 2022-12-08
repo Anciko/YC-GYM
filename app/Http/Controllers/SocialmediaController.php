@@ -617,7 +617,10 @@ class SocialmediaController extends Controller
             ->leftJoin('profiles','profiles.id','users.profile_id')
             ->where('notifications.receiver_id',auth()->user()->id)
             ->where('notifications.post_id','!=',null)
-            ->orWhere('notifications.report_status',1)
+            ->orWhere(function ($query) {
+                $query->where('notifications.report_status',1)
+                      ->where('receiver_id',auth()->user()->id);
+            })
             ->where(DB::raw("(DATE_FORMAT(date,'%Y-%m-%d'))"),Carbon::Now()->toDateString())
             ->get();
 
@@ -627,7 +630,10 @@ class SocialmediaController extends Controller
             ->leftJoin('profiles','profiles.id','users.profile_id')
             ->where('notifications.receiver_id',auth()->user()->id)
             ->where('notifications.post_id','!=',null)
-            ->orWhere('notifications.report_status',1)
+            ->orWhere(function ($query) {
+                $query->where('notifications.report_status',1)
+                      ->where('receiver_id',auth()->user()->id);
+            })
             ->where(DB::raw("(DATE_FORMAT(date,'%Y-%m-%d'))"),'!=',Carbon::Now()->toDateString())
             ->get();
             // dd($notification_earlier);
@@ -647,7 +653,6 @@ class SocialmediaController extends Controller
             $friendship->date =  Carbon::Now()->toDateTimeString();
             $friendship->friend_status = 1;
             $friendship->save();
-
 
 
             $options = array(
@@ -992,15 +997,26 @@ class SocialmediaController extends Controller
                        order by chats.created_at desc limit  3");
                       // dd($messages);
 
-                      
+
+                      $groups = DB::table('chat_group_members')
+                                ->select('group_id')
+                                ->groupBy('group_id')
+                                ->where('chat_group_members.member_id',$auth)
+                                ->get()
+                                ->pluck('group_id')->toArray();
 
                       $latest_group_message = DB::table('chat_group_messages')
-                      ->groupBy('group_id')
-                      ->select(DB::raw('max(id) as id'))
-                      ->get()
-                      ->pluck('id')->toArray();
+                                ->groupBy('group_id')
+                                ->whereIn('group_id',$groups)
+                                ->select(DB::raw('max(id) as id'))
+                                ->get()
+                                ->pluck('id')->toArray();
 
-                      //dd($latest_group_message);
+                      $latest_group_sms =
+                      ChatGroupMessage::leftJoin('chat_groups','chat_groups.id','chat_group_messages.group_id')
+                      ->select('chat_group_messages.*','chat_groups.group_name')
+                      ->whereIn('chat_group_messages.id',$latest_group_message)->get();
+                      dd($latest_group_sms);
         return view('customer.comments',compact('post','comments','post_likes'));
     }
 
