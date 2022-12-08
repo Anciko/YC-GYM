@@ -1241,6 +1241,13 @@ border-radius: 50%;
     gap: 0 5px;
 }
 
+.social-media-fris-fri-img a{
+    display: flex;
+    align-items: center;
+    gap: 0 5px;
+    text-decoration: none;
+}
+
 .social-media-fris-fri-img img{
     width: 80px;
     height: 80px;

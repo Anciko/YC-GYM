@@ -62,7 +62,7 @@
                         <iconify-icon icon="bi:images" class="group-chat-send-form-img-icon">
 
                         </iconify-icon>
-                        <input type="file" id="groupChatImg" name="fileInput">
+                        <input type="file" name="fileSend[]" id="groupChatImg_message" multiple="multiple">
                     </label>
                     <button type="button" id="emoji-button" class="emoji-trigger">
                         <iconify-icon icon="bi:emoji-smile" class="group-chat-send-form-emoji-icon"></iconify-icon>
@@ -71,13 +71,7 @@
                 </div>
 
                 <textarea id="mytextarea" class="group-chat-send-form-input message_input" placeholder="Message..." required></textarea>
-                <img class="group-chat-img-preview groupChatImg">
-                <div style="display: none;" class='video-prev'>
-                    <video height="200" width="300" class="video-preview" controls="controls"></video>
-                </div>
-                <button type="reset" class="group-chat-img-cancel" onclick="clearGroupChatImg()">
-                    <iconify-icon icon="charm:cross" class="group-chat-img-cancel-icon"></iconify-icon>
-                </button>
+                <div class="group-chat-img-preview-container"></div>
             </div>
 
             <button type="submit" class="group-chat-send-form-submit-btn">
@@ -93,8 +87,7 @@
         var messageForm = document.getElementById('message_form')
 
         var sendMessage = document.querySelector('.group-chat-send-form-submit-btn')
-        const groupChatImgPreview = document.querySelector('.groupChatImg')
-        const cancelBtn = document.querySelector(".group-chat-img-cancel")
+
         const emojibutton = document.querySelector('.emoji-trigger')
 
         var groupId = document.getElementById('groupId').value
@@ -103,16 +96,31 @@
         var auth_user_data;
         var auth_user_img;
 
+        var messageInput_message = document.querySelector('.message_input');
+
         $(document).ready(function() {
+
+            //image and video select start
+            $("#groupChatImg_message").on("change", handleFileSelect_message);
+
+            // $("#editPostInput").on("change", handleFileSelectEdit);
+
+            selDiv = $(".group-chat-img-preview-container");
+
+            console.log(selDiv);
+
+            $("body").on("click", ".delete-preview-icon", removeFile_message);
+            // $("body").on("click", ".delete-preview-edit-input-icon", removeFileFromEditInput);
+
+            console.log($("#selectFilesM").length);
+            //image and video select end
+
+
             auth_user_data = @json($auth_user_data);
             auth_user_img = auth_user_data.user_profile;
 
             var messageInput = document.querySelector('.message_input');
 
-            var groupChatImgInput = document.querySelector('#groupChatImg');
-
-            const groupChatImgPreview = document.querySelector('.groupChatImg');
-            const cancelBtn = document.querySelector(".group-chat-img-cancel");
             const emojibutton = document.querySelector('.emoji-trigger');
 
             const picker = new EmojiButton();
@@ -126,63 +134,152 @@
                 messageInput.value += emoji;
             });
 
-            if (groupChatImgPreview != null) {
-                if (!groupChatImgPreview.hasAttribute("src")) {
-                    groupChatImgPreview.remove()
-                    //$('.video-prev').remove();
-                    cancelBtn.remove()
-                }
-            }
+        })
 
-            groupChatImgInput.addEventListener('change', (e) => {
-                console.log('lahsdjk');
-                fileName = groupChatImgInput.files[0];
-                console.log(fileName);
-                var fileExtension;
 
-                fileExtension = e.target.value.replace(/^.*\./, '');
-                console.log(fileExtension)
-                if (fileExtension === "jpg" || fileExtension === "jpeg" || fileExtension ===
-                    "png" || fileExtension ===
-                    "gif") {
-                    const reader = new FileReader();
-                    reader.onloadend = e => groupChatImgPreview.setAttribute('src', e.target
-                        .result);
-                    reader.readAsDataURL(groupChatImgInput.files[0]);
-                    groupChatImgInput.value = ""
-                    $('.video-preview').removeAttr("src")
-                    $('.video-prev').hide();
-                    // if(groupChatImgPreview.hasAttribute("src")){
-                    console.log(reader)
-                    messageInput.remove()
-                    document.querySelector(".group-chat-send-form-message-parent-container")
-                        .append(groupChatImgPreview)
-                    document.querySelector(".group-chat-send-form-message-parent-container")
-                        .append(cancelBtn)
-                    // }
+        //image and video select start
+        var selDiv = "";
+
+        var storedFiles_message = [];
+        // var storedFiles_messageEdit = [];
+        const dt_message = new DataTransfer();
+        // const dtEdit = new DataTransfer();
+
+        function handleFileSelect_message(e) {
+
+            var files = e.target.files;
+            console.log(files)
+
+            var filesArr = Array.prototype.slice.call(files);
+
+            var device = $(e.target).data("device");
+
+            filesArr.forEach(function(f) {
+                // console.log(f);
+                if (f.type.match("image.*")) {
+                    storedFiles_message.push(f);
+
+                    var reader = new FileReader();
+                    reader.onload = function(e) {
+                        var html =
+                            "<div class='addpost-preview'><iconify-icon icon='akar-icons:cross' data-file='" + f
+                            .name + "' class='delete-preview-icon'></iconify-icon><img src=\"" + e.target
+                            .result + "\" data-file='" + f.name +
+                            "' class='selFile' title='Click to remove'></div>";
+
+                        if (device == "mobile") {
+                            $("#selectedFilesM").append(html);
+                        } else {
+                            $(".group-chat-img-preview-container").append(html);
+                        }
+                    }
+                    reader.readAsDataURL(f);
+                    dt_message.items.add(f);
+                } else if (f.type.match("video.*")) {
+                    storedFiles_message.push(f);
+
+                    var reader = new FileReader();
+                    reader.onload = function(e) {
+                        var html =
+                            "<div class='addpost-preview'><iconify-icon icon='akar-icons:cross' data-file='" + f
+                            .name +
+                            "' class='delete-preview-icon'></iconify-icon><video controls><source src=\"" + e
+                            .target.result + "\" data-file='" + f.name +
+                            "' class='selFile' title='Click to remove'>" + f.name +
+                            "<br clear=\"left\"/><video></div>";
+
+                        if (device == "mobile") {
+                            $("#selectedFilesM").append(html);
+                        } else {
+                            $(".group-chat-img-preview-container").append(html);
+                        }
+                    }
+                    reader.readAsDataURL(f);
+                    dt_message.items.add(f);
                 }
 
-                if (fileExtension === "mp4") {
-                    var fileUrl = window.URL.createObjectURL(groupChatImgInput.files[0]);
-                    $(".video-preview").attr("src", fileUrl)
-                    groupChatImgInput.value = ""
-                    groupChatImgPreview.removeAttribute("src")
-                    groupChatImgPreview.remove()
-                    messageInput.remove()
-                    document.querySelector(".group-chat-send-form-message-parent-container")
-                        .append(cancelBtn)
-                    // document.querySelector(".group-chat-send-form-message-parent-container").append($(".video-prev"))
-                    $(".video-prev").show()
-                }
+
             });
 
-        })
+            document.getElementById('groupChatImg_message').files = dt_message.files;
+            console.log(document.getElementById('groupChatImg_message').files + " Add Post Input")
+            console.log(storedFiles_message.length, "stored files")
+
+            if (storedFiles_message.length === 0) {
+                $('.group-chat-send-form-message-parent-container').append(messageInput_message)
+
+            } else {
+                messageInput_message.remove()
+            }
+
+        }
+
+
+        function removeFile_message(e) {
+            var file = $(this).data("file");
+            var names = [];
+            for (let i = 0; i < dt_message.items.length; i++) {
+                if (file === dt_message.items[i].getAsFile().name) {
+                    dt_message.items.remove(i);
+                }
+            }
+            document.getElementById('groupChatImg_message').files = dt_message.files;
+
+            for (var i = 0; i < storedFiles_message.length; i++) {
+                if (storedFiles_message[i].name === file) {
+                    storedFiles_message.splice(i, 1);
+                    break;
+                }
+            }
+            $(this).parent().remove();
+
+            console.log(storedFiles_message.length)
+
+            if (storedFiles_message.length === 0) {
+                console.log($('.group-chat-send-form-message-parent-container'))
+                $('.group-chat-send-form-message-parent-container').append(messageInput_message)
+
+            } else {
+                messageInput_message.remove()
+            }
+        }
+
+        function clearAddPost() {
+            storedFiles_message = []
+            dt_message.clearData()
+            document.getElementById('groupChatImg_message').files = dt_message.files;
+            $(".group-chat-img-preview-container").empty();
+        }
+
+
+
+        //image and video select end
+
 
 
         sendMessage.addEventListener('click', function(e) {
             e.preventDefault();
 
             var messageInput = document.querySelector('.message_input');
+            var fileMessage = document.getElementById('groupChatImg_message')
+
+            var formData;
+            var fileLength = fileMessage.files.length
+            console.log(fileLength);
+
+            if (fileLength > 5) {
+                console.log('can not send');
+            } else {
+                formData = new FormData(messageForm);
+                let images = $("#groupChatImg_message")[0];
+
+                for (let i = 0; i < fileLength; i++) {
+                    formData.append('images' + i, images.files[i]);
+                }
+
+                formData.append('totalFiles', fileLength);
+
+            }
 
             if (messageInput != null) {
                 axios.post('/api/group/message/chat/' + groupId, {
@@ -192,6 +289,8 @@
                     senderName: auth_user_data.name
                 }).then();
                 messageInput.value = "";
+            } else {
+                axios.post('/api/group/message/chat/' + groupId, formData)
             }
 
         })

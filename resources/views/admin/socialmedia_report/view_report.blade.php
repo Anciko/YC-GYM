@@ -207,23 +207,53 @@ $(document).ready(function() {
                     if (result.isConfirmed) {
                        var add_url = "{{ route('admin.accept.report', [':report_id']) }}";
                         add_url = add_url.replace(':report_id', report_id);
-                       $.ajax({
-                        method: "GET",
-                        url: add_url,
-                        success:function(data){
-                            Swal.fire({
-                                    text: data.success,
-                                    timerProgressBar: true,
-                                    showCloseButton: true,
-                                    showCancelButton: true,
-                                    icon: 'success',
-                                })
-                                window.location.href = route('report.index');
-                        }
-                    })
+                        $.ajax({
+                            method: "GET",
+                            url: add_url,
+                            success:function(data){
+                                Swal.fire({
+                                        text: data.success,
+                                        icon: 'success',
+                                    }).then((result) => {
+                                        window.location.href = "{{ route('report.index') }}";
+                                    })
+                            }
+                        })
                     }else{
                         console.log('not delete');
                     }
+                    })
+    })
+
+    $('#decline').click(function(e){
+        e.preventDefault()
+        Swal.fire({
+                        text: 'Decline?',
+                        timerProgressBar: true,
+                        showCloseButton: true,
+                        showCancelButton: true,
+                        icon: 'warning',
+                    }).then((result) => {
+                        var report_id=$(this).data('id');
+                        console.log(report_id);
+                        if (result.isConfirmed) {
+                        var add_url = "{{ route('admin.decline.report', [':report_id']) }}";
+                            add_url = add_url.replace(':report_id', report_id);
+                            $.ajax({
+                                method: "GET",
+                                url: add_url,
+                                success:function(data){
+                                    Swal.fire({
+                                            text: data.success,
+                                            icon: 'success',
+                                        }).then((result) => {
+                                            window.location.href = "{{ route('report.index') }}";
+                                        })
+                                }
+                            })
+                        }else{
+                            console.log('not delete');
+                        }
                     })
     })
 })
