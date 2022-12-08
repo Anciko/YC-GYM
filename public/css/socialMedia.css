@@ -947,6 +947,13 @@
     gap: 0 5px;
 }
 
+.social-media-fris-fri-img a{
+    display: flex;
+    align-items: center;
+    gap: 0 5px;
+    text-decoration: none;
+}
+
 .social-media-fris-fri-img img{
     width: 80px;
     height: 80px;
@@ -1693,6 +1700,38 @@ ul{
     margin-top: 10px;
     background-color: var(--customer-primary-color);
     border: none;
+}
+
+.group-chat-img-preview-container{
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.addpost-preview{
+    width: 50px;
+    height: 50px;
+    position: relative;
+}
+
+
+.addpost-preview img{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.delete-preview-icon{
+    position: absolute;
+    top: 0;
+    right: 0;
+    font-size: 12px;
+    color: white;
+    background-color: red;
+    cursor: pointer;
+    padding: 5px;
+    border-radius: 3px;
+    z-index: 2;
 }
 
 

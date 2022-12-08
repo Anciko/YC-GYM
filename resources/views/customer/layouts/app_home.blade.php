@@ -36,8 +36,12 @@
     <!--comment mention--->
     <link href="{{asset('css/customer/jquery.mentiony.css')}}" rel="stylesheet"/>
 
+<<<<<<< HEAD
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+=======
     <!--comment emoji-->
     <link href="{{asset('css/customer/emojis.css')}}" rel="stylesheet"/>
+>>>>>>> 6e2859e21c9895c2720af0116996fdcd93926e2e
 
     @yield('styles')
 
@@ -244,34 +248,26 @@
                                 </div>
 
                                 <div class="social-media-left-gpmessages-rows-container">
-                                    <a href="#" class="social-media-left-gpmessages-row">
-                                        <img src="{{asset('img/customer/imgs/user_default.jpg')}}">
-                                        <p>
-                                            Group Name<br>
-                                            <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Dui hendrerit potenti pellentesque tellus urna bibendum mollis. </span>
-                                        </p>
-                                    </a>
-                                    <a href="#" class="social-media-left-gpmessages-row">
-                                        <img src="{{asset('img/customer/imgs/user_default.jpg')}}">
-                                        <p>
-                                            Group Name<br>
-                                            <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Dui hendrerit potenti pellentesque tellus urna bibendum mollis. </span>
-                                        </p>
-                                    </a>
-                                    <a href="#" class="social-media-left-gpmessages-row">
-                                        <img src="{{asset('img/customer/imgs/user_default.jpg')}}">
-                                        <p>
-                                            Group Name<br>
-                                            <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Dui hendrerit potenti pellentesque tellus urna bibendum mollis. </span>
-                                        </p>
-                                    </a>
-                                    <a href="#" class="social-media-left-gpmessages-row">
-                                        <img src="{{asset('img/customer/imgs/user_default.jpg')}}">
-                                        <p>
-                                            Group Name<br>
-                                            <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Dui hendrerit potenti pellentesque tellus urna bibendum mollis. </span>
-                                        </p>
-                                    </a>
+                                    @foreach ($chat_group as $group)
+                                    @if ($group->group_id != null)
+                                        <a href="{{route('socialmedia.group',$group->group_id)}}" class="social-media-left-gpmessages-row">
+                                            <img src="{{asset('img/customer/imgs/user_default.jpg')}}">
+                                            <p>
+                                            {{$group->group_name}}<br>
+                                                <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Dui hendrerit potenti pellentesque tellus urna bibendum mollis. </span>
+                                            </p>
+                                        </a>
+                                    @else
+                                        <a href="{{route('socialmedia.group',$group->id)}}" class="social-media-left-gpmessages-row">
+                                            <img src="{{asset('img/customer/imgs/user_default.jpg')}}">
+                                            <p>
+                                            {{$group->group_name}}<br>
+                                                <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Dui hendrerit potenti pellentesque tellus urna bibendum mollis. </span>
+                                            </p>
+                                        </a>
+                                    @endif
+
+                                @endforeach
                                 </div>
                             </div>
                         </div>
@@ -315,11 +311,15 @@
     {{-- emoji --}}
     <script src="https://cdn.jsdelivr.net/npm/@joeattardi/emoji-button@3.0.3/dist/index.min.js"></script>
 
+<<<<<<< HEAD
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+=======
     {{-- comment emoji --}}
     <script src="https://twemoji.maxcdn.com/v/latest/twemoji.min.js" crossorigin="anonymous"></script>
     <script src="{{asset('js/customer/DisMojiPicker.js')}}"></script>
 
 
+>>>>>>> 6e2859e21c9895c2720af0116996fdcd93926e2e
 
     <script src="{{asset('js/customer/jquery.mentiony.js')}}"></script>
 
