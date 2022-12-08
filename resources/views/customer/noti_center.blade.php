@@ -5,7 +5,7 @@
     <div class="social-media-right-container">
         <div class="social-media-noti-tabs-container">
             <p class="social-media-noti-likes-tab ">
-                Likes & Comments
+                Notifications
             </p>
             <p class="social-media-noti-requests-tab">
                 Friend Requests
@@ -20,14 +20,18 @@
 
                 <div class="social-media-likes-row">
                     <div class="social-media-likes-name">
-                    @if($noti->profile_image == null)
+                    @if($noti->report_status!=0)
+                    <img src="{{asset('img/customer/imgs/report.png')}}"/>
+                    @elseif($noti->profile_image == null)
                             <img src="{{asset('img/customer/imgs/user_default.jpg')}}"/>
                         @else
                             <img src="{{asset('storage/post/'.$noti->profile_image)}}"/>
                     @endif
                         <p>{{$noti->description}}</p>
                     </div>
-                    @if($noti->comment_id == null)
+                    @if($noti->report_status!=0)
+
+                    @elseif($noti->comment_id == null)
                     <iconify-icon icon="ant-design:heart-filled" class="social-media-likes-icon"></iconify-icon>
                     @else
                     <iconify-icon icon="bi:chat-left-dots-fill" class="social-media-likes-icon"></iconify-icon>
@@ -44,6 +48,7 @@
 
                 <div class="social-media-likes-row">
                     <div class="social-media-likes-name">
+
                     @if($noti_earli->profile_image == null)
                             <img src="{{asset('img/customer/imgs/user_default.jpg')}}"/>
                         @else
