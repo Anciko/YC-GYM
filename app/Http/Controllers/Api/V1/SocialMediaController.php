@@ -1637,7 +1637,7 @@ class SocialMediaController extends Controller
 
         if($request->members){
             $members =$request->members;
-            $id = $request->group_id;
+            $id = $group->id;
             for($i= 0; $i<count($members); $i++){
                 $memberId = $members[$i];
                 $group_members = new ChatGroupMember();
