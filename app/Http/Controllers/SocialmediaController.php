@@ -617,7 +617,10 @@ class SocialmediaController extends Controller
             ->leftJoin('profiles','profiles.id','users.profile_id')
             ->where('notifications.receiver_id',auth()->user()->id)
             ->where('notifications.post_id','!=',null)
-            ->orWhere('notifications.report_status',1)
+            ->orWhere(function ($query) {
+                $query->where('notifications.report_status',1)
+                      ->where('receiver_id',auth()->user()->id);
+            })
             ->where(DB::raw("(DATE_FORMAT(date,'%Y-%m-%d'))"),Carbon::Now()->toDateString())
             ->get();
 
@@ -627,7 +630,10 @@ class SocialmediaController extends Controller
             ->leftJoin('profiles','profiles.id','users.profile_id')
             ->where('notifications.receiver_id',auth()->user()->id)
             ->where('notifications.post_id','!=',null)
-            ->orWhere('notifications.report_status',1)
+            ->orWhere(function ($query) {
+                $query->where('notifications.report_status',1)
+                      ->where('receiver_id',auth()->user()->id);
+            })
             ->where(DB::raw("(DATE_FORMAT(date,'%Y-%m-%d'))"),'!=',Carbon::Now()->toDateString())
             ->get();
             // dd($notification_earlier);
@@ -647,7 +653,6 @@ class SocialmediaController extends Controller
             $friendship->date =  Carbon::Now()->toDateTimeString();
             $friendship->friend_status = 1;
             $friendship->save();
-
 
 
             $options = array(
