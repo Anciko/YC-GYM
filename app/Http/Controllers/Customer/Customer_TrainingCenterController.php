@@ -70,6 +70,7 @@ class Customer_TrainingCenterController extends Controller
         }
 
         $posts=Post::where('user_id',$user_id)
+                    ->where('report_status',0)
                     ->orderBy('created_at','DESC')
                     ->with('user')
                     ->paginate(30);
@@ -177,6 +178,7 @@ class Customer_TrainingCenterController extends Controller
         $saved_post = UserSavedPost::select('users.name','profiles.profile_image','posts.*')
                         ->leftJoin('posts','posts.id','user_saved_posts.post_id')
                         ->where('user_saved_posts.user_id',auth()->user()->id)
+                        ->where('posts.report_status',0)
                         ->leftJoin('users','users.id','posts.user_id')
                         ->leftJoin('profiles','users.profile_id','profiles.id')
                         ->orderBy('posts.created_at','DESC')
