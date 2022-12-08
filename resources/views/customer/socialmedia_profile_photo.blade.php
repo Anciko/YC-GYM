@@ -13,7 +13,7 @@
 <!-- End Image Modal -->
 
 <div class="social-media-right-container">
-    <p style="text-align:center">{{$user->name}}'s Photos</p>
+    <p style="text-align:center" class="social-media-user-photos">{{$user->name}}'s Photos</p>
     <div class="social-media-photos-tabs-container">
         <p class="social-media-photos-tab social-media-profiles-tab">Profile Photos</p>
         <p class="social-media-photos-tab social-media-covers-tab">Cover Photos</p>
