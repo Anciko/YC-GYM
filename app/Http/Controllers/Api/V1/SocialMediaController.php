@@ -1626,10 +1626,28 @@ class SocialMediaController extends Controller
         $group->group_name = $groupName;
         $group->group_owner_id = $groupOwner;
         $group->save();
-        ChatGroupMember::create(['group_id'=>$group->id, 'member_id'=>$groupOwner]);
+
+        if($request->members){
+            $members =$request->members;
+            $id = $request->group_id;
+            for($i= 0; $i<count($members); $i++){
+                $memberId = $members[$i];
+                $group_members = new ChatGroupMember();
+                $group_members->group_id = $id;
+                $group_members->member_id = $memberId;
+                $group_members->save();
+             }
+        }
+        else{
+            $group_members = new ChatGroupMember();
+            $group_members->group_id = $group->id;
+            $group_members->member_id = $groupOwner;
+            $group_members->save();
+        }
         return response()->json([
             'success' => 'Success',
-            'data' => $group
+            'data' => $group,
+            'data' => $group_members
         ]);
     }
 
