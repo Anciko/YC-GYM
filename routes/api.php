@@ -169,6 +169,9 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::post('group/create',[SocialMediaController::class,'group_create']);
     Route::post('group/add_member',[SocialMediaController::class,'addmember']);
     Route::post('group/send_message',[SocialMediaController::class,'send_message']);
+    Route::get('group/all_group',[SocialMediaController::class,'all_group']);
+
+
 
     Route::post('post/comment/store', [SocialmediaController::class, 'post_comment_store']);
     Route::post('post/comment/delete', [SocialmediaController::class, 'comment_delete']);

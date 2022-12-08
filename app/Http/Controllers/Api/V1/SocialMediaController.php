@@ -1679,6 +1679,31 @@ class SocialMediaController extends Controller
         ]);
     }
 
+    public function all_group(){
+        $user_id=auth()->user()->id;
+        $groups = DB::table('chat_group_members')
+        ->select('group_id')
+        ->groupBy('group_id')
+        ->where('chat_group_members.member_id',$user_id)
+        ->get()
+        ->pluck('group_id')->toArray();
+
+        $latest_group_message = DB::table('chat_group_messages')
+                ->groupBy('group_id')
+                ->whereIn('group_id',$groups)
+                ->select(DB::raw('max(id) as id'))
+                ->get()
+                ->pluck('id')->toArray();
+
+        $chat_group =
+        ChatGroupMessage::leftJoin('chat_groups','chat_groups.id','chat_group_messages.group_id')
+        ->select('chat_group_messages.*','chat_groups.group_name')
+        ->whereIn('chat_group_messages.id',$latest_group_message)->get();
+        return response()->json([
+            'success' =>  $chat_group
+        ]);
+    }
+
     public function send_message(Request $request){
         $message = new ChatGroupMessage();
         $input = $request->all();
