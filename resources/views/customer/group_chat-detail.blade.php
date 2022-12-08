@@ -54,7 +54,7 @@
 
     <button type="button" class="social-media-allchats-header-add-btn customer-primary-btn group-chat-add-btn" data-bs-toggle="modal" data-bs-target="#createGroupModal">
         <iconify-icon icon="akar-icons:circle-plus" class="social-media-allchats-header-plus-icon"></iconify-icon>
-        <p>Group</p>
+        <p>Member</p>
     </button>
 
     <div class="social-media-view-members-container">

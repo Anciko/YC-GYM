@@ -323,6 +323,7 @@ z-index: 20;
     transition: all 0.2s ease-in-out;
     display: inline-block;
     white-space: nowrap;
+    border: none;
 }
 
 .customer-red-btn:hover{
