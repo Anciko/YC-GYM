@@ -1208,7 +1208,6 @@ class SocialMediaController extends Controller
     }
 
     public function chatting(Request $request, User $user){
-
         $path='';
         if($request->file('fileInput') !=null){
             $request->validate([
@@ -1291,7 +1290,18 @@ class SocialMediaController extends Controller
         $message->to_user_id = $to_user_id;
         $message->text = $request->text == null ?  null : $request->text;
         $message->save();
-        broadcast(new Chatting($message, auth()->user()->id));
+        $options = array(
+            'cluster' => env('PUSHER_APP_CLUSTER'),
+            'encrypted' => true
+            );
+            $pusher = new Pusher(
+            env('PUSHER_APP_KEY'),
+            env('PUSHER_APP_SECRET'),
+            env('PUSHER_APP_ID'),
+            $options
+            );
+
+        $pusher->trigger('chat_message.'.$to_user_id , 'chat', $message);
         return response()->json([
             'success' =>  'success'
         ]);
