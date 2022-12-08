@@ -105,7 +105,7 @@ class AppServiceProvider extends ServiceProvider
         }
 
         //...with this variable
-        $view->with(['left_friends'=> $left_friends, 'chat_group'=>$chat_groups]);
+        $view->with(['left_friends'=> $left_friends, 'chat_group'=>$chat_group]);
         }
 
     });
