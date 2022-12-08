@@ -1209,7 +1209,10 @@ class SocialMediaController extends Controller
     }
 
     public function chatting(Request $request, User $user){
-        $path='';
+        if($request->text ==null && $request->fileInput == null ){
+
+        }else{
+            $path='';
         if($request->file('fileInput') !=null){
             $request->validate([
                 'fileInput' => 'required|mimes:png,jpg,jpeg,gif,mp4,mov,webm'
@@ -1233,9 +1236,14 @@ class SocialMediaController extends Controller
         $message->save();
 
         broadcast(new Chatting($message, $request->sender)); //receiver
+        }
+
     }
 
     public function group_chatting(Request $request, $id){
+        if($request->text ==null && $request->fileSend == null ){
+
+        }else{
 
         $message = new ChatGroupMessage();
 
@@ -1261,7 +1269,7 @@ class SocialMediaController extends Controller
         $message->sender_id = $request->senderId;
         $message->save();
         broadcast(new GroupChatting($message,$request->senderImg, $request->senderName));
-
+        }
     }
 
     public function chat(Request $request){
