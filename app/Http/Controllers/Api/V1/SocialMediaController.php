@@ -1338,7 +1338,7 @@ class SocialMediaController extends Controller
             $query->where('from_user_id',$auth_user->id)->orWhere('to_user_id',$auth_user->id);
         })->where(function($que) use ($id){
             $que->where('from_user_id',$id)->orWhere('to_user_id',$id);
-        })->with('to_user')->with('from_user')->get();
+        })->where('media','!=',null)->get();
 
         return response()->json([
             'messages' => $messages
