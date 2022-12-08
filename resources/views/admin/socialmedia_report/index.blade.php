@@ -34,10 +34,11 @@
             <table class="table table-striped Datatable" style="width: 100%">
                 <thead>
                     <tr>
-                        <th>ID</th>
+                        <th>Report ID</th>
                         <th>Post ID</th>
                         <th>Description</th>
                         <th>Reported Date</th>
+                        <th>Report Count</th>
                         <th>Action</th>
                     </tr>
                 </thead>
@@ -74,7 +75,11 @@
                     },
                     {
                         data: 'created_at',
-                        name: 'Reported Date'
+                        name: 'created_at'
+                    },
+                    {
+                        data: 'rp_count',
+                        name: 'rp_count'
                     },
                     {
                         data: 'action',

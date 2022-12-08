@@ -44,12 +44,14 @@ class SocialmediaController extends Controller
                     array_push($n, $f['sender_id'],$f['receiver_id']);
             }
             $posts=Post::whereIn('user_id',$n)
+                        ->where('report_status',0)
                         ->orderBy('created_at','DESC')
                         ->with('user')
                         ->paginate(30);
         }else{
             $n= array();
             $posts=Post::where('user_id',$user->id)
+                    ->where('report_status',0)
                     ->orderBy('created_at','DESC')
                     ->with('user')
                     ->paginate(30);

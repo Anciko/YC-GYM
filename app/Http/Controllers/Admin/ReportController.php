@@ -24,8 +24,21 @@ class ReportController extends Controller
 
     public function ssd()
     {
-        $reports=Report::query();
+        $report_counts= DB::select('SELECT count(reports.post_id)as report_count,post_id FROM `reports` group by reports.post_id;');
+        $reports=Report::where('status',0)->get();
+
+        foreach($reports as $key=>$value){
+            foreach($report_counts as $rp_count){
+                if($value->post_id==$rp_count->post_id){
+                    $reports[$key]['rp_count']=$rp_count->report_count;
+                }
+            }
+        }
+
         return Datatables::of($reports)
+        ->editColumn('created_at', function ($each) {
+            return $each->created_at->format('d M Y , g:i A'); // human readable format
+          })
         ->addIndexColumn()
         ->addColumn('action', function ($each) {
             $view_icon = '';
@@ -40,8 +53,8 @@ class ReportController extends Controller
 
                         return '<div class="d-flex justify-content-center">' . $view_icon . $delete_icon. '</div>';
                     })
-               ->rawColumns(['action'])
-               ->make(true);
+        ->rawColumns(['action',''])
+        ->make(true);
 
     }
 
@@ -56,22 +69,46 @@ class ReportController extends Controller
         return view('admin.socialmedia_report.view_report',compact('report'));
     }
 
-    public function accept_report(Request $request,$report_id)
+    public function accept_report($report_id)
     {
         $report=Report::findOrFail($report_id);
+
         $post=Post::findOrFail($report->post_id);
+        $post_id=$post->id;
+
+        $rp_posts=Report::where('post_id',$post_id)->get();
+
+        foreach($rp_posts as $rp_post){
+            $rp_post->action_message='delete post';
+            $rp_post->status=1;
+            $rp_post->update();
+        }
 
         $post->report_status=1;
         $post->update();
 
-        $report->action_message='delete post';
-        $report->status=1;
-
-        $report->update();
         return response()->json([
             'success' => 'Reported Post is deleted',
         ]);
 
+    }
+
+    public function decline_report($report_id)
+    {
+        $report=Report::findOrFail($report_id);
+        $post=Post::findOrFail($report->post_id);
+        $post_id=$post->id;
+
+        $rp_posts=Report::where('post_id',$post_id)->get();
+
+        foreach($rp_posts as $rp_post){
+            $rp_post->status=2;
+            $rp_post->update();
+        }
+
+        return response()->json([
+            'success' => 'Reported Post is Decline',
+        ]);
     }
 
     public function create()
