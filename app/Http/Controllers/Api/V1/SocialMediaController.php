@@ -1654,8 +1654,8 @@ class SocialMediaController extends Controller
         }
         return response()->json([
             'success' => 'Success',
-            'data' => $group,
-            'data' => $group_members
+            'group' => $group,
+            'group_members' => $group_members
         ]);
     }
 
