@@ -17,6 +17,7 @@ use Illuminate\Http\Request;
 use App\Events\GroupChatting;
 use App\Models\UserReactPost;
 use App\Models\UserSavedPost;
+use App\Models\ChatGroupMember;
 use App\Models\ChatGroupMessage;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
@@ -1251,8 +1252,6 @@ class SocialMediaController extends Controller
                 }
             }
         }else{
-
-
             $message->text = $request->text;
             $message->media = null;
         }
@@ -1303,7 +1302,7 @@ class SocialMediaController extends Controller
 
         $pusher->trigger('chat_message.'.$to_user_id , 'chat', $message);
         return response()->json([
-            'success' =>  'success'
+            'success' =>  $message
         ]);
     }
 
@@ -1375,6 +1374,7 @@ class SocialMediaController extends Controller
                     'all_messages' => $messages
                 ]);
     }
+
     public function post_comment_store(Request $request){
         $banwords=DB::table('ban_words')->select('ban_word_english','ban_word_myanmar','ban_word_myanglish')->get();
         foreach($banwords as $b){
@@ -1620,8 +1620,11 @@ class SocialMediaController extends Controller
     public function group_create(Request $request){
         $groupName = $request->group_name;
         $groupOwner = auth()->user()->id;
-        ChatGroup::create(['group_name'=>$groupName,'group_owner_id'=>$groupOwner]);
-
+        $group = new ChatGroup();
+        $group->group_name = $groupName;
+        $group->group_owner_id = $groupOwner;
+        $group->save();
+        ChatGroupMember::create(['group_id'=>$group->id, 'member_id'=>$groupOwner]);
         return response()->json([
             'success' => "Success"
         ]);
