@@ -3,6 +3,39 @@
 @section('content')
 
 <div class="social-media-right-container ">
+
+    <div class="modal fade" id="createGroupModal" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">Create Group</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <form action="{{route('socialmedia.group.create')}}" class="create-group-form" method="POST">
+                @csrf
+                <div class="create-group-name">
+                    <p>Group Name</p>
+                    <input type="text" name="group_name" required>
+                </div>
+                {{-- <div class="create-group-addfris">
+                    <p>Add Your Friends</p>
+                    <select class="js-example-basic-multiple" name="members[]" multiple="multiple">
+                        @foreach ($friends as $friend)
+                            <option value="{{$friend->id}}">{{$friend->name}}</option>
+                        @endforeach
+                      </select>
+                </div> --}}
+
+                <button type="submit" class="customer-primary-btn create-group-submit-btn">Create</button>
+              </form>
+            </div>
+
+          </div>
+        </div>
+    </div>
+
+
     <div class="social-media-allchats-header">
         <p>Messages</p>
         <div class="social-media-allchats-header-btn-container">
@@ -57,10 +90,25 @@
             {{-- @endif --}}
         @empty
 
-        @endforelse
+        @endforeach
 
 
     </div>
 </div>
 
 @endsection
+
+@push('scripts')
+<script>
+
+    $(document).ready(function(){
+        $('.js-example-basic-multiple').select2(
+                { dropdownParent: "#createGroupModal" }
+        );
+
+        $('.select2-container').attr('style', '');
+    })
+
+</script>
+@endpush
+

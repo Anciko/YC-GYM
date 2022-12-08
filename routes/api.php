@@ -158,6 +158,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::post('profile/photo/delete', [SocialmediaController::class, 'profile_photo_delete']);
 
     Route::post('message/chat/{user}',[SocialMediaController::class,'chatting']);
+    Route::post('group/message/chat/{id}',[SocialMediaController::class,'group_chatting']);
 
     Route::post('chat',[SocialMediaController::class,'chat']);
 
