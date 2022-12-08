@@ -161,8 +161,9 @@ class AuthController extends Controller
 
         if (Auth::attempt($credentails)) {
             // Auth::login($user);
+            $user = Auth::user();
             $id = Auth::user()->id;
-            $user = User::select('users.*','profiles.profile_image')
+            $user_info = User::select('users.*','profiles.profile_image')
                     ->leftJoin('profiles','users.profile_id','profiles.id')
                     ->where('users.id',$id)
                     ->get();
@@ -172,7 +173,7 @@ class AuthController extends Controller
                 'message' => 'Successfully Login!',
                 'token' => $token->plainTextToken,
                 'user_role' => count($user->roles) < 1 ? 'Free' : $user->roles->pluck('name')[0],
-                'user' => $user,
+                'user' => $user_info,
             ]);
         } else {
             return response()->json([
