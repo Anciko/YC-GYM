@@ -278,11 +278,11 @@
             $('#other_msg').hide();
             $('#other_msg').val('')
             $('#report_submit').attr("class",'btn btn-primary')
-        }else if ($(this).val() == 'suicide'){
+        }else if ($(this).val() == 'suicide or self-injury'){
             $('#other_msg').hide();
             $('#other_msg').val('')
             $('#report_submit').attr("class",'btn btn-primary')
-        }else if ($(this).val() == 'false'){
+        }else if ($(this).val() == 'false information'){
             $('#other_msg').hide();
             $('#other_msg').val('');
             $('#report_submit').attr("class",'btn btn-primary')
@@ -392,6 +392,7 @@
 
         $(document).on('submit','#report_form',function(e){
             e.preventDefault()
+            $('#reportmodal').modal('hide');
             var report_msg
             var post_id=$('#post_id').val();
             $('#post_id').val('')
