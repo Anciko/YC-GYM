@@ -1636,8 +1636,71 @@ class SocialMediaController extends Controller
         $group->save();
         ChatGroupMember::create(['group_id'=>$group->id, 'member_id'=>$groupOwner]);
         return response()->json([
-            'success' => "Success"
+            'success' => 'Success',
+            'data' => $group
         ]);
     }
 
+    public function addmember(Request $request){
+        $members =$request->members;
+        $id = $request->group_id;
+        for($i= 0; $i<count($members); $i++){
+            $memberId = $members[$i];
+            $group_members = new ChatGroupMember();
+            $group_members->group_id = $id;
+            $group_members->member_id = $memberId;
+            $group_members->save();
+         }
+         return response()->json([
+            'success' => 'add',
+            'data' => $group_members
+        ]);
+    }
+
+    public function send_message(Request $request){
+        $message = new ChatGroupMessage();
+        $input = $request->all();
+        $group_id = $request->group_id;
+        if($input['images']) {
+            $images=$input['images'];
+            $filenames = $input['filenames'];
+            foreach($images as $index=>$file)
+            {
+                $tmp = base64_decode($file);
+                $file_name = $filenames[$index];
+                Storage::disk('public')->put(
+                    'customer_message_media/' . $file_name,
+                    $tmp
+                );
+                 $imgData[] = $file_name;
+                 $message->media = json_encode($imgData);
+            }
+         }
+         else{
+                $message->media = null;
+        }
+
+        $message->group_id = $group_id;
+        $message->sender_id = auth()->user()->id;
+        $message->text = $request->text == null ?  null : $request->text;
+        $message->save();
+        $options = array(
+            'cluster' => env('PUSHER_APP_CLUSTER'),
+            'encrypted' => true
+            );
+            $pusher = new Pusher(
+            env('PUSHER_APP_KEY'),
+            env('PUSHER_APP_SECRET'),
+            env('PUSHER_APP_ID'),
+            $options
+            );
+            $group_message = ChatGroupMember::select('member_id')->where('group_id',$group_id)->get();
+            for($i = 0;count($group_message)>$i;$i++){
+                $pusher->trigger('chat_message.'.$group_message[$i]['member_id'], 'chat', $message);
+            }
+
+        return response()->json([
+            'success' =>  $message
+        ]);
+    }
 }
