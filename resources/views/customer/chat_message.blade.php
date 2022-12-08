@@ -411,10 +411,6 @@
             sender_user_img = @json($sender_user->profile_image);
 
 
-            // var groupChatImgInput = document.querySelector('#groupChatImg');
-
-            // const groupChatImgPreview = document.querySelector('.groupChatImg');
-            // const cancelBtn = document.querySelector(".group-chat-img-cancel");
             const emojibutton = document.querySelector('.emoji-trigger');
 
             const picker = new EmojiButton();
@@ -427,58 +423,6 @@
             picker.on('emoji', emoji => {
                 messageInput.value += emoji;
             });
-
-
-            // if (groupChatImgPreview != null) {
-            //     if (!groupChatImgPreview.hasAttribute("src")) {
-            //         groupChatImgPreview.remove()
-            //         //$('.video-prev').remove();
-            //         cancelBtn.remove()
-            //     }
-            // }
-
-
-            // groupChatImgInput.addEventListener('change', (e) => {
-            //     console.log('lahsdjk');
-            //     fileName = groupChatImgInput.files[0];
-            //     console.log(fileName);
-            //     var fileExtension;
-
-            //     fileExtension = e.target.value.replace(/^.*\./, '');
-            //     console.log(fileExtension)
-            //     if (fileExtension === "jpg" || fileExtension === "jpeg" || fileExtension ===
-            //         "png" || fileExtension ===
-            //         "gif") {
-            //         const reader = new FileReader();
-            //         reader.onloadend = e => groupChatImgPreview.setAttribute('src', e.target
-            //             .result);
-            //         reader.readAsDataURL(groupChatImgInput.files[0]);
-            //         groupChatImgInput.value = ""
-            //         $('.video-preview').removeAttr("src")
-            //         $('.video-prev').hide();
-            //         // if(groupChatImgPreview.hasAttribute("src")){
-            //         console.log(reader)
-            //         messageInput.remove()
-            //         document.querySelector(".group-chat-send-form-message-parent-container")
-            //             .append(groupChatImgPreview)
-            //         document.querySelector(".group-chat-send-form-message-parent-container")
-            //             .append(cancelBtn)
-            //         // }
-            //     }
-
-            //     if (fileExtension === "mp4") {
-            //         var fileUrl = window.URL.createObjectURL(groupChatImgInput.files[0]);
-            //         $(".video-preview").attr("src", fileUrl)
-            //         groupChatImgInput.value = ""
-            //         groupChatImgPreview.removeAttribute("src")
-            //         groupChatImgPreview.remove()
-            //         messageInput.remove()
-            //         document.querySelector(".group-chat-send-form-message-parent-container")
-            //             .append(cancelBtn)
-            //         // document.querySelector(".group-chat-send-form-message-parent-container").append($(".video-prev"))
-            //         $(".video-prev").show()
-            //     }
-            // }); // //
 
         })
 
@@ -549,55 +493,6 @@
 
         }
 
-        // function handleFileSelectEdit(e) {
-
-        //     var files = e.target.files;
-        //     console.log(files)
-
-        //     var filesArr = Array.prototype.slice.call(files);
-
-        //     var device = $(e.target).data("device");
-
-        //     filesArr.forEach(function(f) {
-
-        //         if (f.type.match("image.*")) {
-        //             storedFilesEdit.push(f);
-
-        //             var reader = new FileReader();
-        //             reader.onload = function(e) {
-        //             var html = "<div class='addpost-preview'><iconify-icon icon='akar-icons:cross' data-file='" + f.name + "' class='delete-preview-edit-input-icon'></iconify-icon><img src=\"" + e.target.result + "\" data-file='" + f.name + "' class='selFile' title='Click to remove'></div>";
-
-        //             if (device == "mobile") {
-        //                 $("#selectedFilesM").append(html);
-        //             } else {
-        //                 $(".editpost-photo-video-imgpreview-container").append(html);
-        //             }
-        //             }
-        //             reader.readAsDataURL(f);
-        //             // dtEdit.items.add(f);
-        //         }else if(f.type.match("video.*")){
-        //             storedFilesEdit.push(f);
-
-        //             var reader = new FileReader();
-        //             reader.onload = function(e) {
-        //             var html = "<div class='addpost-preview'><iconify-icon icon='akar-icons:cross' data-file='" + f.name + "' class='delete-preview-edit-input-icon'></iconify-icon><video controls><source src=\"" + e.target.result + "\" data-file='" + f.name + "' class='selFile' title='Click to remove'>" + f.name + "<br clear=\"left\"/><video></div>";
-
-        //             if (device == "mobile") {
-        //                 $("#selectedFilesM").append(html);
-        //             } else {
-        //                 $(".editpost-photo-video-imgpreview-container").append(html);
-        //             }
-        //             }
-        //             reader.readAsDataURL(f);
-        //             // dtEdit.items.add(f);
-        //         }
-
-        //     });
-
-        //     document.getElementById('editPostInput').files = dtEdit.files;
-        //     console.log(document.getElementById('editPostInput').files+" Edit Post Input")
-
-        // }
 
         function removeFile(e) {
             var file = $(this).data("file");
@@ -627,25 +522,6 @@
                 messageInput.remove()
             }
         }
-        // function removeFileFromEditInput(e) {
-        //     var file = $(this).data("file");
-        //     var names = [];
-        //     for(let i = 0; i < dtEdit.items.length; i++){
-        //         if(file === dtEdit.items[i].getAsFile().name){
-        //             dtEdit.items.remove(i);
-        //         }
-        //     }
-        //     document.getElementById('editPostInput').files = dtEdit.files;
-
-        //     for (var i = 0; i < storedFilesEdit.length; i++) {
-        //         if (storedFilesEdit[i].name === file) {
-        //         storedFilesEdit.splice(i, 1);
-        //         break;
-        //         }
-        //     }
-        //     $(this).parent().remove();
-        // }
-
 
         function clearAddPost(){
             storedFiles = []
