@@ -1235,6 +1235,7 @@ class SocialMediaController extends Controller
     }
 
     public function group_chatting(Request $request, $id){
+
         $message = new ChatGroupMessage();
 
         $sendFile = $request->all();
@@ -1247,6 +1248,7 @@ class SocialMediaController extends Controller
                     $name = rand().".".$extension;
                     $file->storeAs('/public/customer_message_media/', $name);
                     $imgData[] = $name;
+                    // $message->media .= $name.',';
                     $message->media = json_encode($imgData);
                 }
             }
@@ -1257,7 +1259,7 @@ class SocialMediaController extends Controller
             $message->media = null;
         }
         $message->group_id = $id;
-        $message->sender_id = 3;
+        $message->sender_id = $request->senderId;
         $message->save();
         broadcast(new GroupChatting($message,$request->senderImg, $request->senderName));
 
