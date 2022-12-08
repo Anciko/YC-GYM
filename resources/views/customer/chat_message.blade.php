@@ -12,7 +12,7 @@
             display: none
         }
 
-        .modal {
+        .modal2 {
             width: 400px;
             padding: 20px;
             margin: 100px auto;
@@ -73,11 +73,15 @@
         }
 
         #video-main-container {
-            position: absolute;
-            top: 100px;
-            width: 100%;
-            height: 50%;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%,-50%);
+            width: 90%;
+            max-width: 700px;
+            height: 500px;
             z-index: 21;
+            display: none;
         }
 
         #remote-video {
@@ -353,7 +357,7 @@
         var receive_user_img;
         var sender_user_img;
 
-        var messageInput = document.querySelector('.message_input');
+        var messageInput_message = document.querySelector('.message_input');
 
 
         $(document).ready(function() {
@@ -363,7 +367,7 @@
         $(document).ready(function() {
             // console.log("image preview")
             //image and video select start
-            $("#groupChatImg_message").on("change",handleFileSelect);
+            $("#groupChatImg_message").on("change",handleFileSelect_message);
 
             // $("#editPostInput").on("change", handleFileSelectEdit);
 
@@ -371,7 +375,7 @@
 
             console.log(selDiv);
 
-            $("body").on("click", ".group-chat-img-cancel", removeFile);
+            $("body").on("click", ".delete-preview-icon", removeFile_message);
             // $("body").on("click", ".delete-preview-edit-input-icon", removeFileFromEditInput);
 
             console.log($("#selectFilesM").length);
@@ -398,7 +402,7 @@
             });
 
             picker.on('emoji', emoji => {
-                messageInput.value += emoji;
+                messageInput_message.value += emoji;
             });
 
 
@@ -431,7 +435,7 @@
             //         $('.video-prev').hide();
             //         // if(groupChatImgPreview.hasAttribute("src")){
             //         console.log(reader)
-            //         messageInput.remove()
+            //         messageInput_message.remove()
             //         document.querySelector(".group-chat-send-form-message-parent-container")
             //             .append(groupChatImgPreview)
             //         document.querySelector(".group-chat-send-form-message-parent-container")
@@ -445,7 +449,7 @@
             //         groupChatImgInput.value = ""
             //         groupChatImgPreview.removeAttribute("src")
             //         groupChatImgPreview.remove()
-            //         messageInput.remove()
+            //         messageInput_message.remove()
             //         document.querySelector(".group-chat-send-form-message-parent-container")
             //             .append(cancelBtn)
             //         // document.querySelector(".group-chat-send-form-message-parent-container").append($(".video-prev"))
@@ -458,12 +462,12 @@
         //image and video select start
         var selDiv = "";
 
-        var storedFiles = [];
-        var storedFilesEdit = [];
+        var storedFiles_message = [];
+        // var storedFiles_messageEdit = [];
         const dt_message = new DataTransfer();
         // const dtEdit = new DataTransfer();
 
-        function handleFileSelect(e) {
+        function handleFileSelect_message(e) {
 
             var files = e.target.files;
             console.log(files)
@@ -475,7 +479,7 @@
             filesArr.forEach(function(f) {
                 // console.log(f);
                 if (f.type.match("image.*")) {
-                    storedFiles.push(f);
+                    storedFiles_message.push(f);
 
                     var reader = new FileReader();
                     reader.onload = function(e) {
@@ -490,7 +494,7 @@
                     reader.readAsDataURL(f);
                     dt_message.items.add(f);
                 }else if(f.type.match("video.*")){
-                    storedFiles.push(f);
+                    storedFiles_message.push(f);
 
                     var reader = new FileReader();
                     reader.onload = function(e) {
@@ -511,13 +515,13 @@
 
             document.getElementById('groupChatImg_message').files = dt_message.files;
             console.log(document.getElementById('groupChatImg_message').files+" Add Post Input")
-            console.log(storedFiles.length,"stored files")
+            console.log(storedFiles_message.length,"stored files")
 
-            if(storedFiles.length === 0){
-                $('.group-chat-send-form-message-parent-container').append(messageInput)
+            if(storedFiles_message.length === 0){
+                $('.group-chat-send-form-message-parent-container').append(messageInput_message)
 
             }else{
-                messageInput.remove()
+                messageInput_message.remove()
             }
 
         }
@@ -534,7 +538,7 @@
         //     filesArr.forEach(function(f) {
 
         //         if (f.type.match("image.*")) {
-        //             storedFilesEdit.push(f);
+        //             storedFiles_messageEdit.push(f);
 
         //             var reader = new FileReader();
         //             reader.onload = function(e) {
@@ -549,7 +553,7 @@
         //             reader.readAsDataURL(f);
         //             // dtEdit.items.add(f);
         //         }else if(f.type.match("video.*")){
-        //             storedFilesEdit.push(f);
+        //             storedFiles_messageEdit.push(f);
 
         //             var reader = new FileReader();
         //             reader.onload = function(e) {
@@ -572,7 +576,7 @@
 
         // }
 
-        function removeFile(e) {
+        function removeFile_message(e) {
             var file = $(this).data("file");
             var names = [];
             for(let i = 0; i < dt_message.items.length; i++){
@@ -582,22 +586,22 @@
             }
             document.getElementById('groupChatImg_message').files = dt_message.files;
 
-            for (var i = 0; i < storedFiles.length; i++) {
-                if (storedFiles[i].name === file) {
-                storedFiles.splice(i, 1);
+            for (var i = 0; i < storedFiles_message.length; i++) {
+                if (storedFiles_message[i].name === file) {
+                storedFiles_message.splice(i, 1);
                 break;
                 }
             }
             $(this).parent().remove();
 
-            console.log(storedFiles.length)
+            console.log(storedFiles_message.length)
 
-            if(storedFiles.length === 0){
+            if(storedFiles_message.length === 0){
                 console.log($('.group-chat-send-form-message-parent-container'))
-                $('.group-chat-send-form-message-parent-container').append(messageInput)
+                $('.group-chat-send-form-message-parent-container').append(messageInput_message)
 
             }else{
-                messageInput.remove()
+                messageInput_message.remove()
             }
         }
         // function removeFileFromEditInput(e) {
@@ -610,9 +614,9 @@
         //     }
         //     document.getElementById('editPostInput').files = dtEdit.files;
 
-        //     for (var i = 0; i < storedFilesEdit.length; i++) {
-        //         if (storedFilesEdit[i].name === file) {
-        //         storedFilesEdit.splice(i, 1);
+        //     for (var i = 0; i < storedFiles_messageEdit.length; i++) {
+        //         if (storedFiles_messageEdit[i].name === file) {
+        //         storedFiles_messageEdit.splice(i, 1);
         //         break;
         //         }
         //     }
@@ -621,7 +625,7 @@
 
 
         function clearAddPost(){
-            storedFiles = []
+            storedFiles_message = []
             dt_message.clearData()
             document.getElementById('groupChatImg_message').files = dt_message.files;
             $(".group-chat-img-preview-container").empty();
@@ -902,15 +906,13 @@
                         $(".chat-backdrop").show();
 
                         incomingCallContainer.innerHTML += `<div class="row my-5" id="incoming_call">
-                            <audio controls autoplay >
-                            <source src="" type="audio/mpeg">
-                            </audio>
+
                                 <div class="card shadow p-4 col-12">
                                     <p>
                                         Video Call From <span>${incomingCaller}</span>
                                     </p>
                                     <div class="d-flex justify-content-center gap-3">
-                                        <button type="button" class="btn btn-sm btn-danger" data-dismiss="modal" id="" onclick="declineCall()">
+                                        <button type="button" class="btn btn-sm btn-danger"  id="" onclick="declineCall()">
                                             Decline
                                         </button>
                                         <button type="button" class="btn btn-sm btn-success ml-5" onclick="acceptCall()">
@@ -947,15 +949,13 @@
                         $(".chat-backdrop").show();
                         if (incomingAudioCall) {
                             incomingCallContainer.innerHTML += `<div class="row my-5" id="incoming_call">
-                            <audio controls autoplay >
-                            <source src="" type="audio/mpeg">
-                            </audio>
+
                                 <div class="card shadow p-4 col-12">
                                     <p>
                                         Audio Call From <span>${incomingCaller}</span>
                                     </p>
                                     <div class="d-flex justify-content-center gap-3">
-                                        <button type="button" class="btn btn-sm btn-danger" data-dismiss="modal" id="" onclick="declineCall()">
+                                        <button type="button" class="btn btn-sm btn-danger"  id="" onclick="declineCall()">
                                             Decline
                                         </button>
                                         <button type="button" class="btn btn-sm btn-success ml-5" onclick="acceptCall()">
@@ -1082,6 +1082,7 @@
 
                     if (callPlaced) {
                         // parent.document.body.classList.add('backdrop')
+                        $("#video-main-container").show()
                         $(".chat-backdrop").show();
                         if (incomingAudioCall) {
                             video_container.innerHTML += `
