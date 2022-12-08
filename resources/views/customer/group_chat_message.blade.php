@@ -96,10 +96,12 @@
         var auth_user_data;
         var auth_user_img;
 
+        var messageInput_message = document.querySelector('.message_input');
+
         $(document).ready(function() {
 
             //image and video select start
-            $("#groupChatImg_message").on("change",handleFileSelect);
+            $("#groupChatImg_message").on("change", handleFileSelect_message);
 
             // $("#editPostInput").on("change", handleFileSelectEdit);
 
@@ -107,7 +109,7 @@
 
             console.log(selDiv);
 
-            $("body").on("click", ".group-chat-img-cancel", removeFile);
+            $("body").on("click", ".delete-preview-icon", removeFile_message);
             // $("body").on("click", ".delete-preview-edit-input-icon", removeFileFromEditInput);
 
             console.log($("#selectFilesM").length);
@@ -138,12 +140,12 @@
         //image and video select start
         var selDiv = "";
 
-        var storedFiles = [];
-        var storedFilesEdit = [];
+        var storedFiles_message = [];
+        // var storedFiles_messageEdit = [];
         const dt_message = new DataTransfer();
         // const dtEdit = new DataTransfer();
 
-        function handleFileSelect(e) {
+        function handleFileSelect_message(e) {
 
             var files = e.target.files;
             console.log(files)
@@ -155,32 +157,42 @@
             filesArr.forEach(function(f) {
                 // console.log(f);
                 if (f.type.match("image.*")) {
-                    storedFiles.push(f);
+                    storedFiles_message.push(f);
 
                     var reader = new FileReader();
                     reader.onload = function(e) {
-                    var html = "<div class='addpost-preview'><iconify-icon icon='akar-icons:cross' data-file='" + f.name + "' class='delete-preview-icon'></iconify-icon><img src=\"" + e.target.result + "\" data-file='" + f.name + "' class='selFile' title='Click to remove'></div>";
+                        var html =
+                            "<div class='addpost-preview'><iconify-icon icon='akar-icons:cross' data-file='" + f
+                            .name + "' class='delete-preview-icon'></iconify-icon><img src=\"" + e.target
+                            .result + "\" data-file='" + f.name +
+                            "' class='selFile' title='Click to remove'></div>";
 
-                    if (device == "mobile") {
-                        $("#selectedFilesM").append(html);
-                    } else {
-                        $(".group-chat-img-preview-container").append(html);
-                    }
+                        if (device == "mobile") {
+                            $("#selectedFilesM").append(html);
+                        } else {
+                            $(".group-chat-img-preview-container").append(html);
+                        }
                     }
                     reader.readAsDataURL(f);
                     dt_message.items.add(f);
-                }else if(f.type.match("video.*")){
-                    storedFiles.push(f);
+                } else if (f.type.match("video.*")) {
+                    storedFiles_message.push(f);
 
                     var reader = new FileReader();
                     reader.onload = function(e) {
-                    var html = "<div class='addpost-preview'><iconify-icon icon='akar-icons:cross' data-file='" + f.name + "' class='delete-preview-icon'></iconify-icon><video controls><source src=\"" + e.target.result + "\" data-file='" + f.name + "' class='selFile' title='Click to remove'>" + f.name + "<br clear=\"left\"/><video></div>";
+                        var html =
+                            "<div class='addpost-preview'><iconify-icon icon='akar-icons:cross' data-file='" + f
+                            .name +
+                            "' class='delete-preview-icon'></iconify-icon><video controls><source src=\"" + e
+                            .target.result + "\" data-file='" + f.name +
+                            "' class='selFile' title='Click to remove'>" + f.name +
+                            "<br clear=\"left\"/><video></div>";
 
-                    if (device == "mobile") {
-                        $("#selectedFilesM").append(html);
-                    } else {
-                        $(".group-chat-img-preview-container").append(html);
-                    }
+                        if (device == "mobile") {
+                            $("#selectedFilesM").append(html);
+                        } else {
+                            $(".group-chat-img-preview-container").append(html);
+                        }
                     }
                     reader.readAsDataURL(f);
                     dt_message.items.add(f);
@@ -190,50 +202,50 @@
             });
 
             document.getElementById('groupChatImg_message').files = dt_message.files;
-            console.log(document.getElementById('groupChatImg_message').files+" Add Post Input")
-            console.log(storedFiles.length,"stored files")
+            console.log(document.getElementById('groupChatImg_message').files + " Add Post Input")
+            console.log(storedFiles_message.length, "stored files")
 
-            if(storedFiles.length === 0){
-                $('.group-chat-send-form-message-parent-container').append(messageInput)
+            if (storedFiles_message.length === 0) {
+                $('.group-chat-send-form-message-parent-container').append(messageInput_message)
 
-            }else{
-                messageInput.remove()
+            } else {
+                messageInput_message.remove()
             }
 
         }
 
 
-        function removeFile(e) {
+        function removeFile_message(e) {
             var file = $(this).data("file");
             var names = [];
-            for(let i = 0; i < dt_message.items.length; i++){
-                if(file === dt_message.items[i].getAsFile().name){
+            for (let i = 0; i < dt_message.items.length; i++) {
+                if (file === dt_message.items[i].getAsFile().name) {
                     dt_message.items.remove(i);
                 }
             }
             document.getElementById('groupChatImg_message').files = dt_message.files;
 
-            for (var i = 0; i < storedFiles.length; i++) {
-                if (storedFiles[i].name === file) {
-                storedFiles.splice(i, 1);
-                break;
+            for (var i = 0; i < storedFiles_message.length; i++) {
+                if (storedFiles_message[i].name === file) {
+                    storedFiles_message.splice(i, 1);
+                    break;
                 }
             }
             $(this).parent().remove();
 
-            console.log(storedFiles.length)
+            console.log(storedFiles_message.length)
 
-            if(storedFiles.length === 0){
+            if (storedFiles_message.length === 0) {
                 console.log($('.group-chat-send-form-message-parent-container'))
-                $('.group-chat-send-form-message-parent-container').append(messageInput)
+                $('.group-chat-send-form-message-parent-container').append(messageInput_message)
 
-            }else{
-                messageInput.remove()
+            } else {
+                messageInput_message.remove()
             }
         }
 
-        function clearAddPost(){
-            storedFiles = []
+        function clearAddPost() {
+            storedFiles_message = []
             dt_message.clearData()
             document.getElementById('groupChatImg_message').files = dt_message.files;
             $(".group-chat-img-preview-container").empty();
@@ -242,6 +254,7 @@
 
 
         //image and video select end
+
 
 
         sendMessage.addEventListener('click', function(e) {
@@ -254,14 +267,14 @@
             var fileLength = fileMessage.files.length
             console.log(fileLength);
 
-            if(fileLength > 5){
+            if (fileLength > 5) {
                 console.log('can not send');
-            }else{
+            } else {
                 formData = new FormData(messageForm);
                 let images = $("#groupChatImg_message")[0];
 
                 for (let i = 0; i < fileLength; i++) {
-                  formData.append('images' + i, images.files[i]);
+                    formData.append('images' + i, images.files[i]);
                 }
 
                 formData.append('totalFiles', fileLength);
@@ -276,7 +289,7 @@
                     senderName: auth_user_data.name
                 }).then();
                 messageInput.value = "";
-            }else{
+            } else {
                 axios.post('/api/group/message/chat/' + groupId, formData)
             }
 

@@ -16,8 +16,8 @@ class CreatePostsTable extends Migration
         Schema::create('posts', function (Blueprint $table) {
             $table->id();
             $table->integer('user_id');
-            $table->string('caption');
-            $table->longText('media');
+            $table->string('caption')->nullable();
+            $table->longText('media')->nullable();
             $table->boolean('favourite_status');
             $table->integer('viewers')->default(0);
             $table->integer('report_status')->default(0);

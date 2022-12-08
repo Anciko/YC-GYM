@@ -1308,9 +1308,13 @@ class SocialMediaController extends Controller
                             ->where('users.id',$id)
                             ->join('profiles','profiles.id','users.profile_id')->first();
 
+
+        foreach($messages as $key=>$value){
+                    $messages[$key]['profile_image'] = $receiver_user->profile_image;
+        }
+
         return response()->json([
             'messages' => $messages,
-            'receiver' => $receiver_user
         ]);
     }
 
@@ -1327,6 +1331,7 @@ class SocialMediaController extends Controller
             'messages' => $messages
         ]);
     }
+
     public function see_all_message(){
             $user_id=auth()->user()->id;
             $messages =DB::select("SELECT users.id,users.name,profiles.profile_image,chats.text,chats.created_at

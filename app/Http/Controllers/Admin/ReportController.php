@@ -24,7 +24,7 @@ class ReportController extends Controller
 
     public function ssd()
     {
-        $reports=Report::query();
+        $reports=Report::all();
         return Datatables::of($reports)
         ->addIndexColumn()
         ->addColumn('action', function ($each) {
