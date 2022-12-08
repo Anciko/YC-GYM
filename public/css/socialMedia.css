@@ -37,7 +37,7 @@
     -moz-box-shadow: 1px 1px 10px 0px rgba(0,0,0,0.25);
     padding: 20px 10px;
     background-color: var(--customer-card-bg-color);
-    height: 900px;
+    height: 840px;
 }
 
 .social-media-left-search-container{
@@ -322,7 +322,7 @@
     flex-wrap: wrap;
 }
 
-.addpost-preview{
+.addpost-photo-video-imgpreview-container .addpost-preview{
     width: 100px;
     height: 100px;
     position: relative;
@@ -334,13 +334,13 @@
     position: relative;
 }
 
-.addpost-preview img, .addpost-preview video{
+.addpost-photo-video-imgpreview-container .addpost-preview img, .addpost-preview video{
     width: 100%;
     height: 100%;
     object-fit: cover;
 }
 
-.delete-preview-icon{
+.addpost-photo-video-imgpreview-container .delete-preview-icon{
     position: absolute;
     top: 0;
     right: 0;
@@ -566,7 +566,7 @@
 }
 
 .social-media-profile-parent-container{
-    height: 850px;
+    height: 820px;
     overflow-y: scroll;
 }
 
@@ -846,7 +846,7 @@
 }
 
 .social-media-allchats-messages-container{
-    height: 840px;
+    height: 760px;
     overflow-y: scroll;
 }
 
@@ -930,7 +930,7 @@
 }
 
 .social-media-fris-list-container{
-    height: 740px;
+    height: 700px;
     overflow-y: scroll;
 }
 
@@ -1229,7 +1229,7 @@
 .social-media-all-likes-parent-container{
     border: 1px solid var(--customer-primary-color);
     border-radius: 6px;
-    height: 850px;
+    height: 800px;
     overflow-y: scroll;
 }
 
@@ -1623,6 +1623,7 @@ ul{
     padding-bottom: 10px;
     border-bottom: 1px solid var(--customer-text-color);
     cursor: pointer;
+    color: var(--customer-text-color);
 }
 
 .social-media-photos-tab-active{
@@ -1637,8 +1638,12 @@ ul{
     gap: 10px;
     flex-wrap: wrap;
     margin-top: 20px;
-    height:800px;
+    height:720px;
     overflow-y: scroll;
+}
+
+.social-media-photos-container p{
+    color: var(--customer-text-color);
 }
 
 .social-media-photo{
@@ -1702,16 +1707,33 @@ ul{
     border: none;
 }
 
+.group-chat-img-preview-container-wrapper{
+    /* display: block; */
+    width: 100%;
+    overflow-x: auto;
+    white-space: nowrap;
+    /* width: fit-content; */
+    /* width: 100%; */
+    display: none;
+}
+
 .group-chat-img-preview-container{
-    display: flex;
-    align-items: center;
-    flex-wrap: wrap;
+    /* display: block; */
+
+    overflow-x: auto;
+    gap: 0 3px;
+    white-space: nowrap;
+    width: 400px;
 }
 
 .addpost-preview{
-    width: 50px;
+    min-width: 50px;
     height: 50px;
     position: relative;
+    display: inline-block;
+    /* float: left; */
+    /* margin-left: 3px; */
+    /* flex-shrink : 0 */
 }
 
 
@@ -1734,6 +1756,13 @@ ul{
     z-index: 2;
 }
 
+.group-chat-img-preview-container .delete-preview-icon{
+    z-index: 1;
+}
+
+.social-media-user-photos{
+    color: var(--customer-text-color);
+}
 
 @media screen and (max-width:1000px){
 
@@ -1837,6 +1866,10 @@ ul{
         height: 800px;
     }
 
+    .group-chat-img-preview-container{
+        width: 350px;
+    }
+
 }
 
 @media screen and (max-width:600px){
@@ -1924,6 +1957,10 @@ ul{
         margin-top: 60px;
     }
 
+    .group-chat-img-preview-container{
+        width: 290px;
+    }
+
 }
 
 @media screen and (max-width:500px){
@@ -1942,6 +1979,21 @@ ul{
 
     .social-media-allchats-message-row > p{
         max-width: 200px;
+    }
+
+    .group-chat-img-preview-container{
+        width: 240px;
+    }
+}
+
+@media screen and (max-width:450px){
+    .group-chat-img-preview-container{
+        width: 200px;
+    }
+}
+@media screen and (max-width:400px){
+    .group-chat-img-preview-container{
+        width: 130px;
     }
 }
 

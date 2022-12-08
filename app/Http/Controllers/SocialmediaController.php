@@ -1253,6 +1253,7 @@ class SocialmediaController extends Controller
         $gp_messages = ChatGroupMessage::where('group_id', $id)->with('user')->with('user.user_profile')->get();
         $auth_user_data = User::where('id',auth()->user()->id)->with('user_profile')->first();
 
+        // dd($gp_messages);
         return view('customer.group_chat_message',compact('group','gp_messages','auth_user_data'));
     }
 
@@ -1272,7 +1273,6 @@ class SocialmediaController extends Controller
     public function group_detail($id){
         $auth = Auth()->user()->id;
             $user = User::where('id',$auth)->first();
-
             $friendships=DB::table('friendships')
                         ->where('friend_status',2)
                         ->where(function($query) use ($auth){
