@@ -161,7 +161,9 @@
                 </div>
 
                 <textarea id="mytextarea" class="group-chat-send-form-input message_input" placeholder="Message..." required></textarea>
-                <div class="group-chat-img-preview-container"></div>
+                <div class="group-chat-img-preview-container-wrapper">
+                    <div class="group-chat-img-preview-container"></div>
+                </div>
             </div>
 
             <button type="submit" class="group-chat-send-form-submit-btn">
@@ -299,9 +301,11 @@
 
             if (storedFiles_message.length === 0) {
                 $('.group-chat-send-form-message-parent-container').append(messageInput_message)
+                $(".group-chat-img-preview-container-wrapper").hide()
 
             } else {
                 messageInput_message.remove()
+                $(".group-chat-img-preview-container-wrapper").show()
             }
 
         }
@@ -330,9 +334,11 @@
             if (storedFiles_message.length === 0) {
                 console.log($('.group-chat-send-form-message-parent-container'))
                 $('.group-chat-send-form-message-parent-container').append(messageInput_message)
+                $(".group-chat-img-preview-container-wrapper").hide()
 
             } else {
                 messageInput_message.remove()
+                $(".group-chat-img-preview-container-wrapper").show()
             }
         }
 

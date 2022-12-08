@@ -617,6 +617,7 @@ class SocialmediaController extends Controller
             ->leftJoin('profiles','profiles.id','users.profile_id')
             ->where('notifications.receiver_id',auth()->user()->id)
             ->where('notifications.post_id','!=',null)
+            ->orWhere('notifications.report_status',1)
             ->where(DB::raw("(DATE_FORMAT(date,'%Y-%m-%d'))"),Carbon::Now()->toDateString())
             ->get();
 
@@ -626,9 +627,10 @@ class SocialmediaController extends Controller
             ->leftJoin('profiles','profiles.id','users.profile_id')
             ->where('notifications.receiver_id',auth()->user()->id)
             ->where('notifications.post_id','!=',null)
+            ->orWhere('notifications.report_status',1)
             ->where(DB::raw("(DATE_FORMAT(date,'%Y-%m-%d'))"),'!=',Carbon::Now()->toDateString())
             ->get();
-            // dd($notification);
+            // dd($notification_earlier);
         return view('customer.noti_center',compact('friend_requests','friend_requests_earlier','notification','notification_earlier'));
     }
 
@@ -1251,6 +1253,7 @@ class SocialmediaController extends Controller
         $gp_messages = ChatGroupMessage::where('group_id', $id)->with('user')->with('user.user_profile')->get();
         $auth_user_data = User::where('id',auth()->user()->id)->with('user_profile')->first();
 
+        // dd($gp_messages);
         return view('customer.group_chat_message',compact('group','gp_messages','auth_user_data'));
     }
 
@@ -1270,7 +1273,6 @@ class SocialmediaController extends Controller
     public function group_detail($id){
         $auth = Auth()->user()->id;
             $user = User::where('id',$auth)->first();
-
             $friendships=DB::table('friendships')
                         ->where('friend_status',2)
                         ->where(function($query) use ($auth){
@@ -1310,17 +1312,56 @@ class SocialmediaController extends Controller
 
     public function post_report(Request $request)
     {
-      //  dd($request->all());
+      //dd($request->all());
        $user_id=$request->user_id;
        $post_id=$request->post_id;
+       $admin_id=1;
        $description=$request->report_msg;
        $report=New Report();
        $report->user_id=$user_id;
        $report->post_id=$post_id;
        $report->description=$description;
        $report->save();
-       return response()->json([
-        'success' => 'Reported Success'
-    ]);
+
+        // return response()->json([
+        //     'success' => 'Reported Success'
+        // ]);
+       $options = array(
+        'cluster' => env('PUSHER_APP_CLUSTER'),
+        'encrypted' => true
+        );
+        $pusher = new Pusher(
+        env('PUSHER_APP_KEY'),
+        env('PUSHER_APP_SECRET'),
+        env('PUSHER_APP_ID'),
+
+        $options
+        );
+
+            $data = 'Thanks for your report,we will check this post.';
+            $new_data='Post is Reported';
+
+            $user_rp = new Notification();
+            $user_rp->description = $data;
+            $user_rp->date = Carbon::Now()->toDateTimeString();
+
+            $user_rp->sender_id = $admin_id;
+            $user_rp->receiver_id =  auth()->user()->id;
+            $user_rp->notification_status = $admin_id;
+            $user_rp->report_status=1;
+            $user_rp->save();
+
+            $admin_rp=new Notification();
+            $admin_rp->description=$new_data;
+            $admin_rp->date = Carbon::Now()->toDateTimeString();
+            $admin_rp->sender_id=auth()->user()->id;
+            $admin_rp->receiver_id=$admin_id;
+            $admin_rp->report_status=1;
+            $admin_rp->save();
+
+            $pusher->trigger('friend_request.'. auth()->user()->id , 'friendRequest', $data);
+
+            $pusher->trigger('friend_request.'. $admin_id , 'friendRequest', $new_data);
+
     }
 }

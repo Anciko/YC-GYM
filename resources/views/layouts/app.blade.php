@@ -482,8 +482,6 @@
 
 
 
-
-
     <!-- Laravel Javascript Validation -->
 
     <script type="text/javascript" src="{{ asset('vendor/jsvalidation/js/jsvalidation.js') }}"></script>
@@ -497,11 +495,26 @@
      {{-- emoji --}}
      <script src="https://cdn.jsdelivr.net/npm/@joeattardi/emoji-button@3.0.3/dist/index.min.js"></script>
 
+     <script src={{asset('js/notify.js')}}></script>
+
+     {{-- pusher --}}
+     <script src="https://js.pusher.com/7.2/pusher.min.js"></script>
+
     @stack('scripts')
 
-
-
     <script>
+
+                var user_id = {{auth()->user()->id}};
+                console.log(user_id);
+                var pusher = new Pusher('{{env("MIX_PUSHER_APP_KEY")}}', {
+                cluster: '{{env("PUSHER_APP_CLUSTER")}}',
+                encrypted: true
+                });
+                var channel = pusher.subscribe('friend_request.'+user_id);
+                channel.bind('friendRequest', function(data) {
+                console.log(data);
+                $.notify(data, "success",{ position:"left" });
+                });
 
         $(document).ready(function() {
             let token = document.head.querySelector('meta[name="csrf-token"]');

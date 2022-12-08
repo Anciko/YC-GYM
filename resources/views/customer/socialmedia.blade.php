@@ -399,7 +399,7 @@
             var user_id={{auth()->user()->id}}
 
             if($('input[name="report_msg"]:checked').val()=='other'){
-                report_msg=$("input[name='other_report_msg']").val();
+                report_msg=$("#other_msg").val();
 
             } else{
                  report_msg=$("input[name='report_msg']:checked").val();

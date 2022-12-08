@@ -10,15 +10,17 @@ use App\Models\User;
 use App\Models\Comment;
 use App\Models\Profile;
 use App\Events\Chatting;
-use App\Events\GroupChatting;
+use App\Models\ChatGroup;
 use App\Models\Friendship;
 use App\Models\Notification;
 use Illuminate\Http\Request;
+use App\Events\GroupChatting;
 use App\Models\UserReactPost;
 use App\Models\UserSavedPost;
+use App\Models\ChatGroupMember;
+use App\Models\ChatGroupMessage;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
-use App\Models\ChatGroupMessage;
 use Illuminate\Support\Facades\Storage;
 
 class SocialMediaController extends Controller
@@ -1207,7 +1209,6 @@ class SocialMediaController extends Controller
     }
 
     public function chatting(Request $request, User $user){
-
         $path='';
         if($request->file('fileInput') !=null){
             $request->validate([
@@ -1253,8 +1254,6 @@ class SocialMediaController extends Controller
                 }
             }
         }else{
-
-
             $message->text = $request->text;
             $message->media = null;
         }
@@ -1285,13 +1284,27 @@ class SocialMediaController extends Controller
                  $message->media = json_encode($imgData);
             }
          }
+         else{
+                $message->media = null;
+        }
         $message->from_user_id = auth()->user()->id;
         $message->to_user_id = $to_user_id;
         $message->text = $request->text == null ?  null : $request->text;
         $message->save();
-        broadcast(new Chatting($message, $request->sender));
+        $options = array(
+            'cluster' => env('PUSHER_APP_CLUSTER'),
+            'encrypted' => true
+            );
+            $pusher = new Pusher(
+            env('PUSHER_APP_KEY'),
+            env('PUSHER_APP_SECRET'),
+            env('PUSHER_APP_ID'),
+            $options
+            );
+
+        $pusher->trigger('chat_message.'.$to_user_id , 'chat', $message);
         return response()->json([
-            'success' =>  'success'
+            'success' =>  $message
         ]);
     }
 
@@ -1327,7 +1340,7 @@ class SocialMediaController extends Controller
             $query->where('from_user_id',$auth_user->id)->orWhere('to_user_id',$auth_user->id);
         })->where(function($que) use ($id){
             $que->where('from_user_id',$id)->orWhere('to_user_id',$id);
-        })->with('to_user')->with('from_user')->get();
+        })->where('media','!=',null)->get();
 
         return response()->json([
             'messages' => $messages
@@ -1363,6 +1376,7 @@ class SocialMediaController extends Controller
                     'all_messages' => $messages
                 ]);
     }
+
     public function post_comment_store(Request $request){
         $banwords=DB::table('ban_words')->select('ban_word_english','ban_word_myanmar','ban_word_myanglish')->get();
         foreach($banwords as $b){
@@ -1602,6 +1616,19 @@ class SocialMediaController extends Controller
 
         return response()->json([
             'data' => $user
+        ]);
+    }
+
+    public function group_create(Request $request){
+        $groupName = $request->group_name;
+        $groupOwner = auth()->user()->id;
+        $group = new ChatGroup();
+        $group->group_name = $groupName;
+        $group->group_owner_id = $groupOwner;
+        $group->save();
+        ChatGroupMember::create(['group_id'=>$group->id, 'member_id'=>$groupOwner]);
+        return response()->json([
+            'success' => "Success"
         ]);
     }
 

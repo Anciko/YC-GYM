@@ -98,14 +98,14 @@ class AppServiceProvider extends ServiceProvider
 
         foreach($chat_group as $chat){
             if($chat->group_owner_id == $user_id){
-                $chat_groups = ChatGroup::where('group_owner_id',$user_id)->get();
+                $chat_group = ChatGroup::where('group_owner_id',$user_id)->get();
             }else{
-                $chat_groups = ChatGroup::where('chat_group_members.member_id',$user_id)->join('chat_group_members','chat_group_members.group_id','chat_groups.id')->get();
+                $chat_group = ChatGroup::where('chat_group_members.member_id',$user_id)->join('chat_group_members','chat_group_members.group_id','chat_groups.id')->get();
             }
         }
 
         //...with this variable
-        $view->with(['left_friends'=> $left_friends, 'chat_group'=>$chat_groups]);
+        $view->with(['left_friends'=> $left_friends, 'chat_group'=>$chat_group]);
         }
 
     });

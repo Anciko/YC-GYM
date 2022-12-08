@@ -55,6 +55,42 @@
 
 @push('scripts')
     <script>
+        $(document).ready(function() {
+            $('#accept').click(function(e){
+            e.preventDefault()
+            Swal.fire({
+                            text: 'This post goes Against Our Community and Guidelines.',
+                            timerProgressBar: true,
+                            showCloseButton: true,
+                            showCancelButton: true,
+                            confirmButtonText:'Delete Post',
+                            cancelButtonText:'No',
+                            icon: 'warning',
+                        }).then((result) => {
+                            var report_id=$(this).data('id');
+                            console.log(report_id);
+                        if (result.isConfirmed) {
+                        var add_url = "{{ route('admin.accept.report', [':report_id']) }}";
+                            add_url = add_url.replace(':report_id', report_id);
+                            $.ajax({
+                                method: "GET",
+                                url: add_url,
+                                success:function(data){
+                                    Swal.fire({
+                                            text: data.success,
+                                            icon: 'success',
+                                        }).then((result) => {
+                                            window.location.href = "{{ route('report.index') }}";
+                                        })
+                                }
+                            })
+                        }else{
+                            console.log('not delete');
+                        }
+                        })
+        })
+        })
+
         $(function() {
            var table =  $('.Datatable').DataTable({
                 processing: true,
