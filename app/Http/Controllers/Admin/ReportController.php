@@ -2,15 +2,18 @@
 
 namespace App\Http\Controllers\Admin;
 
+use Carbon\Carbon;
+use Pusher\Pusher;
 use App\Models\Post;
+use App\Models\Action;
 use App\Models\Report;
+use App\Models\Notification;
 use Illuminate\Http\Request;
+use PhpParser\Node\Expr\New_;
+use Yajra\Datatables\Datatables;
 use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Role;
 use App\Http\Controllers\Controller;
-use App\Models\Action;
-use PhpParser\Node\Expr\New_;
-use Yajra\Datatables\Datatables;
 
 class ReportController extends Controller
 {
@@ -24,8 +27,8 @@ class ReportController extends Controller
 
     public function ssd()
     {
-        $report_counts= DB::select('SELECT count(reports.post_id)as report_count,post_id FROM `reports` group by reports.post_id;');
-        $reports=Report::where('status',0)->get();
+        $report_counts= DB::select('SELECT count(reports.post_id)as report_count,post_id FROM `reports` WHERE reports.status=0 group by reports.post_id;');
+        $reports=Report::where('status',0)->orderBy('created_at','DESC')->get();
 
         foreach($reports as $key=>$value){
             foreach($report_counts as $rp_count){
@@ -44,14 +47,14 @@ class ReportController extends Controller
             $view_icon = '';
             $delete_icon = '';
 
-            $view_icon = '<a href=" ' . route('admin.view.report', $each->id) . ' " class="text-success mx-1 " title="view">
-                        <i class="fa fa-folder-open fa-xl" data-id="' . $each->id . '"></i>
+            $view_icon = '<a href=" ' . route('admin.view.report', $each->id) . ' " class="btn btn-primary" title="view">
+                        <i class="fa fa-folder-open" data-id="' . $each->id . '"></i>&nbsp;&nbsp;View
                     </a>';
-            $delete_icon = '<a href=" ' . route('member.destroy', $each->id) . ' " class="text-danger mx-1" id="delete" title="delete">
-                        <i class="fa-solid fa-trash fa-xl delete" data-id="' . $each->id . '"></i>
-                    </a>';
+            // $delete_icon = '<a href=" ' . route('admin.accept.report', $each->id) . ' " class="btn btn-danger" id="delete" title="delete">
+            //             <i class="fa fa-ban" data-id="' . $each->id . '"></i>&nbsp;&nbsp;Ban
+            //         </a>';
 
-                        return '<div class="d-flex justify-content-center">' . $view_icon . $delete_icon. '</div>';
+                        return '<div class="d-flex justify-content-center">' . $view_icon . '</div>';
                     })
         ->rawColumns(['action',''])
         ->make(true);
@@ -75,7 +78,8 @@ class ReportController extends Controller
 
         $post=Post::findOrFail($report->post_id);
         $post_id=$post->id;
-
+        $post_owner=$post->user_id;
+        $admin_id=  auth()->user()->id;
         $rp_posts=Report::where('post_id',$post_id)->get();
 
         foreach($rp_posts as $rp_post){
@@ -87,10 +91,35 @@ class ReportController extends Controller
         $post->report_status=1;
         $post->update();
 
+        $options = array(
+            'cluster' => env('PUSHER_APP_CLUSTER'),
+            'encrypted' => true
+            );
+            $pusher = new Pusher(
+            env('PUSHER_APP_KEY'),
+            env('PUSHER_APP_SECRET'),
+            env('PUSHER_APP_ID'),
+            $options
+            );
+
+                $data = 'Your Post is Removed';
+
+                $description='Your Post Goes Against Our Community And Guidelines';
+                $post_rp = new Notification();
+                $post_rp->description = $description;
+                $post_rp->date = Carbon::Now()->toDateTimeString();
+
+                $post_rp->sender_id = $admin_id;
+                $post_rp->receiver_id = $post_owner;
+                $post_rp->notification_status = $admin_id;
+                $post_rp->report_status=1;
+                $post_rp->save();
+
+                $pusher->trigger('friend_request.'.$post_owner , 'friendRequest', $data);
+
         return response()->json([
             'success' => 'Reported Post is deleted',
         ]);
-
     }
 
     public function decline_report($report_id)

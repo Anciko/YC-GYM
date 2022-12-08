@@ -617,6 +617,7 @@ class SocialmediaController extends Controller
             ->leftJoin('profiles','profiles.id','users.profile_id')
             ->where('notifications.receiver_id',auth()->user()->id)
             ->where('notifications.post_id','!=',null)
+            ->orWhere('notifications.report_status',1)
             ->where(DB::raw("(DATE_FORMAT(date,'%Y-%m-%d'))"),Carbon::Now()->toDateString())
             ->get();
 
@@ -626,9 +627,10 @@ class SocialmediaController extends Controller
             ->leftJoin('profiles','profiles.id','users.profile_id')
             ->where('notifications.receiver_id',auth()->user()->id)
             ->where('notifications.post_id','!=',null)
+            ->orWhere('notifications.report_status',1)
             ->where(DB::raw("(DATE_FORMAT(date,'%Y-%m-%d'))"),'!=',Carbon::Now()->toDateString())
             ->get();
-            // dd($notification);
+            // dd($notification_earlier);
         return view('customer.noti_center',compact('friend_requests','friend_requests_earlier','notification','notification_earlier'));
     }
 
@@ -966,7 +968,7 @@ class SocialmediaController extends Controller
 
                         $user_id=auth()->user()->id;
 
-                        $messages =DB::select("SELECT users.id,users.name,profiles.profile_image,chats.text
+                        $latest_group_message =DB::select("SELECT users.id,users.name,profiles.profile_image,chats.text
                         from
                             chats
                           join
@@ -989,6 +991,16 @@ class SocialmediaController extends Controller
                         left join profiles on users.profile_id = profiles.id
                        order by chats.created_at desc limit  3");
                       // dd($messages);
+
+                      
+
+                      $latest_group_message = DB::table('chat_group_messages')
+                      ->groupBy('group_id')
+                      ->select(DB::raw('max(id) as id'))
+                      ->get()
+                      ->pluck('id')->toArray();
+
+                      //dd($latest_group_message);
         return view('customer.comments',compact('post','comments','post_likes'));
     }
 
@@ -1257,7 +1269,6 @@ class SocialmediaController extends Controller
 
     public function addmember(Request $request, $id){
         $members =$request->members;
-
         for($i= 0; $i<count($members); $i++){
             $memberId = $members[$i];
             $user =User::findOrFail($memberId);
@@ -1310,17 +1321,56 @@ class SocialmediaController extends Controller
 
     public function post_report(Request $request)
     {
-      //  dd($request->all());
+      //dd($request->all());
        $user_id=$request->user_id;
        $post_id=$request->post_id;
+       $admin_id=1;
        $description=$request->report_msg;
        $report=New Report();
        $report->user_id=$user_id;
        $report->post_id=$post_id;
        $report->description=$description;
        $report->save();
-       return response()->json([
-        'success' => 'Reported Success'
-    ]);
+
+        // return response()->json([
+        //     'success' => 'Reported Success'
+        // ]);
+       $options = array(
+        'cluster' => env('PUSHER_APP_CLUSTER'),
+        'encrypted' => true
+        );
+        $pusher = new Pusher(
+        env('PUSHER_APP_KEY'),
+        env('PUSHER_APP_SECRET'),
+        env('PUSHER_APP_ID'),
+
+        $options
+        );
+
+            $data = 'Thanks for your report,we will check this post.';
+            $new_data='Post is Reported';
+
+            $user_rp = new Notification();
+            $user_rp->description = $data;
+            $user_rp->date = Carbon::Now()->toDateTimeString();
+
+            $user_rp->sender_id = $admin_id;
+            $user_rp->receiver_id =  auth()->user()->id;
+            $user_rp->notification_status = $admin_id;
+            $user_rp->report_status=1;
+            $user_rp->save();
+
+            $admin_rp=new Notification();
+            $admin_rp->description=$new_data;
+            $admin_rp->date = Carbon::Now()->toDateTimeString();
+            $admin_rp->sender_id=auth()->user()->id;
+            $admin_rp->receiver_id=$admin_id;
+            $admin_rp->report_status=1;
+            $admin_rp->save();
+
+            $pusher->trigger('friend_request.'. auth()->user()->id , 'friendRequest', $data);
+
+            $pusher->trigger('friend_request.'. $admin_id , 'friendRequest', $new_data);
+
     }
 }

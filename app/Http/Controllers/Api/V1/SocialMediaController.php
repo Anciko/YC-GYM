@@ -1209,7 +1209,10 @@ class SocialMediaController extends Controller
     }
 
     public function chatting(Request $request, User $user){
-        $path='';
+        if($request->text ==null && $request->fileInput == null ){
+
+        }else{
+            $path='';
         if($request->file('fileInput') !=null){
             $request->validate([
                 'fileInput' => 'required|mimes:png,jpg,jpeg,gif,mp4,mov,webm'
@@ -1233,9 +1236,15 @@ class SocialMediaController extends Controller
         $message->save();
 
         broadcast(new Chatting($message, $request->sender)); //receiver
+        }
+
     }
 
     public function group_chatting(Request $request, $id){
+        if($request->text ==null && $request->fileSend == null ){
+
+        }else{
+
         $message = new ChatGroupMessage();
 
         $sendFile = $request->all();
@@ -1248,6 +1257,7 @@ class SocialMediaController extends Controller
                     $name = rand().".".$extension;
                     $file->storeAs('/public/customer_message_media/', $name);
                     $imgData[] = $name;
+                    // $message->media .= $name.',';
                     $message->media = json_encode($imgData);
                 }
             }
@@ -1256,10 +1266,10 @@ class SocialMediaController extends Controller
             $message->media = null;
         }
         $message->group_id = $id;
-        $message->sender_id = 3;
+        $message->sender_id = $request->senderId;
         $message->save();
         broadcast(new GroupChatting($message,$request->senderImg, $request->senderName));
-
+        }
     }
 
     public function chat(Request $request){
@@ -1624,10 +1634,91 @@ class SocialMediaController extends Controller
         $group->group_name = $groupName;
         $group->group_owner_id = $groupOwner;
         $group->save();
-        ChatGroupMember::create(['group_id'=>$group->id, 'member_id'=>$groupOwner]);
+
+        if($request->members){
+            $members =$request->members;
+            $id = $request->group_id;
+            for($i= 0; $i<count($members); $i++){
+                $memberId = $members[$i];
+                $group_members = new ChatGroupMember();
+                $group_members->group_id = $id;
+                $group_members->member_id = $memberId;
+                $group_members->save();
+             }
+        }
+        else{
+            $group_members = new ChatGroupMember();
+            $group_members->group_id = $group->id;
+            $group_members->member_id = $groupOwner;
+            $group_members->save();
+        }
         return response()->json([
-            'success' => "Success"
+            'success' => 'Success',
+            'group' => $group,
+            'group_members' => $group_members
         ]);
     }
 
+    public function addmember(Request $request){
+        $members =$request->members;
+        $id = $request->group_id;
+        for($i= 0; $i<count($members); $i++){
+            $memberId = $members[$i];
+            $group_members = new ChatGroupMember();
+            $group_members->group_id = $id;
+            $group_members->member_id = $memberId;
+            $group_members->save();
+         }
+         return response()->json([
+            'success' => 'add',
+            'data' => $group_members
+        ]);
+    }
+
+    public function send_message(Request $request){
+        $message = new ChatGroupMessage();
+        $input = $request->all();
+        $group_id = $request->group_id;
+        if($input['images']) {
+            $images=$input['images'];
+            $filenames = $input['filenames'];
+            foreach($images as $index=>$file)
+            {
+                $tmp = base64_decode($file);
+                $file_name = $filenames[$index];
+                Storage::disk('public')->put(
+                    'customer_message_media/' . $file_name,
+                    $tmp
+                );
+                 $imgData[] = $file_name;
+                 $message->media = json_encode($imgData);
+            }
+         }
+         else{
+                $message->media = null;
+        }
+
+        $message->group_id = $group_id;
+        $message->sender_id = auth()->user()->id;
+        $message->text = $request->text == null ?  null : $request->text;
+        $message->save();
+        $options = array(
+            'cluster' => env('PUSHER_APP_CLUSTER'),
+            'encrypted' => true
+            );
+            $pusher = new Pusher(
+            env('PUSHER_APP_KEY'),
+            env('PUSHER_APP_SECRET'),
+            env('PUSHER_APP_ID'),
+            $options
+            );
+            $group_message = ChatGroupMember::select('member_id')->where('group_id',$group_id)->get();
+            for($i = 0;count($group_message)>$i;$i++){
+                $pusher->trigger('chat_message.'.$group_message[$i]['member_id'], 'chat', $message);
+            }
+
+        return response()->json([
+            'success' =>  $message
+        ]);
+    }
 }

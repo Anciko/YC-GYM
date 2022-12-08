@@ -41,4 +41,17 @@ class Post extends Model
     {
         return $this->hasMany(Report::class, 'post_id', 'id');
     }
+
+    public static function boot() {
+        parent::boot();
+        self::deleting(function($post) {
+            $post->user_saved_posts()->each(function($savepost) {
+                $savepost->delete();
+            });
+            $post->user_reacted_posts()->each(function($reactpost) {
+                $reactpost->delete();
+            });
+        });
+
+    }
 }

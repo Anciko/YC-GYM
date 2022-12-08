@@ -1969,7 +1969,6 @@
                 });
 
 
-
                 //edit comment start
                 $(document).on('click', '#editCommentModal', function(e) {
                     $('#view_comments_modal').modal('hide')

@@ -2,8 +2,7 @@
 @section('social-report-active', 'active')
 
 @section('content')
-
-
+<a href="{{route('report.index')}}" class="btn btn-sm btn-primary"><i class="fa-solid fa-arrow-left-long"></i>&nbsp; Back</a>
 <div class="container d-flex justify-content-center">
     <div class="social-media-right-container">
         <div class="social-media-posts-parent-container">
@@ -196,10 +195,12 @@ $(document).ready(function() {
     $('#accept').click(function(e){
         e.preventDefault()
         Swal.fire({
-                        text: 'Are you sure to delete this post?',
+                        text: 'This post goes Against Our Community and Guidelines.',
                         timerProgressBar: true,
                         showCloseButton: true,
                         showCancelButton: true,
+                        confirmButtonText:'Delete Post',
+                        cancelButtonText:'No',
                         icon: 'warning',
                     }).then((result) => {
                         var report_id=$(this).data('id');
@@ -228,10 +229,12 @@ $(document).ready(function() {
     $('#decline').click(function(e){
         e.preventDefault()
         Swal.fire({
-                        text: 'Decline?',
+                        text: 'This post does not go Against Our Community and Guidelines.',
                         timerProgressBar: true,
                         showCloseButton: true,
                         showCancelButton: true,
+                        confirmButtonText:'Yes',
+                        cancelButtonText:'No',
                         icon: 'warning',
                     }).then((result) => {
                         var report_id=$(this).data('id');
