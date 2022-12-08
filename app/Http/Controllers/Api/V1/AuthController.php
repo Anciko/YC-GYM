@@ -162,7 +162,7 @@ class AuthController extends Controller
         if (Auth::attempt($credentails)) {
             // Auth::login($user);
             $id = Auth::user()->id;
-            $user = User::select('users.*','profiles.images')
+            $user = User::select('users.*','profiles.profile_image')
                     ->leftJoin('profiles','users.profile_id','profiles.id')
                     ->where('users.id',$id)
                     ->get();
