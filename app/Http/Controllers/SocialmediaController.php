@@ -973,7 +973,7 @@ class SocialmediaController extends Controller
 
                         $user_id=auth()->user()->id;
 
-                        $messages =DB::select("SELECT users.id,users.name,profiles.profile_image,chats.text
+                        $latest_group_message =DB::select("SELECT users.id,users.name,profiles.profile_image,chats.text
                         from
                             chats
                           join
@@ -996,6 +996,16 @@ class SocialmediaController extends Controller
                         left join profiles on users.profile_id = profiles.id
                        order by chats.created_at desc limit  3");
                       // dd($messages);
+
+                      
+
+                      $latest_group_message = DB::table('chat_group_messages')
+                      ->groupBy('group_id')
+                      ->select(DB::raw('max(id) as id'))
+                      ->get()
+                      ->pluck('id')->toArray();
+
+                      //dd($latest_group_message);
         return view('customer.comments',compact('post','comments','post_likes'));
     }
 
@@ -1264,7 +1274,6 @@ class SocialmediaController extends Controller
 
     public function addmember(Request $request, $id){
         $members =$request->members;
-
         for($i= 0; $i<count($members); $i++){
             $memberId = $members[$i];
             $user =User::findOrFail($memberId);
