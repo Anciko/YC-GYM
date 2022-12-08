@@ -1645,6 +1645,10 @@ class SocialMediaController extends Controller
                 $group_members->member_id = $memberId;
                 $group_members->save();
              }
+             $group_members = new ChatGroupMember();
+             $group_members->group_id = $group->id;
+             $group_members->member_id = $groupOwner;
+             $group_members->save();
         }
         else{
             $group_members = new ChatGroupMember();

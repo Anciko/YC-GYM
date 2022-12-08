@@ -997,15 +997,26 @@ class SocialmediaController extends Controller
                        order by chats.created_at desc limit  3");
                       // dd($messages);
 
-                      
+
+                      $groups = DB::table('chat_group_members')
+                                ->select('group_id')
+                                ->groupBy('group_id')
+                                ->where('chat_group_members.member_id',$auth)
+                                ->get()
+                                ->pluck('group_id')->toArray();
 
                       $latest_group_message = DB::table('chat_group_messages')
-                      ->groupBy('group_id')
-                      ->select(DB::raw('max(id) as id'))
-                      ->get()
-                      ->pluck('id')->toArray();
+                                ->groupBy('group_id')
+                                ->whereIn('group_id',$groups)
+                                ->select(DB::raw('max(id) as id'))
+                                ->get()
+                                ->pluck('id')->toArray();
 
-                      //dd($latest_group_message);
+                      $latest_group_sms =
+                      ChatGroupMessage::leftJoin('chat_groups','chat_groups.id','chat_group_messages.group_id')
+                      ->select('chat_group_messages.*','chat_groups.group_name')
+                      ->whereIn('chat_group_messages.id',$latest_group_message)->get();
+                      dd($latest_group_sms);
         return view('customer.comments',compact('post','comments','post_likes'));
     }
 
