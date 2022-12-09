@@ -255,7 +255,7 @@
                                             </p>
                                         </a>
                                     @else
-                                        <a href="{{route('socialmedia.group',$group->id)}}"             class="social-media-left-gpmessages-row">
+                                        <a href="{{route('socialmedia.group',$group->id)}}" class="social-media-left-gpmessages-row">
                                             <img src="{{asset('img/customer/imgs/group_default.png')}}" class="w-25">
                                             <p>
                                             {{$group->group_name}}<br>
@@ -279,8 +279,6 @@
                 </div>
             </div>
         {{-- <div class="customer-main-content-container"> --}}
-
-
 
         {{-- </div> --}}
 
