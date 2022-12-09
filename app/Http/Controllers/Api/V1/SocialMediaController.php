@@ -1836,7 +1836,7 @@ class SocialMediaController extends Controller
         $sms = ChatGroupMessage::
             select('profiles.profile_image',
             'chat_group_messages.sender_id as from_user_id','chat_group_messages.text',
-            'chat_group_messages.media','chat_group_messages.created_at')
+            'chat_group_messages.media','chat_group_messages.created_at','chat_group_messages.id')
         ->leftJoin('users','users.id','chat_group_messages.sender_id')
         ->leftJoin('profiles','users.profile_id','profiles.id')
         ->where('chat_group_messages.id',$id)
