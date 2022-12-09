@@ -246,7 +246,6 @@
 
                                 <div class="social-media-left-gpmessages-rows-container">
                                     @foreach ($chat_group as $group)
-
                                         <a href="{{route('socialmedia.group',$group->id)}}"             class="social-media-left-gpmessages-row">
                                             <img src="{{asset('img/customer/imgs/group_default.png')}}" class="w-25">
                                             <p>
@@ -254,7 +253,7 @@
                                                 <span>{{$group->text}}</span>
                                             </p>
                                         </a>
-                                  
+
 
                                 @endforeach
                                 </div>

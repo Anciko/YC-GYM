@@ -988,6 +988,7 @@ border-radius: 50%;
     color: var(--customer-text-color);
     margin: 20px 0;
     cursor: pointer;
+    border: none;
 }
 
 .social-media-photos-tabs-container{
