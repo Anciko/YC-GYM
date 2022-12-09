@@ -1367,7 +1367,7 @@ class SocialMediaController extends Controller
             })->where('media','!=',null)->get();
         }
         else{
-            $messages = ChatGroupMessage::where('chat_group_messages.group_id',$group_id)
+            $messages = ChatGroupMessage::select('id','media')->where('chat_group_messages.group_id',$id)
             ->where('chat_group_messages.media','!=',null)
             ->get();
         }
