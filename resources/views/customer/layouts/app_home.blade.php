@@ -248,7 +248,7 @@
                                     @foreach ($chat_group as $group)
                                     @if ($group->group_id != null)
                                         <a href="{{route('socialmedia.group',$group->group_id)}}" class="social-media-left-gpmessages-row">
-                                            <img src="{{asset('img/customer/imgs/group_default.png')}}" class="w-25">
+                                            <img src="{{asset('img/customer/imgs/group_default.png')}}">
                                             <p>
                                             {{$group->group_name}}<br>
                                                 <span>{{$group->text}} </span>

@@ -1612,7 +1612,7 @@ ul{
     text-decoration: none;
     color: var(--customer-text-color);
     margin: 20px 0;
-
+    border: none;
 }
 
 .social-media-photos-tabs-container{
