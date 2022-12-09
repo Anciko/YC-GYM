@@ -1320,37 +1320,57 @@ class SocialMediaController extends Controller
     public function chat_messages(Request $request){
         $id = $request->id;
         $auth_user = auth()->user();
-
-        $messages = Chat::where(function($query) use ($auth_user){
-            $query->where('from_user_id',$auth_user->id)->orWhere('to_user_id',$auth_user->id);
-        })->where(function($que) use ($id){
-            $que->where('from_user_id',$id)->orWhere('to_user_id',$id);
-        })->get();
-
-
-        $receiver_user = User::select('users.id','users.name','profiles.profile_image')
-                            ->where('users.id',$id)
-                            ->join('profiles','profiles.id','users.profile_id')->first();
+        if($request->is_group == 0){
+            $messages = Chat::where(function($query) use ($auth_user){
+                $query->where('from_user_id',$auth_user->id)->orWhere('to_user_id',$auth_user->id);
+            })->where(function($que) use ($id){
+                $que->where('from_user_id',$id)->orWhere('to_user_id',$id);
+            })->get();
 
 
-        foreach($messages as $key=>$value){
-                    $messages[$key]['profile_image'] = $receiver_user->profile_image == null ?  null : $receiver_user->profile_image;
+            $receiver_user = User::select('users.id','users.name','profiles.profile_image')
+                                ->where('users.id',$id)
+                                ->leftjoin('profiles','profiles.id','users.profile_id')->first();
+
+
+            foreach($messages as $key=>$value){
+                        $messages[$key]['profile_image'] = $receiver_user->profile_image == null ?  null : $receiver_user->profile_image;
+            }
         }
-
+        else{
+            $messages = ChatGroupMessage::
+            select('profiles.profile_image','chat_group_messages.id',
+            'chat_group_messages.sender_id as from_user_id','chat_group_messages.text',
+            'chat_group_messages.media','chat_group_messages.created_at')
+           ->leftJoin('users','users.id','chat_group_messages.sender_id')
+           ->leftJoin('profiles','users.profile_id','profiles.id')
+           ->where('chat_group_messages.group_id',$id)
+           ->orderBy('chat_group_messages.created_at','DESC')
+           ->get();
+           foreach($messages as $key=>$value){
+            $messages[$key]['to_user_id'] = 0;
+           }
+        }
         return response()->json([
-            'messages' => $messages,
+            'messages' => $messages
         ]);
     }
 
     public function view_media_message(Request $request){
         $auth_user = auth()->user();
         $id = $request->id;
-        $messages = Chat::select('id','media')->where(function($query) use ($auth_user){
-            $query->where('from_user_id',$auth_user->id)->orWhere('to_user_id',$auth_user->id);
-        })->where(function($que) use ($id){
-            $que->where('from_user_id',$id)->orWhere('to_user_id',$id);
-        })->where('media','!=',null)->get();
-
+        if($request->is_group == 0){
+            $messages = Chat::select('id','media')->where(function($query) use ($auth_user){
+                $query->where('from_user_id',$auth_user->id)->orWhere('to_user_id',$auth_user->id);
+            })->where(function($que) use ($id){
+                $que->where('from_user_id',$id)->orWhere('to_user_id',$id);
+            })->where('media','!=',null)->get();
+        }
+        else{
+            $messages = ChatGroupMessage::select('id','media')->where('chat_group_messages.group_id',$id)
+            ->where('chat_group_messages.media','!=',null)
+            ->get();
+        }
         return response()->json([
             'messages' => $messages
         ]);
@@ -1750,13 +1770,28 @@ class SocialMediaController extends Controller
 
     public function group_messages(Request $request){
         $group_id = $request->id;
-        $group_messages = ChatGroupMessage:: select('profiles.profile_image','chat_group_messages.*')
+        $group_messages = ChatGroupMessage::
+         select('profiles.profile_image',
+         'chat_group_messages.sender_id as from_user_id','chat_group_messages.text',
+         'chat_group_messages.media','chat_group_messages.created_at')
         ->leftJoin('users','users.id','chat_group_messages.sender_id')
         ->leftJoin('profiles','users.profile_id','profiles.id')
         ->where('chat_group_messages.group_id',$group_id)
         ->get();
         return response()->json([
             'data' =>  $group_messages
+        ]);
+    }
+
+    public function group_members(Request $request){
+        $group_id = $request->id;
+        $group_members = ChatGroupMember::select('users.id','users.name','profiles.profile_image')
+                                   ->leftJoin('users','users.id','chat_group_members.member_id')
+                                   ->leftJoin('profiles','users.profile_id','profiles.id')
+                                   ->where('chat_group_members.group_id',$group_id)
+                                   ->get();
+        return response()->json([
+            'data' =>  $group_members
         ]);
     }
 
@@ -1797,6 +1832,19 @@ class SocialMediaController extends Controller
         $message->sender_id = auth()->user()->id;
         $message->text = $request->text == null ?  null : $request->text;
         $message->save();
+        $id = $message->id;
+        $sms = ChatGroupMessage::
+            select('profiles.profile_image',
+            'chat_group_messages.sender_id as from_user_id','chat_group_messages.text',
+            'chat_group_messages.media','chat_group_messages.created_at')
+        ->leftJoin('users','users.id','chat_group_messages.sender_id')
+        ->leftJoin('profiles','users.profile_id','profiles.id')
+        ->where('chat_group_messages.id',$id)
+        ->first()->toArray();
+        foreach($sms as $key=>$value){
+            $sms['to_user_id']= 0;
+            }
+
         $options = array(
             'cluster' => env('PUSHER_APP_CLUSTER'),
             'encrypted' => true
@@ -1809,10 +1857,10 @@ class SocialMediaController extends Controller
             );
             $group_message = ChatGroupMember::select('member_id')->where('group_id',$group_id)->get();
             for($i = 0;count($group_message)>$i;$i++){
-                $pusher->trigger('chat_message.'.$group_message[$i]['member_id'], 'chat', $message);
+                $pusher->trigger('chat_message.'.$group_message[$i]['member_id'], 'chat', $sms);
             }
         return response()->json([
-            'success' =>  $message
+            'success' =>  $sms
         ]);
     }
 
