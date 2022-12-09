@@ -1339,7 +1339,7 @@ class SocialMediaController extends Controller
         }
         else{
             $messages = ChatGroupMessage::
-            select('profiles.profile_image',
+            select('profiles.profile_image','chat_group_messages.id',
             'chat_group_messages.sender_id as from_user_id','chat_group_messages.text',
             'chat_group_messages.media','chat_group_messages.created_at')
            ->leftJoin('users','users.id','chat_group_messages.sender_id')
