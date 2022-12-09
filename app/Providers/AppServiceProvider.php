@@ -94,16 +94,6 @@ class AppServiceProvider extends ServiceProvider
                         ->where('id','!=',$user_id)
                         ->paginate(6);
 
-        //yak
-        // $chat_group = ChatGroup::select('group_owner_id')->get();
-
-        // foreach($chat_group as $chat){
-        //     if($chat->group_owner_id == $user_id){
-        //         $chat_group = ChatGroup::where('group_owner_id',$user_id)->get();
-        //     }else{
-        //         $chat_group = ChatGroup::where('chat_group_members.member_id',$user_id)->join('chat_group_members','chat_group_members.group_id','chat_groups.id')->get();
-        //     }
-        // }
 
         $groups = DB::table('chat_group_members')
                                 ->select('group_id')
@@ -121,7 +111,7 @@ class AppServiceProvider extends ServiceProvider
 
         $chat_group =
         ChatGroupMessage::leftJoin('chat_groups','chat_groups.id','chat_group_messages.group_id')
-        ->select('chat_group_messages.*','chat_groups.group_name')
+        ->select('chat_group_messages.*','chat_groups.group_name','chat_groups.id')
         ->whereIn('chat_group_messages.id',$latest_group_message)
         ->orderBy('chat_group_messages.created_at','DESC')
         ->get();

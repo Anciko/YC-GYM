@@ -604,34 +604,6 @@ class SocialmediaController extends Controller
             ->where(DB::raw("(DATE_FORMAT(date,'%Y-%m-%d'))"), '!=', Carbon::Now()->toDateString())
             ->get();
 
-<<<<<<< HEAD
-        $notification = Notification::select(
-            'users.id as user_id',
-            'users.name',
-            'notifications.*',
-            'profiles.profile_image'
-        )
-            ->leftJoin('users', 'notifications.sender_id', '=', 'users.id')
-            ->leftJoin('profiles', 'profiles.id', 'users.profile_id')
-            ->where('notifications.receiver_id', auth()->user()->id)
-            ->where('notifications.post_id', '!=', null)
-            ->orWhere('notifications.report_status', 1)
-            ->where(DB::raw("(DATE_FORMAT(date,'%Y-%m-%d'))"), Carbon::Now()->toDateString())
-            ->get();
-
-        $notification_earlier = Notification::select(
-            'users.id as user_id',
-            'users.name',
-            'notifications.*',
-            'profiles.profile_image'
-        )
-            ->leftJoin('users', 'notifications.sender_id', '=', 'users.id')
-            ->leftJoin('profiles', 'profiles.id', 'users.profile_id')
-            ->where('notifications.receiver_id', auth()->user()->id)
-            ->where('notifications.post_id', '!=', null)
-            ->orWhere('notifications.report_status', 1)
-            ->where(DB::raw("(DATE_FORMAT(date,'%Y-%m-%d'))"), '!=', Carbon::Now()->toDateString())
-=======
         $notification=Notification::select('users.id as user_id','users.name','notifications.*',
         'profiles.profile_image')
             ->leftJoin('users','notifications.sender_id', '=', 'users.id')
@@ -656,7 +628,6 @@ class SocialmediaController extends Controller
                       ->where('receiver_id',auth()->user()->id);
             })
             ->where(DB::raw("(DATE_FORMAT(date,'%Y-%m-%d'))"),'!=',Carbon::Now()->toDateString())
->>>>>>> fe1fe8778a4d42449119dbeb3b22852e420f9fd2
             ->get();
         // dd($notification_earlier);
         return view('customer.noti_center', compact('friend_requests', 'friend_requests_earlier', 'notification', 'notification_earlier'));
@@ -677,64 +648,6 @@ class SocialmediaController extends Controller
         $friendship->save();
 
 
-<<<<<<< HEAD
-=======
-            $options = array(
-            'cluster' => env('PUSHER_APP_CLUSTER'),
-            'encrypted' => true
-            );
-            $pusher = new Pusher(
-            env('PUSHER_APP_KEY'),
-            env('PUSHER_APP_SECRET'),
-            env('PUSHER_APP_ID'),
-            $options
-            );
-
-            $data = $sender->name . ' send you a friend request!';
-
-            $fri_noti = new Notification();
-            $fri_noti->description = $data;
-            $fri_noti->date = Carbon::Now()->toDateTimeString();
-            $fri_noti->sender_id = $user_id;
-            $fri_noti->receiver_id = $id;
-            $fri_noti->notification_status = 1;
-            $fri_noti->save();
-
-            $pusher->trigger('friend_request.'.$id , 'friendRequest', $data);
-            return response()
-                ->json([
-                    'data'=>$data
-            ]);
-    }
-    public function unfriend(Request $request){
-        $friend_ship_delete_receiver = Friendship::where('sender_id',auth()->user()->id)
-                                        ->where('receiver_id',$request->id)
-                                        ->where('friend_status' , 2);
-        $friend_ship_delete_receiver->delete();
-        $friend_ship_delete_sender = Friendship::where('sender_id',$request->id)
-                                        ->where('receiver_id',auth()->user()->id)
-                                        ->where('friend_status' , 2);
-        $friend_ship_delete_sender->delete();
-        $noti_delete_receiver = Notification::where('sender_id',$request->id)
-                                            ->where('receiver_id',auth()->user()->id)
-                                            ->where('post_id',null);
-        $noti_delete_receiver->delete();
-        $noti_delete_sender = Notification::where('sender_id',auth()->user()->id)
-                                            ->where('receiver_id',$request->id)
-                                            ->where('post_id',null);
-        $noti_delete_sender->delete();
-        return response()
-        ->json([
-            'data'=>'Success'
-        ]);
-    }
-
-    public function confirmRequest(Request $request){
-        $user = auth()->user();
-        DB::table('friendships')->where('receiver_id',$user->id)
-        ->where('sender_id',$request->id)
-        ->update(['friend_status' => 2,'date' =>  Carbon::Now()->toDateTimeString()]);
->>>>>>> fe1fe8778a4d42449119dbeb3b22852e420f9fd2
 
         $options = array(
             'cluster' => env('PUSHER_APP_CLUSTER'),
@@ -1058,11 +971,7 @@ class SocialmediaController extends Controller
 
         $user_id = auth()->user()->id;
 
-<<<<<<< HEAD
-        $latest_group_message = DB::select("SELECT users.id,users.name,profiles.profile_image,chats.text
-=======
                         $messages =DB::select("SELECT users.id as id,users.name,profiles.profile_image,chats.text,chats.created_at as date
->>>>>>> fe1fe8778a4d42449119dbeb3b22852e420f9fd2
                         from
                             chats
                           join
@@ -1086,18 +995,6 @@ class SocialmediaController extends Controller
                        order by chats.created_at desc limit  3");
         // dd($messages);
 
-<<<<<<< HEAD
-
-
-        $latest_group_message = DB::table('chat_group_messages')
-            ->groupBy('group_id')
-            ->select(DB::raw('max(id) as id'))
-            ->get()
-            ->pluck('id')->toArray();
-
-        //dd($latest_group_message);
-        return view('customer.comments', compact('post', 'comments', 'post_likes'));
-=======
 
                       $groups = DB::table('chat_group_members')
                                 ->select('group_id')
@@ -1134,7 +1031,6 @@ class SocialmediaController extends Controller
                             dd($merged);
 
         return view('customer.comments',compact('post','comments','post_likes'));
->>>>>>> fe1fe8778a4d42449119dbeb3b22852e420f9fd2
     }
 
     public function users_for_mention(Request $request)
@@ -1394,16 +1290,11 @@ class SocialmediaController extends Controller
     {
         $groupName = $request->group_name;
         $groupOwner = auth()->user()->id;
-<<<<<<< HEAD
         $group = new ChatGroup();
         $group->group_name = $groupName;
         $group->group_owner_id = $groupOwner;
         $group->save();
         ChatGroupMember::create(['group_id' => $group->id, 'member_id' => $groupOwner]);
-=======
-        ChatGroup::create(['group_name'=>$groupName,'group_owner_id'=>$groupOwner]);
-
->>>>>>> fe1fe8778a4d42449119dbeb3b22852e420f9fd2
         return back();
     }
 
@@ -1423,7 +1314,6 @@ class SocialmediaController extends Controller
 
         for ($i = 0; $i < count($members); $i++) {
             $memberId = $members[$i];
-            ChatGroupMember::where('member_id', '!=', $memberId)->where('group_id', $id);
             $group_members = new ChatGroupMember();
             $group_members->group_id = $id;
             $group_members->member_id = $memberId;
@@ -1445,28 +1335,23 @@ class SocialmediaController extends Controller
             ->join('users as sender', 'sender.id', 'friendships.sender_id')
             ->join('users as receiver', 'receiver.id', 'friendships.receiver_id')
             ->get(['sender_id', 'receiver_id'])->toArray();
-       
+
         $n = array();
         foreach ($friendships as $friend) {
             $f = (array)$friend;
             array_push($n, $f['sender_id'], $f['receiver_id']);
         }
 
-<<<<<<< HEAD
         $group = ChatGroup::findOrFail($id);
-=======
-            $group = ChatGroup::findOrFail($id);
->>>>>>> fe1fe8778a4d42449119dbeb3b22852e420f9fd2
 
         $friends = DB::table('users')->select('users.name', 'users.id')->whereIn('users.id', $n)
             ->where('users.id', '!=', $user->id)
             ->get();
 
-        $members = ChatGroupMember::where('group_id', $id)->with('user')->with('user.user_profile')->get();
+        $members = ChatGroupMember::where('group_id', $id)->where('member_id','!=',$user->id)->with('user')->with('user.user_profile')->get();
+        $gp_admin = ChatGroup::where('group_owner_id', $user->id)->where('id',$id)->with('user')->with('user.user_profile')->first();
 
-        $memberArr = ChatGroupMember::select('member_id')->where('group_id', $id)->get()->toArray();
-
-        return view('customer.group_chat-detail', compact('friends', 'id', 'members', 'group', 'memberArr'));
+        return view('customer.group_chat-detail', compact('friends', 'id', 'members', 'group','gp_admin'));
     }
 
     public function group_member_kick(Request $request)
@@ -1489,18 +1374,9 @@ class SocialmediaController extends Controller
         $report->description = $description;
         $report->save();
 
-<<<<<<< HEAD
-        // return response()->json([
-        //     'success' => 'Reported Success'
-        // ]);
-        $options = array(
-            'cluster' => env('PUSHER_APP_CLUSTER'),
-            'encrypted' => true
-=======
        $options = array(
         'cluster' => env('PUSHER_APP_CLUSTER'),
         'encrypted' => true
->>>>>>> fe1fe8778a4d42449119dbeb3b22852e420f9fd2
         );
         $pusher = new Pusher(
             env('PUSHER_APP_KEY'),
@@ -1517,21 +1393,6 @@ class SocialmediaController extends Controller
         $user_rp->description = $data;
         $user_rp->date = Carbon::Now()->toDateTimeString();
 
-<<<<<<< HEAD
-        $user_rp->sender_id = $admin_id;
-        $user_rp->receiver_id =  auth()->user()->id;
-        $user_rp->notification_status = $admin_id;
-        $user_rp->report_status = 1;
-        $user_rp->save();
-
-        $admin_rp = new Notification();
-        $admin_rp->description = $new_data;
-        $admin_rp->date = Carbon::Now()->toDateTimeString();
-        $admin_rp->sender_id = auth()->user()->id;
-        $admin_rp->receiver_id = $admin_id;
-        $admin_rp->report_status = 1;
-        $admin_rp->save();
-=======
             $user_rp->sender_id = $admin_id;
             $user_rp->receiver_id =  auth()->user()->id;
             $user_rp->notification_status = 1;
@@ -1546,16 +1407,12 @@ class SocialmediaController extends Controller
             $admin_rp->receiver_id=$admin_id;
             $admin_rp->report_id=$report->id;
             $admin_rp->save();
->>>>>>> fe1fe8778a4d42449119dbeb3b22852e420f9fd2
 
         $pusher->trigger('friend_request.' . auth()->user()->id, 'friendRequest', $data);
 
-<<<<<<< HEAD
         $pusher->trigger('friend_request.' . $admin_id, 'friendRequest', $new_data);
-=======
         return response()->json([
             'success' => 'Reported Success'
         ]);
->>>>>>> fe1fe8778a4d42449119dbeb3b22852e420f9fd2
     }
 }
