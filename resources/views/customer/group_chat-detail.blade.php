@@ -54,7 +54,7 @@
 
     <button type="button" class="social-media-allchats-header-add-btn customer-primary-btn group-chat-add-btn" data-bs-toggle="modal" data-bs-target="#createGroupModal">
         <iconify-icon icon="akar-icons:circle-plus" class="social-media-allchats-header-plus-icon"></iconify-icon>
-        <p>Group</p>
+        <p>Member</p>
     </button>
 
     <div class="social-media-view-members-container">
@@ -66,11 +66,13 @@
                 <input type="text" value="{{$member->member_id}}" name="memberId" hidden>
                 <div class="social-media-view-memers-row">
                     <div class="social-media-view-memers-row-name">
-                        @if ($member->user->profiles[0]->profile_image != null)
+
+                        {{-- @if ($member->user->profiles[0]->profile_image != null)
                             <img src="{{asset('storage/post'.$member->user->profiles[0]->profile_image)}}">
                         @else
                             <img class="nav-profile-img" src="{{asset('img/customer/imgs/user_default.jpg')}}"/>
-                        @endif
+                        @endif --}}
+                        <img class="nav-profile-img" src="{{asset('img/customer/imgs/user_default.jpg')}}"/>
                         <p>{{$member->user->name}}</p>
                     </div>
                     <div class="social-media-view-members-row-btns">

@@ -45,56 +45,63 @@
                             @else
                                 <img src="{{ asset('/storage/post' . $gp_message->user->user_profile->profile_image) }}" />
                             @endif
-                            @foreach (json_decode($gp_message->media) as $key => $media)
+                            <div class="group-chat-receiver-text-container">
+                                <span>{{ $gp_message->user->name }}</span>
+                                <div class=" group-chat-imgs-vids-container">
+                                @foreach (json_decode($gp_message->media) as $key => $media)
 
-                                @if (pathinfo($media, PATHINFO_EXTENSION) == 'png' ||
-                                    pathinfo($media, PATHINFO_EXTENSION) == 'jpg' ||
-                                    pathinfo($media, PATHINFO_EXTENSION) == 'jpeg')
-                                    <div class="modal fade" id="exampleModalToggle{{ $gp_message->id }}{{ $key }}"
-                                        aria-hidden="true" aria-labelledby="exampleModalToggleLabel" tabindex="-1">
-                                        <div class="modal-dialog modal-dialog-centered">
-                                            <div class="modal-content">
-                                                <div class="modal-header">
-                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                        aria-label="Close"></button>
-                                                </div>
-                                                <div class="modal-body">
-                                                    <img src="{{ asset('storage/customer_message_media/' . $media) }}"
-                                                        class="w-100">
+                                    @if (pathinfo($media, PATHINFO_EXTENSION) == 'png' ||
+                                        pathinfo($media, PATHINFO_EXTENSION) == 'jpg' ||
+                                        pathinfo($media, PATHINFO_EXTENSION) == 'jpeg')
+                                        <div class="modal fade" id="exampleModalToggle{{ $gp_message->id }}{{ $key }}"
+                                            aria-hidden="true" aria-labelledby="exampleModalToggleLabel" tabindex="-1">
+                                            <div class="modal-dialog modal-dialog-centered">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                            aria-label="Close"></button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <img src="{{ asset('storage/customer_message_media/' . $media) }}"
+                                                            class="w-100">
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
 
-                                    <div class="group-chat-receiver-text-container">
-                                        <a data-bs-toggle="modal"
-                                            href="#exampleModalToggle{{ $gp_message->id }}{{ $key }}"
-                                            role="button">
-                                            <img src="{{ asset('storage/customer_message_media/' . $media) }}"
-                                                title="{{ $key }}">
-                                        </a>
-                                    </div>
-                                @elseif(pathinfo($media, PATHINFO_EXTENSION) == 'mp4' ||
-                                    pathinfo($media, PATHINFO_EXTENSION) == 'mov' ||
-                                    pathinfo($media, PATHINFO_EXTENSION) == 'webm')
-                                    <div class="group-chat-receiver-text-container">
+                                        {{-- <div class="group-chat-receiver-text-container"> --}}
+                                            <a data-bs-toggle="modal"
+                                                href="#exampleModalToggle{{ $gp_message->id }}{{ $key }}"
+                                                role="button">
+                                                <img src="{{ asset('storage/customer_message_media/' . $media) }}"
+                                                    title="{{ $key }}">
+                                            </a>
+                                        {{-- </div> --}}
+                                    @elseif(pathinfo($media, PATHINFO_EXTENSION) == 'mp4' ||
+                                        pathinfo($media, PATHINFO_EXTENSION) == 'mov' ||
+                                        pathinfo($media, PATHINFO_EXTENSION) == 'webm')
+                                        {{-- <div class="group-chat-receiver-text-container"> --}}
 
-                                        <video width="100%" height="100%" controls>
-                                            <source src="{{ asset('storage/customer_message_media/' . $media) }}"
-                                                type="video/mp4">
-                                        </video>
-                                    </div>
-                                @endif
-                            @endforeach
+                                            <video width="100%" height="100%" controls>
+                                                <source src="{{ asset('storage/customer_message_media/' . $media) }}"
+                                                    type="video/mp4">
+                                            </video>
+                                        {{-- </div> --}}
+                                    @endif
+                                @endforeach
+                                </div>
+                            </div>
 
                         </div>
                     @endif
                 @elseif(auth()->user()->id == $gp_message->sender_id)
                     <div class="group-chat-sender-container">
                         <div class="group-chat-sender-text-container">
+                            <span>{{ $gp_message->user->name }}</span>
                             @if ($gp_message->text != null)
                                 <p>{{ $gp_message->text }}</p>
                             @else
+                            <div class="group-chat-imgs-vids-container">
                                 @foreach (json_decode($gp_message->media) as $key => $media)
                                     @if (pathinfo($media, PATHINFO_EXTENSION) == 'png' ||
                                         pathinfo($media, PATHINFO_EXTENSION) == 'jpg' ||
@@ -131,6 +138,7 @@
                                         </video>
                                     @endif
                                 @endforeach
+                                </div>
                             @endif
                         </div>
                         @if ($gp_message->user->user_profile == null)
@@ -191,7 +199,7 @@
 
         var messageInput_message = document.querySelector('.message_input');
 
-     
+
         $(document).ready(function() {
             $('.group-chat-messages-container').scrollTop($('.group-chat-messages-container')[0].scrollHeight);
             //image and video select start

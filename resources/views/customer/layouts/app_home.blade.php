@@ -248,18 +248,18 @@
                                     @foreach ($chat_group as $group)
                                     @if ($group->group_id != null)
                                         <a href="{{route('socialmedia.group',$group->group_id)}}" class="social-media-left-gpmessages-row">
-                                            <img src="{{asset('img/customer/imgs/user_default.jpg')}}">
+                                            <img src="{{asset('img/customer/imgs/group_default.png')}}" class="w-25">
                                             <p>
                                             {{$group->group_name}}<br>
-                                                <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Dui hendrerit potenti pellentesque tellus urna bibendum mollis. </span>
+                                                <span>{{$group->text}} </span>
                                             </p>
                                         </a>
                                     @else
-                                        <a href="{{route('socialmedia.group',$group->id)}}" class="social-media-left-gpmessages-row">
-                                            <img src="{{asset('img/customer/imgs/user_default.jpg')}}">
+                                        <a href="{{route('socialmedia.group',$group->id)}}"             class="social-media-left-gpmessages-row">
+                                            <img src="{{asset('img/customer/imgs/group_default.png')}}" class="w-25">
                                             <p>
                                             {{$group->group_name}}<br>
-                                                <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Dui hendrerit potenti pellentesque tellus urna bibendum mollis. </span>
+                                                <span>{{$group->text}}</span>
                                             </p>
                                         </a>
                                     @endif
