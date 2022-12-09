@@ -166,14 +166,14 @@ class AuthController extends Controller
             $user_info = User::select('users.*','profiles.profile_image')
                     ->leftJoin('profiles','users.profile_id','profiles.id')
                     ->where('users.id',$id)
-                    ->get();
+                    ->first();
             $token = $user->createToken('gym');
 
             return response()->json([
                 'message' => 'Successfully Login!',
                 'token' => $token->plainTextToken,
                 'user_role' => count($user->roles) < 1 ? 'Free' : $user->roles->pluck('name')[0],
-                'user' => $user_info,
+                'user' =>$user_info
             ]);
         } else {
             return response()->json([
