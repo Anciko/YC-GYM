@@ -7,6 +7,7 @@ use Pusher\Pusher;
 use App\Models\Chat;
 use App\Models\Post;
 use App\Models\User;
+use App\Models\Report;
 use App\Models\Comment;
 use App\Models\Profile;
 use App\Events\Chatting;
@@ -1698,9 +1699,22 @@ class SocialMediaController extends Controller
         $chat_group =
         ChatGroupMessage::leftJoin('chat_groups','chat_groups.id','chat_group_messages.group_id')
         ->select('chat_group_messages.*','chat_groups.group_name')
-        ->whereIn('chat_group_messages.id',$latest_group_message)->get();
+        ->whereIn('chat_group_messages.id',$latest_group_message)
+        ->orderBy('chat_group_messages.created_at','DESC')->get();
         return response()->json([
-            'success' =>  $chat_group
+            'data' =>  $chat_group
+        ]);
+    }
+
+    public function group_messages(Request $request){
+        $group_id = $request->id;
+        $group_messages = ChatGroupMessage::leftJoin('users','users.id','chat_group_messages.sender_id')
+        ->select('profiles.profile_image','chat_group_messages.*')
+        ->leftJoin('profiles','users.profile_id','profiles.id')
+        ->where('chat_group_messages.group_id',$group_id)
+        ->get();
+        return response()->json([
+            'data' =>  $group_messages
         ]);
     }
 
@@ -1745,9 +1759,63 @@ class SocialMediaController extends Controller
             for($i = 0;count($group_message)>$i;$i++){
                 $pusher->trigger('chat_message.'.$group_message[$i]['member_id'], 'chat', $message);
             }
-
         return response()->json([
             'success' =>  $message
+        ]);
+    }
+
+    public function post_report(Request $request)
+    {
+      //dd($request->all());
+       $user_id=$request->user_id;
+       $post_id=$request->post_id;
+       $admin_id=1;
+       $description=$request->report_msg;
+       $report=New Report();
+       $report->user_id=$user_id;
+       $report->post_id=$post_id;
+       $report->description=$description;
+       $report->save();
+
+       $options = array(
+        'cluster' => env('PUSHER_APP_CLUSTER'),
+        'encrypted' => true
+        );
+        $pusher = new Pusher(
+        env('PUSHER_APP_KEY'),
+        env('PUSHER_APP_SECRET'),
+        env('PUSHER_APP_ID'),
+
+        $options
+        );
+
+            $data = 'Thanks for your report,we will check this post.';
+            $new_data='Post is Reported';
+
+            $user_rp = new Notification();
+            $user_rp->description = $data;
+            $user_rp->date = Carbon::Now()->toDateTimeString();
+
+            $user_rp->sender_id = $admin_id;
+            $user_rp->receiver_id =  auth()->user()->id;
+            $user_rp->notification_status = $admin_id;
+            $user_rp->report_status=1;
+            $user_rp->save();
+
+            $admin_rp=new Notification();
+            $admin_rp->description=$new_data;
+            $admin_rp->date = Carbon::Now()->toDateTimeString();
+            $admin_rp->sender_id=auth()->user()->id;
+            $admin_rp->receiver_id=$admin_id;
+            $admin_rp->report_status=1;
+            $admin_rp->save();
+
+            $pusher->trigger('friend_request.'. auth()->user()->id , 'friendRequest', $data);
+
+            $pusher->trigger('friend_request.'. $admin_id , 'friendRequest', $new_data);
+
+        return response()->json([
+            'success' => 'Reported Success'
         ]);
     }
 }

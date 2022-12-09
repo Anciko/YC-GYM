@@ -122,7 +122,9 @@ class AppServiceProvider extends ServiceProvider
         $chat_group =
         ChatGroupMessage::leftJoin('chat_groups','chat_groups.id','chat_group_messages.group_id')
         ->select('chat_group_messages.*','chat_groups.group_name')
-        ->whereIn('chat_group_messages.id',$latest_group_message)->get();
+        ->whereIn('chat_group_messages.id',$latest_group_message)
+        ->orderBy('chat_group_messages.created_at','DESC')
+        ->get();
 
         //...with this variable
         $view->with(['left_friends'=> $left_friends, 'chat_group'=>$chat_group]);
