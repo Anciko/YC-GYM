@@ -648,34 +648,34 @@ class SocialmediaController extends Controller
         $friendship->save();
 
 
-            $options = array(
+
+        $options = array(
             'cluster' => env('PUSHER_APP_CLUSTER'),
             'encrypted' => true
-            );
-            $pusher = new Pusher(
+        );
+        $pusher = new Pusher(
             env('PUSHER_APP_KEY'),
             env('PUSHER_APP_SECRET'),
             env('PUSHER_APP_ID'),
             $options
-            );
+        );
 
-            $data = $sender->name . ' send you a friend request!';
+        $data = $sender->name . ' send you a friend request!';
 
-            $fri_noti = new Notification();
-            $fri_noti->description = $data;
-            $fri_noti->date = Carbon::Now()->toDateTimeString();
-            $fri_noti->sender_id = $user_id;
-            $fri_noti->receiver_id = $id;
-            $fri_noti->notification_status = 1;
-            $fri_noti->save();
+        $fri_noti = new Notification();
+        $fri_noti->description = $data;
+        $fri_noti->date = Carbon::Now()->toDateTimeString();
+        $fri_noti->sender_id = $user_id;
+        $fri_noti->receiver_id = $id;
+        $fri_noti->notification_status = 1;
+        $fri_noti->save();
 
-            $pusher->trigger('friend_request.'.$id , 'friendRequest', $data);
-            return response()
-                ->json([
-                    'data'=>$data
+        $pusher->trigger('friend_request.' . $id, 'friendRequest', $data);
+        return response()
+            ->json([
+                'data' => $data
             ]);
     }
-   
     public function unfriend(Request $request)
     {
         $friend_ship_delete_receiver = Friendship::where('sender_id', auth()->user()->id)
@@ -1303,8 +1303,11 @@ class SocialmediaController extends Controller
     {
         $groupName = $request->group_name;
         $groupOwner = auth()->user()->id;
-        ChatGroup::create(['group_name'=>$groupName,'group_owner_id'=>$groupOwner]);
-
+        $group = new ChatGroup();
+        $group->group_name = $groupName;
+        $group->group_owner_id = $groupOwner;
+        $group->save();
+        ChatGroupMember::create(['group_id' => $group->id, 'member_id' => $groupOwner]);
         return back();
     }
 
@@ -1324,7 +1327,6 @@ class SocialmediaController extends Controller
 
         for ($i = 0; $i < count($members); $i++) {
             $memberId = $members[$i];
-            ChatGroupMember::where('member_id', '!=', $memberId)->where('group_id', $id);
             $group_members = new ChatGroupMember();
             $group_members->group_id = $id;
             $group_members->member_id = $memberId;
@@ -1353,17 +1355,16 @@ class SocialmediaController extends Controller
             array_push($n, $f['sender_id'], $f['receiver_id']);
         }
 
-            $group = ChatGroup::findOrFail($id);
+        $group = ChatGroup::findOrFail($id);
 
         $friends = DB::table('users')->select('users.name', 'users.id')->whereIn('users.id', $n)
             ->where('users.id', '!=', $user->id)
             ->get();
 
-        $members = ChatGroupMember::where('group_id', $id)->with('user')->with('user.user_profile')->get();
+        $members = ChatGroupMember::where('group_id', $id)->where('member_id','!=',$user->id)->with('user')->with('user.user_profile')->get();
+        $gp_admin = ChatGroup::where('group_owner_id', $user->id)->where('id',$id)->with('user')->with('user.user_profile')->first();
 
-        $memberArr = ChatGroupMember::select('member_id')->where('group_id', $id)->get()->toArray();
-
-        return view('customer.group_chat-detail', compact('friends', 'id', 'members', 'group', 'memberArr'));
+        return view('customer.group_chat-detail', compact('friends', 'id', 'members', 'group','gp_admin'));
     }
 
     public function group_member_kick(Request $request)

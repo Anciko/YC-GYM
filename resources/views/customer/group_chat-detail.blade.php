@@ -18,7 +18,7 @@
                                 <p>Add Your Friends</p>
                                 <select class="js-example-basic-multiple" name="members[]" multiple="multiple">
 
-                                    @if ($members == null || count($members) == 0)
+                                    @if ($members == null || count($members) == 0 )
                                         @foreach ($friends as $friend)
                                             <option value="{{ $friend->id }}">{{ $friend->name }}</option>
                                         @endforeach
@@ -27,6 +27,7 @@
                                             @foreach ($members as $item)
                                                 @if ($item->member_id == $friend->id)
                                                 @elseif(count($members) == count($friends))
+
                                                 @else
                                                     <option value="{{ $friend->id }}">{{ $friend->name }}</option>
                                                 @endif
@@ -77,6 +78,21 @@
         </button>
 
         <div class="social-media-view-members-container">
+            <div class="social-media-view-memers-row">
+                <div class="social-media-view-memers-row-name">
+                    @if ($gp_admin->user->user_profile != null && $gp_admin->user->user_profile->profile_image != null)
+                        <img src="{{ asset('storage/post' . $gp_admin->user->user_profile->profile_image) }}">
+                    @else
+                        <img class="nav-profile-img" src="{{ asset('img/customer/imgs/user_default.jpg') }}" />
+                    @endif
+                    <p>{{ $gp_admin->user->name }}</p>
+
+                </div>
+                <div class="social-media-view-members-row-btns">
+                    <p class="text-success me-3">Admin</p>
+                </div>
+            </div>
+
             @forelse ($members as $member)
                 <form action="{{ route('socialmedia.group.memberkick') }}" method="post">
                     @csrf
