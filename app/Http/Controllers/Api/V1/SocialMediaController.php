@@ -1857,7 +1857,7 @@ class SocialMediaController extends Controller
             );
             $group_message = ChatGroupMember::select('member_id')->where('group_id',$group_id)->get();
             for($i = 0;count($group_message)>$i;$i++){
-                $pusher->trigger('chat_message.'.$group_message[$i]['member_id'], 'chat', $sms);
+                $pusher->trigger('group_message.'.$group_message[$i]['member_id'], 'group_chat', $sms);
             }
         return response()->json([
             'success' =>  $sms
