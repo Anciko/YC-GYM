@@ -10,4 +10,8 @@ class ChatGroup extends Model
     use HasFactory;
 
     protected $fillable = ['group_name','group_owner_id'];
+
+    public function user(){
+        return $this->belongsTo(User::class,'group_owner_id','id');
+     }
 }
