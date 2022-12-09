@@ -300,7 +300,7 @@ input[type=number] {
 }
 
 .margin-top{
-    margin-top: 140px;
+    margin-top: 80px;
 }
 
 .customer-header-with-shadow{
@@ -311,6 +311,7 @@ background-color: var(--customer-nav-bg-color);
 position: fixed;
 top: 0;
 z-index: 20;
+height: 70px;
 }
 
 .customer-red-btn{
@@ -1181,6 +1182,18 @@ transition: max-height 0.6s ease-out;
             display: none;
           }
     } */
+
+    .customer-header-with-shadow{
+        height: 50px;
+    }
+
+    .margin-top{
+        margin-top: 60px;
+    }
+
+    .social-media-parent-container{
+        margin: 5px auto 5px auto;
+    }
 }
 
 @media screen and (max-width:600px){

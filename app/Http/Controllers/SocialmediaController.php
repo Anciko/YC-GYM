@@ -1271,7 +1271,7 @@ class SocialmediaController extends Controller
         $groupOwner = auth()->user()->id;
         ChatGroup::create(['group_name'=>$groupName,'group_owner_id'=>$groupOwner]);
 
-        return view('customer.group_chat_message', compact('groupName'));
+        return back();
     }
 
     public function group($id){
