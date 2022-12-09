@@ -1359,11 +1359,19 @@ class SocialMediaController extends Controller
     public function view_media_message(Request $request){
         $auth_user = auth()->user();
         $id = $request->id;
-        $messages = Chat::select('id','media')->where(function($query) use ($auth_user){
-            $query->where('from_user_id',$auth_user->id)->orWhere('to_user_id',$auth_user->id);
-        })->where(function($que) use ($id){
-            $que->where('from_user_id',$id)->orWhere('to_user_id',$id);
-        })->where('media','!=',null)->get();
+        if($request->is_group == 0){
+            $messages = Chat::select('id','media')->where(function($query) use ($auth_user){
+                $query->where('from_user_id',$auth_user->id)->orWhere('to_user_id',$auth_user->id);
+            })->where(function($que) use ($id){
+                $que->where('from_user_id',$id)->orWhere('to_user_id',$id);
+            })->where('media','!=',null)->get();
+        }
+        else{
+            $messages = ChatGroupMessage::where('chat_group_messages.group_id',$group_id)
+            ->where('chat_group_messages.media','!=',null)
+            ->get();
+        }
+
 
         return response()->json([
             'messages' => $messages
