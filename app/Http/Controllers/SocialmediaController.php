@@ -1041,7 +1041,7 @@ class SocialmediaController extends Controller
                                    foreach($group_message as $key=>$value){
                                     $group_message['to_user_id']= 0;
                                     }
-                            dd($group_message);
+                         //   dd($group_message);
 
         return view('customer.comments',compact('post','comments','post_likes'));
     }
