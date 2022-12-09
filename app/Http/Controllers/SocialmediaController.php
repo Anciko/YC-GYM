@@ -618,7 +618,7 @@ class SocialmediaController extends Controller
             ->where('notifications.receiver_id',auth()->user()->id)
             ->where('notifications.post_id','!=',null)
             ->orWhere(function ($query) {
-                $query->where('notifications.report_status',1)
+                $query->where('notifications.report_id','!=',null)
                       ->where('receiver_id',auth()->user()->id);
             })
             ->where(DB::raw("(DATE_FORMAT(date,'%Y-%m-%d'))"),Carbon::Now()->toDateString())
@@ -631,7 +631,7 @@ class SocialmediaController extends Controller
             ->where('notifications.receiver_id',auth()->user()->id)
             ->where('notifications.post_id','!=',null)
             ->orWhere(function ($query) {
-                $query->where('notifications.report_status',1)
+                $query->where('notifications.report_id','!=',null)
                       ->where('receiver_id',auth()->user()->id);
             })
             ->where(DB::raw("(DATE_FORMAT(date,'%Y-%m-%d'))"),'!=',Carbon::Now()->toDateString())
@@ -1384,16 +1384,17 @@ class SocialmediaController extends Controller
 
             $user_rp->sender_id = $admin_id;
             $user_rp->receiver_id =  auth()->user()->id;
-            $user_rp->notification_status = $admin_id;
-            $user_rp->report_status=1;
+            $user_rp->notification_status = 1;
+            $user_rp->report_id=$report->id;
             $user_rp->save();
 
             $admin_rp=new Notification();
             $admin_rp->description=$new_data;
             $admin_rp->date = Carbon::Now()->toDateTimeString();
             $admin_rp->sender_id=auth()->user()->id;
+            $admin_rp->notification_status = 1;
             $admin_rp->receiver_id=$admin_id;
-            $admin_rp->report_status=1;
+            $admin_rp->report_id=$report->id;
             $admin_rp->save();
 
             $pusher->trigger('friend_request.'. auth()->user()->id , 'friendRequest', $data);
