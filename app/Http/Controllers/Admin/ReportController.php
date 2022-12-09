@@ -19,7 +19,7 @@ class ReportController extends Controller
 {
     public function index()
     {
-        $report_posts = Post::with('reports')->with('user')->get();
+        $report_posts = Post::where('report_status','=',0)->with('reports')->with('user')->get();
 
         //$report_posts=DB::table('posts')->get();
         return view('admin.socialmedia_report.index', compact('report_posts'));
@@ -61,14 +61,50 @@ class ReportController extends Controller
 
     }
 
+    public function delete_report($id)
+    {
+        dd('delete');
+        $report = Report::findOrFail($id);
+        $report->delete();
+        return redirect()->back();
+    }
+
+    public function action_ssd()
+    {
+        $reports=Report::where('status',1)->get();
+
+        return Datatables::of($reports)
+        ->editColumn('created_at', function ($each) {
+            return $each->created_at->format('d M Y , g:i A'); // human readable format
+          })
+        ->addIndexColumn()
+        ->addColumn('action', function ($each) {
+            $view_icon = '';
+            $delete_icon = '';
+
+            // $view_icon = '<a href=" ' . route('admin.view.report', $each->id) . ' " class="btn btn-primary" title="view">
+            //             <i class="fa fa-folder-open" data-id="' . $each->id . '"></i>&nbsp;&nbsp;View
+            //         </a>';
+            $delete_icon = '<form action="' . route('report.destroy', $each->id) . ' " method="DELETE">
+                                <button class="btn btn-danger" type="submit">
+                                    <i class="fa fa-trash" data-id="' . $each->id . '"></i>&nbsp;&nbsp;Delete
+                                </button>
+                    </form>';
+
+                        return '<div class="d-flex justify-content-center">' . $delete_icon . '</div>';
+                    })
+        ->rawColumns(['action',''])
+        ->make(true);
+    }
+
     public function view_post(Request $request,$id)
     {
         $report=Report::findOrFail($id);
         $report_post=DB::table('reports')
                                 ->where('post_id',$report->post_id)
                                 ->leftjoin('posts','posts.id','reports.post_id')
+                                ->where('posts.report_status',0)
                                 ->get();
-        //dd($report_post);
         return view('admin.socialmedia_report.view_report',compact('report'));
     }
 
@@ -112,7 +148,7 @@ class ReportController extends Controller
                 $post_rp->sender_id = $admin_id;
                 $post_rp->receiver_id = $post_owner;
                 $post_rp->notification_status = $admin_id;
-                $post_rp->report_status=1;
+                $post_rp->report_id=$report_id;
                 $post_rp->save();
 
                 $pusher->trigger('friend_request.'.$post_owner , 'friendRequest', $data);
@@ -170,7 +206,7 @@ class ReportController extends Controller
      */
     public function edit($id)
     {
-        //
+        dd('edit');
     }
 
     /**
@@ -193,6 +229,6 @@ class ReportController extends Controller
      */
     public function destroy($id)
     {
-        //
+        dd('delete');
     }
 }

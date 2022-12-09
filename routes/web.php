@@ -239,6 +239,8 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
             Route::get('admin/role/datatable/ssd', [RoleController::class, 'ssd']);
 
             Route::get('admin/report/datatable/ssd', [ReportController::class, 'ssd']);
+            Route::get('admin/action-report/datatable/ssd', [ReportController::class, 'action_ssd']);
+            Route::delete('admin/report/{$id}', [ReportController::class, 'destroy'])->name('report.destroy');
 
             Route::get('admin/report/{id}/view', [ReportController::class, 'view_post'])->name('admin.view.report');
             Route::get('admin/report/accept/{report_id}',[ReportController::class, 'accept_report'])->name('admin.accept.report');
