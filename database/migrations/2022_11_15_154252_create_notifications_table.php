@@ -19,10 +19,10 @@ class CreateNotificationsTable extends Migration
             $table->datetime('date');
             $table->integer('sender_id');
             $table->integer('receiver_id');
+            $table->integer('report_id')->nullable();
             $table->integer('post_id')->nullable();
             $table->integer('comment_id')->nullable();
             $table->integer('notification_status')->default(0);
-            $table->integer('report_status')->default(0);
             $table->timestamps();
         });
     }

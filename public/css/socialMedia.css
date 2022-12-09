@@ -27,7 +27,7 @@
     display: grid;
     grid-template-columns: 30% 70%;
     grid-gap: 0 20px;
-    margin: 40px auto 40px auto;
+    margin: 10px auto 10px auto;
 }
 
 .social-media-left-container, .social-media-right-container{
@@ -37,7 +37,7 @@
     -moz-box-shadow: 1px 1px 10px 0px rgba(0,0,0,0.25);
     padding: 20px 10px;
     background-color: var(--customer-card-bg-color);
-    height: 840px;
+    height: 580px;
 }
 
 .social-media-left-search-container{
@@ -82,7 +82,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: 10px;
+    margin-bottom: 20px;
 }
 
 .social-media-left-container-header p{
@@ -116,14 +116,14 @@
     gap: 0 5px;
     align-items: center;
     /* justify-content: space-between; */
-    margin-bottom: 20px;
+    margin-bottom: 15px;
     text-decoration: none;
     width: fit-content;
 }
 
 .social-media-left-friends-row img{
-    width: 35px;
-    height: 35px;
+    width: 25px;
+    height: 25px;
     border-radius: 50%;
     object-fit: cover;
 }
@@ -131,6 +131,7 @@
 .social-media-left-friends-row p{
     margin-bottom: 0;
     color: var(--customer-text-color);
+    font-size: 14px;
 }
 
 .social-media-left-friends-row:hover p{
@@ -138,7 +139,7 @@
 }
 
 .social-media-left-messages-container{
-    margin-top: 20px;
+    margin-top: 10px;
 }
 
 .social-media-left-messages-rows-container{
@@ -149,15 +150,15 @@
     display: inline-flex;
     gap: 0 5px;
     align-items: center;
-    margin-bottom: 20px;
+    margin-bottom: 15px;
     text-decoration: none;
 
 
 }
 
 .social-media-left-messages-row img{
-    width: 35px;
-    height: 35px;
+    width: 25px;
+    height: 25px;
     border-radius: 50%;
     object-fit: cover;
 }
@@ -172,6 +173,7 @@
     overflow: hidden;
     text-overflow: ellipsis;
     line-height: 15px;
+    font-size: 14px;
 }
 
 .social-media-left-messages-row span{
@@ -184,7 +186,7 @@
 
 
 .social-media-left-gpmessages-container{
-    margin-top: 20px;
+    margin-top: 10px;
 }
 
 .social-media-left-gpmessages-rows-container{
@@ -195,15 +197,15 @@
     display: inline-flex;
     gap: 0 5px;
     align-items: center;
-    margin-bottom: 20px;
+    margin-bottom: 10px;
     text-decoration: none;
 
 
 }
 
 .social-media-left-gpmessages-row img{
-    width: 35px;
-    height: 35px;
+    width: 25px;
+    height: 25px;
     border-radius: 50%;
     object-fit: cover;
 }
@@ -218,6 +220,7 @@
     overflow: hidden;
     text-overflow: ellipsis;
     line-height: 15px;
+    font-size: 14px;
 }
 
 .social-media-left-gpmessages-row span{
@@ -392,7 +395,7 @@
 }
 
 .social-media-posts-parent-container{
-    height: 850px;
+    height: 550px;
     overflow-y: scroll;
 }
 
@@ -566,7 +569,7 @@
 }
 
 .social-media-profile-parent-container{
-    height: 820px;
+    height: 580px;
     overflow-y: scroll;
 }
 
@@ -722,7 +725,8 @@
 }
 
 .social-media-right-container .group-chat-messages-container{
-    height: 700px;
+    /* height: 700px; */
+    height: 450px;
 }
 
 .social-media-right-container .group-chat-header-name-text-container p{
@@ -846,7 +850,7 @@
 }
 
 .social-media-allchats-messages-container{
-    height: 760px;
+    height: 480px;
     overflow-y: scroll;
 }
 
@@ -930,7 +934,7 @@
 }
 
 .social-media-fris-list-container{
-    height: 700px;
+    height: 460px;
     overflow-y: scroll;
 }
 
@@ -987,7 +991,7 @@
 } */
 
 .social-media-left-searched-items-container{
-    height: 600px;
+    height: 500px;
     overflow-y: scroll;
     display: none;
 }
@@ -1041,7 +1045,7 @@
 }
 
 .social-media-view-members-container{
-    height: 750px;
+    height: 700px;
     overflow-y: scroll;
 }
 
@@ -1638,7 +1642,7 @@ ul{
     gap: 10px;
     flex-wrap: wrap;
     margin-top: 20px;
-    height:720px;
+    height:460px;
     overflow-y: scroll;
 }
 
@@ -1774,7 +1778,7 @@ ul{
         color: var(--customer-text-color);
         z-index: 3;
         position: relative;
-        margin-top: 20px;
+        margin-top: 5px;
     }
 
     .social-media-overlay{
@@ -1817,7 +1821,7 @@ ul{
     .social-media-right-container{
         margin:auto;
         max-width: 600px;
-        height: 840px;
+        /* height: 840px; */
     }
 
     .social-media-profile-username{
@@ -1841,7 +1845,7 @@ ul{
     }
 
     .social-media-allchats-messages-container{
-        height: 750px;
+        /* height: 750px; */
         /* overflow-y: scroll; */
     }
 
@@ -1859,7 +1863,7 @@ ul{
     }
 
     .social-media-posts-parent-container{
-        height: 800px;
+        /* height: 800px; */
     }
 
     .social-media-all-likes-parent-container{
