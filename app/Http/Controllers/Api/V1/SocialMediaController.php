@@ -1718,6 +1718,19 @@ class SocialMediaController extends Controller
         ]);
     }
 
+    public function group_media(Request $request){
+        $group_id = $request->id;
+        $group_media = ChatGroupMessage::leftJoin('users','users.id','chat_group_messages.sender_id')
+        ->select('profiles.profile_image','chat_group_messages.*')
+        ->leftJoin('profiles','users.profile_id','profiles.id')
+        ->where('chat_group_messages.group_id',$group_id)
+        ->where('chat_group_messages.media','!=',null)
+        ->get();
+        return response()->json([
+            'data' =>  $group_media
+        ]);
+    }
+
     public function send_message(Request $request){
         $message = new ChatGroupMessage();
         $input = $request->all();
