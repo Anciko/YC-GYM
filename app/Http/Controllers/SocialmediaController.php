@@ -618,7 +618,7 @@ class SocialmediaController extends Controller
             ->where('notifications.receiver_id',auth()->user()->id)
             ->where('notifications.post_id','!=',null)
             ->orWhere(function ($query) {
-                $query->where('notifications.report_status',1)
+                $query->where('notifications.report_id','!=',null)
                       ->where('receiver_id',auth()->user()->id);
             })
             ->where(DB::raw("(DATE_FORMAT(date,'%Y-%m-%d'))"),Carbon::Now()->toDateString())
@@ -631,7 +631,7 @@ class SocialmediaController extends Controller
             ->where('notifications.receiver_id',auth()->user()->id)
             ->where('notifications.post_id','!=',null)
             ->orWhere(function ($query) {
-                $query->where('notifications.report_status',1)
+                $query->where('notifications.report_id','!=',null)
                       ->where('receiver_id',auth()->user()->id);
             })
             ->where(DB::raw("(DATE_FORMAT(date,'%Y-%m-%d'))"),'!=',Carbon::Now()->toDateString())
@@ -973,7 +973,7 @@ class SocialmediaController extends Controller
 
                         $user_id=auth()->user()->id;
 
-                        $messages =DB::select("SELECT users.id as id,users.name,profiles.profile_image,chats.text,chats.created_at
+                        $messages =DB::select("SELECT users.id as id,users.name,profiles.profile_image,chats.text,chats.created_at as date
                         from
                             chats
                           join
@@ -1011,22 +1011,26 @@ class SocialmediaController extends Controller
                                 ->select(DB::raw('max(id) as id'))
                                 ->get()
                                 ->pluck('id')->toArray();
-
-                      $latest_group_sms =
-                      ChatGroupMessage::leftJoin('chat_groups','chat_groups.id','chat_group_messages.group_id')
-                      ->select('chat_groups.group_name','chat_group_messages.*')
-                      ->whereIn('chat_group_messages.id',$latest_group_message)->get()->toArray();
-                    //   $ids = json_encode($messages);
-                      $arr = json_decode(json_encode ( $messages ) , true);
-                            $merged = array_merge($arr, $latest_group_sms);
-
-                            $group_id = 1;
-                    $group_messages = ChatGroupMessage::leftJoin('users','users.id','chat_group_messages.sender_id')
-                                        ->select('profiles.profile_image','chat_group_messages.*')
-                                        ->leftJoin('profiles','users.profile_id','profiles.id')
-                                        ->where('chat_group_messages.group_id',$group_id)
-                                        ->get();
-                            dd($group_messages);
+                    $latest_group_sms =ChatGroupMessage::
+                            select('chat_group_messages.group_id as id','chat_groups.group_name as name',
+                            'profiles.profile_image','chat_group_messages.text',
+                            DB::raw('DATE_FORMAT(chat_group_messages.created_at, "%Y-%m-%d %h:%m:%s") as date'))
+                            ->leftJoin('chat_groups','chat_groups.id','chat_group_messages.group_id')
+                            ->leftJoin('users','users.id','chat_group_messages.sender_id')
+                            ->leftJoin('profiles','users.profile_id','profiles.id')
+                            ->whereIn('chat_group_messages.id',$latest_group_message)->get()->toArray();
+                            //   $ids = json_encode($messages);
+                            $arr = json_decode(json_encode ( $messages ) , true);
+                            foreach($arr as $key=>$value){
+                                $arr[$key]['is_group'] = 0;
+                            }
+                            foreach($latest_group_sms as $key=>$value){
+                                $latest_group_sms[$key]['is_group'] = 1;
+                            }
+                                    $merged = array_merge($arr, $latest_group_sms);
+                                    $keys = array_column($merged, 'date');
+                                    array_multisort($keys, SORT_DESC, $merged);
+                            dd($merged);
 
         return view('customer.comments',compact('post','comments','post_likes'));
     }
@@ -1380,16 +1384,17 @@ class SocialmediaController extends Controller
 
             $user_rp->sender_id = $admin_id;
             $user_rp->receiver_id =  auth()->user()->id;
-            $user_rp->notification_status = $admin_id;
-            $user_rp->report_status=1;
+            $user_rp->notification_status = 1;
+            $user_rp->report_id=$report->id;
             $user_rp->save();
 
             $admin_rp=new Notification();
             $admin_rp->description=$new_data;
             $admin_rp->date = Carbon::Now()->toDateTimeString();
             $admin_rp->sender_id=auth()->user()->id;
+            $admin_rp->notification_status = 1;
             $admin_rp->receiver_id=$admin_id;
-            $admin_rp->report_status=1;
+            $admin_rp->report_id=$report->id;
             $admin_rp->save();
 
             $pusher->trigger('friend_request.'. auth()->user()->id , 'friendRequest', $data);

@@ -817,6 +817,8 @@
                                             timerProgressBar: true,
                                             timer: 5000,
                                             icon: 'error',
+                                        }).then(() => {
+                                            window.location.reload()
                                         })
                             }
 
@@ -1163,9 +1165,10 @@
 
 <script>
     $(document).ready(function(){
+
         $('.nav-icon').click(function(){
                 $('.notis-box-container').toggle()
-            })
+        })
 
         $(document).on('click', '.accept', function(e) {
                 e.preventDefault();
@@ -1198,77 +1201,76 @@
                             window.location.href = social_url
                         }
                     })
-                });
+        });
 
+        $(document).on('click', '.view_comment', function(e) {
+            e.preventDefault();
+            alert("view_post")
+            var url = new URL(this.href);
+            var id = url.searchParams.get("id");
+            //  console.log(id,"noti_id");
+            var post_id = $(this).attr("id");
+            console.log(post_id , "rererer");
+            var comment_url = "{{ route('post.comment', [':id']) }}";
+            comment_url = comment_url.replace(':id', post_id);
 
-                $(document).on('click', '.view_comment', function(e) {
-                e.preventDefault();
-                 alert("view_post")
-                 var url = new URL(this.href);
-                 var id = url.searchParams.get("id");
-                //  console.log(id,"noti_id");
-                 var post_id = $(this).attr("id");
-                 console.log(post_id , "rererer");
-                 var comment_url = "{{ route('post.comment', [':id']) }}";
-                 comment_url = comment_url.replace(':id', post_id);
-
-                var url = "{{ route('comment_list',[':id']) }}";
-                url = url.replace(':id', post_id);
-                $(".add-member-btn").attr('href','');
-                $.ajaxSetup({
-                    headers: {
-                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            var url = "{{ route('comment_list',[':id']) }}";
+            url = url.replace(':id', post_id);
+            $(".add-member-btn").attr('href','');
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+                $.ajax({
+                    type: "POST",
+                    url: url,
+                    datatype: "json",
+                    data : {
+                        id : post_id,
+                        noti_id : id
+                },
+                    success: function(data) {
+                        console.log(data)
+                        window.location.href = comment_url
                     }
-                });
-                    $.ajax({
-                        type: "POST",
-                        url: url,
-                        datatype: "json",
-                        data : {
-                            id : post_id,
-                            noti_id : id
-                    },
-                        success: function(data) {
-                            console.log(data)
-                            window.location.href = comment_url
-                        }
-                    })
-                });
+                })
+        });
 
+        $(document).on('click', '.view_like', function(e) {
+            e.preventDefault();
+            alert("view_post")
+            var url = new URL(this.href);
+            var id = url.searchParams.get("id");
+            //  console.log(id,"noti_id");
+            var post_id = $(this).attr("id");
+            console.log(post_id , "rererer");
+            var like_url = "{{ route('social_media_likes',[':post_id']) }}";
+            like_url = like_url.replace(':post_id', post_id);
 
-                $(document).on('click', '.view_like', function(e) {
-                e.preventDefault();
-                 alert("view_post")
-                 var url = new URL(this.href);
-                 var id = url.searchParams.get("id");
-                //  console.log(id,"noti_id");
-                 var post_id = $(this).attr("id");
-                 console.log(post_id , "rererer");
-                 var like_url = "{{ route('social_media_likes',[':post_id']) }}";
-                 like_url = like_url.replace(':post_id', post_id);
-
-                var url = "{{ route('social_media_likes',[':post_id']) }}";
-                url = url.replace(':post_id', post_id);
-                $(".add-member-btn").attr('href','');
-                $.ajaxSetup({
-                    headers: {
-                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            var url = "{{ route('social_media_likes',[':post_id']) }}";
+            url = url.replace(':post_id', post_id);
+            $(".add-member-btn").attr('href','');
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+                $.ajax({
+                    type: "GET",
+                    url: url,
+                    datatype: "json",
+                    data : {
+                        id : post_id,
+                        noti_id : id
+                },
+                    success: function(data) {
+                        console.log(data)
+                        window.location.href = like_url
                     }
-                });
-                    $.ajax({
-                        type: "GET",
-                        url: url,
-                        datatype: "json",
-                        data : {
-                            id : post_id,
-                            noti_id : id
-                    },
-                        success: function(data) {
-                            console.log(data)
-                            window.location.href = like_url
-                        }
-                    })
-                });
+                })
+        });
+
     })
 </script>
 

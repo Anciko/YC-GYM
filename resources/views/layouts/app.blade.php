@@ -16,6 +16,8 @@
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/boxicons@latest/css/boxicons.min.css">
 
+    <link href={{ asset('css/adminchat/trainingcenter.css')}} rel="stylesheet"/>
+
     {{-- //// --}}
 
     <!-- Fonts -->
@@ -357,20 +359,45 @@
                     <i class="hamburger align-self-center"></i>
 
                 </a>
+                <div class="customer-navlinks-notiprofile-container">
+                    <iconify-icon icon="akar-icons:bell" class="nav-icon"></iconify-icon>
+
+                    <div class="notis-box-container">
+                        <div class="notis-box-header">
+                            <p>Notifications</p>
+                            <a href="{{ route('notification_center') }}">See All</a>
+                        </div>
+
+                        <div class="notis-box-notis-container">
+                            <?php $count = 0; ?>
+                            @foreach(auth()->user()->notifri->sortByDesc('created_at') as $noti)
+                            <?php if($count == 10) break; ?>
+                            @if($noti->report_id != null)
+                            <a href ="{{route('admin.view.report',$noti->report_id)}}">
+                                    <div class="notis-box-noti-row notis-box-unread-noti">
+                                        <img src="{{asset('img/customer/imgs/report.png')}}"/>
+                                        <div class="notis-box-noti-row-detail">
+                                            <span>{{$noti->created_at->diffForHumans()}}
+                                            </span>
+                                            <p>{{$noti->description}}</p>
+                                        </div>
+                                    </div>
+                                </a>
+                            @endif
+                                <?php $count++; ?>
+                            @endforeach
+                        </div>
+
+                    </div>
 
 
-
-                <div class="dropdown">
+                    <div class="dropdown">
 
                     <img src="{{ asset('img/avatar.png') }}" style="cursor: pointer;" class="rounded-circle me-2" width="35" alt="">
-
-
 
                     <span class="mb-0 me-4 dropdown-toggle" style="cursor: pointer;" data-mdb-toggle="dropdown">
 
                         {{ auth()->user()->name }} <i class="fa-solid fa-angle-down fa-sm"></i></span>
-
-
 
                     <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
 
@@ -388,9 +415,8 @@
 
                   </div>
 
+                </div>
             </nav>
-
-
 
             <main class="content">
 
@@ -503,6 +529,9 @@
     @stack('scripts')
 
     <script>
+        $('.nav-icon').click(function(){
+                $('.notis-box-container').toggle()
+            })
 
                 var user_id = {{auth()->user()->id}};
                 console.log(user_id);
@@ -517,6 +546,16 @@
                 });
 
         $(document).ready(function() {
+
+
+            $(document).on('click', '.accept', function(e) {
+                e.preventDefault();
+                var url = new URL(this.href);
+                var id = url.searchParams.get("id");
+                 console.log(id,"noti_id");
+
+        });
+
             let token = document.head.querySelector('meta[name="csrf-token"]');
             if (token) {
                 $.ajaxSetup({
