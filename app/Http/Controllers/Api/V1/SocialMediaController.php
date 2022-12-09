@@ -1334,7 +1334,7 @@ class SocialMediaController extends Controller
 
 
         foreach($messages as $key=>$value){
-                    $messages[$key]['profile_image'] = $receiver_user->profile_image;
+                    $messages[$key]['profile_image'] = $receiver_user->profile_image == null ?  null : $receiver_user->profile_image;
         }
 
         return response()->json([
