@@ -973,7 +973,7 @@ class SocialmediaController extends Controller
 
                         $user_id=auth()->user()->id;
 
-                        $latest_group_message =DB::select("SELECT users.id,users.name,profiles.profile_image,chats.text
+                        $messages =DB::select("SELECT users.id as id,users.name,profiles.profile_image,chats.text,chats.created_at
                         from
                             chats
                           join
@@ -1014,9 +1014,20 @@ class SocialmediaController extends Controller
 
                       $latest_group_sms =
                       ChatGroupMessage::leftJoin('chat_groups','chat_groups.id','chat_group_messages.group_id')
-                      ->select('chat_group_messages.*','chat_groups.group_name')
-                      ->whereIn('chat_group_messages.id',$latest_group_message)->get();
-                      dd($latest_group_sms);
+                      ->select('chat_groups.group_name','chat_group_messages.*')
+                      ->whereIn('chat_group_messages.id',$latest_group_message)->get()->toArray();
+                    //   $ids = json_encode($messages);
+                      $arr = json_decode(json_encode ( $messages ) , true);
+                            $merged = array_merge($arr, $latest_group_sms);
+
+                            $group_id = 1;
+                    $group_messages = ChatGroupMessage::leftJoin('users','users.id','chat_group_messages.sender_id')
+                                        ->select('profiles.profile_image','chat_group_messages.*')
+                                        ->leftJoin('profiles','users.profile_id','profiles.id')
+                                        ->where('chat_group_messages.group_id',$group_id)
+                                        ->get();
+                            dd($group_messages);
+
         return view('customer.comments',compact('post','comments','post_likes'));
     }
 
@@ -1314,7 +1325,7 @@ class SocialmediaController extends Controller
                         array_push($n, $f['sender_id'],$f['receiver_id']);
                 }
 
-          $group = ChatGroup::findOrFail($id);
+            $group = ChatGroup::findOrFail($id);
 
             $friends=User::select('users.name','users.id')->whereIn('users.id',$n)
             ->where('users.id','!=',$user->id)->where('users.ingroup',0)
@@ -1348,9 +1359,6 @@ class SocialmediaController extends Controller
        $report->description=$description;
        $report->save();
 
-        // return response()->json([
-        //     'success' => 'Reported Success'
-        // ]);
        $options = array(
         'cluster' => env('PUSHER_APP_CLUSTER'),
         'encrypted' => true
@@ -1388,5 +1396,8 @@ class SocialmediaController extends Controller
 
             $pusher->trigger('friend_request.'. $admin_id , 'friendRequest', $new_data);
 
+        return response()->json([
+            'success' => 'Reported Success'
+        ]);
     }
 }
