@@ -82,7 +82,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: 10px;
+    margin-bottom: 20px;
 }
 
 .social-media-left-container-header p{
@@ -116,7 +116,7 @@
     gap: 0 5px;
     align-items: center;
     /* justify-content: space-between; */
-    margin-bottom: 10px;
+    margin-bottom: 15px;
     text-decoration: none;
     width: fit-content;
 }
@@ -150,7 +150,7 @@
     display: inline-flex;
     gap: 0 5px;
     align-items: center;
-    margin-bottom: 10px;
+    margin-bottom: 15px;
     text-decoration: none;
 
 
