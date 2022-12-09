@@ -30,34 +30,34 @@ class SocialmediaController extends Controller
 {
     public function index()
     {
-        $user=auth()->user();
-        $user_id=$user->id;
-        $friends=DB::table('friendships')
-                    ->where('friend_status',2)
-                    ->where(function($query) use ($user_id){
-                        $query->where('sender_id',$user_id)
-                            ->orWhere('receiver_id',$user_id);
-                    })
-                    ->get(['sender_id','receiver_id'])->toArray();
+        $user = auth()->user();
+        $user_id = $user->id;
+        $friends = DB::table('friendships')
+            ->where('friend_status', 2)
+            ->where(function ($query) use ($user_id) {
+                $query->where('sender_id', $user_id)
+                    ->orWhere('receiver_id', $user_id);
+            })
+            ->get(['sender_id', 'receiver_id'])->toArray();
 
-        if(!empty($friends)){
-            $n= array();
-            foreach($friends as $friend){
-                    $f=(array)$friend;
-                    array_push($n, $f['sender_id'],$f['receiver_id']);
+        if (!empty($friends)) {
+            $n = array();
+            foreach ($friends as $friend) {
+                $f = (array)$friend;
+                array_push($n, $f['sender_id'], $f['receiver_id']);
             }
-            $posts=Post::whereIn('user_id',$n)
-                        ->where('report_status',0)
-                        ->orderBy('created_at','DESC')
-                        ->with('user')
-                        ->paginate(30);
-        }else{
-            $n= array();
-            $posts=Post::where('user_id',$user->id)
-                    ->where('report_status',0)
-                    ->orderBy('created_at','DESC')
-                    ->with('user')
-                    ->paginate(30);
+            $posts = Post::whereIn('user_id', $n)
+                ->where('report_status', 0)
+                ->orderBy('created_at', 'DESC')
+                ->with('user')
+                ->paginate(30);
+        } else {
+            $n = array();
+            $posts = Post::where('user_id', $user->id)
+                ->where('report_status', 0)
+                ->orderBy('created_at', 'DESC')
+                ->with('user')
+                ->paginate(30);
         }
 
         // $post_likes=UserReactPost::select('users.name','profiles.profile_image','user_react_posts.*')
@@ -70,77 +70,76 @@ class SocialmediaController extends Controller
         //                 ->where('id','!=',$user->id)
         //                 ->paginate(6);
 
-                        //dd($left_friends);
+        //dd($left_friends);
         //$posts=Post::orderBy('created_at','DESC')->with('user')->paginate(10);
         // $post_reacted=UserReactPost::groupBy('post_id')->get('post_id');
         // dd($post_reacted->toArray());
 
-        return view('customer.socialmedia',compact('posts'));
+        return view('customer.socialmedia', compact('posts'));
     }
 
     public function user_react_post(Request $request)
     {
-        $post_id=$request['post_id'];
-        $isLike=$request['isLike'] === true;
+        $post_id = $request['post_id'];
+        $isLike = $request['isLike'] === true;
 
-        $update=false;
-        $post=Post::findOrFail($post_id);
+        $update = false;
+        $post = Post::findOrFail($post_id);
 
-        if(!$post){
+        if (!$post) {
             return null;
         }
-        $user=auth()->user();
-        $react=$user->user_reacted_posts()->where('post_id',$post_id)->first();
+        $user = auth()->user();
+        $react = $user->user_reacted_posts()->where('post_id', $post_id)->first();
 
-        if(!empty($react)){
-            $already_like=true;
-            $update=true;
-            $comment_noti_delete = Notification::where('sender_id',auth()->user()->id)
-            ->where('receiver_id',$post->user_id)
-            ->where('post_id',$post_id);
+        if (!empty($react)) {
+            $already_like = true;
+            $update = true;
+            $comment_noti_delete = Notification::where('sender_id', auth()->user()->id)
+                ->where('receiver_id', $post->user_id)
+                ->where('post_id', $post_id);
             $comment_noti_delete->delete();
             $react->delete();
-        }else{
-                $react=new UserReactPost();
+        } else {
+            $react = new UserReactPost();
+        }
+        $react->user_id = $user->id;
+        $react->post_id = $post_id;
+        $react->reacted_status = true;
+
+        if ($update == true) {
+            $react->update();
+        } else {
+            $react->save();
+            $options = array(
+                'cluster' => env('PUSHER_APP_CLUSTER'),
+                'encrypted' => true
+            );
+            $pusher = new Pusher(
+                env('PUSHER_APP_KEY'),
+                env('PUSHER_APP_SECRET'),
+                env('PUSHER_APP_ID'),
+                $options
+            );
+
+            $post_owner = Post::where('posts.id', $react->post_id)->first();
+            if ($post_owner->user_id != auth()->user()->id) {
+                $data = auth()->user()->name . ' liked your post!';
+                $fri_noti = new Notification();
+                $fri_noti->description = $data;
+                $fri_noti->date = Carbon::Now()->toDateTimeString();
+                $fri_noti->sender_id = auth()->user()->id;
+                $fri_noti->receiver_id = $post_owner->user_id;
+                $fri_noti->post_id = $request->post_id;
+                $fri_noti->notification_status = 1;
+                $fri_noti->save();
+                $pusher->trigger('friend_request.' . $post_owner->user_id, 'friendRequest', $data);
             }
-                $react->user_id=$user->id;
-                $react->post_id=$post_id;
-                $react->reacted_status=true;
-
-            if($update==true){
-                $react->update();
-
-            }else{
-                $react->save();
-                $options = array(
-                    'cluster' => env('PUSHER_APP_CLUSTER'),
-                    'encrypted' => true
-                    );
-                    $pusher = new Pusher(
-                    env('PUSHER_APP_KEY'),
-                    env('PUSHER_APP_SECRET'),
-                    env('PUSHER_APP_ID'),
-                    $options
-                    );
-
-                    $post_owner = Post::where('posts.id',$react->post_id)->first();
-                    if($post_owner->user_id != auth()->user()->id){
-                        $data = auth()->user()->name.' liked your post!';
-                        $fri_noti = new Notification();
-                        $fri_noti->description = $data;
-                        $fri_noti->date = Carbon::Now()->toDateTimeString();
-                        $fri_noti->sender_id = auth()->user()->id;
-                        $fri_noti->receiver_id = $post_owner->user_id;
-                        $fri_noti->post_id=$request->post_id;
-                        $fri_noti->notification_status = 1;
-                        $fri_noti->save();
-                        $pusher->trigger('friend_request.'.$post_owner->user_id , 'friendRequest', $data);
-                    }
-            }
-            $total_likes=UserReactPost::where('post_id',$post_id)->count();
-            return response()->json([
-                'total_likes' => $total_likes,
-            ]);
+        }
+        $total_likes = UserReactPost::where('post_id', $post_id)->count();
+        return response()->json([
+            'total_likes' => $total_likes,
+        ]);
     }
 
     public function profile_photo_delete(Request $request)
@@ -149,11 +148,11 @@ class SocialmediaController extends Controller
         // $profile->profile_image=null;
         // $profile->cover_photo=null;
         // $profile->update();
-        $user=User::find(auth()->user()->id);
-        if($user->profile_id==$request->profile_id){
-            $user->profile_id=null;
-        }elseif($user->cover_id==$request->profile_id){
-            $user->cover_id=null;
+        $user = User::find(auth()->user()->id);
+        if ($user->profile_id == $request->profile_id) {
+            $user->profile_id = null;
+        } elseif ($user->cover_id == $request->profile_id) {
+            $user->cover_id = null;
         }
         $user->update();
 
@@ -167,133 +166,133 @@ class SocialmediaController extends Controller
     {
         //dd($id);
         $auth = Auth()->user()->id;
-        $user = User::where('id',$id)->first();
-        $posts=Post::where('user_id',$id)
-                    ->orderBy('created_at','DESC')
-                    ->with('user')
-                    ->paginate(30);
+        $user = User::where('id', $id)->first();
+        $posts = Post::where('user_id', $id)
+            ->orderBy('created_at', 'DESC')
+            ->with('user')
+            ->paginate(30);
 
-        $friendships=DB::table('friendships')
-                    ->where('friend_status',2)
-                    ->where(function($query) use ($id){
-                        $query->where('sender_id',$id)
-                            ->orWhere('receiver_id',$id);
-                    })
-                    ->join('users as sender','sender.id','friendships.sender_id')
-                    ->join('users as receiver','receiver.id','friendships.receiver_id')
-                    ->get(['sender_id','receiver_id'])->toArray();
-                    //dd($friends);
-        $n= array();
-        foreach($friendships as $friend){
-                    $f=(array)$friend;
-                    array_push($n, $f['sender_id'],$f['receiver_id']);
-            }
-        $friends=User::whereIn('id',$n)
-                    ->where('id','!=',$user->id)
-                    ->paginate(6);
+        $friendships = DB::table('friendships')
+            ->where('friend_status', 2)
+            ->where(function ($query) use ($id) {
+                $query->where('sender_id', $id)
+                    ->orWhere('receiver_id', $id);
+            })
+            ->join('users as sender', 'sender.id', 'friendships.sender_id')
+            ->join('users as receiver', 'receiver.id', 'friendships.receiver_id')
+            ->get(['sender_id', 'receiver_id'])->toArray();
+        //dd($friends);
+        $n = array();
+        foreach ($friendships as $friend) {
+            $f = (array)$friend;
+            array_push($n, $f['sender_id'], $f['receiver_id']);
+        }
+        $friends = User::whereIn('id', $n)
+            ->where('id', '!=', $user->id)
+            ->paginate(6);
 
         $friend = DB::select("SELECT * FROM `friendships` WHERE (receiver_id = $auth or sender_id = $auth )
                         AND (receiver_id = $id or sender_id = $id)");
-        return view('customer.socialmedia_profile',compact('user','posts','friends','friend'));
+        return view('customer.socialmedia_profile', compact('user', 'posts', 'friends', 'friend'));
     }
 
     public function post_save(Request $request)
     {
-        $post_id=$request['post_id'];
-        $user=auth()->user();
-        $user_save_post=new UserSavedPost();
+        $post_id = $request['post_id'];
+        $user = auth()->user();
+        $user_save_post = new UserSavedPost();
 
-        $already_save=$user->user_saved_posts()->where('post_id',$post_id)->first();
+        $already_save = $user->user_saved_posts()->where('post_id', $post_id)->first();
 
-        if($already_save){
+        if ($already_save) {
             $already_save->delete();
             $user_save_post->update();
 
             return response()->json([
                 'unsave' => 'Unsaved Post Successfully',
-                ]);
-        }else{
-            $user_save_post->user_id=$user->id;
-            $user_save_post->post_id=$post_id;
-            $user_save_post->saved_status=1;
+            ]);
+        } else {
+            $user_save_post->user_id = $user->id;
+            $user_save_post->post_id = $post_id;
+            $user_save_post->saved_status = 1;
             $user_save_post->save();
 
             return response()->json([
                 'save' => 'Saved Post Successfully',
-                ]);
+            ]);
         }
     }
 
-    public function profile(Request $request,$id)
+    public function profile(Request $request, $id)
     {
-        $used_id=auth()->user()->id;
-        if($used_id==$id){
+        $used_id = auth()->user()->id;
+        if ($used_id == $id) {
             return redirect()->route('customer-profile');
-        }else{
+        } else {
             $auth = Auth()->user()->id;
-            $user = User::where('id',$id)->first();
-            $posts=Post::where('user_id',$id)
-                        ->orderBy('created_at','DESC')
-                        ->with('user')
-                        ->paginate(30);
+            $user = User::where('id', $id)->first();
+            $posts = Post::where('user_id', $id)
+                ->orderBy('created_at', 'DESC')
+                ->with('user')
+                ->paginate(30);
 
-            $friendships=DB::table('friendships')
-                        ->where('friend_status',2)
-                        ->where(function($query) use ($id){
-                            $query->where('sender_id',$id)
-                                ->orWhere('receiver_id',$id);
-                        })
-                        ->join('users as sender','sender.id','friendships.sender_id')
-                        ->join('users as receiver','receiver.id','friendships.receiver_id')
-                        ->get(['sender_id','receiver_id'])->toArray();
-                        //dd($friends);
-            $n= array();
-            foreach($friendships as $friend){
-                        $f=(array)$friend;
-                        array_push($n, $f['sender_id'],$f['receiver_id']);
-                }
-            $friends=User::whereIn('id',$n)
-                            ->where('id','!=',$user->id)
-                            ->paginate(6);
+            $friendships = DB::table('friendships')
+                ->where('friend_status', 2)
+                ->where(function ($query) use ($id) {
+                    $query->where('sender_id', $id)
+                        ->orWhere('receiver_id', $id);
+                })
+                ->join('users as sender', 'sender.id', 'friendships.sender_id')
+                ->join('users as receiver', 'receiver.id', 'friendships.receiver_id')
+                ->get(['sender_id', 'receiver_id'])->toArray();
+            //dd($friends);
+            $n = array();
+            foreach ($friendships as $friend) {
+                $f = (array)$friend;
+                array_push($n, $f['sender_id'], $f['receiver_id']);
+            }
+            $friends = User::whereIn('id', $n)
+                ->where('id', '!=', $user->id)
+                ->paginate(6);
             $friend = DB::select("SELECT * FROM `friendships` WHERE (receiver_id = $auth or sender_id = $auth )
                             AND (receiver_id = $id or sender_id = $id)");
-            return view('customer.socialmedia_profile',compact('user','posts','friends','friend'));
+            return view('customer.socialmedia_profile', compact('user', 'posts', 'friends', 'friend'));
         }
     }
 
     public function social_media_profile(Request $request)
     {
-        if(!empty($request->noti_id)){
-           $noti =  DB::table('notifications')->where('id',$request->noti_id)->update(['notification_status' => 2]);
+        if (!empty($request->noti_id)) {
+            $noti =  DB::table('notifications')->where('id', $request->noti_id)->update(['notification_status' => 2]);
         }
 
         $id = $request->id;
         $auth = Auth()->user()->id;
-        $user = User::where('id',$id)->first();
-        $posts=Post::where('user_id',$id)
-                    ->orderBy('created_at','DESC')
-                    ->with('user')
-                    ->paginate(30);
+        $user = User::where('id', $id)->first();
+        $posts = Post::where('user_id', $id)
+            ->orderBy('created_at', 'DESC')
+            ->with('user')
+            ->paginate(30);
 
-        $friendships=DB::table('friendships')
-                    ->where('friend_status',2)
-                    ->where(function($query) use ($id){
-                        $query->where('sender_id',$id)
-                            ->orWhere('receiver_id',$id);
-                    })
-                    ->join('users as sender','sender.id','friendships.sender_id')
-                    ->join('users as receiver','receiver.id','friendships.receiver_id')
-                    ->get(['sender_id','receiver_id'])->toArray();
-                    //dd($friends);
-        $n= array();
-        foreach($friendships as $friend){
-                    $f=(array)$friend;
-                    array_push($n, $f['sender_id'],$f['receiver_id']);
-            }
-        $friends=User::select('users.name','users.id')
-                         ->whereIn('id',$n)
-                        ->where('id','!=',$user->id)
-                        ->paginate(6);
+        $friendships = DB::table('friendships')
+            ->where('friend_status', 2)
+            ->where(function ($query) use ($id) {
+                $query->where('sender_id', $id)
+                    ->orWhere('receiver_id', $id);
+            })
+            ->join('users as sender', 'sender.id', 'friendships.sender_id')
+            ->join('users as receiver', 'receiver.id', 'friendships.receiver_id')
+            ->get(['sender_id', 'receiver_id'])->toArray();
+        //dd($friends);
+        $n = array();
+        foreach ($friendships as $friend) {
+            $f = (array)$friend;
+            array_push($n, $f['sender_id'], $f['receiver_id']);
+        }
+        $friends = User::select('users.name', 'users.id')
+            ->whereIn('id', $n)
+            ->where('id', '!=', $user->id)
+            ->paginate(6);
         $friend = DB::select("SELECT * FROM `friendships` WHERE (receiver_id = $auth or sender_id = $auth )
                         AND (receiver_id = $id or sender_id = $id)");
         return response()->json([
@@ -301,314 +300,308 @@ class SocialmediaController extends Controller
             'friend_status' => $friend,
             'friends' => $friends,
             'posts' => $posts
-       ]);
+        ]);
     }
 
-    public function social_media_likes(Request $request,$post_id)
+    public function social_media_likes(Request $request, $post_id)
     {
-        if(!empty($request->noti_id)){
-            $noti =  DB::table('notifications')->where('id',$request->noti_id)->update(['notification_status' => 2]);
-         }
+        if (!empty($request->noti_id)) {
+            $noti =  DB::table('notifications')->where('id', $request->noti_id)->update(['notification_status' => 2]);
+        }
         $auth = Auth()->user()->id;
-        $post_likes=UserReactPost::where('post_id',$post_id)
-                    ->with('user')
-                    ->get();
+        $post_likes = UserReactPost::where('post_id', $post_id)
+            ->with('user')
+            ->get();
         // $post_likes=UserReactPost::select('users.id','users.name','profiles.profile_image','user_react_posts.*')
         //             ->leftJoin('users','users.id','user_react_posts.user_id')
         //             ->leftJoin('profiles','users.profile_id','profiles.id')
         //             ->where('post_id',$post_id)
         //             ->get();
-        $post=Post::findOrFail($post_id);
+        $post = Post::findOrFail($post_id);
 
         // $friends=DB::table('friendships')->get()->toArray();
         $friends = DB::select("SELECT * FROM `friendships` WHERE (receiver_id = $auth or sender_id = $auth)");
 
-        foreach($post_likes as $key=>$value){
-            foreach($friends as $fri){
-                if($value->user_id == $fri->receiver_id AND $fri->sender_id == $auth AND $fri->friend_status == 1    ){
+        foreach ($post_likes as $key => $value) {
+            foreach ($friends as $fri) {
+                if ($value->user_id == $fri->receiver_id and $fri->sender_id == $auth and $fri->friend_status == 1) {
                     $post_likes[$key]['friend_status'] = "cancel request";
                     break;
-                }
-                else if($value->user_id == $fri->sender_id AND $fri->receiver_id == $auth AND $fri->friend_status == 1    ){
+                } else if ($value->user_id == $fri->sender_id and $fri->receiver_id == $auth and $fri->friend_status == 1) {
                     $post_likes[$key]['friend_status'] = "response";
                     break;
-                }
-                else if($value->user_id == $fri->receiver_id AND $fri->sender_id == $auth AND $fri->friend_status == 2){
+                } else if ($value->user_id == $fri->receiver_id and $fri->sender_id == $auth and $fri->friend_status == 2) {
                     $post_likes[$key]['friend_status'] = "friend";
                     break;
-                }
-                else if($value->user_id == $fri->sender_id AND $fri->receiver_id == $auth AND $fri->friend_status == 2){
+                } else if ($value->user_id == $fri->sender_id and $fri->receiver_id == $auth and $fri->friend_status == 2) {
                     $post_likes[$key]['friend_status'] = "friend";
                     break;
-                }
-                else if($value->user_id == $auth){
+                } else if ($value->user_id == $auth) {
                     $post_likes[$key]['friend_status'] = "myself";
                     break;
-                }
-                else{
+                } else {
                     $post_likes[$key]['friend_status'] = "add friend";
                 }
             }
         }
 
-        return view('customer.socialmedia_likes',compact('post_likes','post'));
+        return view('customer.socialmedia_likes', compact('post_likes', 'post'));
     }
 
     public function socialmedia_profile_photos(Request $request)
     {
-        $user_id=$request->user_id;
+        $user_id = $request->user_id;
 
-        $user=User::findOrFail($user_id);
+        $user = User::findOrFail($user_id);
 
-        $user_profile_cover=Profile::select('cover_photo')
-                                ->where('user_id',$user_id)
-                                ->where('profile_image',null)
-                                ->orderBy('created_at','DESC')
-                                ->get();
+        $user_profile_cover = Profile::select('cover_photo')
+            ->where('user_id', $user_id)
+            ->where('profile_image', null)
+            ->orderBy('created_at', 'DESC')
+            ->get();
 
-        $user_profile_image=Profile::select('profile_image')
-                                ->where('user_id',$user_id)
-                                ->where('cover_photo',null)
-                                ->orderBy('created_at','DESC')
-                                ->get();
+        $user_profile_image = Profile::select('profile_image')
+            ->where('user_id', $user_id)
+            ->where('cover_photo', null)
+            ->orderBy('created_at', 'DESC')
+            ->get();
 
-        if($user_profile_cover==null){
-            $user_profile_cover=null;
-        }else{
-            $user_profile_cover=$user_profile_cover;
+        if ($user_profile_cover == null) {
+            $user_profile_cover = null;
+        } else {
+            $user_profile_cover = $user_profile_cover;
         }
 
-        if($user_profile_image==null){
-            $user_profile_image=null;
-        }else{
-            $user_profile_image=$user_profile_image;
+        if ($user_profile_image == null) {
+            $user_profile_image = null;
+        } else {
+            $user_profile_image = $user_profile_image;
         }
-        return view('customer.socialmedia_profile_photo',compact('user','user_id','user_profile_image','user_profile_cover'));
+        return view('customer.socialmedia_profile_photo', compact('user', 'user_id', 'user_profile_image', 'user_profile_cover'));
     }
 
     public function post_update(Request $request)
     {
         $input = $request->all();
 
-        $edit_post=Post::findOrFail($input['edit_post_id']);
-        $caption=$input['caption'];
+        $edit_post = Post::findOrFail($input['edit_post_id']);
+        $caption = $input['caption'];
 
-        $banwords=DB::table('ban_words')->select('ban_word_english','ban_word_myanmar','ban_word_myanglish')->get();
+        $banwords = DB::table('ban_words')->select('ban_word_english', 'ban_word_myanmar', 'ban_word_myanglish')->get();
 
-        if($caption){
-            foreach($banwords as $b){
-                $e_banword=$b->ban_word_english;
-                $m_banword=$b->ban_word_myanmar;
-                $em_banword=$b->ban_word_myanglish;
+        if ($caption) {
+            foreach ($banwords as $b) {
+                $e_banword = $b->ban_word_english;
+                $m_banword = $b->ban_word_myanmar;
+                $em_banword = $b->ban_word_myanglish;
 
-                 if (str_contains($caption,$e_banword)) {
-                     // Alert::warning('Warning', 'Ban Ban Ban');
-                     //return redirect()->back();
-                     return response()->json([
-                         'ban'=>'You used our banned words!',
-                     ]);
-                 }elseif (str_contains($caption,$m_banword)){
-                     return response()->json([
-                         'ban'=>'You used our banned words!',
-                     ]);
-                 }elseif (str_contains($caption,$em_banword)){
-                     return response()->json([
-                         'ban'=>'You used our banned words!',
-                     ]);
-                 }
-             }
+                if (str_contains($caption, $e_banword)) {
+                    // Alert::warning('Warning', 'Ban Ban Ban');
+                    //return redirect()->back();
+                    return response()->json([
+                        'ban' => 'You used our banned words!',
+                    ]);
+                } elseif (str_contains($caption, $m_banword)) {
+                    return response()->json([
+                        'ban' => 'You used our banned words!',
+                    ]);
+                } elseif (str_contains($caption, $em_banword)) {
+                    return response()->json([
+                        'ban' => 'You used our banned words!',
+                    ]);
+                }
+            }
         }
 
-            if($input['totalImages']!=0 && $input['oldimg']==null) {
-                $images=$input['editPostInput'];
-                foreach($images as $file)
-                {
-                    $extension = $file->extension();
-                    $name = rand().".".$extension;
-                    $file->storeAs('/public/post/', $name);
-                    $imgData[] = $name;
-                    $edit_post->media = json_encode($imgData);
-                }
-
-            }elseif($input['oldimg']!=null && $input['totalImages']==0){
-
-                $imgData = $input['oldimg'];
-
-                $myArray = explode(',', $imgData);
-
-                $edit_post->media =json_encode($myArray);
-
-            }elseif($input['oldimg']==null && $input['totalImages']==0){
-                $edit_post->media=null;
-
-            }else{
-                $oldimgData= $input['oldimg'];
-                $myArray_data = explode(',', $oldimgData);
-                $old_images =$myArray_data;
-
-                $images=$input['editPostInput'];
-
-                foreach($images as $file)
-                {
-                    $extension = $file->extension();
-                    $name = rand().".".$extension;
-                    $file->storeAs('/public/post/', $name);
-                    $imgData[] = $name;
-                    $new_images =$imgData;
-                }
-                $result=array_merge($old_images, $new_images);
-                $edit_post->media=json_encode($result);
+        if ($input['totalImages'] != 0 && $input['oldimg'] == null) {
+            $images = $input['editPostInput'];
+            foreach ($images as $file) {
+                $extension = $file->extension();
+                $name = rand() . "." . $extension;
+                $file->storeAs('/public/post/', $name);
+                $imgData[] = $name;
+                $edit_post->media = json_encode($imgData);
             }
-            $edit_post->caption=$caption;
-            $edit_post->update();
+        } elseif ($input['oldimg'] != null && $input['totalImages'] == 0) {
+
+            $imgData = $input['oldimg'];
+
+            $myArray = explode(',', $imgData);
+
+            $edit_post->media = json_encode($myArray);
+        } elseif ($input['oldimg'] == null && $input['totalImages'] == 0) {
+            $edit_post->media = null;
+        } else {
+            $oldimgData = $input['oldimg'];
+            $myArray_data = explode(',', $oldimgData);
+            $old_images = $myArray_data;
+
+            $images = $input['editPostInput'];
+
+            foreach ($images as $file) {
+                $extension = $file->extension();
+                $name = rand() . "." . $extension;
+                $file->storeAs('/public/post/', $name);
+                $imgData[] = $name;
+                $new_images = $imgData;
+            }
+            $result = array_merge($old_images, $new_images);
+            $edit_post->media = json_encode($result);
+        }
+        $edit_post->caption = $caption;
+        $edit_post->update();
 
         return response()->json([
             'success' => 'Post Updated successfully!'
         ]);
     }
 
-    public function post_edit(Request $request,$id)
+    public function post_edit(Request $request, $id)
     {
-        $post=Post::find($id);
-        if($post)
-        {
+        $post = Post::find($id);
+        if ($post) {
             return response()->json([
-                'status'=>200,
-                'post'=>$post,
+                'status' => 200,
+                'post' => $post,
             ]);
-        }
-        else
-        {
+        } else {
             return response()->json([
-                'status'=>404,
-                'message'=>'Data Not Found',
+                'status' => 404,
+                'message' => 'Data Not Found',
             ]);
         }
     }
 
-    public function viewFriendRequestNoti(Request $request){
+    public function viewFriendRequestNoti(Request $request)
+    {
         $auth = Auth()->user()->id;
         $id = $request->id;
-        $posts=Post::where('user_id',$id)
-                    ->orderBy('created_at','DESC')
-                    ->with('user')
-                    ->paginate(30);
-        DB::table('notifications')->where('id',$request->noti_id)->update(['notification_status' => 2]);
-        $user = User::where('id',$request->id)->first();
-        $friendships=DB::table('friendships')
-        ->where('friend_status',2)
-        ->where(function($query) use ($id){
-            $query->where('sender_id',$id)
-                ->orWhere('receiver_id',$id);
-        })
-        ->join('users as sender','sender.id','friendships.sender_id')
-        ->join('users as receiver','receiver.id','friendships.receiver_id')
-        ->get(['sender_id','receiver_id'])->toArray();
+        $posts = Post::where('user_id', $id)
+            ->orderBy('created_at', 'DESC')
+            ->with('user')
+            ->paginate(30);
+        DB::table('notifications')->where('id', $request->noti_id)->update(['notification_status' => 2]);
+        $user = User::where('id', $request->id)->first();
+        $friendships = DB::table('friendships')
+            ->where('friend_status', 2)
+            ->where(function ($query) use ($id) {
+                $query->where('sender_id', $id)
+                    ->orWhere('receiver_id', $id);
+            })
+            ->join('users as sender', 'sender.id', 'friendships.sender_id')
+            ->join('users as receiver', 'receiver.id', 'friendships.receiver_id')
+            ->get(['sender_id', 'receiver_id'])->toArray();
         //dd($friends);
-        $n= array();
-        foreach($friendships as $friend){
-                $f=(array)$friend;
-                array_push($n, $f['sender_id'],$f['receiver_id']);
+        $n = array();
+        foreach ($friendships as $friend) {
+            $f = (array)$friend;
+            array_push($n, $f['sender_id'], $f['receiver_id']);
         }
-        $friends=User::whereIn('id',$n)
-                    ->where('id','!=',$user->id)
-                    ->paginate(6);
+        $friends = User::whereIn('id', $n)
+            ->where('id', '!=', $user->id)
+            ->paginate(6);
 
-        $friend_status = Friendship::where('sender_id',auth()->user()->id)->orWhere('receiver_id',auth()->user()->id)->first();
+        $friend_status = Friendship::where('sender_id', auth()->user()->id)->orWhere('receiver_id', auth()->user()->id)->first();
         $friend = DB::select("SELECT * FROM `friendships` WHERE (receiver_id = $auth or sender_id = $auth )
         AND (receiver_id = $request->id or sender_id = $request->id)");
-        return view('customer.socialmedia_profile',compact('user','friend_status','friend','friends','posts'));
+        return view('customer.socialmedia_profile', compact('user', 'friend_status', 'friend', 'friends', 'posts'));
     }
 
-    public function showUser(Request $request){
-        $users = User::where('name','LIKE','%'.$request->keyword.'%')
-                        ->orWhere('phone','LIKE','%'.$request->keyword.'%')->get();
-        $friends=DB::table('friendships')
-                        ->get();
+    public function showUser(Request $request)
+    {
+        $users = User::where('name', 'LIKE', '%' . $request->keyword . '%')
+            ->orWhere('phone', 'LIKE', '%' . $request->keyword . '%')->get();
+        $friends = DB::table('friendships')
+            ->get();
         return response()->json([
             'users' => $users,
             'friends' => $friends,
-         ]);
+        ]);
     }
 
-    public function friendsList(Request $request){
+    public function friendsList(Request $request)
+    {
         //dd($request->user_id);
-         $id = $request->id;
-         $user = User::select('id','name')->where('id',$id)->first();
+        $id = $request->id;
+        $user = User::select('id', 'name')->where('id', $id)->first();
 
-        return view('customer.friendlist',compact('user'));
+        return view('customer.friendlist', compact('user'));
     }
-    public function friList(Request $request){
+    public function friList(Request $request)
+    {
         //dd($request->keyword);
         $id = $request->id;
-        $friendships=DB::table('friendships')
-        ->where('friend_status',2)
-        ->where(function($query) use ($id){
-            $query->where('sender_id',$id)
-                ->orWhere('receiver_id',$id);
-        })
-        ->join('users as sender','sender.id','friendships.sender_id')
-        ->join('users as receiver','receiver.id','friendships.receiver_id')
-        ->get(['sender_id','receiver_id'])->toArray();
+        $friendships = DB::table('friendships')
+            ->where('friend_status', 2)
+            ->where(function ($query) use ($id) {
+                $query->where('sender_id', $id)
+                    ->orWhere('receiver_id', $id);
+            })
+            ->join('users as sender', 'sender.id', 'friendships.sender_id')
+            ->join('users as receiver', 'receiver.id', 'friendships.receiver_id')
+            ->get(['sender_id', 'receiver_id'])->toArray();
         //dd($friends);
-        $n= array();
-            foreach($friendships as $friend){
-                    $f=(array)$friend;
-                    array_push($n, $f['sender_id'],$f['receiver_id']);
-            }
-        if($request->keyword != ''){
-            $friends = User::select('users.id','users.name','friendships.date','profiles.profile_image')
-            ->leftjoin('friendships', function ($join) {
-                  $join->on('friendships.receiver_id', '=', 'users.id')
-            ->orOn('friendships.sender_id', '=', 'users.id');})
-            ->leftJoin('profiles','profiles.id','users.profile_id')
-            ->where('users.name','LIKE','%'.$request->keyword.'%')
-            ->where('users.id','!=',$id)
-            ->where('friendships.friend_status',2)
-            ->where('friendships.receiver_id',$id)
-            ->orWhere('friendships.sender_id',$id)
-            ->whereIn('users.id',$n)
-            ->where('users.id','!=',$id)
-            ->where('users.name','LIKE','%'.$request->keyword.'%')
-            ->get();
+        $n = array();
+        foreach ($friendships as $friend) {
+            $f = (array)$friend;
+            array_push($n, $f['sender_id'], $f['receiver_id']);
+        }
+        if ($request->keyword != '') {
+            $friends = User::select('users.id', 'users.name', 'friendships.date', 'profiles.profile_image')
+                ->leftjoin('friendships', function ($join) {
+                    $join->on('friendships.receiver_id', '=', 'users.id')
+                        ->orOn('friendships.sender_id', '=', 'users.id');
+                })
+                ->leftJoin('profiles', 'profiles.id', 'users.profile_id')
+                ->where('users.name', 'LIKE', '%' . $request->keyword . '%')
+                ->where('users.id', '!=', $id)
+                ->where('friendships.friend_status', 2)
+                ->where('friendships.receiver_id', $id)
+                ->orWhere('friendships.sender_id', $id)
+                ->whereIn('users.id', $n)
+                ->where('users.id', '!=', $id)
+                ->where('users.name', 'LIKE', '%' . $request->keyword . '%')
+                ->get();
             // dd($friends);
             return response()->json([
                 'friends' => $friends
             ]);
         }
-            $friends = User::select('users.id','users.name','friendships.date','profiles.profile_image')
+        $friends = User::select('users.id', 'users.name', 'friendships.date', 'profiles.profile_image')
             ->leftjoin('friendships', function ($join) {
                 $join->on('friendships.receiver_id', '=', 'users.id')
-            ->orOn('friendships.sender_id', '=', 'users.id');})
-            ->leftJoin('profiles','profiles.id','users.profile_id')
-            ->where('users.id','!=',$id)
-            ->where('friendships.friend_status',2)
-            ->where('friendships.receiver_id',$id)
-            ->orWhere('friendships.sender_id',$id)
-            ->whereIn('users.id',$n)
-            ->where('users.id','!=',$id)
+                    ->orOn('friendships.sender_id', '=', 'users.id');
+            })
+            ->leftJoin('profiles', 'profiles.id', 'users.profile_id')
+            ->where('users.id', '!=', $id)
+            ->where('friendships.friend_status', 2)
+            ->where('friendships.receiver_id', $id)
+            ->orWhere('friendships.sender_id', $id)
+            ->whereIn('users.id', $n)
+            ->where('users.id', '!=', $id)
             ->get();
 
         return response()->json([
-           'friends' => $friends
-       ]);
+            'friends' => $friends
+        ]);
     }
 
-    public function notification_center(){
-        $friend_requests=Friendship::select('sender.name','sender.id')
+    public function notification_center()
+    {
+        $friend_requests = Friendship::select('sender.name', 'sender.id')
             ->join('users as receiver', 'receiver.id', '=', 'friendships.receiver_id')
             ->join('users as sender', 'sender.id', '=', 'friendships.sender_id')
-            ->where('receiver.id',auth()->user()->id)
-            ->where('friend_status',1)
-            ->where(DB::raw("(DATE_FORMAT(date,'%Y-%m-%d'))"),Carbon::Now()->toDateString())
+            ->where('receiver.id', auth()->user()->id)
+            ->where('friend_status', 1)
+            ->where(DB::raw("(DATE_FORMAT(date,'%Y-%m-%d'))"), Carbon::Now()->toDateString())
             ->get();
 
-        $friend_requests_earlier =Friendship::select('sender.name','sender.id')
+        $friend_requests_earlier = Friendship::select('sender.name', 'sender.id')
             ->join('users as receiver', 'receiver.id', '=', 'friendships.receiver_id')
             ->join('users as sender', 'sender.id', '=', 'friendships.sender_id')
-            ->where('receiver.id',auth()->user()->id)
-            ->where('friend_status',1)
-            ->where(DB::raw("(DATE_FORMAT(date,'%Y-%m-%d'))"),'!=',Carbon::Now()->toDateString())
+            ->where('receiver.id', auth()->user()->id)
+            ->where('friend_status', 1)
+            ->where(DB::raw("(DATE_FORMAT(date,'%Y-%m-%d'))"), '!=', Carbon::Now()->toDateString())
             ->get();
 
         $notification=Notification::select('users.id as user_id','users.name','notifications.*',
@@ -636,119 +629,124 @@ class SocialmediaController extends Controller
             })
             ->where(DB::raw("(DATE_FORMAT(date,'%Y-%m-%d'))"),'!=',Carbon::Now()->toDateString())
             ->get();
-            // dd($notification_earlier);
-        return view('customer.noti_center',compact('friend_requests','friend_requests_earlier','notification','notification_earlier'));
+        // dd($notification_earlier);
+        return view('customer.noti_center', compact('friend_requests', 'friend_requests_earlier', 'notification', 'notification_earlier'));
     }
 
     public function addUser(Request $request)
     {
         // dd("ok");
-            $id = $request->id;
-            $user_id = auth()->user()->id;
-            $sender = User::where('id',$user_id)->first();
+        $id = $request->id;
+        $user_id = auth()->user()->id;
+        $sender = User::where('id', $user_id)->first();
 
-            $friendship = new Friendship();
-            $friendship->sender_id=$user_id;
-            $friendship->receiver_id=$id;
-            $friendship->date =  Carbon::Now()->toDateTimeString();
-            $friendship->friend_status = 1;
-            $friendship->save();
+        $friendship = new Friendship();
+        $friendship->sender_id = $user_id;
+        $friendship->receiver_id = $id;
+        $friendship->date =  Carbon::Now()->toDateTimeString();
+        $friendship->friend_status = 1;
+        $friendship->save();
 
 
-            $options = array(
-            'cluster' => env('PUSHER_APP_CLUSTER'),
-            'encrypted' => true
-            );
-            $pusher = new Pusher(
-            env('PUSHER_APP_KEY'),
-            env('PUSHER_APP_SECRET'),
-            env('PUSHER_APP_ID'),
-            $options
-            );
-
-            $data = $sender->name . ' send you a friend request!';
-
-            $fri_noti = new Notification();
-            $fri_noti->description = $data;
-            $fri_noti->date = Carbon::Now()->toDateTimeString();
-            $fri_noti->sender_id = $user_id;
-            $fri_noti->receiver_id = $id;
-            $fri_noti->notification_status = 1;
-            $fri_noti->save();
-
-            $pusher->trigger('friend_request.'.$id , 'friendRequest', $data);
-            return response()
-                ->json([
-                    'data'=>$data
-            ]);
-    }
-    public function unfriend(Request $request){
-        $friend_ship_delete_receiver = Friendship::where('sender_id',auth()->user()->id)
-                                        ->where('receiver_id',$request->id)
-                                        ->where('friend_status' , 2);
-        $friend_ship_delete_receiver->delete();
-        $friend_ship_delete_sender = Friendship::where('sender_id',$request->id)
-                                        ->where('receiver_id',auth()->user()->id)
-                                        ->where('friend_status' , 2);
-        $friend_ship_delete_sender->delete();
-        $noti_delete_receiver = Notification::where('sender_id',$request->id)
-                                            ->where('receiver_id',auth()->user()->id)
-                                            ->where('post_id',null);
-        $noti_delete_receiver->delete();
-        $noti_delete_sender = Notification::where('sender_id',auth()->user()->id)
-                                            ->where('receiver_id',$request->id)
-                                            ->where('post_id',null);
-        $noti_delete_sender->delete();
-        return response()
-        ->json([
-            'data'=>'Success'
-        ]);
-    }
-
-    public function confirmRequest(Request $request){
-        $user = auth()->user();
-        DB::table('friendships')->where('receiver_id',$user->id)
-        ->where('sender_id',$request->id)
-        ->update(['friend_status' => 2,'date' =>  Carbon::Now()->toDateTimeString()]);
 
         $options = array(
             'cluster' => env('PUSHER_APP_CLUSTER'),
             'encrypted' => true
-            );
-            $pusher = new Pusher(
+        );
+        $pusher = new Pusher(
             env('PUSHER_APP_KEY'),
             env('PUSHER_APP_SECRET'),
             env('PUSHER_APP_ID'),
             $options
-            );
+        );
 
-            $data = $user->name . ' accepted your friend request!';
+        $data = $sender->name . ' send you a friend request!';
 
-            $fri_noti = new Notification();
-            $fri_noti->description = $data;
-            $fri_noti->date = Carbon::Now()->toDateTimeString();
-            $fri_noti->sender_id = $user->id;
-            $fri_noti->receiver_id = $request->id;
-            $fri_noti->notification_status = 1;
-            $fri_noti->save();
+        $fri_noti = new Notification();
+        $fri_noti->description = $data;
+        $fri_noti->date = Carbon::Now()->toDateTimeString();
+        $fri_noti->sender_id = $user_id;
+        $fri_noti->receiver_id = $id;
+        $fri_noti->notification_status = 1;
+        $fri_noti->save();
 
-            $pusher->trigger('friend_request.'.$request->id , 'App\\Events\\Friend_Request', $data);
-            return redirect()->back();
+        $pusher->trigger('friend_request.' . $id, 'friendRequest', $data);
+        return response()
+            ->json([
+                'data' => $data
+            ]);
+    }
+    public function unfriend(Request $request)
+    {
+        $friend_ship_delete_receiver = Friendship::where('sender_id', auth()->user()->id)
+            ->where('receiver_id', $request->id)
+            ->where('friend_status', 2);
+        $friend_ship_delete_receiver->delete();
+        $friend_ship_delete_sender = Friendship::where('sender_id', $request->id)
+            ->where('receiver_id', auth()->user()->id)
+            ->where('friend_status', 2);
+        $friend_ship_delete_sender->delete();
+        $noti_delete_receiver = Notification::where('sender_id', $request->id)
+            ->where('receiver_id', auth()->user()->id)
+            ->where('post_id', null);
+        $noti_delete_receiver->delete();
+        $noti_delete_sender = Notification::where('sender_id', auth()->user()->id)
+            ->where('receiver_id', $request->id)
+            ->where('post_id', null);
+        $noti_delete_sender->delete();
+        return response()
+            ->json([
+                'data' => 'Success'
+            ]);
     }
 
-    public function cancelRequest(Request $request){
+    public function confirmRequest(Request $request)
+    {
+        $user = auth()->user();
+        DB::table('friendships')->where('receiver_id', $user->id)
+            ->where('sender_id', $request->id)
+            ->update(['friend_status' => 2, 'date' =>  Carbon::Now()->toDateTimeString()]);
+
+        $options = array(
+            'cluster' => env('PUSHER_APP_CLUSTER'),
+            'encrypted' => true
+        );
+        $pusher = new Pusher(
+            env('PUSHER_APP_KEY'),
+            env('PUSHER_APP_SECRET'),
+            env('PUSHER_APP_ID'),
+            $options
+        );
+
+        $data = $user->name . ' accepted your friend request!';
+
+        $fri_noti = new Notification();
+        $fri_noti->description = $data;
+        $fri_noti->date = Carbon::Now()->toDateTimeString();
+        $fri_noti->sender_id = $user->id;
+        $fri_noti->receiver_id = $request->id;
+        $fri_noti->notification_status = 1;
+        $fri_noti->save();
+
+        $pusher->trigger('friend_request.' . $request->id, 'App\\Events\\Friend_Request', $data);
+        return redirect()->back();
+    }
+
+    public function cancelRequest(Request $request)
+    {
         $user_id = auth()->user()->id;
-        $friend_ship_delete = Friendship::where('sender_id',$user_id)->where('receiver_id',$request->id);
+        $friend_ship_delete = Friendship::where('sender_id', $user_id)->where('receiver_id', $request->id);
         $friend_ship_delete->delete();
-        $noti_delete = Notification::where('sender_id',$user_id)->where('receiver_id',$request->id);
+        $noti_delete = Notification::where('sender_id', $user_id)->where('receiver_id', $request->id);
         $noti_delete->delete();
     }
 
-    public function declineRequest(Request $request){
+    public function declineRequest(Request $request)
+    {
         $user_id = auth()->user()->id;
-        $friend_ship_delete = Friendship::where('sender_id',$request->id)->where('receiver_id',$user_id);
+        $friend_ship_delete = Friendship::where('sender_id', $request->id)->where('receiver_id', $user_id);
         $friend_ship_delete->delete();
-        $noti_delete = Notification::where('sender_id',$request->id)->where('receiver_id',$user_id);
+        $noti_delete = Notification::where('sender_id', $request->id)->where('receiver_id', $user_id);
         $noti_delete->delete();
         return redirect()->back();
     }
@@ -756,69 +754,66 @@ class SocialmediaController extends Controller
     public function post_store(Request $request)
     {
         $input = $request->all();
-        $user=auth()->user();
+        $user = auth()->user();
         $post = new Post();
 
-        if($input['totalImages']==0 && $input['caption']!=null){
-            $caption=$input['caption'];
-        }elseif($input['caption']==null && $input['totalImages']!=0){
-            $caption=null;
-            $images=$input['addPostInput'];
-            if($input['addPostInput']) {
-                foreach($images as $file)
-                {
+        if ($input['totalImages'] == 0 && $input['caption'] != null) {
+            $caption = $input['caption'];
+        } elseif ($input['caption'] == null && $input['totalImages'] != 0) {
+            $caption = null;
+            $images = $input['addPostInput'];
+            if ($input['addPostInput']) {
+                foreach ($images as $file) {
                     $extension = $file->extension();
-                    $name = rand().".".$extension;
+                    $name = rand() . "." . $extension;
+                    $file->storeAs('/public/post/', $name);
+                    $imgData[] = $name;
+                    $post->media = json_encode($imgData);
+                }
+            }
+        } elseif ($input['totalImages'] != 0 && $input['caption'] != null) {
+            $caption = $input['caption'];
+            $images = $input['addPostInput'];
+            if ($input['addPostInput']) {
+                foreach ($images as $file) {
+                    $extension = $file->extension();
+                    $name = rand() . "." . $extension;
                     $file->storeAs('/public/post/', $name);
                     $imgData[] = $name;
                     $post->media = json_encode($imgData);
                 }
             }
         }
-        elseif($input['totalImages']!=0 && $input['caption']!=null){
-            $caption=$input['caption'];
-            $images=$input['addPostInput'];
-            if($input['addPostInput']) {
-                foreach($images as $file)
-                {
-                    $extension = $file->extension();
-                    $name = rand().".".$extension;
-                    $file->storeAs('/public/post/', $name);
-                    $imgData[] = $name;
-                    $post->media = json_encode($imgData);
-                }
-            }
-        }
-        $banwords=DB::table('ban_words')->select('ban_word_english','ban_word_myanmar','ban_word_myanglish')->get();
+        $banwords = DB::table('ban_words')->select('ban_word_english', 'ban_word_myanmar', 'ban_word_myanglish')->get();
 
-        foreach($banwords as $b){
-           $e_banword=$b->ban_word_english;
-           $m_banword=$b->ban_word_myanmar;
-           $em_banword=$b->ban_word_myanglish;
+        foreach ($banwords as $b) {
+            $e_banword = $b->ban_word_english;
+            $m_banword = $b->ban_word_myanmar;
+            $em_banword = $b->ban_word_myanglish;
 
-            if (str_contains($caption,$e_banword)) {
+            if (str_contains($caption, $e_banword)) {
                 // Alert::warning('Warning', 'Ban Ban Ban');
                 //return redirect()->back();
                 return response()->json([
-                    'ban'=>'You used our banned words!',
+                    'ban' => 'You used our banned words!',
                 ]);
-            }elseif (str_contains($caption,$m_banword)){
+            } elseif (str_contains($caption, $m_banword)) {
                 return response()->json([
-                    'ban'=>'You used our banned words!',
+                    'ban' => 'You used our banned words!',
                 ]);
-            }elseif (str_contains($caption,$em_banword)){
+            } elseif (str_contains($caption, $em_banword)) {
                 return response()->json([
-                    'ban'=>'You used our banned words!',
+                    'ban' => 'You used our banned words!',
                 ]);
             }
         }
 
-        $post->user_id=$user->id;
-        $post->caption=$caption;
+        $post->user_id = $user->id;
+        $post->caption = $caption;
 
         $post->save();
         return response()->json([
-            'message'=>'Post Created Successfully',
+            'message' => 'Post Created Successfully',
         ]);
         // Alert::success('Success', 'Post Created Successfully');
         // return redirect()->back();
@@ -833,9 +828,10 @@ class SocialmediaController extends Controller
         ]);
     }
 
-    public function see_all_message(){
-            $user_id=auth()->user()->id;
-            $messages =DB::select("SELECT users.id,users.name,profiles.profile_image,chats.text,chats.created_at
+    public function see_all_message()
+    {
+        $user_id = auth()->user()->id;
+        $messages = DB::select("SELECT users.id,users.name,profiles.profile_image,chats.text,chats.created_at
             from
                 chats
               join
@@ -860,118 +856,120 @@ class SocialmediaController extends Controller
         return view('customer.message_seeall', compact('messages'));
     }
 
-    public function chat_message($id){
+    public function chat_message($id)
+    {
         $auth_user = auth()->user();
 
-        $messages = Chat::where(function($query) use ($auth_user){
-            $query->where('from_user_id',$auth_user->id)->orWhere('to_user_id',$auth_user->id);
-        })->where(function($que) use ($id){
-            $que->where('from_user_id',$id)->orWhere('to_user_id',$id);
+        $messages = Chat::where(function ($query) use ($auth_user) {
+            $query->where('from_user_id', $auth_user->id)->orWhere('to_user_id', $auth_user->id);
+        })->where(function ($que) use ($id) {
+            $que->where('from_user_id', $id)->orWhere('to_user_id', $id);
         })->with('to_user')->with('from_user')->get();
 
         $auth_user_name = auth()->user()->name;
-        $receiver_user = User::where('users.id',$id)->with('user_profile')->first();
+        $receiver_user = User::where('users.id', $id)->with('user_profile')->first();
 
-        $sender_user = User::where('id',$auth_user->id)->with('user_profile')->first();
+        $sender_user = User::where('id', $auth_user->id)->with('user_profile')->first();
 
         //active friend
         $auth = Auth()->user()->id;
-        $user = User::where('id',$auth)->first();
+        $user = User::where('id', $auth)->first();
 
-        $friendships=DB::table('friendships')
-                    ->where('friend_status',2)
-                    ->where(function($query) use ($id){
-                        $query->where('sender_id',$id)
-                            ->orWhere('receiver_id',$id);
-                    })
-                    ->join('users as sender','sender.id','friendships.sender_id')
-                    ->join('users as receiver','receiver.id','friendships.receiver_id')
-                    ->get(['sender_id','receiver_id'])->toArray();
-                    //dd($friends);
-        $n= array();
-        foreach($friendships as $friend){
-                    $f=(array)$friend;
-                    array_push($n, $f['sender_id'],$f['receiver_id']);
-            }
-        $friends=User::select('users.name','users.id')
-                        ->whereIn('id',$n)
-                        ->where('id','!=',$user->id)
-                        ->get();
+        $friendships = DB::table('friendships')
+            ->where('friend_status', 2)
+            ->where(function ($query) use ($id) {
+                $query->where('sender_id', $id)
+                    ->orWhere('receiver_id', $id);
+            })
+            ->join('users as sender', 'sender.id', 'friendships.sender_id')
+            ->join('users as receiver', 'receiver.id', 'friendships.receiver_id')
+            ->get(['sender_id', 'receiver_id'])->toArray();
+        //dd($friends);
+        $n = array();
+        foreach ($friendships as $friend) {
+            $f = (array)$friend;
+            array_push($n, $f['sender_id'], $f['receiver_id']);
+        }
+        $friends = User::select('users.name', 'users.id')
+            ->whereIn('id', $n)
+            ->where('id', '!=', $user->id)
+            ->get();
 
-        return view('customer.chat_message', compact('id','messages','auth_user_name','receiver_user','sender_user','friends'));
+        return view('customer.chat_message', compact('id', 'messages', 'auth_user_name', 'receiver_user', 'sender_user', 'friends'));
     }
 
 
-    public function viewmedia_message($id){
+    public function viewmedia_message($id)
+    {
         $auth_user = auth()->user();
 
-        $messages = Chat::select('id','media')->where(function($query) use ($auth_user){
-            $query->where('from_user_id',$auth_user->id)->orWhere('to_user_id',$auth_user->id);
-        })->where(function($que) use ($id){
-            $que->where('from_user_id',$id)->orWhere('to_user_id',$id);
+        $messages = Chat::select('id', 'media')->where(function ($query) use ($auth_user) {
+            $query->where('from_user_id', $auth_user->id)->orWhere('to_user_id', $auth_user->id);
+        })->where(function ($que) use ($id) {
+            $que->where('from_user_id', $id)->orWhere('to_user_id', $id);
         })->with('to_user')->with('from_user')->get();
 
         $auth_user_name = auth()->user()->name;
         $receiver_user = User::findOrFail($id);
-        return view('customer.chat_view_media', compact('id','messages','auth_user_name','receiver_user'));
+        return view('customer.chat_view_media', compact('id', 'messages', 'auth_user_name', 'receiver_user'));
     }
 
     public function post_comment($id)
     {
         // dd("dd");
-        $post=Post::select('users.name','profiles.profile_image','posts.*')
-        ->where('posts.id',$id)
-        ->leftJoin('users','users.id','posts.user_id')
-        ->leftJoin('profiles','users.profile_id','profiles.id')
-        ->first();
-        $comments = Comment::select('users.name','users.profile_id','profiles.profile_image','comments.*')
-        ->leftJoin('users','users.id','comments.user_id')
-        ->leftJoin('profiles','users.profile_id','profiles.id')
-        ->where('post_id',$id)->orderBy('created_at','DESC')->get();
+        $post = Post::select('users.name', 'profiles.profile_image', 'posts.*')
+            ->where('posts.id', $id)
+            ->leftJoin('users', 'users.id', 'posts.user_id')
+            ->leftJoin('profiles', 'users.profile_id', 'profiles.id')
+            ->first();
+        $comments = Comment::select('users.name', 'users.profile_id', 'profiles.profile_image', 'comments.*')
+            ->leftJoin('users', 'users.id', 'comments.user_id')
+            ->leftJoin('profiles', 'users.profile_id', 'profiles.id')
+            ->where('post_id', $id)->orderBy('created_at', 'DESC')->get();
 
-        $post_likes=UserReactPost::where('post_id',$post->id)
-                    ->with('user')
-                    ->get();
-                    $auth = Auth()->user()->id;
+        $post_likes = UserReactPost::where('post_id', $post->id)
+            ->with('user')
+            ->get();
+        $auth = Auth()->user()->id;
 
-                    $friend_request =DB::table('friendships')
-                    ->where('friend_status',2)
-                    ->where(function($query) use ($auth){
-                        $query->where('sender_id',$auth)
-                            ->orWhere('receiver_id',$auth);
-                    })
-                    ->join('users as sender','sender.id','friendships.sender_id')
-                    ->join('users as receiver','receiver.id','friendships.receiver_id')
-                    ->get(['sender_id','receiver_id'])->toArray();
+        $friend_request = DB::table('friendships')
+            ->where('friend_status', 2)
+            ->where(function ($query) use ($auth) {
+                $query->where('sender_id', $auth)
+                    ->orWhere('receiver_id', $auth);
+            })
+            ->join('users as sender', 'sender.id', 'friendships.sender_id')
+            ->join('users as receiver', 'receiver.id', 'friendships.receiver_id')
+            ->get(['sender_id', 'receiver_id'])->toArray();
 
-                    // dd($friend_request);
-                    $request= array();
-                        foreach($friend_request as $req){
-                                $r=(array)$req;
-                                array_push($request, $r['sender_id'],$r['receiver_id']);
-                        }
-                    $request_profile_id = DB::table('profiles')
-                        ->groupBy('user_id')
-                        ->select(DB::raw('max(id) as id'))
-                        ->where('cover_photo',null)
-                        ->whereIn('user_id',$request)
-                        ->get()
-                        ->pluck('id')->toArray();
+        // dd($friend_request);
+        $request = array();
+        foreach ($friend_request as $req) {
+            $r = (array)$req;
+            array_push($request, $r['sender_id'], $r['receiver_id']);
+        }
+        $request_profile_id = DB::table('profiles')
+            ->groupBy('user_id')
+            ->select(DB::raw('max(id) as id'))
+            ->where('cover_photo', null)
+            ->whereIn('user_id', $request)
+            ->get()
+            ->pluck('id')->toArray();
 
-                    $latest_sms = DB::table('chats')
-                        ->select(DB::raw('max(id) as id'))
-                        ->where('from_user_id',$auth)
-                        ->orWhere('to_user_id',$auth)
-                        ->groupBy('from_user_id','to_user_id')
-                        ->get()
-                        ->pluck('id')->toArray();
+        $latest_sms = DB::table('chats')
+            ->select(DB::raw('max(id) as id'))
+            ->where('from_user_id', $auth)
+            ->orWhere('to_user_id', $auth)
+            ->groupBy('from_user_id', 'to_user_id')
+            ->get()
+            ->pluck('id')->toArray();
 
-                    $latest = DB::table('chats')
-                              ->whereIn('id',$latest_sms)
-                              ->get();
-                        // dd($latest)->toArray();
+        $latest = DB::table('chats')
+            ->whereIn('id', $latest_sms)
+            ->get();
+        // dd($latest)->toArray();
 
-                        $user_id=auth()->user()->id;
+        $user_id = auth()->user()->id;
 
                         $messages =DB::select("SELECT users.id as id,users.name,profiles.profile_image,chats.text,chats.created_at as date
                         from
@@ -995,7 +993,7 @@ class SocialmediaController extends Controller
                         left join users on users.id = user
                         left join profiles on users.profile_id = profiles.id
                        order by chats.created_at desc limit  3");
-                      // dd($messages);
+        // dd($messages);
 
 
                       $groups = DB::table('chat_group_members')
@@ -1030,120 +1028,135 @@ class SocialmediaController extends Controller
                                     $merged = array_merge($arr, $latest_group_sms);
                                     $keys = array_column($merged, 'date');
                                     array_multisort($keys, SORT_DESC, $merged);
-                            dd($merged);
+
+                                    $group_id = 5;
+                                    $group_message = ChatGroupMessage::
+                                    select('profiles.profile_image',
+                                    'chat_group_messages.sender_id as from_user_id','chat_group_messages.text',
+                                    'chat_group_messages.media','chat_group_messages.created_at')
+                                   ->leftJoin('users','users.id','chat_group_messages.sender_id')
+                                   ->leftJoin('profiles','users.profile_id','profiles.id')
+                                   ->where('chat_group_messages.id',$group_id)
+                                   ->first()->toArray();
+                                   foreach($group_message as $key=>$value){
+                                    $group_message['to_user_id']= 0;
+                                    }
+                            dd($group_message);
 
         return view('customer.comments',compact('post','comments','post_likes'));
     }
 
-    public function users_for_mention(Request $request){
+    public function users_for_mention(Request $request)
+    {
         // dd($request->keyword);
         $id = auth()->user()->id;
-        $friendships=DB::table('friendships')
-        ->where('friend_status',2)
-        ->where(function($query) use ($id){
-            $query->where('sender_id',$id)
-                ->orWhere('receiver_id',$id);
-        })
-        ->join('users as sender','sender.id','friendships.sender_id')
-        ->join('users as receiver','receiver.id','friendships.receiver_id')
-        ->get(['sender_id','receiver_id'])->toArray();
+        $friendships = DB::table('friendships')
+            ->where('friend_status', 2)
+            ->where(function ($query) use ($id) {
+                $query->where('sender_id', $id)
+                    ->orWhere('receiver_id', $id);
+            })
+            ->join('users as sender', 'sender.id', 'friendships.sender_id')
+            ->join('users as receiver', 'receiver.id', 'friendships.receiver_id')
+            ->get(['sender_id', 'receiver_id'])->toArray();
         //dd($friends);
-        $n= array();
-            foreach($friendships as $friend){
-                    $f=(array)$friend;
-                    array_push($n, $f['sender_id'],$f['receiver_id']);
-            }
-            $user = User::select('users.id','users.name','friendships.date','profiles.profile_image as avatar')
+        $n = array();
+        foreach ($friendships as $friend) {
+            $f = (array)$friend;
+            array_push($n, $f['sender_id'], $f['receiver_id']);
+        }
+        $user = User::select('users.id', 'users.name', 'friendships.date', 'profiles.profile_image as avatar')
             ->leftjoin('friendships', function ($join) {
                 $join->on('friendships.receiver_id', '=', 'users.id')
-            ->orOn('friendships.sender_id', '=', 'users.id');})
-            ->leftJoin('profiles','profiles.id','users.profile_id')
-            ->where('users.id','!=',$id)
-            ->where('friendships.friend_status',2)
-            ->where('friendships.receiver_id',$id)
-            ->orWhere('friendships.sender_id',$id)
-            ->whereIn('users.id',$n)
-            ->where('users.id','!=',$id)
+                    ->orOn('friendships.sender_id', '=', 'users.id');
+            })
+            ->leftJoin('profiles', 'profiles.id', 'users.profile_id')
+            ->where('users.id', '!=', $id)
+            ->where('friendships.friend_status', 2)
+            ->where('friendships.receiver_id', $id)
+            ->orWhere('friendships.sender_id', $id)
+            ->whereIn('users.id', $n)
+            ->where('users.id', '!=', $id)
             ->get()->toArray();
         return response()->json([
             'data' =>  $user
         ]);
     }
 
-    public function post_comment_store(Request $request){
+    public function post_comment_store(Request $request)
+    {
 
-       // dd($request->post_id);
-        $banwords=DB::table('ban_words')->select('ban_word_english','ban_word_myanmar','ban_word_myanglish')->get();
+        // dd($request->post_id);
+        $banwords = DB::table('ban_words')->select('ban_word_english', 'ban_word_myanmar', 'ban_word_myanglish')->get();
 
-        foreach($banwords as $b){
-           $e_banword=$b->ban_word_english;
-           $m_banword=$b->ban_word_myanmar;
-           $em_banword=$b->ban_word_myanglish;
+        foreach ($banwords as $b) {
+            $e_banword = $b->ban_word_english;
+            $m_banword = $b->ban_word_myanmar;
+            $em_banword = $b->ban_word_myanglish;
 
-            if (str_contains($request->comment,$e_banword)) {
+            if (str_contains($request->comment, $e_banword)) {
                 // Alert::warning('Warning', 'Ban Ban Ban');
                 //return redirect()->back();
                 return response()->json([
-                    'ban'=>'Ban',
+                    'ban' => 'Ban',
                 ]);
-            }elseif (str_contains($request->comment,$m_banword)){
+            } elseif (str_contains($request->comment, $m_banword)) {
                 return response()->json([
-                    'ban'=>'Ban',
+                    'ban' => 'Ban',
                 ]);
-            }elseif (str_contains($request->comment,$em_banword)){
+            } elseif (str_contains($request->comment, $em_banword)) {
                 return response()->json([
-                    'ban'=>'Ban',
+                    'ban' => 'Ban',
                 ]);
             }
         }
         $comments = new Comment();
-        $comments->user_id=auth()->user()->id;
-        $comments->post_id=$request->post_id;
+        $comments->user_id = auth()->user()->id;
+        $comments->post_id = $request->post_id;
         $comments->comment = $request->comment;
         $comments->mentioned_users = json_encode($request->mention);
         $comments->save();
-        $post_owner = Post::where('posts.id',$comments->post_id)->first();
+        $post_owner = Post::where('posts.id', $comments->post_id)->first();
         $options = array(
             'cluster' => env('PUSHER_APP_CLUSTER'),
             'encrypted' => true
-            );
-            $pusher = new Pusher(
+        );
+        $pusher = new Pusher(
             env('PUSHER_APP_KEY'),
             env('PUSHER_APP_SECRET'),
             env('PUSHER_APP_ID'),
             $options
-            );
-        if($post_owner->user_id != auth()->user()->id AND $comments->mentioned_users == "null"){
-                $data2 = auth()->user()->name.' commented on your post!';
-                $fri_noti = new Notification();
-                $fri_noti->description = $data2;
-                $fri_noti->date = Carbon::Now()->toDateTimeString();
-                $fri_noti->sender_id = auth()->user()->id;
-                $fri_noti->receiver_id = $post_owner->user_id;
-                $fri_noti->post_id=$request->post_id;
-                $fri_noti->comment_id = $comments->id;
-                $fri_noti->notification_status = 1;
-                $fri_noti->save();
-                $pusher->trigger('friend_request.'.$post_owner->user_id , 'friendRequest', $data2);
-        }
-        elseif($comments->mentioned_users != "null"){
-           $data = auth()->user()->name.' mentioned you in a comment!';
-           $ids = json_decode($comments->mentioned_users);
-           $arr = json_decode(json_encode ( $ids ) , true);
-            foreach($arr as $id){
-                if($id['id'] != auth()->user()->id){
-                $fri_noti = new Notification();
-                $fri_noti->description = $data;
-                $fri_noti->date = Carbon::Now()->toDateTimeString();
-                $fri_noti->sender_id = auth()->user()->id;
-                $fri_noti->post_id=$request->post_id;
-                $fri_noti->receiver_id = $id['id'];
-                $fri_noti->comment_id = $comments->id;
-                $fri_noti->notification_status = 1;
-                $fri_noti->save();
-                $pusher->trigger('friend_request.'.$fri_noti->receiver_id , 'friendRequest', $data);
+        );
+        if ($post_owner->user_id != auth()->user()->id and $comments->mentioned_users == "null") {
+            $data2 = auth()->user()->name . ' commented on your post!';
+            $fri_noti = new Notification();
+            $fri_noti->description = $data2;
+            $fri_noti->date = Carbon::Now()->toDateTimeString();
+            $fri_noti->sender_id = auth()->user()->id;
+            $fri_noti->receiver_id = $post_owner->user_id;
+            $fri_noti->post_id = $request->post_id;
+            $fri_noti->comment_id = $comments->id;
+            $fri_noti->notification_status = 1;
+            $fri_noti->save();
+            $pusher->trigger('friend_request.' . $post_owner->user_id, 'friendRequest', $data2);
+        } elseif ($comments->mentioned_users != "null") {
+            $data = auth()->user()->name . ' mentioned you in a comment!';
+            $ids = json_decode($comments->mentioned_users);
+            $arr = json_decode(json_encode($ids), true);
+            foreach ($arr as $id) {
+                if ($id['id'] != auth()->user()->id) {
+                    $fri_noti = new Notification();
+                    $fri_noti->description = $data;
+                    $fri_noti->date = Carbon::Now()->toDateTimeString();
+                    $fri_noti->sender_id = auth()->user()->id;
+                    $fri_noti->post_id = $request->post_id;
+                    $fri_noti->receiver_id = $id['id'];
+                    $fri_noti->comment_id = $comments->id;
+                    $fri_noti->notification_status = 1;
+                    $fri_noti->save();
+                    $pusher->trigger('friend_request.' . $fri_noti->receiver_id, 'friendRequest', $data);
+                }
             }
-           }
         }
 
 
@@ -1161,114 +1174,119 @@ class SocialmediaController extends Controller
         ]);
     }
 
-    public function comment_list(Request $request){
-        if(!empty($request->noti_id)){
-            $noti =  DB::table('notifications')->where('id',$request->noti_id)->update(['notification_status' => 2]);
-         }
+    public function comment_list(Request $request)
+    {
+        if (!empty($request->noti_id)) {
+            $noti =  DB::table('notifications')->where('id', $request->noti_id)->update(['notification_status' => 2]);
+        }
         $id = $request->id;
-        $comments = Comment::select('users.name','users.profile_id','profiles.profile_image','comments.*')
-        ->leftJoin('users','users.id','comments.user_id')
-        ->leftJoin('profiles','users.profile_id','profiles.id')
-        ->where('post_id',$id)->orderBy('created_at','DESC')->get();
-        foreach($comments as $key=>$comm1){
-        $date = $comm1['created_at'];
-        $comments[$key]['date']= $date->toDayDateTimeString();
-        $ids = json_decode($comm1->mentioned_users);
-         if($ids != null){
-             $count = count($ids);
-             $main =  $comm1['comment'];
-             $date = $comm1['created_at'];
-             for($i = 0; $i < $count ; $i++){
-                $arr_id = json_decode(json_encode ( $ids[$i] ) , true);
-                $mentioned_user_id = $arr_id['id'];
+        $comments = Comment::select('users.name', 'users.profile_id', 'profiles.profile_image', 'comments.*')
+            ->leftJoin('users', 'users.id', 'comments.user_id')
+            ->leftJoin('profiles', 'users.profile_id', 'profiles.id')
+            ->where('post_id', $id)->orderBy('created_at', 'DESC')->get();
+        foreach ($comments as $key => $comm1) {
+            $date = $comm1['created_at'];
+            $comments[$key]['date'] = $date->toDayDateTimeString();
+            $ids = json_decode($comm1->mentioned_users);
+            if ($ids != null) {
+                $count = count($ids);
+                $main =  $comm1['comment'];
+                $date = $comm1['created_at'];
+                for ($i = 0; $i < $count; $i++) {
+                    $arr_id = json_decode(json_encode($ids[$i]), true);
+                    $mentioned_user_id = $arr_id['id'];
 
-                          $url = route('socialmedia.profile',$mentioned_user_id);
-                          $comments[$key]['Replace']= sizeof($ids);
-                         if (str_contains($main,'@'.$mentioned_user_id)) {
-                             $replace=
-                              str_replace(['@'.$mentioned_user_id],
-                             "<a href=$url>".$arr_id['name'].'</a>',$main);
-                             $main=$replace;
-                             $comments[$key]['Replace']= $main;
-                      }
-                $comments[$key]['Replace']= $main;
-
-             }
-                 }
-         else{
-             $comments[$key]['Replace']= $comm1->comment;
-         }
+                    $url = route('socialmedia.profile', $mentioned_user_id);
+                    $comments[$key]['Replace'] = sizeof($ids);
+                    if (str_contains($main, '@' . $mentioned_user_id)) {
+                        $replace =
+                            str_replace(
+                                ['@' . $mentioned_user_id],
+                                "<a href=$url>" . $arr_id['name'] . '</a>',
+                                $main
+                            );
+                        $main = $replace;
+                        $comments[$key]['Replace'] = $main;
+                    }
+                    $comments[$key]['Replace'] = $main;
+                }
+            } else {
+                $comments[$key]['Replace'] = $comm1->comment;
+            }
         }
         return response()->json([
             'comment' => $comments
         ]);
     }
-    public function comment_edit($id){
+    public function comment_edit($id)
+    {
 
         $comments = Comment::findOrFail($id);
 
         $ids = json_decode($comments->mentioned_users);
-         if($ids != null){
-             $count = count($ids);
-             //   dd($count);
-             $main =  $comments['comment'];
-             for($i = 0; $i < $count ; $i++){
-                $arr_id = json_decode(json_encode ( $ids[$i] ) , true);
+        if ($ids != null) {
+            $count = count($ids);
+            //   dd($count);
+            $main =  $comments['comment'];
+            for ($i = 0; $i < $count; $i++) {
+                $arr_id = json_decode(json_encode($ids[$i]), true);
                 $mentioned_user_id = $arr_id['id'];
 
-                          $url = route('socialmedia.profile',$mentioned_user_id);
-                          $comments['Replace']= sizeof($ids);
-                         if (str_contains($main,'@'.$mentioned_user_id)) {
-                             $replace=
-                              str_replace(['@'.$mentioned_user_id],
-                             "<a href=$url data-item-id = $mentioned_user_id class = 'mentiony-link'>".$arr_id['name'].'</a>',$main);
-                             $main=$replace;
-                             $comments['Replace']= $main;
-                      }
-                $comments['Replace']= $main  ;
+                $url = route('socialmedia.profile', $mentioned_user_id);
+                $comments['Replace'] = sizeof($ids);
+                if (str_contains($main, '@' . $mentioned_user_id)) {
+                    $replace =
+                        str_replace(
+                            ['@' . $mentioned_user_id],
+                            "<a href=$url data-item-id = $mentioned_user_id class = 'mentiony-link'>" . $arr_id['name'] . '</a>',
+                            $main
+                        );
+                    $main = $replace;
+                    $comments['Replace'] = $main;
+                }
+                $comments['Replace'] = $main;
+            }
 
-             }
+            // for($i = 0; $i < sizeof($ids) ; $i++){
+            //     $mentioned_user_id = $mentioned_user_id;
 
-                     // for($i = 0; $i < sizeof($ids) ; $i++){
-                     //     $mentioned_user_id = $mentioned_user_id;
+            //     $url = route('socialmedia.profile',$mentioned_user_id);
+            //     $comments[$key]['Replace']= sizeof($ids);
+            //     if (str_contains($main,'@'.$ids[$i]->id)) {
+            //         $replace=
+            //         str_replace(['@'.$ids[$i]->id],
+            //         "<a href=$url>".$ids[$i]->name.'</a>',$main);
+            //         $main=$replace;
+            //         $comments[$key]['Replace']= $main;
+            // }
+            //     }
 
-                     //     $url = route('socialmedia.profile',$mentioned_user_id);
-                     //     $comments[$key]['Replace']= sizeof($ids);
-                     //     if (str_contains($main,'@'.$ids[$i]->id)) {
-                     //         $replace=
-                     //         str_replace(['@'.$ids[$i]->id],
-                     //         "<a href=$url>".$ids[$i]->name.'</a>',$main);
-                     //         $main=$replace;
-                     //         $comments[$key]['Replace']= $main;
-                     // }
-                     //     }
-
-                 }
-         else{
-             $comments['Replace']= $comments->comment;
-         }
+        } else {
+            $comments['Replace'] = $comments->comment;
+        }
         return response()->json([
             'data' => $comments
         ]);
     }
 
-    public function comment_update(Request $request){
-        $banwords=DB::table('ban_words')->select('ban_word_english','ban_word_myanmar','ban_word_myanglish')->get();
-        foreach($banwords as $b){
-           $e_banword=$b->ban_word_english;
-           $m_banword=$b->ban_word_myanmar;
-           $em_banword=$b->ban_word_myanglish;
-            if (str_contains($request->comment,$e_banword)) {
+    public function comment_update(Request $request)
+    {
+        $banwords = DB::table('ban_words')->select('ban_word_english', 'ban_word_myanmar', 'ban_word_myanglish')->get();
+        foreach ($banwords as $b) {
+            $e_banword = $b->ban_word_english;
+            $m_banword = $b->ban_word_myanmar;
+            $em_banword = $b->ban_word_myanglish;
+            if (str_contains($request->comment, $e_banword)) {
                 return response()->json([
-                    'ban'=>'Ban',
+                    'ban' => 'Ban',
                 ]);
-            }elseif (str_contains($request->comment,$m_banword)){
+            } elseif (str_contains($request->comment, $m_banword)) {
                 return response()->json([
-                    'ban'=>'Ban',
+                    'ban' => 'Ban',
                 ]);
-            }elseif (str_contains($request->comment,$em_banword)){
+            } elseif (str_contains($request->comment, $em_banword)) {
                 return response()->json([
-                    'ban'=>'Ban',
+                    'ban' => 'Ban',
                 ]);
             }
         }
@@ -1281,106 +1299,112 @@ class SocialmediaController extends Controller
         ]);
     }
 
-    public function group_create(Request $request){
+    public function group_create(Request $request)
+    {
         $groupName = $request->group_name;
         $groupOwner = auth()->user()->id;
-        ChatGroup::create(['group_name'=>$groupName,'group_owner_id'=>$groupOwner]);
-
+        $group = new ChatGroup();
+        $group->group_name = $groupName;
+        $group->group_owner_id = $groupOwner;
+        $group->save();
+        ChatGroupMember::create(['group_id' => $group->id, 'member_id' => $groupOwner]);
         return back();
     }
 
-    public function group($id){
+    public function group($id)
+    {
         $group = ChatGroup::findOrFail($id);
         $gp_messages = ChatGroupMessage::where('group_id', $id)->with('user')->with('user.user_profile')->get();
-        $auth_user_data = User::where('id',auth()->user()->id)->with('user_profile')->first();
+        $auth_user_data = User::where('id', auth()->user()->id)->with('user_profile')->first();
 
         // dd($gp_messages);
-        return view('customer.group_chat_message',compact('group','gp_messages','auth_user_data'));
+        return view('customer.group_chat_message', compact('group', 'gp_messages', 'auth_user_data'));
     }
 
-    public function addmember(Request $request, $id){
-        $members =$request->members;
-        for($i= 0; $i<count($members); $i++){
+    public function addmember(Request $request, $id)
+    {
+        $members = $request->members;
+
+        for ($i = 0; $i < count($members); $i++) {
             $memberId = $members[$i];
-            $user =User::findOrFail($memberId);
-            $user->ingroup=1;
-            $user->save();
-            ChatGroupMember::create(['group_id'=>$id, 'member_id'=>$memberId]);
-         }
-         return back();
+            $group_members = new ChatGroupMember();
+            $group_members->group_id = $id;
+            $group_members->member_id = $memberId;
+            $group_members->save();
+        }
+        return back();
     }
 
-    public function group_detail($id){
+    public function group_detail($id)
+    {
         $auth = Auth()->user()->id;
-            $user = User::where('id',$auth)->first();
-            $friendships=DB::table('friendships')
-                        ->where('friend_status',2)
-                        ->where(function($query) use ($auth){
-                            $query->where('sender_id',$auth)
-                                ->orWhere('receiver_id',$auth);
-                        })
-                        ->join('users as sender','sender.id','friendships.sender_id')
-                        ->join('users as receiver','receiver.id','friendships.receiver_id')
-                        ->get(['sender_id','receiver_id'])->toArray();
-                        //dd($friends);
-            $n= array();
-            foreach($friendships as $friend){
-                        $f=(array)$friend;
-                        array_push($n, $f['sender_id'],$f['receiver_id']);
-                }
+        $user = User::where('id', $auth)->first();
+        $friendships = DB::table('friendships')
+            ->where('friend_status', 2)
+            ->where(function ($query) use ($auth) {
+                $query->where('sender_id', $auth)
+                    ->orWhere('receiver_id', $auth);
+            })
+            ->join('users as sender', 'sender.id', 'friendships.sender_id')
+            ->join('users as receiver', 'receiver.id', 'friendships.receiver_id')
+            ->get(['sender_id', 'receiver_id'])->toArray();
 
-            $group = ChatGroup::findOrFail($id);
+        $n = array();
+        foreach ($friendships as $friend) {
+            $f = (array)$friend;
+            array_push($n, $f['sender_id'], $f['receiver_id']);
+        }
 
-            $friends=User::select('users.name','users.id')->whereIn('users.id',$n)
-            ->where('users.id','!=',$user->id)->where('users.ingroup',0)
+        $group = ChatGroup::findOrFail($id);
+
+        $friends = DB::table('users')->select('users.name', 'users.id')->whereIn('users.id', $n)
+            ->where('users.id', '!=', $user->id)
             ->get();
 
-        $members = ChatGroupMember::where('group_id', $id)->with('user')->with('user.profiles')->get();
+        $members = ChatGroupMember::where('group_id', $id)->where('member_id','!=',$user->id)->with('user')->with('user.user_profile')->get();
+        $gp_admin = ChatGroup::where('group_owner_id', $user->id)->where('id',$id)->with('user')->with('user.user_profile')->first();
 
-        return view('customer.group_chat-detail', compact('friends','id','members','group'));
+        return view('customer.group_chat-detail', compact('friends', 'id', 'members', 'group','gp_admin'));
     }
 
-    public function group_member_kick(Request $request){
+    public function group_member_kick(Request $request)
+    {
         $member = ChatGroupMember::where('group_id', $request->groupId)->where('member_id', $request->memberId)->first();
-        $user =User::findOrFail($request->memberId);
-        $user->ingroup=0;
-        $user->save();
         $member->delete();
         return back();
-
     }
 
     public function post_report(Request $request)
     {
-      //dd($request->all());
-       $user_id=$request->user_id;
-       $post_id=$request->post_id;
-       $admin_id=1;
-       $description=$request->report_msg;
-       $report=New Report();
-       $report->user_id=$user_id;
-       $report->post_id=$post_id;
-       $report->description=$description;
-       $report->save();
+        //dd($request->all());
+        $user_id = $request->user_id;
+        $post_id = $request->post_id;
+        $admin_id = 1;
+        $description = $request->report_msg;
+        $report = new Report();
+        $report->user_id = $user_id;
+        $report->post_id = $post_id;
+        $report->description = $description;
+        $report->save();
 
        $options = array(
         'cluster' => env('PUSHER_APP_CLUSTER'),
         'encrypted' => true
         );
         $pusher = new Pusher(
-        env('PUSHER_APP_KEY'),
-        env('PUSHER_APP_SECRET'),
-        env('PUSHER_APP_ID'),
+            env('PUSHER_APP_KEY'),
+            env('PUSHER_APP_SECRET'),
+            env('PUSHER_APP_ID'),
 
-        $options
+            $options
         );
 
-            $data = 'Thanks for your report,we will check this post.';
-            $new_data='Post is Reported';
+        $data = 'Thanks for your report,we will check this post.';
+        $new_data = 'Post is Reported';
 
-            $user_rp = new Notification();
-            $user_rp->description = $data;
-            $user_rp->date = Carbon::Now()->toDateTimeString();
+        $user_rp = new Notification();
+        $user_rp->description = $data;
+        $user_rp->date = Carbon::Now()->toDateTimeString();
 
             $user_rp->sender_id = $admin_id;
             $user_rp->receiver_id =  auth()->user()->id;
@@ -1397,10 +1421,9 @@ class SocialmediaController extends Controller
             $admin_rp->report_id=$report->id;
             $admin_rp->save();
 
-            $pusher->trigger('friend_request.'. auth()->user()->id , 'friendRequest', $data);
+        $pusher->trigger('friend_request.' . auth()->user()->id, 'friendRequest', $data);
 
-            $pusher->trigger('friend_request.'. $admin_id , 'friendRequest', $new_data);
-
+        $pusher->trigger('friend_request.' . $admin_id, 'friendRequest', $new_data);
         return response()->json([
             'success' => 'Reported Success'
         ]);
