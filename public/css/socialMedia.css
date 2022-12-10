@@ -37,7 +37,7 @@
     -moz-box-shadow: 1px 1px 10px 0px rgba(0,0,0,0.25);
     padding: 20px 10px;
     background-color: var(--customer-card-bg-color);
-    height: 580px;
+    height: calc(100vh - 160px);
 }
 
 .social-media-left-search-container{
@@ -395,7 +395,7 @@
 }
 
 .social-media-posts-parent-container{
-    height: 550px;
+    height: 100%;
     overflow-y: scroll;
 }
 
@@ -569,7 +569,7 @@
 }
 
 .social-media-profile-parent-container{
-    height: 580px;
+    height: 100%;
     overflow-y: scroll;
 }
 
@@ -726,7 +726,7 @@
 
 .social-media-right-container .group-chat-messages-container{
     /* height: 700px; */
-    height: 450px;
+    height: calc(100% - 110px);
 }
 
 .social-media-right-container .group-chat-header-name-text-container p{
@@ -743,7 +743,7 @@
 } */
 
 .social-media-chat-media-container{
-    height: 800px;
+    height: 100%;
     overflow-y: scroll;
     display: flex;
     /* align-items: center; */
@@ -850,7 +850,7 @@
 }
 
 .social-media-allchats-messages-container{
-    height: 480px;
+    height: calc(100% - 60px);
     overflow-y: scroll;
 }
 
@@ -934,7 +934,7 @@
 }
 
 .social-media-fris-list-container{
-    height: 460px;
+    height: calc(100% - 80px);
     overflow-y: scroll;
 }
 
@@ -986,12 +986,13 @@
     font-size: 14px;
 }
 
-/* .social-media-left-infos-container{
-    display: none;
-} */
+.social-media-left-infos-container{
+    height: 90%;
+    overflow-y: auto;
+}
 
 .social-media-left-searched-items-container{
-    height: 500px;
+    height: 90%;
     overflow-y: scroll;
     display: none;
 }
@@ -1045,7 +1046,7 @@
 }
 
 .social-media-view-members-container{
-    height: 700px;
+    height: calc(100% - 100px);
     overflow-y: scroll;
 }
 
@@ -1129,7 +1130,7 @@
 
 .social-media-likes-container{
     padding: 0 20px;
-    height: 500px;
+    height: calc(100% - 40px);
     overflow-y: scroll;
 }
 
@@ -1179,7 +1180,7 @@
 
 .social-media-requests-container{
     padding: 0 20px;
-    height: 500px;
+    height: calc(100% - 40px);
     overflow-y: scroll;
 }
 
@@ -1233,7 +1234,7 @@
 .social-media-all-likes-parent-container{
     border: 1px solid var(--customer-primary-color);
     border-radius: 6px;
-    height: 800px;
+    height: 100%;
     overflow-y: scroll;
 }
 
@@ -1850,15 +1851,15 @@ ul{
     }
 
     .social-media-view-members-container{
-        height: 700px;
+        /* height: 700px; */
     }
 
     .social-media-likes-container{
-        height: 750px;
+        /* height: 750px; */
         padding: 0 10px;
     }
     .social-media-requests-container{
-        height: 750px;
+        /* height: 750px; */
         padding: 0 10px;
     }
 
@@ -1867,7 +1868,7 @@ ul{
     }
 
     .social-media-all-likes-parent-container{
-        height: 800px;
+        /* height: 800px; */
     }
 
     .group-chat-img-preview-container{
