@@ -1029,20 +1029,6 @@ class SocialmediaController extends Controller
                                     $keys = array_column($merged, 'date');
                                     array_multisort($keys, SORT_DESC, $merged);
 
-                                    $group_id = 5;
-                                    $group_message = ChatGroupMessage::
-                                    select('profiles.profile_image',
-                                    'chat_group_messages.sender_id as from_user_id','chat_group_messages.text',
-                                    'chat_group_messages.media','chat_group_messages.created_at')
-                                   ->leftJoin('users','users.id','chat_group_messages.sender_id')
-                                   ->leftJoin('profiles','users.profile_id','profiles.id')
-                                   ->where('chat_group_messages.id',$group_id)
-                                   ->first()->toArray();
-                                   foreach($group_message as $key=>$value){
-                                    $group_message['to_user_id']= 0;
-                                    }
-                            dd($group_message);
-
         return view('customer.comments',compact('post','comments','post_likes'));
     }
 
@@ -1180,9 +1166,10 @@ class SocialmediaController extends Controller
             $noti =  DB::table('notifications')->where('id', $request->noti_id)->update(['notification_status' => 2]);
         }
         $id = $request->id;
-        $comments = Comment::select('users.name', 'users.profile_id', 'profiles.profile_image', 'comments.*')
+        $comments = Comment::select('users.name', 'users.profile_id','posts.user_id as post_owner', 'profiles.profile_image', 'comments.*')
             ->leftJoin('users', 'users.id', 'comments.user_id')
             ->leftJoin('profiles', 'users.profile_id', 'profiles.id')
+            ->leftJoin('posts','posts.id','comments.post_id')
             ->where('post_id', $id)->orderBy('created_at', 'DESC')->get();
         foreach ($comments as $key => $comm1) {
             $date = $comm1['created_at'];
@@ -1214,10 +1201,12 @@ class SocialmediaController extends Controller
                 $comments[$key]['Replace'] = $comm1->comment;
             }
         }
+        //dd($comments);
         return response()->json([
             'comment' => $comments
         ]);
     }
+
     public function comment_edit($id)
     {
 
@@ -1424,8 +1413,8 @@ class SocialmediaController extends Controller
         $pusher->trigger('friend_request.' . auth()->user()->id, 'friendRequest', $data);
 
         $pusher->trigger('friend_request.' . $admin_id, 'friendRequest', $new_data);
-        return response()->json([
-            'success' => 'Reported Success'
-        ]);
+        // return response()->json([
+        //     'success' => 'Reported Success'
+        // ]);
     }
 }
