@@ -1012,7 +1012,7 @@ class SocialmediaController extends Controller
                     $latest_group_sms =ChatGroupMessage::
                             select('chat_group_messages.group_id as id','chat_groups.group_name as name',
                             'profiles.profile_image','chat_group_messages.text',
-                            DB::raw('DATE_FORMAT(chat_group_messages.created_at, "%Y-%m-%d %h:%m:%s") as date'))
+                            DB::raw('DATE_FORMAT(chat_group_messages.created_at, "%Y-%m-%d %H:%m:%s") as date'))
                             ->leftJoin('chat_groups','chat_groups.id','chat_group_messages.group_id')
                             ->leftJoin('users','users.id','chat_group_messages.sender_id')
                             ->leftJoin('profiles','users.profile_id','profiles.id')
@@ -1028,7 +1028,7 @@ class SocialmediaController extends Controller
                                     $merged = array_merge($arr, $latest_group_sms);
                                     $keys = array_column($merged, 'date');
                                     array_multisort($keys, SORT_DESC, $merged);
-                              //  dd($merged);
+                              dd($merged);
                              //members
 
                             // dd($group_members->toArray(), $friend, $friends);

@@ -1420,7 +1420,7 @@ class SocialMediaController extends Controller
             $latest_group_sms =ChatGroupMessage::
                     select('chat_group_messages.group_id as id','chat_groups.group_name as name',
                     'profiles.profile_image','chat_group_messages.text',
-                    DB::raw('DATE_FORMAT(chat_group_messages.created_at, "%Y-%m-%d %h:%m:%s") as date'))
+                    DB::raw('DATE_FORMAT(chat_group_messages.created_at, "%Y-%m-%d %H:%m:%s") as date'))
                     ->leftJoin('chat_groups','chat_groups.id','chat_group_messages.group_id')
                     ->leftJoin('users','users.id','chat_group_messages.sender_id')
                     ->leftJoin('profiles','users.profile_id','profiles.id')
@@ -1759,13 +1759,13 @@ class SocialMediaController extends Controller
            foreach($friend as $key=>$fri){
                foreach($group_members as $value=>$gp){
                    if ($fri['id'] == $gp['id'] ) {
-                                   unset($friend[$key]);
+                         unset($friend[$key]);
                    }
                }
            }
            return response()->json([
             'success' => 'Success',
-            'data' => $group_members
+            'data' => $friend
         ]);
     }
     public function addmember(Request $request){
@@ -1780,7 +1780,6 @@ class SocialMediaController extends Controller
          }
          return response()->json([
             'success' => 'add',
-            'data' => $group_members
         ]);
     }
 
@@ -1789,6 +1788,33 @@ class SocialMediaController extends Controller
         $member->delete();
         return response()->json([
             'success' => 'Kicked!'
+        ]);
+    }
+
+    public function leave_group(Request $request){
+        $member = ChatGroupMember::where('group_id', $request->group_id)->where('member_id', auth()->user()->id)->first();
+        $member->delete();
+        return response()->json([
+            'success' => 'leaved!'
+        ]);
+    }
+
+
+    public function delete_group(Request $request)
+    {
+
+        $group_message_delete = ChatGroupMessage::where('group_id', $request->id);
+        $group_message_delete->delete();
+
+
+        $group_member_delete = ChatGroupMember::where('group_id', $request->id);
+        $group_member_delete->delete();
+
+        $group_delete = ChatGroup::where('id', $request->group_id);
+        $group_delete->delete();
+
+        return response()->json([
+            'message' => 'Success Deleted!'
         ]);
     }
 
