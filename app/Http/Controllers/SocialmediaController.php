@@ -995,40 +995,51 @@ class SocialmediaController extends Controller
                        order by chats.created_at desc limit  3");
         // dd($messages);
 
+        $id = auth()->user()->id;
+        $friendships=DB::table('friendships')
+        ->where('friend_status',2)
+        ->where(function($query) use ($id){
+            $query->where('sender_id',$id)
+                ->orWhere('receiver_id',$id);
+        })
+        ->join('users as sender','sender.id','friendships.sender_id')
+        ->join('users as receiver','receiver.id','friendships.receiver_id')
+        ->get(['sender_id','receiver_id'])->toArray();
+        //dd($friends);
+        $n= array();
+            foreach($friendships as $friend){
+                    $f=(array)$friend;
+                    array_push($n, $f['sender_id'],$f['receiver_id']);
+            }
+            $friend = User::select('users.id','users.name','profiles.profile_image')
+            ->leftjoin('friendships', function ($join) {
+                  $join->on('friendships.receiver_id', '=', 'users.id')
+            ->orOn('friendships.sender_id', '=', 'users.id');})
+            ->leftJoin('profiles','profiles.id','users.profile_id')
+            ->where('users.id','!=',$id)
+            ->where('friendships.friend_status',2)
+            ->where('friendships.receiver_id',$id)
+            ->orWhere('friendships.sender_id',$id)
+            ->whereIn('users.id',$n)
+            ->where('users.id','!=',$id)
+            ->get()->toArray();
+            $group_id = 1;
+            $group_members = ChatGroupMember::select('users.id','users.name','profiles.profile_image')
+                                       ->leftJoin('users','users.id','chat_group_members.member_id')
+                                       ->leftJoin('profiles','users.profile_id','profiles.id')
+                                       ->where('chat_group_members.group_id',$group_id)
+                                       ->where('chat_group_members.member_id','!=',$id)
+                                       ->get()->toArray();
 
-                      $groups = DB::table('chat_group_members')
-                                ->select('group_id')
-                                ->groupBy('group_id')
-                                ->where('chat_group_members.member_id',$auth)
-                                ->get()
-                                ->pluck('group_id')->toArray();
+                                       foreach($friend as $key=>$fri){
+                                        foreach($group_members as $value=>$gp){
+                                            if ($fri['id'] == $gp['id'] ) {
+                                                  unset($friend[$key]);
+                                            }
+                                        }
+                                    }
+                dd($friend,$group_members);
 
-                      $latest_group_message = DB::table('chat_group_messages')
-                                ->groupBy('group_id')
-                                ->whereIn('group_id',$groups)
-                                ->select(DB::raw('max(id) as id'))
-                                ->get()
-                                ->pluck('id')->toArray();
-                    $latest_group_sms =ChatGroupMessage::
-                            select('chat_group_messages.group_id as id','chat_groups.group_name as name',
-                            'profiles.profile_image','chat_group_messages.text',
-                            DB::raw('DATE_FORMAT(chat_group_messages.created_at, "%Y-%m-%d %H:%m:%s") as date'))
-                            ->leftJoin('chat_groups','chat_groups.id','chat_group_messages.group_id')
-                            ->leftJoin('users','users.id','chat_group_messages.sender_id')
-                            ->leftJoin('profiles','users.profile_id','profiles.id')
-                            ->whereIn('chat_group_messages.id',$latest_group_message)->get()->toArray();
-                            //   $ids = json_encode($messages);
-                            $arr = json_decode(json_encode ( $messages ) , true);
-                            foreach($arr as $key=>$value){
-                                $arr[$key]['is_group'] = 0;
-                            }
-                            foreach($latest_group_sms as $key=>$value){
-                                $latest_group_sms[$key]['is_group'] = 1;
-                            }
-                                    $merged = array_merge($arr, $latest_group_sms);
-                                    $keys = array_column($merged, 'date');
-                                    array_multisort($keys, SORT_DESC, $merged);
-                              dd($merged);
                              //members
 
                             // dd($group_members->toArray(), $friend, $friends);

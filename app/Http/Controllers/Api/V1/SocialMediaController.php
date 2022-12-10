@@ -1764,11 +1764,16 @@ class SocialMediaController extends Controller
                                        ->where('chat_group_members.member_id','!=',$id)
                                        ->get()->toArray();
 
-             $members = array_merge($friend,$group_members);
-
+             foreach($friend as $key=>$fri){
+                foreach($group_members as $value=>$gp){
+                    if ($fri['id'] == $gp['id'] ) {
+                          unset($friend[$key]);
+                    }
+                }
+            }
            return response()->json([
             'success' => 'Success',
-            'data' => $members
+            'data' => $friend
         ]);
     }
     public function addmember(Request $request){
