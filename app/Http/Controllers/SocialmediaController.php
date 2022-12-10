@@ -1028,7 +1028,7 @@ class SocialmediaController extends Controller
                                     $merged = array_merge($arr, $latest_group_sms);
                                     $keys = array_column($merged, 'date');
                                     array_multisort($keys, SORT_DESC, $merged);
-                              dd($merged);
+                              //dd($merged);
                              //members
 
                             // dd($group_members->toArray(), $friend, $friends);
