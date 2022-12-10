@@ -769,7 +769,7 @@
         Echo.join('agora-videocall')
             .here((users) => {
                 console.log('onlineuser', users);
-                onlineUsers = users
+                onlineUsers = users;
                 console.log(onlineUsers, 'onlineuser');
 
                 users.forEach((user, index) => {
