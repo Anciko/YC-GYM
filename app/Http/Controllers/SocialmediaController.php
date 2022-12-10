@@ -1029,19 +1029,13 @@ class SocialmediaController extends Controller
                                     $keys = array_column($merged, 'date');
                                     array_multisort($keys, SORT_DESC, $merged);
 
-                                    $group_id = 5;
-                                    $group_message = ChatGroupMessage::
-                                    select('profiles.profile_image',
-                                    'chat_group_messages.sender_id as from_user_id','chat_group_messages.text',
-                                    'chat_group_messages.media','chat_group_messages.created_at')
-                                   ->leftJoin('users','users.id','chat_group_messages.sender_id')
-                                   ->leftJoin('profiles','users.profile_id','profiles.id')
-                                   ->where('chat_group_messages.id',$group_id)
-                                   ->first()->toArray();
-                                   foreach($group_message as $key=>$value){
-                                    $group_message['to_user_id']= 0;
-                                    }
-                            dd($group_message);
+
+
+
+                              //  dd($merged);
+                             //members
+
+                            // dd($group_members->toArray(), $friend, $friends);
 
         return view('customer.comments',compact('post','comments','post_likes'));
     }
