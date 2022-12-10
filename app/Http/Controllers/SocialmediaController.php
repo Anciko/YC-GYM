@@ -1303,11 +1303,10 @@ class SocialmediaController extends Controller
 
     public function group($id)
     {
-        $group = ChatGroup::findOrFail($id);
+        $group = ChatGroup::where('id',$id)->first();
         $gp_messages = ChatGroupMessage::where('group_id', $id)->with('user')->with('user.user_profile')->get();
         $auth_user_data = User::where('id', auth()->user()->id)->with('user_profile')->first();
 
-        // dd($gp_messages);
         return view('customer.group_chat_message', compact('group', 'gp_messages', 'auth_user_data'));
     }
 
@@ -1362,6 +1361,14 @@ class SocialmediaController extends Controller
         $member = ChatGroupMember::where('group_id', $request->groupId)->where('member_id', $request->memberId)->first();
         $member->delete();
         return back();
+    }
+
+    public function group_viewmedia($id)
+    {
+
+        $messages_media = ChatGroupMessage::where('group_id', $id)->where('media','!=',null)->get();
+
+        return view('customer.group_chat_viewmedia', compact('id', 'messages_media'));
     }
 
     public function post_report(Request $request)

@@ -15,7 +15,7 @@
                 <iconify-icon icon="ant-design:phone-outlined" class="chat-header-phone-icon"></iconify-icon>
                 <iconify-icon icon="eva:video-outline" class="chat-header-video-icon"></iconify-icon>
 
-                <a href="../htmls/trainerTrainingCenterViewMedia.html" class="group-chat-view-midea-link">
+                <a href="{{route('socialmedia.group.viewmedia',$group->id)}}" class="group-chat-view-midea-link">
                     <p>View Media</p>
                     <iconify-icon icon="akar-icons:arrow-right" class="group-chat-view-midea-link-icon"></iconify-icon>
                 </a>
@@ -418,6 +418,7 @@
                         if (auth_user_img == null) {
                             messageContainer.innerHTML += `<div class="group-chat-sender-container">
                                         <div class="group-chat-sender-text-container">
+                                            <span>${data.senderName}</span>
                                             <p>${data.message.text}</p>
                                         </div>
                                         <img class="nav-profile-img" src="{{ asset('img/customer/imgs/user_default.jpg') }}" />
@@ -425,6 +426,7 @@
                         } else {
                             messageContainer.innerHTML += `<div class="group-chat-sender-container">
                                                 <div class="group-chat-sender-text-container">
+                                                    <span>${data.senderName}</span>
                                                     <p>${data.message.text}</p>
                                                 </div>
                                                 <img src="{{ asset('/storage/post/${auth_user_img.profile_image}') }}" />
@@ -477,13 +479,14 @@
                                 </video>`
 
                             }
-                            })
+                            }).join('')
                         }
                         </div>`
                         if (auth_user_img == null) {
                             messageContainer.innerHTML += `
                                     <div class="group-chat-sender-container">
                                         <div class="group-chat-sender-text-container">
+                                            <span>${data.senderName}</span>
                                             ${messageMediaContainer}
                                             </div>
                                         <img class="nav-profile-img" src="{{ asset('img/customer/imgs/user_default.jpg') }}" />
@@ -492,6 +495,7 @@
                             messageContainer.innerHTML += `
                                     <div class="group-chat-sender-container">
                                         <div class="group-chat-sender-text-container">
+                                            <span>${data.senderName}</span>
                                             ${messageMediaContainer}
                                             </div>
                                         <img src="{{ asset('/storage/post/${auth_user_img.profile_image}') }}" />
@@ -517,7 +521,7 @@
 
                             receiverMessageMedia = `
                             <div class="group-chat-imgs-vids-container">
-                            ${Object.keys(imageArr).forEach(key => {
+                            ${Object.keys(imageArr).map(key => {
 
                                 if (imageArr[key].split('.').pop() === 'png' || imageArr[key]
                                     .split('.').pop() ===
@@ -589,12 +593,13 @@
                                     //                         </div>
                                     //                     </div>`;
                                 }
-                            })}
+                            }).join('')}
                             </div>
                             `
                             messageContainer.innerHTML += `<div class="group-chat-receiver-container">
                                                         <img class="nav-profile-img" src="{{ asset('img/customer/imgs/user_default.jpg') }}" />
                                                             <div class="group-chat-receiver-text-container">
+                                                                <span>${data.senderName}</span>
                                                                 ${receiverMessageMedia}
                                                             </div>
                                                         </div>`;
@@ -615,7 +620,7 @@
                             var imageArr = JSON.parse(imageFile)
                             receiverMessageMedia = `
                             <div class = "group-chat-imgs-vids-container">
-                            ${Object.keys(imageArr).forEach(key => {
+                            ${Object.keys(imageArr).map(key => {
                                 if (imageArr[key].split('.').pop() === 'png' || imageArr[key]
                                     .split('.').pop() ===
                                     'jpg' || imageArr[key].split('.').pop() === 'jpeg' || imageArr[key].split(
@@ -684,7 +689,7 @@
                                     //                         </div>
                                     //                     </div>`;
                                 }
-                            })}
+                            }).join('')}
                             </div>
                             `
                         }
@@ -692,6 +697,7 @@
                         messageContainer.innerHTML += `<div class="group-chat-receiver-container">
                                                             <img src="{{ asset('/storage/post/${data.senderImg}') }}" />
                                                             <div class="group-chat-receiver-text-container">
+                                                                <span>${data.senderName}</span>
                                                                 ${receiverMessageMedia}
                                                             </div>
                                                         </div>`;
@@ -711,6 +717,7 @@
             console.log("clear img preview")
             groupChatImgPreview.removeAttribute("src")
             groupChatImgPreview.remove()
+
             cancelBtn.remove()
             $('.video-preview').removeAttr("src")
             $('.video-prev').hide();
