@@ -94,6 +94,7 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
         Route::post('/socialmedia/group/{id}/addmember',[SocialmediaController::class,'addmember'])->name('socialmedia.group.addmember');
         Route::get('/socialmedia/group/detail/{id}',[SocialmediaController::class,'group_detail'])->name('socialmedia.group.detail');
         Route::post('/socialmedia/group/member/kick',[SocialmediaController::class,'group_member_kick'])->name('socialmedia.group.memberkick');
+        Route::get('/socialmedia/group/viewmedia/{id}',[SocialmediaController::class,'group_viewmedia'])->name('socialmedia.group.viewmedia');
 
         // Route::get('/testing', [SocialmediaController::class, 'index'])->name('testing');
         // Route::post('/testing/store', [SocialmediaController::class, 'post_store'])->name('testing.store');
