@@ -247,16 +247,28 @@
                                 <div class="social-media-left-gpmessages-rows-container">
                                     @forelse ($chat_group as $group)
                                         <a href="{{route('socialmedia.group',$group->id)}}"             class="social-media-left-gpmessages-row">
+                                    @if ($group->group_id != null)
+                                        <a href="{{route('socialmedia.group',$group->group_id)}}" class="social-media-left-gpmessages-row">
+                                            <img src="{{asset('img/customer/imgs/group_default.png')}}" class="w-25">
+                                            <p>
+                                            {{$group->group_name}}<br>
+                                                <span>{{$group->text}} </span>
+                                            </p>
+                                        </a>
+                                    @else
+                                        <a href="{{route('socialmedia.group',$group->id)}}" class="social-media-left-gpmessages-row">
                                             <img src="{{asset('img/customer/imgs/group_default.png')}}" class="w-25">
                                             <p>
                                             {{$group->group_name}}<br>
                                                 <span>{{$group->text}}</span>
                                             </p>
                                         </a>
-
+                                        @endif
                                  @empty
                                         <p class="text-secondary p-1">No Group Messages</p>
                                 @endforelse
+
+
                                 </div>
                             </div>
                         </div>
@@ -271,8 +283,6 @@
                 </div>
             </div>
         {{-- <div class="customer-main-content-container"> --}}
-
-
 
         {{-- </div> --}}
 

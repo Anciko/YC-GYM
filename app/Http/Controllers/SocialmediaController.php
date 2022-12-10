@@ -1170,9 +1170,10 @@ class SocialmediaController extends Controller
             $noti =  DB::table('notifications')->where('id', $request->noti_id)->update(['notification_status' => 2]);
         }
         $id = $request->id;
-        $comments = Comment::select('users.name', 'users.profile_id', 'profiles.profile_image', 'comments.*')
+        $comments = Comment::select('users.name', 'users.profile_id','posts.user_id as post_owner', 'profiles.profile_image', 'comments.*')
             ->leftJoin('users', 'users.id', 'comments.user_id')
             ->leftJoin('profiles', 'users.profile_id', 'profiles.id')
+            ->leftJoin('posts','posts.id','comments.post_id')
             ->where('post_id', $id)->orderBy('created_at', 'DESC')->get();
         foreach ($comments as $key => $comm1) {
             $date = $comm1['created_at'];
@@ -1204,10 +1205,12 @@ class SocialmediaController extends Controller
                 $comments[$key]['Replace'] = $comm1->comment;
             }
         }
+        //dd($comments);
         return response()->json([
             'comment' => $comments
         ]);
     }
+
     public function comment_edit($id)
     {
 
@@ -1421,8 +1424,8 @@ class SocialmediaController extends Controller
         $pusher->trigger('friend_request.' . auth()->user()->id, 'friendRequest', $data);
 
         $pusher->trigger('friend_request.' . $admin_id, 'friendRequest', $new_data);
-        return response()->json([
-            'success' => 'Reported Success'
-        ]);
+        // return response()->json([
+        //     'success' => 'Reported Success'
+        // ]);
     }
 }
