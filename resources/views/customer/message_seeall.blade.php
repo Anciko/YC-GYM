@@ -49,7 +49,7 @@
 
             <div class="social-media-allchats-messages-container">
                     @forelse ($messages as $list)
-                    <div class="social-media-allchats-message-row">
+                    <div class="social-media-allchats-message-row-container">
                         <a href="{{route('message.chat',$list->id)}}" class="social-media-allchats-message-row">
                             <div class="social-media-allchats-message-img">
                                 @if ($list->profile_image==null)
