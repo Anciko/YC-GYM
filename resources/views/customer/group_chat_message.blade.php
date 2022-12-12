@@ -20,7 +20,6 @@
                     <iconify-icon icon="akar-icons:arrow-right" class="group-chat-view-midea-link-icon"></iconify-icon>
                 </a>
             </div>
-
         </div>
 
         <div class="group-chat-messages-container">
@@ -403,7 +402,8 @@
                 }).then();
                 messageInput.value = "";
             } else {
-                axios.post('/api/group/message/chat/' + groupId, formData)
+                axios.post('/api/group/message/chat/' + groupId, formData).then();
+                clearAddPost()
             }
 
         })
@@ -441,7 +441,6 @@
                         var messageMediaContainer = `<div class="group-chat-imgs-vids-container">
                         ${
                             Object.keys(imageArr).map(key => {
-                            console.log(key, imageArr[key]);
 
                             if (imageArr[key].split('.').pop() === 'png' || imageArr[key]
                                 .split('.').pop() ===
