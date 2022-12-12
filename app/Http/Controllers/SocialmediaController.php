@@ -77,7 +77,35 @@ class SocialmediaController extends Controller
 
         return view('customer.socialmedia', compact('posts'));
     }
+    public function latest_messages(){
+        $user_id=auth()->user()->id;
 
+        $messages =DB::select("SELECT users.id,users.name,profiles.profile_image,chats.text
+        from
+            chats
+          join
+            (select user, max(created_at) m
+                from
+                   (
+                     (select id, to_user_id user, created_at
+                       from chats
+                       where from_user_id= $user_id )
+                   union
+                     (select id, from_user_id user, created_at
+                       from chats
+                       where to_user_id= $user_id)
+                    ) t1
+               group by user) t2
+         on ((from_user_id= $user_id and to_user_id=user) or
+             (from_user_id=user and to_user_id= $user_id)) and
+             (created_at = m)
+        left join users on users.id = user
+        left join profiles on users.profile_id = profiles.id
+       order by chats.created_at desc limit  3");
+        return response()->json([
+            'data' => $messages,
+        ]);
+    }
     public function user_react_post(Request $request)
     {
         $post_id = $request['post_id'];
@@ -974,87 +1002,24 @@ class SocialmediaController extends Controller
         $post_likes = UserReactPost::where('post_id', $post->id)
             ->with('user')
             ->get();
-        $auth = Auth()->user()->id;
 
-        $friend_request = DB::table('friendships')
-            ->where('friend_status', 2)
-            ->where(function ($query) use ($auth) {
-                $query->where('sender_id', $auth)
-                    ->orWhere('receiver_id', $auth);
-            })
-            ->join('users as sender', 'sender.id', 'friendships.sender_id')
-            ->join('users as receiver', 'receiver.id', 'friendships.receiver_id')
-            ->get(['sender_id', 'receiver_id'])->toArray();
+            $auth_user = auth()->user();
+        $messages = Chat::where(function($query) use ($auth_user){
+                $query->where('from_user_id',$auth_user->id)->orWhere('to_user_id',$auth_user->id);
+            })->where(function($que) use ($id){
+                $que->where('from_user_id',$id)->orWhere('to_user_id',$id);
+            })->get();
 
-        // dd($friend_request);
-        $request = array();
-        foreach ($friend_request as $req) {
-            $r = (array)$req;
-            array_push($request, $r['sender_id'], $r['receiver_id']);
-        }
-        $request_profile_id = DB::table('profiles')
-            ->groupBy('user_id')
-            ->select(DB::raw('max(id) as id'))
-            ->where('cover_photo', null)
-            ->whereIn('user_id', $request)
-            ->get()
-            ->pluck('id')->toArray();
 
-        $latest_sms = DB::table('chats')
-            ->select(DB::raw('max(id) as id'))
-            ->where('from_user_id', $auth)
-            ->orWhere('to_user_id', $auth)
-            ->groupBy('from_user_id', 'to_user_id')
-            ->get()
-            ->pluck('id')->toArray();
+        $receiver_user = User::select('users.id','users.name','profiles.profile_image')
+                                ->where('users.id',$id)
+                                ->leftjoin('profiles','profiles.id','users.profile_id')->first();
 
-        $latest = DB::table('chats')
-            ->whereIn('id', $latest_sms)
-            ->get();
-        // dd($latest)->toArray();
 
-        $user_id = auth()->user()->id;
-
-                        $messages =DB::select("SELECT users.id as id,users.name,profiles.profile_image,chats.text,chats.created_at as date
-                        from
-                            chats
-                          join
-                            (select user, max(created_at) m
-                                from
-                                   (
-                                     (select id, to_user_id user, created_at
-                                       from chats
-                                       where from_user_id= $user_id )
-                                   union
-                                     (select id, from_user_id user, created_at
-                                       from chats
-                                       where to_user_id= $user_id)
-                                    ) t1
-                               group by user) t2
-                         on ((from_user_id= $user_id and to_user_id=user) or
-                             (from_user_id=user and to_user_id= $user_id)) and
-                             (created_at = m)
-                        left join users on users.id = user
-                        left join profiles on users.profile_id = profiles.id
-                       order by chats.created_at desc limit  3");
-        // dd($messages);
-
-        $id = auth()->user()->id;
-        $friendships=DB::table('friendships')
-        ->where('friend_status',2)
-        ->where(function($query) use ($id){
-            $query->where('sender_id',$id)
-                ->orWhere('receiver_id',$id);
-        })
-        ->join('users as sender','sender.id','friendships.sender_id')
-        ->join('users as receiver','receiver.id','friendships.receiver_id')
-        ->get(['sender_id','receiver_id'])->toArray();
-        //dd($friends);
-        $n= array();
-            foreach($friendships as $friend){
-                    $f=(array)$friend;
-                    array_push($n, $f['sender_id'],$f['receiver_id']);
+        foreach($messages as $key=>$value){
+                        $messages[$key]['profile_image'] = $receiver_user->profile_image == null ?  null : $receiver_user->profile_image;
             }
+        dd($messages);
             $friend = User::select('users.id','users.name','profiles.profile_image')
             ->leftjoin('friendships', function ($join) {
                   $join->on('friendships.receiver_id', '=', 'users.id')
@@ -1355,7 +1320,13 @@ class SocialmediaController extends Controller
         $group->group_name = $groupName;
         $group->group_owner_id = $groupOwner;
         $group->save();
+        $message = "Hi All";
         ChatGroupMember::create(['group_id' => $group->id, 'member_id' => $groupOwner]);
+        $chat_message = new ChatGroupMessage();
+        $chat_message->group_id =  $group->id;
+        $chat_message->sender_id = $groupOwner;
+        $chat_message->text = $message;
+        $chat_message->save();
         return back();
     }
 

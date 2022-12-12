@@ -1315,7 +1315,7 @@
                 const tokenRes = await generateToken(channelName)
 
                 console.log(tokenRes.data);
-
+                console.log(tokenRes , "call Token")
                 axios.post("/agora/call-user", {
                     user_to_call: id,
                     username: authuser,
@@ -1393,7 +1393,7 @@
             callPlaced = true;
             videoCallEvent = true;
             incomingCallContainer.innerHTML = ""
-
+            console.log(tokenRes , "accept")
         }
 
         function declineCall() {
@@ -1403,7 +1403,7 @@
         }
 
         async function joinRoom(token, channel) {
-            console.log('leeeeeee', channel);
+            console.log(token, channel);
             client.join(
                 token,
                 channel,

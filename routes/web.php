@@ -99,6 +99,8 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
         Route::get('/socialmedia/group/viewmedia/{id}',[SocialmediaController::class,'group_viewmedia'])->name('socialmedia.group.viewmedia');
         Route::get('/socialmedia/group/leave/{gp_id}/{id}',[SocialmediaController::class,'group_leave'])->name('socialmedia.group.leave');
 
+        Route::get('/socialmedia/latest_messages',[SocialmediaController::class,'latest_messages'])->name('socialmedia.latest_messages');
+
         // Route::get('/testing', [SocialmediaController::class, 'index'])->name('testing');
         // Route::post('/testing/store', [SocialmediaController::class, 'post_store'])->name('testing.store');
 
