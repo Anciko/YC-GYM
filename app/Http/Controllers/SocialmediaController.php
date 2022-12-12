@@ -869,19 +869,14 @@ class SocialmediaController extends Controller
     {
         $auth_user = auth()->user();
 
-        $messages = Chat::where(function ($query) use ($auth_user) {
-            $query->where('from_user_id', $auth_user->id)->orWhere('to_user_id', $auth_user->id);
-        })->where(function ($que) use ($id) {
-            $que->where('from_user_id', $id)->orWhere('to_user_id', $id);
-        })->with('to_user')->with('from_user')->get();
+        $messages = DB::select("SELECT * FROM chats where (from_user_id =  $auth_user->id or to_user_id =  $auth_user->id) and (from_user_id = $id or to_user_id = $id)
+        and  deleted_by !=  $auth_user->id  and delete_status != 2 order by created_at DESC");
 
         $auth_user_name = auth()->user()->name;
         $receiver_user = User::where('users.id', $id)->with('user_profile')->first();
 
         $sender_user = User::where('id', $auth_user->id)->with('user_profile')->first();
-// dd($receiver_user->toArray());
 
-        //active friend
         $auth = Auth()->user()->id;
         $user = User::where('id', $auth)->first();
 
@@ -982,57 +977,6 @@ class SocialmediaController extends Controller
         $post_likes = UserReactPost::where('post_id', $post->id)
             ->with('user')
             ->get();
-
-           $auth_user = auth()->user();
-            $messages = Chat::where(function($query) use ($auth_user){
-                $query->where('from_user_id',$auth_user->id)->orWhere('to_user_id',$auth_user->id);
-            })->where(function($que) use ($id){
-                $que->where('from_user_id',$id)->orWhere('to_user_id',$id);
-            })
-            ->orderBy('created_at','DESC')
-            ->get();
-
-
-        $receiver_user = User::select('users.id','users.name','profiles.profile_image')
-                                ->where('users.id',$id)
-                                ->leftjoin('profiles','profiles.id','users.profile_id')->first();
-
-
-        foreach($messages as $key=>$value){
-                        $messages[$key]['profile_image'] = $receiver_user->profile_image == null ?  null : $receiver_user->profile_image;
-            }
-            $re_id = 4;
-        $test = DB::select("SELECT * FROM chats where (from_user_id =  $auth_user->id or to_user_id =  $auth_user->id) and (from_user_id = $re_id or to_user_id = $re_id)
-        and  deleted_by !=  $auth_user->id  and delete_status != 2");
-
-
-
-        // $auth_user = auth()->user();
-        // $messages = Chat::where('delete_status','!=',2)
-        //                 ->where(function($query1) use ($auth_user,$re_id)
-        //                 {
-        //                     $query1->where('from_user_id', $auth_user->id)
-        //                             ->orWhere('from_user_id',$re_id);
-        //                 })
-        //                 ->where( function($query2) use ($auth_user,$re_id)
-        //                 {
-        //                     $query2->where('to_user_id', $auth_user->id)
-        //                     ->orWhere('to_user_id',$re_id);
-        //                 })
-        //                 ->where( function($delete_status) use ($auth_user)
-        //                 {
-        //                     $delete_status->where('deleted_by','!=',$auth_user->id);
-        //                 })
-        //                 ->orderBy('created_at','DESC')
-        //                 ->get()->toArray();
-        // ///
-        // dd($messages);
-        dd($test);
-
-                             //members
-
-                            // dd($group_members->toArray(), $friend, $friends);
-
         return view('customer.comments',compact('post','comments','post_likes'));
     }
 
