@@ -1210,33 +1210,35 @@ class SocialMediaController extends Controller
     }
 
     public function chatting(Request $request, User $user){
-        if($request->text ==null && $request->fileInput == null ){
+
+        if($request->text ==null && $request->fileSend == null ){
 
         }else{
-            $path='';
-        if($request->file('fileInput') !=null){
-            $request->validate([
-                'fileInput' => 'required|mimes:png,jpg,jpeg,gif,mp4,mov,webm'
-                ],[
-                    'fileInput.required' => 'You can send png,jpg,jpeg,gif,mp4,mov and webm extension'
-                ]);
+            $message = new Chat();
+            $sendFile = $request->all();
+            if($request->totalFiles != 0){
+                $files = $sendFile['fileSend'];
+                if($sendFile['fileSend']) {
+                    foreach($files as $file)
+                    {
+                        $extension = $file->extension();
+                        $name = rand().".".$extension;
+                        $file->storeAs('/public/customer_message_media/', $name);
+                        $imgData[] = $name;
+                        $message->media = json_encode($imgData);
+                        $message->text = null;
+                    }
+                }
+            }else{
+                $message->text = $request->text;
+                $message->media = null;
+            }
 
-            $file = $request->file('fileInput');
-            $path =uniqid().'_'. $file->getClientOriginalName();
-            $disk = Storage::disk('public');
-            $disk->put(
-                'customer_message_media/'.$path,file_get_contents($file)
-            );
-        }
+            $message->from_user_id = auth()->user()->id;
+            $message->to_user_id = $user->id;
+            $message->save();
 
-        $message = new Chat();
-        $message->from_user_id = auth()->user()->id;
-        $message->to_user_id = $user->id;
-        $message->text = $request->text == null ?  null : $request->text;
-        $message->media = $request->fileInput == null ? null : $path;
-        $message->save();
-
-        broadcast(new Chatting($message, $request->sender)); //receiver
+            broadcast(new Chatting($message, $request->sender));
         }
 
     }
@@ -1258,8 +1260,8 @@ class SocialMediaController extends Controller
                     $name = rand().".".$extension;
                     $file->storeAs('/public/customer_message_media/', $name);
                     $imgData[] = $name;
-                    // $message->media .= $name.',';
                     $message->media = json_encode($imgData);
+                    $message->text = null;
                 }
             }
         }else{
@@ -1420,7 +1422,7 @@ class SocialMediaController extends Controller
             $latest_group_sms =ChatGroupMessage::
                     select('chat_group_messages.group_id as id','chat_groups.group_name as name',
                     'profiles.profile_image','chat_group_messages.text',
-                    DB::raw('DATE_FORMAT(chat_group_messages.created_at, "%Y-%m-%d %h:%m:%s") as date'))
+                    DB::raw('DATE_FORMAT(chat_group_messages.created_at, "%Y-%m-%d %H:%m:%s") as date'))
                     ->leftJoin('chat_groups','chat_groups.id','chat_group_messages.group_id')
                     ->leftJoin('users','users.id','chat_group_messages.sender_id')
                     ->leftJoin('profiles','users.profile_id','profiles.id')
@@ -1436,7 +1438,14 @@ class SocialMediaController extends Controller
                     $merged = array_merge($arr, $latest_group_sms);
                     $keys = array_column($merged, 'date');
                     array_multisort($keys, SORT_DESC, $merged);
-
+                    $group_owner = ChatGroup::whereIn('chat_groups.id',$groups)->get();
+                    foreach($merged as $key=>$value){
+                           $merged[$key]['owner_id'] = 0;
+                        foreach($group_owner as $owner){
+                            if($value['id'] == $owner['id'] AND $value['is_group'] == 1)
+                            $merged[$key]['owner_id'] = $owner->group_owner_id;
+                        }
+                    }
                 return response()->json([
                     'all_messages' => $merged
                 ]);
@@ -1719,7 +1728,56 @@ class SocialMediaController extends Controller
             'group_members' => $group_members
         ]);
     }
+    public function members(Request $request){
 
+        $id = auth()->user()->id;
+        $friendships=DB::table('friendships')
+        ->where('friend_status',2)
+        ->where(function($query) use ($id){
+            $query->where('sender_id',$id)
+                ->orWhere('receiver_id',$id);
+        })
+        ->join('users as sender','sender.id','friendships.sender_id')
+        ->join('users as receiver','receiver.id','friendships.receiver_id')
+        ->get(['sender_id','receiver_id'])->toArray();
+        //dd($friends);
+        $n= array();
+            foreach($friendships as $friend){
+                    $f=(array)$friend;
+                    array_push($n, $f['sender_id'],$f['receiver_id']);
+            }
+            $friend = User::select('users.id','users.name','profiles.profile_image')
+            ->leftjoin('friendships', function ($join) {
+                  $join->on('friendships.receiver_id', '=', 'users.id')
+            ->orOn('friendships.sender_id', '=', 'users.id');})
+            ->leftJoin('profiles','profiles.id','users.profile_id')
+            ->where('users.id','!=',$id)
+            ->where('friendships.friend_status',2)
+            ->where('friendships.receiver_id',$id)
+            ->orWhere('friendships.sender_id',$id)
+            ->whereIn('users.id',$n)
+            ->where('users.id','!=',$id)
+            ->get()->toArray();
+            $group_id = $request->id;
+            $group_members = ChatGroupMember::select('users.id','users.name','profiles.profile_image')
+                                       ->leftJoin('users','users.id','chat_group_members.member_id')
+                                       ->leftJoin('profiles','users.profile_id','profiles.id')
+                                       ->where('chat_group_members.group_id',$group_id)
+                                       ->where('chat_group_members.member_id','!=',$id)
+                                       ->get()->toArray();
+
+             foreach($friend as $key=>$fri){
+                foreach($group_members as $value=>$gp){
+                    if ($fri['id'] == $gp['id'] ) {
+                          unset($friend[$key]);
+                    }
+                }
+            }
+           return response()->json([
+            'success' => 'Success',
+            'data' => $friend
+        ]);
+    }
     public function addmember(Request $request){
         $members =$request->members;
         $id = $request->group_id;
@@ -1732,9 +1790,10 @@ class SocialMediaController extends Controller
          }
          return response()->json([
             'success' => 'add',
-            'data' => $group_members
+
         ]);
     }
+
     public function group_member_kick(Request $request){
         $member = ChatGroupMember::where('group_id', $request->group_id)->where('member_id', $request->member_id)->first();
         $member->delete();
@@ -1742,6 +1801,34 @@ class SocialMediaController extends Controller
             'success' => 'Kicked!'
         ]);
     }
+
+    public function leave_group(Request $request){
+        $member = ChatGroupMember::where('group_id', $request->group_id)->where('member_id', auth()->user()->id)->first();
+        $member->delete();
+        return response()->json([
+            'success' => 'leaved!'
+        ]);
+    }
+
+
+    public function delete_group(Request $request)
+    {
+
+        $group_message_delete = ChatGroupMessage::where('group_id', $request->id);
+        $group_message_delete->delete();
+
+
+        $group_member_delete = ChatGroupMember::where('group_id', $request->id);
+        $group_member_delete->delete();
+
+        $group_delete = ChatGroup::where('id', $request->group_id);
+        $group_delete->delete();
+
+        return response()->json([
+            'message' => 'Success Deleted!'
+        ]);
+    }
+
     public function all_group(){
         $user_id=auth()->user()->id;
         $groups = DB::table('chat_group_members')

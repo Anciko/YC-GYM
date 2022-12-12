@@ -208,5 +208,15 @@ class AppServiceProvider extends ServiceProvider
 
     });
 
+    view()->composer('*',function($count){
+        if (Auth::check()) {
+            $memberRequest =  DB::table('users')
+                                ->where('users.active_status',1)
+                                ->get();
+            $memberRequest_count=$memberRequest->count();
+            $count->with('memberRequest_count', $memberRequest_count);
+        }
+    });
+
     }
 }

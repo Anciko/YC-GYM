@@ -8,6 +8,78 @@
             <iconify-icon icon="bi:arrow-left" class="back-btn-icon"></iconify-icon>
         </a>
     </div> --}}
+
+        <!-- Report Modal -->
+        <div class="modal fade " id="reportmodal">
+            <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                <h5 class="modal-title" id="reportLabel">Report</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div>
+                        <h6 class="text-bold">Please select a problem</h6>
+                        <form id="report_form" value="">
+                            <label class="form-label text-secondary" style="font-size:0.75em">Your report is anonymous,except if you're reporting an intellectual property infringement.</label>
+                            <input type="hidden" value="" id="post_id">
+
+                            <label class="report-option">
+                                <input type="radio" id="nudity" name="report_msg" value="nudity">
+                                <label for="nudity">Nudity</label>
+                            </label>
+                            <label class="report-option">
+                                <input type="radio" id="violence" name="report_msg" value="violence">
+                                <label for="violence">Violence</label>
+                            </label>
+
+                            <label class="report-option">
+                                <input type="radio" id="harassment" name="report_msg" value="harassment">
+                                <label for="harassment">Harassment</label>
+                            </label>
+
+                            <label class="report-option">
+                                <input type="radio" id="suicide" name="report_msg" value="suicide or self-injury">
+                                <label for="suicide">Suicide or self-injury</label>
+                            </label>
+
+                            <label class="report-option">
+                                <input type="radio" id="false" name="report_msg" value="false information">
+                                <label for="false">false information</label>
+                            </label>
+
+
+                            <label class="report-option">
+                                <input type="radio" id="spam" name="report_msg" value="spam">
+                                <label for="spam">Spam</label>
+                            </label>
+
+
+                            <label class="report-option">
+                                <input type="radio" id="Hate speech" name="report_msg" value="hate speech">
+                                <label for="Hate speech">Hate speech</label>
+                            </label>
+
+                            <label class="report-option">
+                                <input type="radio" id="terrorism" name="report_msg" value="terrorism">
+                                <label for="terrorism">Terrorism</label>
+                            </label>
+
+                            <label class="report-option">
+                                <input type="radio" id="other" name="report_msg" value="other">
+                                <label for="other">Other</label>
+                            </label>
+                            <textarea id="other_msg" name="other_report_msg"></textarea>
+
+                            <button type="submit" class="btn btn-primary disabled" id="report_submit">Submit</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            </div>
+        </div>
+        <!-- End Report Modal -->
+
         <div class="social-media-right-container social-media-right-container-nopadding">
             <div class="social-media-profile-parent-container">
                 <div class="social-media-profile-bgimg-container">
@@ -163,11 +235,21 @@
 
                                     <iconify-icon icon="bi:three-dots-vertical" class="social-media-post-header-icon"></iconify-icon>
                                     <div class="post-actions-container">
-                                        <div class="post-action">
-                                            <iconify-icon icon="bi:save" class="post-action-icon"></iconify-icon>
-                                            <p>Save</p>
-                                        </div>
-                                        <div class="post-action">
+                                        <a href="#" style="text-decoration:none" class="post_save" id="{{$post->id}}">
+                                            <div class="post-action">
+                                                <iconify-icon icon="bi:save" class="post-action-icon"></iconify-icon>
+                                                @php
+                                                    $already_save=auth()->user()->user_saved_posts->where('post_id',$post->id)->first();
+                                                @endphp
+
+                                                @if ($already_save)
+                                                    <p class="save">Unsave</p>
+                                                @else
+                                                    <p class="save">Save</p>
+                                                    @endif
+                                            </div>
+                                        </a>
+                                        <div class="post-action" id="report" data-id="{{$post->id}}">
                                             <iconify-icon icon="material-symbols:report-outline" class="post-action-icon"></iconify-icon>
                                             <p>Report</p>
                                         </div>
@@ -288,6 +370,154 @@
 @push('scripts')
 <script>
     $(document).ready(function() {
+
+        $('#other_msg').hide();
+        $('#report_submit').attr("class",'btn btn-primary disabled')
+        console.log($("input[name='report_msg']:checked").val());
+
+        $('input[name="report_msg"]').on('click', function() {
+                if ($(this).val() == 'other') {
+                    $('#other_msg').show();
+                    $('#other_msg').keydown(function() {
+                        if(!$('#other_msg').val()){
+                            $('#report_submit').attr("class",'btn btn-primary disabled')
+                        }else{
+                            $('#report_submit').attr("class",'btn btn-primary')
+                        }
+                    })
+
+                }else if ($(this).val() == 'nudity'){
+                    $('#other_msg').hide();
+                    $('#other_msg').val('');
+                    $('#report_submit').attr("class",'btn btn-primary')
+
+                }else if ($(this).val() == 'violence'){
+                    $('#other_msg').hide();
+                    $('#other_msg').val('')
+                    $('#report_submit').attr("class",'btn btn-primary')
+                }else if ($(this).val() == 'harassment'){
+                    $('#other_msg').hide();
+                    $('#other_msg').val('')
+                    $('#report_submit').attr("class",'btn btn-primary')
+                }else if ($(this).val() == 'suicide or self-injury'){
+                    $('#other_msg').hide();
+                    $('#other_msg').val('')
+                    $('#report_submit').attr("class",'btn btn-primary')
+                }else if ($(this).val() == 'false information'){
+                    $('#other_msg').hide();
+                    $('#other_msg').val('');
+                    $('#report_submit').attr("class",'btn btn-primary')
+                }else if ($(this).val() == 'spam'){
+                    $('#other_msg').hide();
+                    $('#other_msg').val('')
+                    $('#report_submit').attr("class",'btn btn-primary')
+                }else if ($(this).val() == 'hate speech'){
+                    $('#other_msg').hide();
+                    $('#other_msg').val('')
+                    $('#report_submit').attr("class",'btn btn-primary')
+                }else if ($(this).val() == 'terrorism'){
+                    $('#other_msg').hide();
+                    $('#other_msg').val('')
+                    $('#report_submit').attr("class",'btn btn-primary')
+                }
+        });
+
+        $('.post_save').click(function(e){
+            e.preventDefault();
+
+            var post_id=$(this).attr('id');
+            var add_url = "{{ route('socialmedia.post.save', [':post_id']) }}";
+            add_url = add_url.replace(':post_id', post_id);
+                    $.ajax({
+                        method: "GET",
+                        url: add_url,
+                        data:{
+                                post_id : post_id
+                            },
+                            success: function(data) {
+                                // window.location.reload();
+                                if(data.save){
+                                    Swal.fire({
+                                        text: data.save,
+                                        timerProgressBar: true,
+                                        timer: 5000,
+                                        icon: 'success',
+                                    }).then((result) => {
+                                        e.target.innerHTML = "Unsave";
+                                    })
+                                }else{
+                                    Swal.fire({
+                                            text: data.unsave,
+                                            timerProgressBar: true,
+                                            timer: 5000,
+                                            icon: 'success',
+                                        }).then((result) => {
+                                            e.target.innerHTML="Save";
+
+                                    })
+                                }
+
+                            }
+                    })
+
+
+        })
+
+        $(document).on('click', '#report', function(e){
+            var post_id=$(this).data('id')
+            $('#post_id').val(post_id)
+            $('input[name="report_msg"]').prop('checked', false);
+            $('#other_msg').hide();
+            $('#other_msg').val('');
+            $('#report_submit').attr("class",'btn btn-primary disabled')
+            $('#reportmodal').modal('show');
+
+        })
+
+        $(document).on('submit','#report_form',function(e){
+            e.preventDefault()
+            $('#reportmodal').modal('hide');
+            var report_msg
+            var post_id=$('#post_id').val();
+            $('#post_id').val('')
+            var user_id={{auth()->user()->id}}
+
+            if($('input[name="report_msg"]:checked').val()=='other'){
+                report_msg=$("#other_msg").val();
+
+            } else{
+                 report_msg=$("input[name='report_msg']:checked").val();
+            }
+
+            var add_url = "{{ route('socialmedia.report')}}";
+            $.ajaxSetup({
+                            headers: {
+                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                            }
+                        });
+                    $.ajax({
+                        method: "POST",
+                        url: add_url,
+                        data:{ post_id : post_id , user_id:user_id ,report_msg:report_msg},
+                        success:function(data){
+                            if(data.success){
+                                Swal.fire({
+                                        text: data.success,
+                                        timerProgressBar: true,
+                                        timer: 3000,
+                                        icon: 'success',
+                                    }).then((result) => {
+                                        $('input[name="report_msg"]').prop('checked', false);
+                                        $('#reportmodal').modal('hide');
+                                        $('#other_msg').hide();
+                                        $('#other_msg').val('');
+                                    })
+                            }
+                        }
+                    })
+
+        })
+
         $('.like').click(function(e){
             e.preventDefault();
             var isLike=e.target.previousElementSibiling == null ? true : false;
@@ -345,41 +575,41 @@
                 })
         });
 
-                $(document).on('click', '.unfriend', function(e) {
-                e.preventDefault();
-                Swal.fire({
-                        text: "Are you sure?",
-                        showClass: {
-                                popup: 'animate__animated animate__fadeInDown'
-                            },
-                            hideClass: {
-                                popup: 'animate__animated animate__fadeOutUp'
-                            },
-                        showCancelButton: true,
-                        timerProgressBar: true,
-                        confirmButtonText: 'Yes',
-                        cancelButtonText: 'No',
+        $(document).on('click', '.unfriend', function(e) {
+            e.preventDefault();
+            Swal.fire({
+                text: "Are you sure?",
+                showClass: {
+                        popup: 'animate__animated animate__fadeInDown'
+                    },
+                    hideClass: {
+                        popup: 'animate__animated animate__fadeOutUp'
+                    },
+                showCancelButton: true,
+                timerProgressBar: true,
+                confirmButtonText: 'Yes',
+                cancelButtonText: 'No',
 
-                        }).then((result) => {
-                        /* Read more about isConfirmed, isDenied below */
-                        if (result.isConfirmed) {
-                             var url = new URL(this.href);
-                             var id = url.searchParams.get("id");
-                             var url = "{{ route('unfriend', [':id']) }}";
-                             url = url.replace(':id', id);
-                             $(".cancel-request-btn").attr('href','');
-                                $.ajax({
-                                    type: "GET",
-                                    url: url,
-                                    datatype: "json",
-                                    success: function(data) {
-                                        console.log(data)
-                                        window.location.reload();
-                                    }
-                                })
-                        }
+                }).then((result) => {
+                /* Read more about isConfirmed, isDenied below */
+                if (result.isConfirmed) {
+                        var url = new URL(this.href);
+                        var id = url.searchParams.get("id");
+                        var url = "{{ route('unfriend', [':id']) }}";
+                        url = url.replace(':id', id);
+                        $(".cancel-request-btn").attr('href','');
+                        $.ajax({
+                            type: "GET",
+                            url: url,
+                            datatype: "json",
+                            success: function(data) {
+                                console.log(data)
+                                window.location.reload();
+                            }
                         })
-                });
+                }
+                })
+        });
     });
 
 </script>

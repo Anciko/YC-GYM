@@ -62,7 +62,7 @@
                 <iconify-icon icon="ant-design:phone-outlined" class="chat-header-phone-icon"></iconify-icon>
                 <iconify-icon icon="eva:video-outline" class="chat-header-video-icon"></iconify-icon>
 
-                <a href="../htmls/trainerTrainingCenterViewMedia.html" class="group-chat-view-midea-link">
+                <a href="{{route('socialmedia.group.viewmedia',$group->id)}}" class="group-chat-view-midea-link">
                     <p>View Media</p>
                     <iconify-icon icon="akar-icons:arrow-right" class="group-chat-view-midea-link-icon"></iconify-icon>
                 </a>
@@ -80,6 +80,7 @@
         <div class="social-media-view-members-container">
             <div class="social-media-view-memers-row">
                 <div class="social-media-view-memers-row-name">
+
                     @if ($gp_admin->user->user_profile != null && $gp_admin->user->user_profile->profile_image != null)
                         <img src="{{ asset('storage/post' . $gp_admin->user->user_profile->profile_image) }}">
                     @else
@@ -107,10 +108,15 @@
                             @endif
                             <p>{{ $member->user->name }}</p>
                         </div>
+
                         <div class="social-media-view-members-row-btns">
                             <a href="{{ route('socialmedia.profile', $member->member_id) }}"
                                 class="customer-secondary-btn">View Profile</a>
-                            <button type="submit" class="customer-red-btn">Kick</button>
+                            @if (auth()->user()->id == $gp_admin->group_owner_id)
+                                    <button type="submit" class="customer-red-btn">Kick</button>
+                            @elseif(auth()->user()->id == $member->member_id)
+                                <a href="{{route('socialmedia.group.leave',[$member->group_id,$member->member_id])}}" class="customer-red-btn">Leave group</a>
+                            @endif
                         </div>
                     </div>
                 </form>
