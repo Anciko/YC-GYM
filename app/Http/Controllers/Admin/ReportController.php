@@ -99,6 +99,8 @@ class ReportController extends Controller
 
     public function view_post(Request $request,$id)
     {
+        $noti =  DB::table('notifications')->where('report_id',$id)->update(['notification_status' => 2]);
+
         $report=Report::findOrFail($id);
         $report_post=DB::table('reports')
                                 ->where('post_id',$report->post_id)

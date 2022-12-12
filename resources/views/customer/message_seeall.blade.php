@@ -49,6 +49,7 @@
 
             <div class="social-media-allchats-messages-container">
                     @forelse ($messages as $list)
+                    <div class="social-media-allchats-message-row">
                         <a href="{{route('message.chat',$list->id)}}" class="social-media-allchats-message-row">
                             <div class="social-media-allchats-message-img">
                                 @if ($list->profile_image==null)
@@ -64,6 +65,11 @@
 
                             <span>{{ \Carbon\Carbon::parse($list->created_at)->format('d M Y , g:i A')}}</span>
                         </a>
+
+                        <div  data-id="{{$list->from_id}}" class="converstion_delete" id="{{$list->to_id}}">Delete</div>
+                        {{-- <iconify-icon icon="bi:three-dots-vertical" class="social-media-seeallmessage-header-icon"></iconify-icon> --}}
+                    </div>
+
                     @empty
                         <p>No Message</p>
                     @endforelse
@@ -74,8 +80,29 @@
 
 @push('scripts')
 <script>
-
     $(document).ready(function(){
+
+        $('.converstion_delete').click(function(e){
+            var from_id=$(this).data('id');
+            var to_id=$(this).attr('id');
+
+            console.log(from_id+'from id');
+            console.log(to_id+'to id');
+            
+            var add_url = "{{ route('message.all.delete')}}";
+            $.ajax({
+                        method: "GET",
+                        url: add_url,
+                        data:{ from_id : from_id , to_id:to_id},
+                        success:function(data){
+
+                        }
+                    })
+        })
+        $('.social-media-seeallmessage-header-icon').click(function(){
+            $(this).next().toggle()
+        })
+
         $('.js-example-basic-multiple').select2(
                 { dropdownParent: "#createGroupModal" }
         );

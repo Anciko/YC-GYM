@@ -131,7 +131,11 @@
                             <i class="fa-solid fa-user-group align-middle"></i> <span
 
                                 class="align-middle">Request</span>
-
+                                @if ($memberRequest_count<1)
+                                <span></span>
+                                @else
+                                <span class="badge badge-light">{{$memberRequest_count}}</span>
+                                @endif
                         </a>
 
                     </li>
@@ -348,8 +352,6 @@
 
         </nav>
 
-
-
         <div class="main">
 
             <nav class="navbar navbar-expand navbar-light navbar-bg d-flex justify-content-between">
@@ -360,7 +362,8 @@
 
                 </a>
                 <div class="customer-navlinks-notiprofile-container">
-                    <iconify-icon icon="akar-icons:bell" class="nav-icon"></iconify-icon>
+                    <iconify-icon icon="akar-icons:bell" class="nav-icon">
+                    </iconify-icon>
 
                     <div class="notis-box-container">
                         <div class="notis-box-header">
@@ -372,8 +375,8 @@
                             <?php $count = 0; ?>
                             @foreach(auth()->user()->notifri->sortByDesc('created_at') as $noti)
                             <?php if($count == 10) break; ?>
-                            @if($noti->report_id != null)
-                            <a href ="{{route('admin.view.report',$noti->report_id)}}">
+                            @if($noti->report_id != 0 AND $noti->notification_status == 1)
+                                <a href ="{{route('admin.view.report',$noti->report_id)}}">
                                     <div class="notis-box-noti-row notis-box-unread-noti">
                                         <img src="{{asset('img/customer/imgs/report.png')}}"/>
                                         <div class="notis-box-noti-row-detail">
@@ -383,7 +386,19 @@
                                         </div>
                                     </div>
                                 </a>
+                                @elseif($noti->report_id != 0 AND $noti->notification_status != 1)
+                                <a href ="{{route('admin.view.report',$noti->report_id)}}">
+                                    <div class="notis-box-noti-row notis-box-read-noti">
+                                        <img src="{{asset('img/customer/imgs/report.png')}}"/>
+                                        <div class="notis-box-noti-row-detail">
+                                            <span>{{$noti->created_at->diffForHumans()}}
+                                            </span>
+                                            <p>{{$noti->description}}</p>
+                                        </div>
+                                    </div>
+                                </a>
                             @endif
+
                                 <?php $count++; ?>
                             @endforeach
                         </div>
