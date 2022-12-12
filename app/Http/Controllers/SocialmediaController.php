@@ -831,7 +831,7 @@ class SocialmediaController extends Controller
     public function see_all_message()
     {
         $user_id = auth()->user()->id;
-        $messages = DB::select("SELECT users.id,users.name,profiles.profile_image,chats.text,chats.created_at
+        $messages = DB::select("SELECT users.id,users.name,profiles.profile_image,chats.text,chats.created_at,chats.from_user_id as from_id,chats.to_user_id as to_id
             from
                 chats
               join
@@ -853,6 +853,7 @@ class SocialmediaController extends Controller
             left join users on users.id = user
             left join profiles on users.profile_id = profiles.id
            order by chats.created_at desc");
+
         return view('customer.message_seeall', compact('messages'));
     }
 
@@ -871,7 +872,7 @@ class SocialmediaController extends Controller
 
         $sender_user = User::where('id', $auth_user->id)->with('user_profile')->first();
 
-      
+
         //active friend
         $auth = Auth()->user()->id;
         $user = User::where('id', $auth)->first();
@@ -897,6 +898,32 @@ class SocialmediaController extends Controller
             ->get();
 
         return view('customer.chat_message', compact('id', 'messages', 'auth_user_name', 'receiver_user', 'sender_user', 'friends'));
+    }
+
+    public function delete_allchat_message(Request $request)
+    {
+        $data=$request->all();
+        $from_id=$data['from_id'];
+        $to_id=$data['to_id'];
+        $auth_user=auth()->user()->id;
+
+        $messages=Chat::where('delete_status','<>',2)
+                        ->where(function($query1) use ($from_id,$to_id)
+                        {
+                            $query1->where('from_user_id', $from_id)
+                                    ->orWhere('from_user_id',$to_id);
+                        })
+                        ->where( function($query2) use ($from_id,$to_id)
+                        {
+                            $query2->where('to_user_id', $from_id)
+                            ->orWhere('to_user_id',$to_id);
+                        })
+                        ->get();
+        $all_messages=Chat::all();
+        for($i=0;$i=$messages->count();$i++){
+            
+        }
+
     }
 
 
