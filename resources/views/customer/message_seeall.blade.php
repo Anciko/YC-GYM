@@ -86,15 +86,36 @@
             var from_id=$(this).data('id');
             var to_id=$(this).attr('id');
 
-            var add_url = "{{ route('message.all.delete')}}";
-            $.ajax({
-                        method: "GET",
-                        url: add_url,
-                        data:{ from_id : from_id , to_id:to_id},
-                        success:function(data){
+            Swal.fire({
+                text: "Delete Conversation?",
+                showClass: {
+                        popup: 'animate__animated animate__fadeInDown'
+                    },
+                    hideClass: {
+                        popup: 'animate__animated animate__fadeOutUp'
+                    },
+                showCancelButton: true,
+                timerProgressBar: true,
+                confirmButtonText: 'Yes',
+                cancelButtonText: 'No',
 
-                        }
+                }).then((result) =>{
+                        var add_url = "{{ route('message.all.delete')}}";
+                    $.ajax({
+                                method: "GET",
+                                url: add_url,
+                                data:{ from_id : from_id , to_id:to_id},
+                                success:function(data){
+                                    Swal.fire({
+                                            text: data.success,
+                                            timerProgressBar: true,
+                                            timer: 5000,
+                                            icon: 'success',
+                                        })
+                                }
+                            })
                     })
+
         })
         $('.social-media-seeallmessage-header-icon').click(function(){
             $(this).next().toggle()
