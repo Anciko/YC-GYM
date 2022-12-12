@@ -177,6 +177,24 @@
                 @if (auth()->user()->id == $send_message->from_user_id)
                     @if ($send_message->media == null)
                         <div class="group-chat-sender-container">
+                            <div class="message-actions-parent-container">
+                                <iconify-icon icon="mdi:dots-vertical" class="message-icon">
+
+                                </iconify-icon>
+                                <div class="message-actions-box">
+                                    <p>
+                                        <iconify-icon icon="mdi:hide" class="message-action-icon"></iconify-icon>
+                                        Hide
+                                    </p>
+                                    <p>
+                                        <iconify-icon icon="material-symbols:cancel-schedule-send-rounded" class="message-action-icon"></iconify-icon>
+                                        Unsend
+                                    </p>
+                                </div>
+
+                            </div>
+
+
                             <div class="group-chat-sender-text-container">
                                 <p>{{ $send_message->text }}</p>
                             </div>
@@ -397,7 +415,21 @@
         });
 
         $(document).ready(function() {
-            // console.log("image preview")
+            //message delete and hide start
+            $.each($('.message-icon'), function(){
+                $(this).click(function(){
+                    $('.message-actions-box').not($(this).next('.message-actions-box')).hide()
+                    $(this).next('.message-actions-box').toggle()
+                    // if($(this).next('.message-actions-box').is(':hidden')){
+                    //     $(this).next('.message-actions-box').show()
+                    // }
+                    // else{
+                    //     $(this).next('.message-actions-box').hide()
+                    // }
+
+                })
+            })
+            // message delete and hide end
             //image and video select start
             $("#groupChatImg_message").on("change",handleFileSelect_message);
             $(".group-chat-img-preview-container-wrapper").hide()
