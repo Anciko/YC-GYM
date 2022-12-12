@@ -245,7 +245,8 @@
                                 </div>
 
                                 <div class="social-media-left-gpmessages-rows-container">
-                                    @foreach ($chat_group as $group)
+                                    @forelse ($chat_group as $group)
+                                        <a href="{{route('socialmedia.group',$group->id)}}"             class="social-media-left-gpmessages-row">
                                     @if ($group->group_id != null)
                                         <a href="{{route('socialmedia.group',$group->group_id)}}" class="social-media-left-gpmessages-row">
                                             <img src="{{asset('img/customer/imgs/group_default.png')}}" class="w-25">
@@ -262,9 +263,12 @@
                                                 <span>{{$group->text}}</span>
                                             </p>
                                         </a>
-
                                         @endif
-                                @endforeach
+                                 @empty
+                                        <p class="text-secondary p-1">No Group Messages</p>
+                                @endforelse
+
+
                                 </div>
                             </div>
                         </div>

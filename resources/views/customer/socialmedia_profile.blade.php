@@ -422,6 +422,47 @@
                 }
         });
 
+        $('.post_save').click(function(e){
+            e.preventDefault();
+
+            var post_id=$(this).attr('id');
+            var add_url = "{{ route('socialmedia.post.save', [':post_id']) }}";
+            add_url = add_url.replace(':post_id', post_id);
+                    $.ajax({
+                        method: "GET",
+                        url: add_url,
+                        data:{
+                                post_id : post_id
+                            },
+                            success: function(data) {
+                                // window.location.reload();
+                                if(data.save){
+                                    Swal.fire({
+                                        text: data.save,
+                                        timerProgressBar: true,
+                                        timer: 5000,
+                                        icon: 'success',
+                                    }).then((result) => {
+                                        e.target.innerHTML = "Unsave";
+                                    })
+                                }else{
+                                    Swal.fire({
+                                            text: data.unsave,
+                                            timerProgressBar: true,
+                                            timer: 5000,
+                                            icon: 'success',
+                                        }).then((result) => {
+                                            e.target.innerHTML="Save";
+
+                                    })
+                                }
+
+                            }
+                    })
+
+
+        })
+
         $(document).on('click', '#report', function(e){
             var post_id=$(this).data('id')
             $('#post_id').val(post_id)

@@ -1436,7 +1436,14 @@ class SocialMediaController extends Controller
                     $merged = array_merge($arr, $latest_group_sms);
                     $keys = array_column($merged, 'date');
                     array_multisort($keys, SORT_DESC, $merged);
-
+                    $group_owner = ChatGroup::whereIn('chat_groups.id',$groups)->get();
+                    foreach($merged as $key=>$value){
+                           $merged[$key]['owner_id'] = 0;
+                        foreach($group_owner as $owner){
+                            if($value['id'] == $owner['id'] AND $value['is_group'] == 1)
+                            $merged[$key]['owner_id'] = $owner->group_owner_id;
+                        }
+                    }
                 return response()->json([
                     'all_messages' => $merged
                 ]);
@@ -1720,6 +1727,7 @@ class SocialMediaController extends Controller
         ]);
     }
     public function members(Request $request){
+
         $id = auth()->user()->id;
         $friendships=DB::table('friendships')
         ->where('friend_status',2)
@@ -1736,7 +1744,7 @@ class SocialMediaController extends Controller
                     $f=(array)$friend;
                     array_push($n, $f['sender_id'],$f['receiver_id']);
             }
-            $friend = User::select('users.id','users.name','friendships.date','profiles.profile_image')
+            $friend = User::select('users.id','users.name','profiles.profile_image')
             ->leftjoin('friendships', function ($join) {
                   $join->on('friendships.receiver_id', '=', 'users.id')
             ->orOn('friendships.sender_id', '=', 'users.id');})
@@ -1753,16 +1761,16 @@ class SocialMediaController extends Controller
                                        ->leftJoin('users','users.id','chat_group_members.member_id')
                                        ->leftJoin('profiles','users.profile_id','profiles.id')
                                        ->where('chat_group_members.group_id',$group_id)
-                                       ->get();
+                                       ->where('chat_group_members.member_id','!=',$id)
+                                       ->get()->toArray();
 
-
-           foreach($friend as $key=>$fri){
-               foreach($group_members as $value=>$gp){
-                   if ($fri['id'] == $gp['id'] ) {
-                         unset($friend[$key]);
-                   }
-               }
-           }
+             foreach($friend as $key=>$fri){
+                foreach($group_members as $value=>$gp){
+                    if ($fri['id'] == $gp['id'] ) {
+                          unset($friend[$key]);
+                    }
+                }
+            }
            return response()->json([
             'success' => 'Success',
             'data' => $friend
@@ -1780,6 +1788,7 @@ class SocialMediaController extends Controller
          }
          return response()->json([
             'success' => 'add',
+
         ]);
     }
 
