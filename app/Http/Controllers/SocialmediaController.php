@@ -871,6 +871,7 @@ class SocialmediaController extends Controller
 
         $sender_user = User::where('id', $auth_user->id)->with('user_profile')->first();
 
+      
         //active friend
         $auth = Auth()->user()->id;
         $user = User::where('id', $auth)->first();
@@ -1364,8 +1365,9 @@ class SocialmediaController extends Controller
             ->where('users.id', '!=', $user->id)
             ->get();
 
-        $members = ChatGroupMember::where('group_id', $id)->where('member_id','!=',$user->id)->with('user')->with('user.user_profile')->get();
-        $gp_admin = ChatGroup::where('group_owner_id', $user->id)->where('id',$id)->with('user')->with('user.user_profile')->first();
+        $gp_admin = ChatGroup::where('id',$id)->with('user')->with('user.user_profile')->first();
+
+        $members = ChatGroupMember::where('group_id', $id)->where('member_id','!=',$gp_admin->group_owner_id)->with('user')->with('user.user_profile')->get();
 
         return view('customer.group_chat-detail', compact('friends', 'id', 'members', 'group','gp_admin'));
     }
@@ -1379,10 +1381,16 @@ class SocialmediaController extends Controller
 
     public function group_viewmedia($id)
     {
-
+        $group = ChatGroup::findOrFail($id);
         $messages_media = ChatGroupMessage::where('group_id', $id)->where('media','!=',null)->get();
 
-        return view('customer.group_chat_viewmedia', compact('id', 'messages_media'));
+        return view('customer.group_chat_viewmedia', compact('id', 'messages_media','group'));
+    }
+
+    public function group_leave($gp_id,$id){
+        $member = ChatGroupMember::where('group_id', $gp_id)->where('member_id', $id)->first();
+        $member->delete();
+        return redirect()->route('socialmedia');
     }
 
     public function post_report(Request $request)

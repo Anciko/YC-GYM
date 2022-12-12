@@ -1,6 +1,16 @@
 @extends('customer.layouts.app_home')
 @section('content')
     <div class="social-media-right-container">
+
+        <div class="group-chat-header">
+            <a href="javascript:history.back()" class="group-chat-header-name-container">
+                <img src="../imgs/avatar.png" />
+                <div class="group-chat-header-name-text-container">
+                    <p>{{ $group->group_name }}</p>
+                </div>
+            </a>
+        </div>
+
         <div class="social-media-chat-media-container">
 
             @foreach ($messages_media as $message)
@@ -56,7 +66,7 @@
                         </div>
                     @endif
                     @empty
-                    
+
                 @endforelse
             @endforeach
 
