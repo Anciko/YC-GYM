@@ -84,6 +84,7 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
 
         Route::get('/socialmedia/message/seeall',[SocialmediaController::class, 'see_all_message'])->name('message.seeall');
         Route::get('/socialmedia/message/chat/{id}',[SocialmediaController::class, 'chat_message'])->name('message.chat');
+        
         Route::get('/socialmedia/message/deletechat',[SocialmediaController::class, 'delete_allchat_message'])->name('message.all.delete');
         Route::get('/socialmedia/message/viewmedia/{id}',[SocialmediaController::class, 'viewmedia_message'])->name('message.viewmedia');
         Route::post('/agora/call-user',  [VideoController::class, 'callUser'])->name('socialmedia.videocall');
@@ -97,6 +98,8 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
         Route::post('/socialmedia/group/member/kick',[SocialmediaController::class,'group_member_kick'])->name('socialmedia.group.memberkick');
         Route::get('/socialmedia/group/viewmedia/{id}',[SocialmediaController::class,'group_viewmedia'])->name('socialmedia.group.viewmedia');
         Route::get('/socialmedia/group/leave/{gp_id}/{id}',[SocialmediaController::class,'group_leave'])->name('socialmedia.group.leave');
+
+        Route::get('/socialmedia/latest_messages',[SocialmediaController::class,'latest_messages'])->name('socialmedia.latest_messages');
 
         // Route::get('/testing', [SocialmediaController::class, 'index'])->name('testing');
         // Route::post('/testing/store', [SocialmediaController::class, 'post_store'])->name('testing.store');
