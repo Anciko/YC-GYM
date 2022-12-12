@@ -59,47 +59,6 @@ class SocialmediaController extends Controller
                 ->with('user')
                 ->paginate(30);
         }
-
-        // $post_likes=UserReactPost::select('users.name','profiles.profile_image','user_react_posts.*')
-        //             ->leftJoin('users','users.id','user_react_posts.user_id')
-        //             ->leftJoin('profiles','users.profile_id','profiles.id')
-        //             ->where('post_id',$post_id)
-        //             ->get();
-
-        // $left_friends=User::whereIn('id',$n)
-        //                 ->where('id','!=',$user->id)
-        //                 ->paginate(6);
-
-        //dd($left_friends);
-        //$posts=Post::orderBy('created_at','DESC')->with('user')->paginate(10);
-        // $post_reacted=UserReactPost::groupBy('post_id')->get('post_id');
-        // dd($post_reacted->toArray());
-
-        // $from_id=3;
-        // $to_id=6;
-        // $auth_user=auth()->user()->id;
-
-        // $messages=Chat::where('delete_status','<>',2)
-        //                 ->where(function($query1) use ($from_id,$to_id)
-        //                 {
-        //                     $query1->where('from_user_id', $from_id)
-        //                             ->orWhere('from_user_id',$to_id);
-        //                 })
-        //                 ->where( function($query2) use ($from_id,$to_id)
-        //                 {
-        //                     $query2->where('to_user_id', $from_id)
-        //                     ->orWhere('to_user_id',$to_id);
-        //                 })
-        //                 ->get();
-        // $all_messages=Chat::all();
-        // foreach($messages as $key=>$value){
-        //     if($value->delete_status);
-        // }
-        // for($i=0;$i=$messages->count();$i++){
-
-        // }
-       // dd($messages);
-
         return view('customer.socialmedia', compact('posts'));
     }
     public function latest_messages(){
@@ -197,10 +156,6 @@ class SocialmediaController extends Controller
 
     public function profile_photo_delete(Request $request)
     {
-        // $profile=Profile::find($request->profile_id);
-        // $profile->profile_image=null;
-        // $profile->cover_photo=null;
-        // $profile->update();
         $user = User::find(auth()->user()->id);
         if ($user->profile_id == $request->profile_id) {
             $user->profile_id = null;
@@ -1009,12 +964,14 @@ class SocialmediaController extends Controller
             ->with('user')
             ->get();
 
-            $auth_user = auth()->user();
-        $messages = Chat::where(function($query) use ($auth_user){
+           $auth_user = auth()->user();
+            $messages = Chat::where(function($query) use ($auth_user){
                 $query->where('from_user_id',$auth_user->id)->orWhere('to_user_id',$auth_user->id);
             })->where(function($que) use ($id){
                 $que->where('from_user_id',$id)->orWhere('to_user_id',$id);
-            })->get();
+            })
+            ->orderBy('created_at','DESC')
+            ->get();
 
 
         $receiver_user = User::select('users.id','users.name','profiles.profile_image')
@@ -1025,35 +982,33 @@ class SocialmediaController extends Controller
         foreach($messages as $key=>$value){
                         $messages[$key]['profile_image'] = $receiver_user->profile_image == null ?  null : $receiver_user->profile_image;
             }
-        dd($messages);
-            $friend = User::select('users.id','users.name','profiles.profile_image')
-            ->leftjoin('friendships', function ($join) {
-                  $join->on('friendships.receiver_id', '=', 'users.id')
-            ->orOn('friendships.sender_id', '=', 'users.id');})
-            ->leftJoin('profiles','profiles.id','users.profile_id')
-            ->where('users.id','!=',$id)
-            ->where('friendships.friend_status',2)
-            ->where('friendships.receiver_id',$id)
-            ->orWhere('friendships.sender_id',$id)
-            ->whereIn('users.id',$n)
-            ->where('users.id','!=',$id)
-            ->get()->toArray();
-            $group_id = 1;
-            $group_members = ChatGroupMember::select('users.id','users.name','profiles.profile_image')
-                                       ->leftJoin('users','users.id','chat_group_members.member_id')
-                                       ->leftJoin('profiles','users.profile_id','profiles.id')
-                                       ->where('chat_group_members.group_id',$group_id)
-                                       ->where('chat_group_members.member_id','!=',$id)
-                                       ->get()->toArray();
+            $re_id = 4;
+        $test = DB::select("SELECT * FROM chats where (from_user_id =  $auth_user->id or to_user_id =  $auth_user->id) and (from_user_id = $re_id or to_user_id = $re_id)
+        and  deleted_by !=  $auth_user->id  and delete_status != 2");
 
-                                       foreach($friend as $key=>$fri){
-                                        foreach($group_members as $value=>$gp){
-                                            if ($fri['id'] == $gp['id'] ) {
-                                                  unset($friend[$key]);
-                                            }
-                                        }
-                                    }
-                // dd($friend,$group_members);
+
+
+        // $auth_user = auth()->user();
+        // $messages = Chat::where('delete_status','!=',2)
+        //                 ->where(function($query1) use ($auth_user,$re_id)
+        //                 {
+        //                     $query1->where('from_user_id', $auth_user->id)
+        //                             ->orWhere('from_user_id',$re_id);
+        //                 })
+        //                 ->where( function($query2) use ($auth_user,$re_id)
+        //                 {
+        //                     $query2->where('to_user_id', $auth_user->id)
+        //                     ->orWhere('to_user_id',$re_id);
+        //                 })
+        //                 ->where( function($delete_status) use ($auth_user)
+        //                 {
+        //                     $delete_status->where('deleted_by','!=',$auth_user->id);
+        //                 })
+        //                 ->orderBy('created_at','DESC')
+        //                 ->get()->toArray();
+        // ///
+        // dd($messages);
+        dd($test);
 
                              //members
 

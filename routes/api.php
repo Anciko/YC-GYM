@@ -195,6 +195,9 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
 
     Route::post('socialmedia/report',[SocialmediaController::class,'post_report']);
 
+    Route::post('socialmedia/video_call',[SocialmediaController::class,'mobile_token']);
+    Route::post('socialmedia/call_accept',[SocialmediaController::class,'accept_call']);
+
     Route::get('user/list', [SocialmediaController::class, 'user_list']);
 });
 
