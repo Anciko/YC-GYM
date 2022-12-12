@@ -49,7 +49,7 @@
 
             <div class="social-media-allchats-messages-container">
                     @forelse ($messages as $list)
-                    <div class="social-media-allchats-message-row">
+                    <div class="social-media-allchats-message-row-container">
                         <a href="{{route('message.chat',$list->id)}}" class="social-media-allchats-message-row">
                             <div class="social-media-allchats-message-img">
                                 @if ($list->profile_image==null)
@@ -66,7 +66,22 @@
                             <span>{{ \Carbon\Carbon::parse($list->created_at)->format('d M Y , g:i A')}}</span>
                         </a>
 
-                        <div  data-id="{{$list->from_id}}" class="converstion_delete" id="{{$list->to_id}}">Delete</div>
+                        <div class="social-media-allchats-actions-container">
+                            <iconify-icon icon="mdi:dots-vertical" class="social-media-allchats-actions-toggle"></iconify-icon>
+                            <div class="social-media-allchats-actions-box">
+                                <div  data-id="{{$list->from_id}}" class="converstion_delete" id="{{$list->to_id}}">
+                                    <iconify-icon icon="tabler:trash" class="social-media-allchats-action-icon"></iconify-icon>
+                                    <span>Delete</span>
+                                </div>
+                                <a>
+                                    <iconify-icon icon="material-symbols:person" class="social-media-allchats-action-icon"></iconify-icon>
+                                    Profile
+                                </a>
+                            </div>
+
+                        </div>
+
+
                         {{-- <iconify-icon icon="bi:three-dots-vertical" class="social-media-seeallmessage-header-icon"></iconify-icon> --}}
                     </div>
 
@@ -81,6 +96,11 @@
 @push('scripts')
 <script>
     $(document).ready(function(){
+
+        $(".social-media-allchats-actions-toggle").click(function(){
+            $(".social-media-allchats-actions-box").not($(this).next(".social-media-allchats-actions-box")).hide()
+            $(this).next('.social-media-allchats-actions-box').toggle()
+        })
 
         $('.converstion_delete').click(function(e){
             var from_id=$(this).data('id');
