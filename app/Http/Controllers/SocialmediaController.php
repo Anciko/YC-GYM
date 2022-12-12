@@ -915,7 +915,7 @@ class SocialmediaController extends Controller
         $to_id=$data['to_id'];
         $auth_user=auth()->user()->id;
 
-        $messages=Chat::where('delete_status','<>',2)
+        $messages=Chat::where('delete_status','!=',2)
                         ->where(function($query1) use ($from_id,$to_id)
                         {
                             $query1->where('from_user_id', $from_id)
@@ -927,7 +927,26 @@ class SocialmediaController extends Controller
                             ->orWhere('to_user_id',$to_id);
                         })
                         ->get();
-        dd($messages);
+
+            if(($messages)->count()>0){
+                foreach($messages as $key=>$value){
+                    if($value->delete_status==0){
+                        // $messages[$key]['delete_status']=1;
+                        // $messages[$key]['deleted_by']=$auth_user;
+                        Chat::where('id',$value->id)->update(['delete_status'=>1,'deleted_by'=>$auth_user]);
+                    }elseif($value->delete_status==1){
+                        // $messages[$key]['delete_status']=2;
+                        Chat::where('id',$value->id)->update(['delete_status'=>2]);
+
+                    }
+                }
+            }
+
+            return response()->json([
+                'success' =>  'Deleted'
+            ]);
+
+
 
     }
 
