@@ -49,8 +49,6 @@
 
             <div class="social-media-allchats-messages-container">
                     @forelse ($messages as $list)
-                    <h4>{{$list->from_id}} From user</h4>
-                    <h4>{{$list->to_id}}To User</h4>
                     <div class="social-media-allchats-message-row">
                         <a href="{{route('message.chat',$list->id)}}" class="social-media-allchats-message-row">
                             <div class="social-media-allchats-message-img">
@@ -85,10 +83,12 @@
     $(document).ready(function(){
 
         $('.converstion_delete').click(function(e){
-
             var from_id=$(this).data('id');
             var to_id=$(this).attr('id');
 
+            console.log(from_id+'from id');
+            console.log(to_id+'to id');
+            
             var add_url = "{{ route('message.all.delete')}}";
             $.ajax({
                         method: "GET",

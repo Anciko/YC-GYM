@@ -923,6 +923,7 @@ class SocialmediaController extends Controller
         for($i=0;$i=$messages->count();$i++){
 
         }
+        dd($messages);
 
     }
 
