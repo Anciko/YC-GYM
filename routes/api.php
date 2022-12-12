@@ -173,11 +173,11 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::post('group/members',[SocialMediaController::class,'members']);
     Route::post('group/group_members',[SocialMediaController::class,'group_members']);
     Route::post('group/kick_member',[SocialmediaController::class,'group_member_kick']);
-    Route::post('group/delete_group',[SocialmediaController::class,'delete_group']);
-    Route::post('group/leave_group',[SocialmediaController::class,'leave_group']);
     Route::post('group/send_message',[SocialMediaController::class,'send_message']);
     Route::post('group/group_messages',[SocialMediaController::class,'group_messages']);
     Route::post('group/group_media',[SocialMediaController::class,'group_media']);
+    Route::post('group/leave_group',[SocialmediaController::class,'leave_group']);
+    Route::post('group/delete_group',[SocialmediaController::class,'delete_group']);
 
 
 
