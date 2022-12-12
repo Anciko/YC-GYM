@@ -866,12 +866,25 @@ class SocialmediaController extends Controller
             $que->where('from_user_id', $id)->orWhere('to_user_id', $id);
         })->with('to_user')->with('from_user')->get();
 
+
+        foreach($messages as $mess){
+
+            if($mess->delete_status == 1 && $mess->deleted_by == $auth_user->id){
+                $messages = Chat::where(function ($query) use ($auth_user) {
+                    $query->where('from_user_id', $auth_user->id)->orWhere('to_user_id', $auth_user->id);
+                })->where(function ($que) use ($id) {
+                    $que->where('from_user_id', $id)->orWhere('to_user_id', $id);
+                })->where('from_user_id',$mess->deleted_by)->get();
+            }
+        }
+
+
         $auth_user_name = auth()->user()->name;
         $receiver_user = User::where('users.id', $id)->with('user_profile')->first();
 
         $sender_user = User::where('id', $auth_user->id)->with('user_profile')->first();
 
-      
+
         //active friend
         $auth = Auth()->user()->id;
         $user = User::where('id', $auth)->first();
