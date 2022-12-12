@@ -178,6 +178,24 @@
             @forelse ($messages as $send_message)
                 @if (auth()->user()->id == $send_message->from_user_id)
                     <div class="group-chat-sender-container">
+                            <div class="message-actions-parent-container">
+                                <iconify-icon icon="mdi:dots-vertical" class="message-icon">
+
+                                </iconify-icon>
+                                <div class="message-actions-box">
+                                    <p>
+                                        <iconify-icon icon="mdi:hide" class="message-action-icon"></iconify-icon>
+                                        Hide
+                                    </p>
+                                    <p>
+                                        <iconify-icon icon="material-symbols:cancel-schedule-send-rounded" class="message-action-icon"></iconify-icon>
+                                        Unsend
+                                    </p>
+                                </div>
+
+                            </div>
+
+
                         <div class="group-chat-sender-text-container">
                             @if ($send_message->media == null)
                                 <p>{{ $send_message->text }}</p>
@@ -372,7 +390,21 @@
         });
 
         $(document).ready(function() {
-            // console.log("image preview")
+            //message delete and hide start
+            $.each($('.message-icon'), function(){
+                $(this).click(function(){
+                    $('.message-actions-box').not($(this).next('.message-actions-box')).hide()
+                    $(this).next('.message-actions-box').toggle()
+                    // if($(this).next('.message-actions-box').is(':hidden')){
+                    //     $(this).next('.message-actions-box').show()
+                    // }
+                    // else{
+                    //     $(this).next('.message-actions-box').hide()
+                    // }
+
+                })
+            })
+            // message delete and hide end
             //image and video select start
             $("#groupChatImg_message").on("change", handleFileSelect_message);
             $(".group-chat-img-preview-container-wrapper").hide()
@@ -392,11 +424,30 @@
 
 
             ///start
-            receive_user_img = @json($receiver_user->user_profile->profile_image);
-            sender_user_img = @json($sender_user->user_profile->profile_image);
+            var check_receiver_img = @json($receiver_user->user_profile) == null;
+            var check_sender_img = @json($sender_user->user_profile) == null;
 
-            console.log('sender profile', sender_user_img);
-            console.log('receiver profile', receive_user_img);
+            // console.log(check_sender_img == null)
+
+            if(check_receiver_img){
+
+                receive_user_img = @json($receiver_user->user_profile);
+            }else{
+                // console.log("receiver img not null")
+                receive_user_img = @json($receiver_user->user_profile?->profile_image);
+            }
+            if(check_sender_img){
+                // console.log("sender img  null")
+                sender_user_img = @json($sender_user->user_profile);
+
+            }else{
+                // console.log("sender img not null")
+                sender_user_img = @json($sender_user->user_profile?->profile_image);
+            }
+
+
+            console.log('sender profile', check_receiver_img);
+            console.log('receiver profile', check_sender_img);
 
             const emojibutton = document.querySelector('.emoji-trigger');
 
@@ -737,6 +788,22 @@
                 if(sender_user_img != null){
                     messageContainer.innerHTML += `
                                     <div class="group-chat-sender-container">
+                                        <div class="message-actions-parent-container">
+                                            <iconify-icon icon="mdi:dots-vertical" class="message-icon">
+
+                                            </iconify-icon>
+                                            <div class="message-actions-box">
+                                                <p>
+                                                    <iconify-icon icon="mdi:hide" class="message-action-icon"></iconify-icon>
+                                                    Hide
+                                                </p>
+                                                <p>
+                                                    <iconify-icon icon="material-symbols:cancel-schedule-send-rounded" class="message-action-icon"></iconify-icon>
+                                                    Unsend
+                                                </p>
+                                            </div>
+
+                                        </div>
                                         <div class="group-chat-sender-text-container">
 
                                             ${messageMediaContainer}
@@ -746,6 +813,22 @@
                 }else{
                     messageContainer.innerHTML += `
                                     <div class="group-chat-sender-container">
+                                        <div class="message-actions-parent-container">
+                                            <iconify-icon icon="mdi:dots-vertical" class="message-icon">
+
+                                            </iconify-icon>
+                                            <div class="message-actions-box">
+                                                <p>
+                                                    <iconify-icon icon="mdi:hide" class="message-action-icon"></iconify-icon>
+                                                    Hide
+                                                </p>
+                                                <p>
+                                                    <iconify-icon icon="material-symbols:cancel-schedule-send-rounded" class="message-action-icon"></iconify-icon>
+                                                    Unsend
+                                                </p>
+                                            </div>
+
+                                        </div>
                                         <div class="group-chat-sender-text-container">
 
                                             ${messageMediaContainer}
@@ -758,6 +841,22 @@
         else {
             if(sender_user_img != null){
                 messageContainer.innerHTML += `<div class="group-chat-sender-container">
+                                                <div class="message-actions-parent-container">
+                                                            <iconify-icon icon="mdi:dots-vertical" class="message-icon">
+
+                                                            </iconify-icon>
+                                                            <div class="message-actions-box">
+                                                                <p>
+                                                                    <iconify-icon icon="mdi:hide" class="message-action-icon"></iconify-icon>
+                                                                    Hide
+                                                                </p>
+                                                                <p>
+                                                                    <iconify-icon icon="material-symbols:cancel-schedule-send-rounded" class="message-action-icon"></iconify-icon>
+                                                                    Unsend
+                                                                </p>
+                                                            </div>
+
+                                                        </div>
                                         <div class="group-chat-sender-text-container">
 
                                             <p>${data.message.text}</p>
@@ -766,6 +865,22 @@
                                     </div>`;
             }else{
                 messageContainer.innerHTML += `<div class="group-chat-sender-container">
+                    <div class="message-actions-parent-container">
+                                <iconify-icon icon="mdi:dots-vertical" class="message-icon">
+
+                                </iconify-icon>
+                                <div class="message-actions-box">
+                                    <p>
+                                        <iconify-icon icon="mdi:hide" class="message-action-icon"></iconify-icon>
+                                        Hide
+                                    </p>
+                                    <p>
+                                        <iconify-icon icon="material-symbols:cancel-schedule-send-rounded" class="message-action-icon"></iconify-icon>
+                                        Unsend
+                                    </p>
+                                </div>
+
+                            </div>
                                         <div class="group-chat-sender-text-container">
 
                                             <p>${data.message.text}</p>
@@ -936,6 +1051,22 @@
                 if(sender_user_img != null){
                     messageContainer.innerHTML += `
                                     <div class="group-chat-sender-container">
+                                        <div class="message-actions-parent-container">
+                                <iconify-icon icon="mdi:dots-vertical" class="message-icon">
+
+                                </iconify-icon>
+                                <div class="message-actions-box">
+                                    <p>
+                                        <iconify-icon icon="mdi:hide" class="message-action-icon"></iconify-icon>
+                                        Hide
+                                    </p>
+                                    <p>
+                                        <iconify-icon icon="material-symbols:cancel-schedule-send-rounded" class="message-action-icon"></iconify-icon>
+                                        Unsend
+                                    </p>
+                                </div>
+
+                            </div>
                                         <div class="group-chat-sender-text-container">
                                             <span>${data.sender}</span>
                                             ${messageMediaContainer}
@@ -945,6 +1076,22 @@
                 }else{
                     messageContainer.innerHTML += `
                                     <div class="group-chat-sender-container">
+                                        <div class="message-actions-parent-container">
+                                <iconify-icon icon="mdi:dots-vertical" class="message-icon">
+
+                                </iconify-icon>
+                                <div class="message-actions-box">
+                                    <p>
+                                        <iconify-icon icon="mdi:hide" class="message-action-icon"></iconify-icon>
+                                        Hide
+                                    </p>
+                                    <p>
+                                        <iconify-icon icon="material-symbols:cancel-schedule-send-rounded" class="message-action-icon"></iconify-icon>
+                                        Unsend
+                                    </p>
+                                </div>
+
+                            </div>
                                         <div class="group-chat-sender-text-container">
                                             <span>${data.sender}</span>
                                             ${messageMediaContainer}
@@ -957,6 +1104,22 @@
         else {
             if(sender_user_img != null){
                 messageContainer.innerHTML += `<div class="group-chat-sender-container">
+                    <div class="message-actions-parent-container">
+                                <iconify-icon icon="mdi:dots-vertical" class="message-icon">
+
+                                </iconify-icon>
+                                <div class="message-actions-box">
+                                    <p>
+                                        <iconify-icon icon="mdi:hide" class="message-action-icon"></iconify-icon>
+                                        Hide
+                                    </p>
+                                    <p>
+                                        <iconify-icon icon="material-symbols:cancel-schedule-send-rounded" class="message-action-icon"></iconify-icon>
+                                        Unsend
+                                    </p>
+                                </div>
+
+                            </div>
                                         <div class="group-chat-sender-text-container">
                                             <span>${data.sender}</span>
                                             <p>${data.message.text}</p>
@@ -965,6 +1128,22 @@
                                     </div>`;
             }else{
                 messageContainer.innerHTML += `<div class="group-chat-sender-container">
+                    <div class="message-actions-parent-container">
+                                <iconify-icon icon="mdi:dots-vertical" class="message-icon">
+
+                                </iconify-icon>
+                                <div class="message-actions-box">
+                                    <p>
+                                        <iconify-icon icon="mdi:hide" class="message-action-icon"></iconify-icon>
+                                        Hide
+                                    </p>
+                                    <p>
+                                        <iconify-icon icon="material-symbols:cancel-schedule-send-rounded" class="message-action-icon"></iconify-icon>
+                                        Unsend
+                                    </p>
+                                </div>
+
+                            </div>
                                         <div class="group-chat-sender-text-container">
                                             <span>${data.sender}</span>
                                             <p>${data.message.text}</p>

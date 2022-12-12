@@ -871,7 +871,7 @@ class SocialmediaController extends Controller
         $receiver_user = User::where('users.id', $id)->with('user_profile')->first();
 
         $sender_user = User::where('id', $auth_user->id)->with('user_profile')->first();
-
+// dd($receiver_user->toArray());
 
         //active friend
         $auth = Auth()->user()->id;
@@ -921,7 +921,7 @@ class SocialmediaController extends Controller
                         ->get();
         $all_messages=Chat::all();
         for($i=0;$i=$messages->count();$i++){
-            
+
         }
 
     }

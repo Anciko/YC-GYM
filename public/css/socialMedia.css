@@ -204,7 +204,7 @@
 }
 
 .social-media-left-gpmessages-row img{
-    width: 25px;
+    width: 25px !important;
     height: 25px;
     border-radius: 50%;
     object-fit: cover;
@@ -1767,6 +1767,55 @@ ul{
 
 .social-media-user-photos{
     color: var(--customer-text-color);
+}
+
+.message-actions-parent-container{
+    position: relative;
+    width: fit-content;
+}
+
+.message-icon{
+    font-size: 20px;
+    color: var(--customer-text-color);
+    cursor: pointer;
+
+}
+
+.message-actions-box{
+    /* padding: 5px; */
+    border-radius: 5px;
+    box-shadow: 1px 1px 10px 0px rgba(0,0,0,0.25);
+    -webkit-box-shadow: 1px 1px 10px 0px rgba(0,0,0,0.25);
+    -moz-box-shadow: 1px 1px 10px 0px rgba(0,0,0,0.25);
+    background-color: var(--customer-card-bg-color);
+    position: absolute;
+    left: -45px;
+    top: 25px;
+    width: 90px;
+    z-index: 5;
+    display: none;
+}
+
+.message-actions-box{
+
+}
+
+.message-actions-box p{
+    margin-bottom: 0;
+    padding: 5px;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 0 5px;
+    cursor: pointer;
+}
+
+.message-action-icon{
+    font-size: 16px;
+}
+
+.message-actions-box p:hover{
+    background-color: var(--customer-primary-color);
 }
 
 @media screen and (max-width:1000px){
