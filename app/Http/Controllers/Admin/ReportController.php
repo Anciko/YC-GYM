@@ -47,9 +47,9 @@ class ReportController extends Controller
             $view_icon = '';
             $delete_icon = '';
 
-            $view_icon = '<a href=" ' . route('admin.view.report', $each->id) . ' " class="btn btn-primary" title="view">
-                        <i class="fa fa-folder-open" data-id="' . $each->id . '"></i>&nbsp;&nbsp;View
-                    </a>';
+            $view_icon ='<a href=" ' . route('admin.view.report', $each->id) . ' " class="btn btn-primary" title="view">
+                            <i class="fa fa-folder-open" data-id="' . $each->id . '"></i>&nbsp;&nbsp;View
+                        </a>';
             // $delete_icon = '<a href=" ' . route('admin.accept.report', $each->id) . ' " class="btn btn-danger" id="delete" title="delete">
             //             <i class="fa fa-ban" data-id="' . $each->id . '"></i>&nbsp;&nbsp;Ban
             //         </a>';
@@ -89,7 +89,7 @@ class ReportController extends Controller
                                 <button class="btn btn-danger" type="submit">
                                     <i class="fa fa-trash" data-id="' . $each->id . '"></i>&nbsp;&nbsp;Delete
                                 </button>
-                    </form>';
+                            </form>';
 
                         return '<div class="d-flex justify-content-center">' . $delete_icon . '</div>';
                     })

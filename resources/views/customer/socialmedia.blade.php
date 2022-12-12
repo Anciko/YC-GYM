@@ -254,52 +254,52 @@
         $('#report_submit').attr("class",'btn btn-primary disabled')
         console.log($("input[name='report_msg']:checked").val());
 
-       $('input[name="report_msg"]').on('click', function() {
-        if ($(this).val() == 'other') {
-            $('#other_msg').show();
-            $('#other_msg').keydown(function() {
-                if(!$('#other_msg').val()){
-                    $('#report_submit').attr("class",'btn btn-primary disabled')
-                }else{
+        $('input[name="report_msg"]').on('click', function() {
+                if ($(this).val() == 'other') {
+                    $('#other_msg').show();
+                    $('#other_msg').keydown(function() {
+                        if(!$('#other_msg').val()){
+                            $('#report_submit').attr("class",'btn btn-primary disabled')
+                        }else{
+                            $('#report_submit').attr("class",'btn btn-primary')
+                        }
+                    })
+
+                }else if ($(this).val() == 'nudity'){
+                    $('#other_msg').hide();
+                    $('#other_msg').val('');
+                    $('#report_submit').attr("class",'btn btn-primary')
+
+                }else if ($(this).val() == 'violence'){
+                    $('#other_msg').hide();
+                    $('#other_msg').val('')
+                    $('#report_submit').attr("class",'btn btn-primary')
+                }else if ($(this).val() == 'harassment'){
+                    $('#other_msg').hide();
+                    $('#other_msg').val('')
+                    $('#report_submit').attr("class",'btn btn-primary')
+                }else if ($(this).val() == 'suicide or self-injury'){
+                    $('#other_msg').hide();
+                    $('#other_msg').val('')
+                    $('#report_submit').attr("class",'btn btn-primary')
+                }else if ($(this).val() == 'false information'){
+                    $('#other_msg').hide();
+                    $('#other_msg').val('');
+                    $('#report_submit').attr("class",'btn btn-primary')
+                }else if ($(this).val() == 'spam'){
+                    $('#other_msg').hide();
+                    $('#other_msg').val('')
+                    $('#report_submit').attr("class",'btn btn-primary')
+                }else if ($(this).val() == 'hate speech'){
+                    $('#other_msg').hide();
+                    $('#other_msg').val('')
+                    $('#report_submit').attr("class",'btn btn-primary')
+                }else if ($(this).val() == 'terrorism'){
+                    $('#other_msg').hide();
+                    $('#other_msg').val('')
                     $('#report_submit').attr("class",'btn btn-primary')
                 }
-            })
-
-        }else if ($(this).val() == 'nudity'){
-            $('#other_msg').hide();
-            $('#other_msg').val('');
-            $('#report_submit').attr("class",'btn btn-primary')
-
-        }else if ($(this).val() == 'violence'){
-            $('#other_msg').hide();
-            $('#other_msg').val('')
-            $('#report_submit').attr("class",'btn btn-primary')
-        }else if ($(this).val() == 'harassment'){
-            $('#other_msg').hide();
-            $('#other_msg').val('')
-            $('#report_submit').attr("class",'btn btn-primary')
-        }else if ($(this).val() == 'suicide or self-injury'){
-            $('#other_msg').hide();
-            $('#other_msg').val('')
-            $('#report_submit').attr("class",'btn btn-primary')
-        }else if ($(this).val() == 'false information'){
-            $('#other_msg').hide();
-            $('#other_msg').val('');
-            $('#report_submit').attr("class",'btn btn-primary')
-        }else if ($(this).val() == 'spam'){
-            $('#other_msg').hide();
-            $('#other_msg').val('')
-            $('#report_submit').attr("class",'btn btn-primary')
-        }else if ($(this).val() == 'hate speech'){
-            $('#other_msg').hide();
-            $('#other_msg').val('')
-            $('#report_submit').attr("class",'btn btn-primary')
-        }else if ($(this).val() == 'terrorism'){
-            $('#other_msg').hide();
-            $('#other_msg').val('')
-            $('#report_submit').attr("class",'btn btn-primary')
-        }
-    });
+        });
 
 
         $('.like').click(function(e){

@@ -212,6 +212,7 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
             Route::get('/banwords/create/', [BanWordsController::class, 'create'])->name('banwords.create');
             Route::post('/banwords/store', [BanWordsController::class, 'store'])->name('banwords.store');
             Route::get('admin/banword/datatable/ssd', [BanWordsController::class, 'ssd']);
+
             // all users
             Route::resource('user', UserController::class);
             Route::get('admin/user/datatable/ssd', [UserController::class, 'ssd']);
@@ -240,10 +241,10 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
             Route::resource('role', RoleController::class);
             Route::get('admin/role/datatable/ssd', [RoleController::class, 'ssd']);
 
+            //Report
             Route::get('admin/report/datatable/ssd', [ReportController::class, 'ssd']);
             Route::get('admin/action-report/datatable/ssd', [ReportController::class, 'action_ssd']);
             Route::delete('admin/report/{$id}', [ReportController::class, 'destroy'])->name('report.destroy');
-
             Route::get('admin/report/{id}/view', [ReportController::class, 'view_post'])->name('admin.view.report');
             Route::get('admin/report/accept/{report_id}',[ReportController::class, 'accept_report'])->name('admin.accept.report');
             Route::get('admin/report/decline/{report_id}',[ReportController::class, 'decline_report'])->name('admin.decline.report');
