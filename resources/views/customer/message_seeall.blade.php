@@ -86,9 +86,6 @@
             var from_id=$(this).data('id');
             var to_id=$(this).attr('id');
 
-            console.log(from_id+'from id');
-            console.log(to_id+'to id');
-            
             var add_url = "{{ route('message.all.delete')}}";
             $.ajax({
                         method: "GET",
