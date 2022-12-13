@@ -952,11 +952,14 @@ class SocialmediaController extends Controller
 
                     }
                 }
+                return response()->json([
+                    'success' =>  'Deleted'
+                ]);
+            }else{
+                dd('already deleted');
             }
 
-            return response()->json([
-                'success' =>  'Deleted'
-            ]);
+
 
 
 
