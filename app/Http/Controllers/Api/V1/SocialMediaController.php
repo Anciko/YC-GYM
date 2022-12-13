@@ -22,7 +22,9 @@ use App\Models\ChatGroupMember;
 use App\Models\ChatGroupMessage;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use App\Class\AgoraDynamicKey\RtcTokenBuilder;
 
 class SocialMediaController extends Controller
 {
@@ -1177,9 +1179,7 @@ class SocialMediaController extends Controller
         ]);
     }
 
-    public function chatting(Request $request, User $user)
-    {
-
+    public function chatting(Request $request, User $user){
         if ($request->text == null && $request->fileSend == null) {
         } else {
             $message = new Chat();
@@ -1207,6 +1207,46 @@ class SocialMediaController extends Controller
 
             broadcast(new Chatting($message, $request->sender));
         }
+        $user_id=auth()->user()->id;
+
+        $messages =DB::select("SELECT users.id,users.name,profiles.profile_image,chats.text
+            from
+                chats
+            join
+                (select user, max(created_at) m
+                    from
+                    (
+                        (select id, to_user_id user, created_at
+                        from chats
+                        where from_user_id= $user_id )
+                    union
+                        (select id, from_user_id user, created_at
+                        from chats
+                        where to_user_id= $user_id)
+                        ) t1
+                group by user) t2
+            on ((from_user_id= $user_id and to_user_id=user) or
+                (from_user_id=user and to_user_id= $user_id)) and
+                (created_at = m)
+            left join users on users.id = user
+            left join profiles on users.profile_id = profiles.id
+            where deleted_by !=  $user_id  and delete_status != 2
+            order by chats.created_at desc limit  3");
+
+        $options = array(
+            'cluster' => env('PUSHER_APP_CLUSTER'),
+            'encrypted' => true
+            );
+            $pusher = new Pusher(
+            env('PUSHER_APP_KEY'),
+            env('PUSHER_APP_SECRET'),
+            env('PUSHER_APP_ID'),
+            $options
+            );
+
+        $pusher->trigger('chat_message.'.auth()->user()->id , 'chat', $messages);
+        $pusher->trigger('chat_message.'.$user->id , 'chat', $messages);
+
     }
 
     public function group_chatting(Request $request, $id)
@@ -1216,29 +1256,72 @@ class SocialMediaController extends Controller
 
             $message = new ChatGroupMessage();
 
-            $sendFile = $request->all();
-            if ($request->totalFiles != 0) {
-                $files = $sendFile['fileSend'];
-                if ($sendFile['fileSend']) {
-                    foreach ($files as $file) {
-                        $extension = $file->extension();
-                        $name = rand() . "." . $extension;
-                        $file->storeAs('/public/customer_message_media/', $name);
-                        $imgData[] = $name;
-                        $message->media = json_encode($imgData);
-                        $message->text = null;
-                    }
+        $message = new ChatGroupMessage();
+
+        $sendFile = $request->all();
+        if($request->totalFiles != 0){
+            $files = $sendFile['fileSend'];
+            if($sendFile['fileSend']) {
+                foreach($files as $file)
+                {
+                    $extension = $file->extension();
+                    $name = rand().".".$extension;
+                    $file->storeAs('/public/customer_message_media/', $name);
+                    $imgData[] = $name;
+                    // $message->media .= $name.',';
+                    $message->media = json_encode($imgData);
                 }
             } else {
                 $message->text = $request->text;
                 $message->media = null;
             }
-            $message->group_id = $id;
-            $message->sender_id = $request->senderId;
-            $message->save();
-            broadcast(new GroupChatting($message, $request->senderImg, $request->senderName));
+        }else{
+            $message->text = $request->text;
+            $message->media = null;
         }
-    }
+        $message->group_id = $id;
+        $message->sender_id = $request->senderId;
+        $message->save();
+        broadcast(new GroupChatting($message,$request->senderImg, $request->senderName));
+        $options = array(
+            'cluster' => env('PUSHER_APP_CLUSTER'),
+            'encrypted' => true
+            );
+            $pusher = new Pusher(
+            env('PUSHER_APP_KEY'),
+            env('PUSHER_APP_SECRET'),
+            env('PUSHER_APP_ID'),
+            $options
+            );
+            $user_id=auth()->user()->id;
+            $groups = DB::table('chat_group_members')
+            ->select('group_id')
+            ->groupBy('group_id')
+            ->where('chat_group_members.member_id',$user_id)
+            ->get()
+            ->pluck('group_id')->toArray();
+
+            $latest_group_message = DB::table('chat_group_messages')
+                        ->groupBy('group_id')
+                        ->whereIn('group_id',$groups)
+                        ->select(DB::raw('max(id) as id'))
+                        ->get()
+                        ->pluck('id')->toArray();
+
+            $chat_group =
+            ChatGroupMessage::leftJoin('chat_groups','chat_groups.id','chat_group_messages.group_id')
+            ->select('chat_group_messages.*','chat_groups.group_name','chat_groups.id')
+            ->whereIn('chat_group_messages.id',$latest_group_message)
+            ->orderBy('chat_group_messages.created_at','DESC')
+            ->get();
+            $pusher->trigger('group_message.'.$user_id, 'group_chat', $chat_group);
+            $group_message = ChatGroupMember::select('member_id')->where('group_id',$id)->get();
+            for($i = 0;count($group_message)>$i;$i++){
+                $pusher->trigger('group_message.'.$group_message[$i]['member_id'], 'group_chat', $chat_group);
+            }
+        }
+        }
+
 
     public function chat(Request $request)
     {
@@ -1275,9 +1358,77 @@ class SocialMediaController extends Controller
             env('PUSHER_APP_SECRET'),
             env('PUSHER_APP_ID'),
             $options
-        );
+            );
+        // $pusher->trigger('chat_message.'.$to_user_id , 'chat', $message);
+        broadcast(new Chatting($message, $request->sender));
 
-        $pusher->trigger('chat_message.' . $to_user_id, 'chat', $message);
+        $user_id=auth()->user()->id;
+        $messages =DB::select("SELECT users.id as id,users.name,profiles.profile_image,chats.text,chats.created_at as date
+        from
+            chats
+          join
+            (select user, max(created_at) m
+                from
+                   (
+                     (select id, to_user_id user, created_at
+                       from chats
+                       where from_user_id= $user_id )
+                   union
+                     (select id, from_user_id user, created_at
+                       from chats
+                       where to_user_id= $user_id)
+                    ) t1
+               group by user) t2
+                on ((from_user_id= $user_id and to_user_id=user) or
+                    (from_user_id=user and to_user_id= $user_id)) and
+                    (created_at = m)
+                left join users on users.id = user
+                left join profiles on users.profile_id = profiles.id
+                where deleted_by !=  $user_id  and delete_status != 2
+            order by chats.created_at desc limit  3");
+      // dd($messages);
+            $groups = DB::table('chat_group_members')
+                        ->select('group_id')
+                        ->groupBy('group_id')
+                        ->where('chat_group_members.member_id',$user_id)
+                        ->get()
+                        ->pluck('group_id')->toArray();
+
+            $latest_group_message = DB::table('chat_group_messages')
+                        ->groupBy('group_id')
+                        ->whereIn('group_id',$groups)
+                        ->select(DB::raw('max(id) as id'))
+                        ->get()
+                        ->pluck('id')->toArray();
+            $latest_group_sms =ChatGroupMessage::
+                    select('chat_group_messages.group_id as id','chat_groups.group_name as name',
+                    'profiles.profile_image','chat_group_messages.text',
+                    DB::raw('DATE_FORMAT(chat_group_messages.created_at, "%Y-%m-%d %H:%m:%s") as date'))
+                    ->leftJoin('chat_groups','chat_groups.id','chat_group_messages.group_id')
+                    ->leftJoin('users','users.id','chat_group_messages.sender_id')
+                    ->leftJoin('profiles','users.profile_id','profiles.id')
+                    ->whereIn('chat_group_messages.id',$latest_group_message)->get()->toArray();
+                    //   $ids = json_encode($messages);
+            $arr = json_decode(json_encode ( $messages ) , true);
+            foreach($arr as $key=>$value){
+                $arr[$key]['is_group'] = 0;
+            }
+            foreach($latest_group_sms as $key=>$value){
+                $latest_group_sms[$key]['is_group'] = 1;
+            }
+                    $merged = array_merge($arr, $latest_group_sms);
+                    $keys = array_column($merged, 'date');
+                    array_multisort($keys, SORT_DESC, $merged);
+                    $group_owner = ChatGroup::whereIn('chat_groups.id',$groups)->get();
+                    foreach($merged as $key=>$value){
+                           $merged[$key]['owner_id'] = 0;
+                        foreach($group_owner as $owner){
+                            if($value['id'] == $owner['id'] AND $value['is_group'] == 1)
+                            $merged[$key]['owner_id'] = $owner->group_owner_id;
+                        }
+                    }
+        $pusher->trigger('all_message.'.$to_user_id , 'all', $merged);
+        $pusher->trigger('all_message.'.$user_id , 'all', $merged);
         return response()->json([
             'success' =>  $message
         ]);
@@ -1287,40 +1438,31 @@ class SocialMediaController extends Controller
     {
         $id = $request->id;
         $auth_user = auth()->user();
-        if ($request->is_group == 0) {
-            $messages = Chat::where(function ($query) use ($auth_user) {
-                $query->where('from_user_id', $auth_user->id)->orWhere('to_user_id', $auth_user->id);
-            })->where(function ($que) use ($id) {
-                $que->where('from_user_id', $id)->orWhere('to_user_id', $id);
-            })->get();
-
-
-            $receiver_user = User::select('users.id', 'users.name', 'profiles.profile_image')
-                ->where('users.id', $id)
-                ->leftjoin('profiles', 'profiles.id', 'users.profile_id')->first();
-
-
-            foreach ($messages as $key => $value) {
-                $messages[$key]['profile_image'] = $receiver_user->profile_image == null ?  null : $receiver_user->profile_image;
-            }
-        } else {
-            $messages = ChatGroupMessage::select(
-                    'profiles.profile_image',
-                    'chat_group_messages.id',
-                    'chat_group_messages.sender_id as from_user_id',
-                    'chat_group_messages.text',
-                    'chat_group_messages.media',
-                    'chat_group_messages.created_at'
-                )
-                ->leftJoin('users', 'users.id', 'chat_group_messages.sender_id')
-                ->leftJoin('profiles', 'users.profile_id', 'profiles.id')
-                ->where('chat_group_messages.group_id', $id)
-                ->orderBy('chat_group_messages.created_at', 'DESC')
-                ->get();
-            foreach ($messages as $key => $value) {
-                $messages[$key]['to_user_id'] = 0;
-            }
+        if($request->is_group == 0){
+            $messages = DB::select("SELECT * FROM chats where (from_user_id =  $auth_user->id or to_user_id =  $auth_user->id) and (from_user_id = $id or to_user_id = $id)
+            and  deleted_by !=  $auth_user->id  and delete_status != 2 ");
+            $receiver_user = User::select('users.id','users.name','profiles.profile_image')
+            ->where('users.id',$id)
+            ->leftjoin('profiles','profiles.id','users.profile_id')->first();
+            foreach($messages as $key=>$value){
+            $messages[$key]->profile_image = $receiver_user->profile_image == null ?  null : $receiver_user->profile_image;
+             }
         }
+        else{
+            $messages = ChatGroupMessage::
+            select('profiles.profile_image','chat_group_messages.id',
+            'chat_group_messages.sender_id as from_user_id','chat_group_messages.text',
+            'chat_group_messages.media','chat_group_messages.created_at')
+           ->leftJoin('users','users.id','chat_group_messages.sender_id')
+           ->leftJoin('profiles','users.profile_id','profiles.id')
+           ->where('chat_group_messages.group_id',$id)
+           ->orderBy('chat_group_messages.created_at','DESC')
+           ->get();
+           foreach($messages as $key=>$value){
+            $messages[$key]['to_user_id'] = 0;
+           }
+        }
+
         return response()->json([
             'messages' => $messages
         ]);
@@ -1661,18 +1803,93 @@ class SocialMediaController extends Controller
             'data' => $user
         ]);
     }
-
-    public function group_create(Request $request)
-    {
+    public function group_create(Request $request){
         $groupName = $request->group_name;
         $groupOwner = auth()->user()->id;
         $group = new ChatGroup();
         $group->group_name = $groupName;
         $group->group_owner_id = $groupOwner;
         $group->save();
+        $options = array(
+            'cluster' => env('PUSHER_APP_CLUSTER'),
+            'encrypted' => true
+            );
+            $pusher = new Pusher(
+            env('PUSHER_APP_KEY'),
+            env('PUSHER_APP_SECRET'),
+            env('PUSHER_APP_ID'),
+            $options
+            );
 
-        if ($request->members) {
-            $members = $request->members;
+        $user_id=auth()->user()->id;
+        $messages =DB::select("SELECT users.id as id,users.name,profiles.profile_image,chats.text,chats.created_at as date
+        from
+            chats
+          join
+            (select user, max(created_at) m
+                from
+                   (
+                     (select id, to_user_id user, created_at
+                       from chats
+                       where from_user_id= $user_id )
+                   union
+                     (select id, from_user_id user, created_at
+                       from chats
+                       where to_user_id= $user_id)
+                    ) t1
+               group by user) t2
+                on ((from_user_id= $user_id and to_user_id=user) or
+                    (from_user_id=user and to_user_id= $user_id)) and
+                    (created_at = m)
+                left join users on users.id = user
+                left join profiles on users.profile_id = profiles.id
+                where deleted_by !=  $user_id  and delete_status != 2
+                order by chats.created_at desc limit  3");
+      // dd($messages);
+
+
+            $groups = DB::table('chat_group_members')
+                        ->select('group_id')
+                        ->groupBy('group_id')
+                        ->where('chat_group_members.member_id',$user_id)
+                        ->get()
+                        ->pluck('group_id')->toArray();
+
+            $latest_group_message = DB::table('chat_group_messages')
+                        ->groupBy('group_id')
+                        ->whereIn('group_id',$groups)
+                        ->select(DB::raw('max(id) as id'))
+                        ->get()
+                        ->pluck('id')->toArray();
+            $latest_group_sms =ChatGroupMessage::
+                    select('chat_group_messages.group_id as id','chat_groups.group_name as name',
+                    'profiles.profile_image','chat_group_messages.text',
+                    DB::raw('DATE_FORMAT(chat_group_messages.created_at, "%Y-%m-%d %H:%m:%s") as date'))
+                    ->leftJoin('chat_groups','chat_groups.id','chat_group_messages.group_id')
+                    ->leftJoin('users','users.id','chat_group_messages.sender_id')
+                    ->leftJoin('profiles','users.profile_id','profiles.id')
+                    ->whereIn('chat_group_messages.id',$latest_group_message)->get()->toArray();
+                    //   $ids = json_encode($messages);
+            $arr = json_decode(json_encode ( $messages ) , true);
+            foreach($arr as $key=>$value){
+                $arr[$key]['is_group'] = 0;
+            }
+            foreach($latest_group_sms as $key=>$value){
+                $latest_group_sms[$key]['is_group'] = 1;
+            }
+                    $merged = array_merge($arr, $latest_group_sms);
+                    $keys = array_column($merged, 'date');
+                    array_multisort($keys, SORT_DESC, $merged);
+                    $group_owner = ChatGroup::whereIn('chat_groups.id',$groups)->get();
+                    foreach($merged as $key=>$value){
+                           $merged[$key]['owner_id'] = 0;
+                        foreach($group_owner as $owner){
+                            if($value['id'] == $owner['id'] AND $value['is_group'] == 1)
+                            $merged[$key]['owner_id'] = $owner->group_owner_id;
+                        }
+                    }
+        if($request->members){
+            $members =$request->members;
             $id = $group->id;
             for ($i = 0; $i < count($members); $i++) {
                 $memberId = $members[$i];
@@ -1680,26 +1897,35 @@ class SocialMediaController extends Controller
                 $group_members->group_id = $id;
                 $group_members->member_id = $memberId;
                 $group_members->save();
-            }
-            $group_members = new ChatGroupMember();
-            $group_members->group_id = $group->id;
-            $group_members->member_id = $groupOwner;
-            $group_members->save();
-        } else {
+                $pusher->trigger('all_message.'. $memberId , 'all', $merged);
+             }
+             $group_members = new ChatGroupMember();
+             $group_members->group_id = $group->id;
+             $group_members->member_id = $groupOwner;
+             $group_members->save();
+        }
+        else{
             $group_members = new ChatGroupMember();
             $group_members->group_id = $group->id;
             $group_members->member_id = $groupOwner;
             $group_members->save();
         }
+        $message = "Hi All";
+        ChatGroupMember::create(['group_id' => $group->id, 'member_id' => $groupOwner]);
+        $chat_message = new ChatGroupMessage();
+        $chat_message->group_id =  $group->id;
+        $chat_message->sender_id = $groupOwner;
+        $chat_message->text = $message;
+        $chat_message->save();
+        $pusher->trigger('all_message.'.$user_id , 'all', $merged);
+
         return response()->json([
             'success' => 'Success',
             'group' => $group,
             'group_members' => $group_members
         ]);
     }
-    public function members(Request $request)
-    {
-
+    public function members(Request $request){
         $id = auth()->user()->id;
         $friendships = DB::table('friendships')
             ->where('friend_status', 2)
@@ -1925,11 +2151,81 @@ class SocialMediaController extends Controller
             env('PUSHER_APP_SECRET'),
             env('PUSHER_APP_ID'),
             $options
-        );
-        $group_message = ChatGroupMember::select('member_id')->where('group_id', $group_id)->get();
-        for ($i = 0; count($group_message) > $i; $i++) {
-            $pusher->trigger('group_message.' . $group_message[$i]['member_id'], 'group_chat', $sms);
-        }
+            );
+            $user_id=auth()->user()->id;
+            $messages =DB::select("SELECT users.id as id,users.name,profiles.profile_image,chats.text,chats.created_at as date
+            from
+                chats
+              join
+                (select user, max(created_at) m
+                    from
+                       (
+                         (select id, to_user_id user, created_at
+                           from chats
+                           where from_user_id= $user_id )
+                       union
+                         (select id, from_user_id user, created_at
+                           from chats
+                           where to_user_id= $user_id)
+                        ) t1
+                   group by user) t2
+                    on ((from_user_id= $user_id and to_user_id=user) or
+                        (from_user_id=user and to_user_id= $user_id)) and
+                        (created_at = m)
+                    left join users on users.id = user
+                    left join profiles on users.profile_id = profiles.id
+                    where deleted_by !=  $user_id  and delete_status != 2
+                    order by chats.created_at desc limit  3");
+          // dd($messages);
+
+
+                $groups = DB::table('chat_group_members')
+                            ->select('group_id')
+                            ->groupBy('group_id')
+                            ->where('chat_group_members.member_id',$user_id)
+                            ->get()
+                            ->pluck('group_id')->toArray();
+
+                $latest_group_message = DB::table('chat_group_messages')
+                            ->groupBy('group_id')
+                            ->whereIn('group_id',$groups)
+                            ->select(DB::raw('max(id) as id'))
+                            ->get()
+                            ->pluck('id')->toArray();
+                $latest_group_sms =ChatGroupMessage::
+                        select('chat_group_messages.group_id as id','chat_groups.group_name as name',
+                        'profiles.profile_image','chat_group_messages.text',
+                        DB::raw('DATE_FORMAT(chat_group_messages.created_at, "%Y-%m-%d %H:%m:%s") as date'))
+                        ->leftJoin('chat_groups','chat_groups.id','chat_group_messages.group_id')
+                        ->leftJoin('users','users.id','chat_group_messages.sender_id')
+                        ->leftJoin('profiles','users.profile_id','profiles.id')
+                        ->whereIn('chat_group_messages.id',$latest_group_message)->get()->toArray();
+                        //   $ids = json_encode($messages);
+                $arr = json_decode(json_encode ( $messages ) , true);
+                foreach($arr as $key=>$value){
+                    $arr[$key]['is_group'] = 0;
+                }
+                foreach($latest_group_sms as $key=>$value){
+                    $latest_group_sms[$key]['is_group'] = 1;
+                }
+                        $merged = array_merge($arr, $latest_group_sms);
+                        $keys = array_column($merged, 'date');
+                        array_multisort($keys, SORT_DESC, $merged);
+                        $group_owner = ChatGroup::whereIn('chat_groups.id',$groups)->get();
+                        foreach($merged as $key=>$value){
+                               $merged[$key]['owner_id'] = 0;
+                            foreach($group_owner as $owner){
+                                if($value['id'] == $owner['id'] AND $value['is_group'] == 1)
+                                $merged[$key]['owner_id'] = $owner->group_owner_id;
+                            }
+                        }
+            $pusher->trigger('all_message.'.$user_id , 'all', $merged);
+            $group_message = ChatGroupMember::select('member_id')->where('group_id',$group_id)->get();
+            for($i = 0;count($group_message)>$i;$i++){
+               // $pusher->trigger('group_message.'.$group_message[$i]['member_id'], 'group_chat', $sms);
+                $pusher->trigger('all_message.'.$group_message[$i]['member_id'], 'all', $merged);
+            }
+            broadcast(new GroupChatting($sms,$request->senderImg, $request->senderName));
         return response()->json([
             'success' =>  $sms
         ]);
@@ -1937,16 +2233,16 @@ class SocialMediaController extends Controller
 
     public function post_report(Request $request)
     {
-        //dd($request->all());
-        $user_id = $request->user_id;
-        $post_id = $request->post_id;
-        $admin_id = 1;
-        $description = $request->report_msg;
-        $report = new Report();
-        $report->user_id = $user_id;
-        $report->post_id = $post_id;
-        $report->description = $description;
-        $report->save();
+      //dd($request->all());
+       $user_id=auth()->user()->id;
+       $post_id=$request->post_id;
+       $admin_id=1;
+       $description=$request->report_msg;
+       $report=New Report();
+       $report->user_id=$user_id;
+       $report->post_id=$post_id;
+       $report->description=$description;
+       $report->save();
 
         $options = array(
             'cluster' => env('PUSHER_APP_CLUSTER'),
@@ -1967,19 +2263,19 @@ class SocialMediaController extends Controller
         $user_rp->description = $data;
         $user_rp->date = Carbon::Now()->toDateTimeString();
 
-        $user_rp->sender_id = $admin_id;
-        $user_rp->receiver_id =  auth()->user()->id;
-        $user_rp->notification_status = $admin_id;
-        $user_rp->report_status = 1;
-        $user_rp->save();
+            $user_rp->sender_id = $admin_id;
+            $user_rp->receiver_id =  auth()->user()->id;
+            $user_rp->notification_status = $admin_id;
+            $user_rp->report_id=$report->id;
+            $user_rp->save();
 
-        $admin_rp = new Notification();
-        $admin_rp->description = $new_data;
-        $admin_rp->date = Carbon::Now()->toDateTimeString();
-        $admin_rp->sender_id = auth()->user()->id;
-        $admin_rp->receiver_id = $admin_id;
-        $admin_rp->report_status = 1;
-        $admin_rp->save();
+            $admin_rp=new Notification();
+            $admin_rp->description=$new_data;
+            $admin_rp->date = Carbon::Now()->toDateTimeString();
+            $admin_rp->sender_id=auth()->user()->id;
+            $admin_rp->receiver_id=$admin_id;
+            $admin_rp->report_id=$report->id;
+            $admin_rp->save();
 
         $pusher->trigger('friend_request.' . auth()->user()->id, 'friendRequest', $data);
 
@@ -1987,6 +2283,56 @@ class SocialMediaController extends Controller
 
         return response()->json([
             'success' => 'Reported Success'
+        ]);
+    }
+
+
+    public function mobile_token(Request $request)
+    {
+
+        $appID = env('AGORA_APP_ID');
+        $appCertificate = env('AGORA_APP_CERTIFICATE');
+        $channelName = $request->channelName;
+        $user = Auth::user()->name;
+        $role = RtcTokenBuilder::RoleAttendee;
+        $expireTimeInSeconds = 3600;
+        $currentTimestamp = now()->getTimestamp();
+        $privilegeExpiredTs = $currentTimestamp + $expireTimeInSeconds;
+
+        $token = RtcTokenBuilder::buildTokenWithUserAccount($appID, $appCertificate, $channelName, $user, $role, $privilegeExpiredTs);
+
+        $options = array(
+            'cluster' => env('PUSHER_APP_CLUSTER'),
+            'encrypted' => true
+        );
+        $pusher = new Pusher(
+            env('PUSHER_APP_KEY'),
+            env('PUSHER_APP_SECRET'),
+            env('PUSHER_APP_ID'),
+            $options
+        );
+        $pusher->trigger('video_call.' . $request->to_call, 'call', $channelName);
+        return response()->json([
+            'data' => $token
+        ]);
+    }
+
+
+    public function accept_call(Request $request)
+    {
+
+        $appID = env('AGORA_APP_ID');
+        $appCertificate = env('AGORA_APP_CERTIFICATE');
+        $channelName = $request->channelName;
+        $user = Auth::user()->name;
+        $role = RtcTokenBuilder::RoleAttendee;
+        $expireTimeInSeconds = 3600;
+        $currentTimestamp = now()->getTimestamp();
+        $privilegeExpiredTs = $currentTimestamp + $expireTimeInSeconds;
+
+        $token = RtcTokenBuilder::buildTokenWithUserAccount($appID, $appCertificate, $channelName, $user, $role, $privilegeExpiredTs);
+        return response()->json([
+            'data' => $token
         ]);
     }
 }

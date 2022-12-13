@@ -32,38 +32,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-    //     $user=auth()->user()->id;
-    //     dd($user);
-    //     // $user_id=$user->id;
-    //     $friends=DB::table('friendships')
-    //                 ->where('friend_status',2)
-    //                 ->where(function($query) use ($user_id){
-    //                     $query->where('sender_id',$user_id)
-    //                         ->orWhere('receiver_id',$user_id);
-    //                 })
-    //                 ->get(['sender_id','receiver_id'])->toArray();
-
-    //     if(!empty($friends)){
-    //         $n= array();
-    //         foreach($friends as $friend){
-    //                 $f=(array)$friend;
-    //                 array_push($n, $f['sender_id'],$f['receiver_id']);
-    //         }
-    //         $posts=Post::whereIn('user_id',$n)
-    //                     ->orderBy('created_at','DESC')
-    //                     ->with('user')
-    //                     ->paginate(30);
-    //     }else{
-    //         $n= array();
-    //         $posts=Post::where('user_id',$user->id)
-    //                 ->orderBy('created_at','DESC')
-    //                 ->with('user')
-    //                 ->paginate(30);
-    //     }
-    // View::share('left_friends', User::whereIn('id',$n)
-    // ->where('id','!=',$user->id)
-    // ->paginate(6));
-    // View::share('left_friends',User::all());
     view()->composer('*', function ($view)
     {
         if (Auth::check()) {
@@ -114,12 +82,11 @@ class AppServiceProvider extends ServiceProvider
         ->select('chat_group_messages.*','chat_groups.group_name','chat_groups.id')
         ->whereIn('chat_group_messages.id',$latest_group_message)
         ->orderBy('chat_group_messages.created_at','DESC')
+        ->take(3)
         ->get();
-
         //...with this variable
         $view->with(['left_friends'=> $left_friends, 'chat_group'=>$chat_group]);
         }
-
     });
 
     view()->composer('*', function ($view)
@@ -201,11 +168,22 @@ class AppServiceProvider extends ServiceProvider
                  (created_at = m)
             left join users on users.id = user
             left join profiles on users.profile_id = profiles.id
-           order by chats.created_at desc limit  3");
+            where deleted_by !=  $user_id  and delete_status != 2
+            order by chats.created_at desc limit  3");
 
             $message->with('latest_messages', $messages);
         }
 
+    });
+
+    view()->composer('*',function($count){
+        if (Auth::check()) {
+            $memberRequest =  DB::table('users')
+                                ->where('users.active_status',1)
+                                ->get();
+            $memberRequest_count=$memberRequest->count();
+            $count->with('memberRequest_count', $memberRequest_count);
+        }
     });
 
     }

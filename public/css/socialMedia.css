@@ -146,6 +146,10 @@
 
 }
 
+.social-media-left-messages-rows-container > p{
+    color: var(--customer-text-color);
+}
+
 .social-media-left-messages-row{
     display: inline-flex;
     gap: 0 5px;
@@ -204,7 +208,7 @@
 }
 
 .social-media-left-gpmessages-row img{
-    width: 25px;
+    width: 25px !important;
     height: 25px;
     border-radius: 50%;
     object-fit: cover;
@@ -743,7 +747,7 @@
 } */
 
 .social-media-chat-media-container{
-    height: 100%;
+    height: calc(100% - 70px);
     overflow-y: scroll;
     display: flex;
     /* align-items: center; */
@@ -852,22 +856,38 @@
 .social-media-allchats-messages-container{
     height: calc(100% - 60px);
     overflow-y: scroll;
+    padding: 2px 5px;
 }
 
 .social-media-allchats-message-row{
     padding: 5px 10px;
-    margin-bottom: 5px;
+
     background-color: var(--customer-card-bg-color);
-    box-shadow: 0px 0px 4px 0px rgba(0, 0, 0, 0.25);
+    /* box-shadow: 0px 0px 4px 0px rgba(0, 0, 0, 0.25); */
     display: flex;
+    flex: 1;
     align-items: center;
     justify-content: space-between;
-    border-radius: 5px;
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
     gap: 10px 0;
     text-decoration: none;
+    z-index: 0;
 }
 
-.social-media-allchats-message-row:hover{
+.social-media-allchats-message-row::before{
+    content:"";
+    position:absolute;
+    left:0;
+    top:0;
+    height:100%;
+    width:100%;
+    z-index: -1;
+    /* background-color: red; */
+    border-radius: 5px;
+}
+
+.social-media-allchats-message-row:hover::before{
     background-color: var(--customer-primary-color);
 }
 
@@ -891,7 +911,7 @@
 }
 
 .social-media-allchats-message-row > p{
-    max-width: 300px;
+    max-width: 200px;
     white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;
@@ -1769,6 +1789,104 @@ ul{
     color: var(--customer-text-color);
 }
 
+.message-actions-parent-container{
+    position: relative;
+    width: fit-content;
+}
+
+.message-icon{
+    font-size: 20px;
+    color: var(--customer-text-color);
+    cursor: pointer;
+
+}
+
+.message-actions-box{
+    /* padding: 5px; */
+    border-radius: 5px;
+    box-shadow: 1px 1px 10px 0px rgba(0,0,0,0.25);
+    -webkit-box-shadow: 1px 1px 10px 0px rgba(0,0,0,0.25);
+    -moz-box-shadow: 1px 1px 10px 0px rgba(0,0,0,0.25);
+    background-color: white;
+    position: absolute;
+    left: -45px;
+    top: 25px;
+    width: 90px;
+    z-index: 5;
+    display: none;
+}
+
+.message-actions-box{
+
+}
+
+.message-actions-box p{
+    margin-bottom: 0;
+    padding: 5px;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 0 5px;
+    cursor: pointer;
+}
+
+.message-action-icon{
+    font-size: 16px;
+}
+
+.message-actions-box p:hover{
+    background-color: var(--customer-primary-color);
+}
+
+.social-media-allchats-message-row-container{
+    display: flex;
+    gap: 0 10px;
+    align-items: center;
+    box-shadow: 0px 0px 4px 0px rgba(0, 0, 0, 0.25);
+    margin-bottom: 5px;
+    border-radius: 5px;
+    position: relative;
+}
+
+.social-media-allchats-actions-container{
+    position: relative;
+    /* z-index: 1; */
+}
+
+.social-media-allchats-actions-toggle{
+    font-size: 25px;
+    color: var(--customer-text-color);
+    cursor: pointer;
+}
+
+.social-media-allchats-actions-box{
+    border-radius: 5px;
+    box-shadow: 1px 1px 10px 0px rgba(0,0,0,0.25);
+    -webkit-box-shadow: 1px 1px 10px 0px rgba(0,0,0,0.25);
+    -moz-box-shadow: 1px 1px 10px 0px rgba(0,0,0,0.25);
+    background-color: white;
+    position: absolute;
+    left: -70px;
+    top: 30px;
+    width: 90px;
+    z-index: 5;
+    display: none;
+}
+
+.social-media-allchats-actions-box div, .social-media-allchats-actions-box a{
+    margin-bottom: 0;
+    padding: 5px;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 0 5px;
+    cursor: pointer;
+}
+
+.social-media-allchats-actions-box div:hover, .social-media-allchats-actions-box a:hover{
+    background-color: var(--customer-primary-color);
+}
+
 @media screen and (max-width:1000px){
 
     .social-media-left-container-trigger{
@@ -1885,7 +2003,9 @@ ul{
 
 
     .social-media-allchats-message-row{
-        flex-wrap: wrap;
+        /* flex-wrap: wrap; */
+        flex-direction: column;
+        align-items: flex-start;
     }
 
     .social-media-allchats-message-img{
