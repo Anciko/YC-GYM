@@ -1212,33 +1212,33 @@ class SocialMediaController extends Controller
     }
 
     public function chatting(Request $request, User $user){
-        if($request->text ==null && $request->fileInput == null ){
+        if ($request->text == null && $request->fileSend == null) {
+        } else {
+            $message = new Chat();
+            $sendFile = $request->all();
+            if ($request->totalFiles != 0) {
+                $files = $sendFile['fileSend'];
+                if ($sendFile['fileSend']) {
+                    foreach ($files as $file) {
+                        $extension = $file->extension();
+                        $name = rand() . "." . $extension;
+                        $file->storeAs('/public/customer_message_media/', $name);
+                        $imgData[] = $name;
+                        $message->media = json_encode($imgData);
+                        $message->text = null;
+                    }
+                }
+            } else {
+                $message->text = $request->text;
+                $message->media = null;
+            }
 
-        }else{
-            $path='';
-        if($request->file('fileInput') !=null){
-            $request->validate([
-                'fileInput' => 'required|mimes:png,jpg,jpeg,gif,mp4,mov,webm'
-                ],[
-                    'fileInput.required' => 'You can send png,jpg,jpeg,gif,mp4,mov and webm extension'
-                ]);
+            $message->from_user_id = auth()->user()->id;
+            $message->to_user_id = $user->id;
+            $message->save();
 
-            $file = $request->file('fileInput');
-            $path =uniqid().'_'. $file->getClientOriginalName();
-            $disk = Storage::disk('public');
-            $disk->put(
-                'customer_message_media/'.$path,file_get_contents($file)
-            );
+            broadcast(new Chatting($message, $request->sender));
         }
-
-        $message = new Chat();
-        $message->from_user_id = auth()->user()->id;
-        $message->to_user_id = $user->id;
-        $message->text = $request->text == null ?  null : $request->text;
-        $message->media = $request->fileInput == null ? null : $path;
-        $message->save();
-
-        broadcast(new Chatting($message, $request->sender)); //receiver
         $user_id=auth()->user()->id;
 
         $messages =DB::select("SELECT users.id,users.name,profiles.profile_image,chats.text
@@ -1278,7 +1278,7 @@ class SocialMediaController extends Controller
 
         $pusher->trigger('chat_message.'.auth()->user()->id , 'chat', $messages);
         $pusher->trigger('chat_message.'.$user->id , 'chat', $messages);
-        }
+        
     }
 
     public function group_chatting(Request $request, $id){
