@@ -650,7 +650,7 @@
 
 
 
-        Echo.private('chatting.' + auth_user_id + '.' + recieveUserId)
+        Echo.channel('chatting.' + auth_user_id + '.' + recieveUserId)
             .listen('.chatting-event', (data) => {
                     console.log('asdufsasusiui', data);
                     if (data.message.from_user_id == recieveUserId) {
@@ -914,7 +914,7 @@
         }
         })
 
-        Echo.private('chatting.' + recieveUserId + '.' + auth_user_id)
+        Echo.channel('chatting.' + recieveUserId + '.' + auth_user_id)
             .listen('.chatting-event', (data) => {
                     console.log(data);
                     if (data.message.from_user_id == recieveUserId) {
