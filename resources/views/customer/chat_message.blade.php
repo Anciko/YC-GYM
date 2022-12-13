@@ -174,7 +174,6 @@
 
         <div class="group-chat-messages-container">
 
-
             @forelse ($messages as $send_message)
                 @if (auth()->user()->id == $send_message->from_user_id)
                     <div class="group-chat-sender-container">
@@ -1094,12 +1093,6 @@
                     incomingCall = true
                     incomingAudioCall = true
 
-
-                    console.log('incomingcaller', incomingCaller);
-
-                    console.log('llllllrweer', incomingCall);
-
-                    console.log('incoming audio calll checkkkkk', incomingAudioCall);
                     if (incomingCall) {
                         $(".chat-backdrop").show();
                         if (incomingAudioCall) {
@@ -1214,7 +1207,6 @@
             callPlaced = true;
             videoCallEvent = true;
             incomingCallContainer.innerHTML = ""
-
         }
 
         function declineCall() {
