@@ -1459,7 +1459,6 @@ class SocialMediaController extends Controller
            ->leftJoin('users','users.id','chat_group_messages.sender_id')
            ->leftJoin('profiles','users.profile_id','profiles.id')
            ->where('chat_group_messages.group_id',$id)
-           ->orderBy('chat_group_messages.created_at','DESC')
            ->get();
            foreach($messages as $key=>$value){
             $messages[$key]['to_user_id'] = 0;
