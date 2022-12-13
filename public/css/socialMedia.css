@@ -146,6 +146,10 @@
 
 }
 
+.social-media-left-messages-rows-container > p{
+    color: var(--customer-text-color);
+}
+
 .social-media-left-messages-row{
     display: inline-flex;
     gap: 0 5px;
@@ -852,13 +856,14 @@
 .social-media-allchats-messages-container{
     height: calc(100% - 60px);
     overflow-y: scroll;
+    padding: 2px 5px;
 }
 
 .social-media-allchats-message-row{
     padding: 5px 10px;
-    margin-bottom: 5px;
+
     background-color: var(--customer-card-bg-color);
-    box-shadow: 0px 0px 4px 0px rgba(0, 0, 0, 0.25);
+    /* box-shadow: 0px 0px 4px 0px rgba(0, 0, 0, 0.25); */
     display: flex;
     flex: 1;
     align-items: center;
@@ -892,7 +897,7 @@
 }
 
 .social-media-allchats-message-row > p{
-    max-width: 300px;
+    max-width: 200px;
     white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;
@@ -1821,8 +1826,11 @@ ul{
 
 .social-media-allchats-message-row-container{
     display: flex;
-    gap: 0 5px;
+    gap: 0 10px;
     align-items: center;
+    box-shadow: 0px 0px 4px 0px rgba(0, 0, 0, 0.25);
+    margin-bottom: 5px;
+    border-radius: 5px;
 }
 
 .social-media-allchats-actions-container{
@@ -1979,7 +1987,9 @@ ul{
 
 
     .social-media-allchats-message-row{
-        flex-wrap: wrap;
+        /* flex-wrap: wrap; */
+        flex-direction: column;
+        align-items: flex-start;
     }
 
     .social-media-allchats-message-img{
