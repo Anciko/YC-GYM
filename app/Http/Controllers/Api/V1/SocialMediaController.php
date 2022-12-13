@@ -1283,7 +1283,7 @@ class SocialMediaController extends Controller
         $message->group_id = $id;
         $message->sender_id = $request->senderId;
         $message->save();
-        broadcast(new GroupChatting($message,$request->senderImg, $request->senderName));
+
         $options = array(
             'cluster' => env('PUSHER_APP_CLUSTER'),
             'encrypted' => true
@@ -1318,6 +1318,7 @@ class SocialMediaController extends Controller
             $pusher->trigger('group_message.'.$user_id, 'group_chat', $chat_group);
             $group_message = ChatGroupMember::select('member_id')->where('group_id',$id)->get();
             for($i = 0;count($group_message)>$i;$i++){
+                broadcast(new GroupChatting($message,$request->senderImg, $request->senderName));
                 $pusher->trigger('group_message.'.$group_message[$i]['member_id'], 'group_chat', $chat_group);
             }
         }
@@ -2227,8 +2228,9 @@ class SocialMediaController extends Controller
             for($i = 0;count($group_message)>$i;$i++){
                // $pusher->trigger('group_message.'.$group_message[$i]['member_id'], 'group_chat', $sms);
                 $pusher->trigger('all_message.'.$group_message[$i]['member_id'], 'all', $merged);
+                $pusher->trigger('groupChatting.'.$group_message[$i]['member_id'], 'group-chatting-event', ["message"=>$message,"senderImg"=>$request->senderImg,"senderName"=> $request->senderName ]);
             }
-            $pusher->trigger('groupChatting.'.$group_id, 'group-chatting-event', ["message"=>$message,"senderImg"=>$request->senderImg,"senderName"=> $request->senderName ]);
+
            // broadcast(new GroupChatting($message,$request->senderImg, $request->senderName));
         return response()->json([
             'success' =>  $sms

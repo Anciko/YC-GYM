@@ -39,7 +39,7 @@ class GroupChatting implements ShouldBroadcast
      */
     public function broadcastOn()
     {
-        return new Channel("groupChatting.{$this->message->group_id}");
+        return new Channel("groupChatting.{$this->message->member_id}");
     }
 
     public function broadcastAs(){
