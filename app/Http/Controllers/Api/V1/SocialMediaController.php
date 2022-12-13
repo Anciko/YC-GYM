@@ -1386,7 +1386,8 @@ class SocialMediaController extends Controller
             env('PUSHER_APP_ID'),
             $options
             );
-        $pusher->trigger('chat_message.'.$to_user_id , 'chat', $message);
+        // $pusher->trigger('chat_message.'.$to_user_id , 'chat', $message);
+        broadcast(new Chatting($message, $request->sender));
 
         $user_id=auth()->user()->id;
         $messages =DB::select("SELECT users.id as id,users.name,profiles.profile_image,chats.text,chats.created_at as date
@@ -1412,8 +1413,6 @@ class SocialMediaController extends Controller
                 left join profiles on users.profile_id = profiles.id
             order by chats.created_at desc limit  3");
       // dd($messages);
-
-
             $groups = DB::table('chat_group_members')
                         ->select('group_id')
                         ->groupBy('group_id')
@@ -1466,7 +1465,7 @@ class SocialMediaController extends Controller
         $auth_user = auth()->user();
         if($request->is_group == 0){
             $messages = DB::select("SELECT * FROM chats where (from_user_id =  $auth_user->id or to_user_id =  $auth_user->id) and (from_user_id = $id or to_user_id = $id)
-            and  deleted_by !=  $auth_user->id  and delete_status != 2 order by created_at DESC");
+            and  deleted_by !=  $auth_user->id  and delete_status != 2 ");
             $receiver_user = User::select('users.id','users.name','profiles.profile_image')
             ->where('users.id',$id)
             ->leftjoin('profiles','profiles.id','users.profile_id')->first();
@@ -2231,9 +2230,10 @@ class SocialMediaController extends Controller
             $pusher->trigger('all_message.'.$user_id , 'all', $merged);
             $group_message = ChatGroupMember::select('member_id')->where('group_id',$group_id)->get();
             for($i = 0;count($group_message)>$i;$i++){
-                $pusher->trigger('group_message.'.$group_message[$i]['member_id'], 'group_chat', $sms);
+               // $pusher->trigger('group_message.'.$group_message[$i]['member_id'], 'group_chat', $sms);
                 $pusher->trigger('all_message.'.$group_message[$i]['member_id'], 'all', $merged);
             }
+            broadcast(new GroupChatting($sms,$request->senderImg, $request->senderName));
         return response()->json([
             'success' =>  $sms
         ]);

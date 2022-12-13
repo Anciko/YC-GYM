@@ -869,8 +869,11 @@ class SocialmediaController extends Controller
     {
         $auth_user = auth()->user();
 
-        $messages = DB::select("SELECT * FROM chats where (from_user_id =  $auth_user->id or to_user_id =  $auth_user->id) and (from_user_id = $id or to_user_id = $id)
-        and  deleted_by !=  $auth_user->id  and delete_status != 2 order by created_at DESC");
+        $messages = DB::select("SELECT chats.*, receiver.name, profiles.profile_image FROM chats
+        left join users as receiver on chats.to_user_id = receiver.id
+        left join profiles on receiver.profile_id = profiles.id
+        where (from_user_id =  $auth_user->id or to_user_id =  $auth_user->id) and (from_user_id = $id or to_user_id = $id )
+        and  deleted_by !=  $auth_user->id  and delete_status != 2");
 
         $auth_user_name = auth()->user()->name;
         $receiver_user = User::where('users.id', $id)->with('user_profile')->first();
