@@ -48,7 +48,7 @@
             </div>
 
             <div class="social-media-allchats-messages-container">
-                    @forelse ($messages as $list)
+                    {{-- @forelse ($messages as $list)
                     <div class="social-media-allchats-message-row-container">
                         <a href="{{route('message.chat',$list->id)}}" class="social-media-allchats-message-row">
                             <div class="social-media-allchats-message-img">
@@ -80,14 +80,11 @@
                             </div>
 
                         </div>
-
-
-                        {{-- <iconify-icon icon="bi:three-dots-vertical" class="social-media-seeallmessage-header-icon"></iconify-icon> --}}
                     </div>
 
                     @empty
                         <p>No Message</p>
-                    @endforelse
+                    @endforelse --}}
     </div>
 </div>
 

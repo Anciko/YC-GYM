@@ -2071,6 +2071,7 @@ class SocialMediaController extends Controller
             ->leftJoin('users', 'users.id', 'chat_group_messages.sender_id')
             ->leftJoin('profiles', 'users.profile_id', 'profiles.id')
             ->where('chat_group_messages.group_id', $group_id)
+            ->orderBy('chat_group_messages.created_at','DESC')
             ->get();
         return response()->json([
             'data' =>  $group_messages
