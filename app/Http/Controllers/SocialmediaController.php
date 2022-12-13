@@ -7,19 +7,21 @@ use Pusher\Pusher;
 use App\Models\Chat;
 use App\Models\Post;
 use App\Models\User;
+use App\Models\Report;
 use App\Models\BanWord;
-use App\Models\ChatGroup;
-use App\Models\ChatGroupMember;
-use App\Models\ChatGroupMessage;
 use App\Models\Comment;
 use App\Models\Profile;
+use App\Events\Chatting;
+use App\Events\MessageDelete;
+use App\Models\ChatGroup;
 use App\Models\Friendship;
 use App\Models\NotiFriends;
 use App\Models\Notification;
-use App\Models\Report;
 use Illuminate\Http\Request;
 use App\Models\UserReactPost;
 use App\Models\UserSavedPost;
+use App\Models\ChatGroupMember;
+use App\Models\ChatGroupMessage;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
@@ -870,12 +872,22 @@ class SocialmediaController extends Controller
         foreach($messages as $mess){
 
             if($mess->delete_status == 1 && $mess->deleted_by == $auth_user->id){
-                $messages = Chat::where(function ($query) use ($auth_user) {
+                $messages = Chat::where('delete_status',0)->where(function ($que) use ($id) {
+                    $que->where('from_user_id', $id)->orWhere('to_user_id', $id);
+                })->where(function ($query) use ($auth_user) {
                     $query->where('from_user_id', $auth_user->id)->orWhere('to_user_id', $auth_user->id);
+                })->get();
+            }
+           if($mess->delete_status == 2){
+                $messages = Chat::where('delete_status',0)->orWhere(function ($q) use ($auth_user){
+                    $q->where('delete_status',1)->where('deleted_by','!=',$auth_user->id);
                 })->where(function ($que) use ($id) {
                     $que->where('from_user_id', $id)->orWhere('to_user_id', $id);
-                })->where('from_user_id',$mess->deleted_by)->get();
+                })->where(function ($query) use ($auth_user) {
+                    $query->where('from_user_id', $auth_user->id)->orWhere('to_user_id', $auth_user->id);
+                })->get();
             }
+
         }
 
 
@@ -883,7 +895,7 @@ class SocialmediaController extends Controller
         $receiver_user = User::where('users.id', $id)->with('user_profile')->first();
 
         $sender_user = User::where('id', $auth_user->id)->with('user_profile')->first();
-
+// dd($receiver_user->toArray());
 
         //active friend
         $auth = Auth()->user()->id;
@@ -926,6 +938,23 @@ class SocialmediaController extends Controller
         $auth_user_name = auth()->user()->name;
         $receiver_user = User::findOrFail($id);
         return view('customer.chat_view_media', compact('id', 'messages', 'auth_user_name', 'receiver_user'));
+    }
+
+    public function hide_message(Request $request){
+
+        $message = Chat::findOrFail($request->id);
+        $message->delete_status = 1;
+        $message->deleted_by = $request->delete_user;
+        $message->save();
+    }
+
+    public function delete_message(Request $request){
+        $message = Chat::findOrFail($request->id);
+        $message->delete_status = 2;
+        $message->deleted_by = $request->delete_user;
+        $message->save();
+
+        broadcast(new MessageDelete($message, $request->id));
     }
 
     public function post_comment($id)
@@ -1052,7 +1081,7 @@ class SocialmediaController extends Controller
                                             }
                                         }
                                     }
-                dd($friend,$group_members);
+                // dd($friend,$group_members);
 
                              //members
 
