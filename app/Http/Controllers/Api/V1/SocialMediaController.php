@@ -1262,7 +1262,8 @@ class SocialMediaController extends Controller
                 (created_at = m)
             left join users on users.id = user
             left join profiles on users.profile_id = profiles.id
-        order by chats.created_at desc limit  3");
+            where deleted_by !=  $user_id  and delete_status != 2
+            order by chats.created_at desc limit  3");
 
         $options = array(
             'cluster' => env('PUSHER_APP_CLUSTER'),
@@ -1411,6 +1412,7 @@ class SocialMediaController extends Controller
                     (created_at = m)
                 left join users on users.id = user
                 left join profiles on users.profile_id = profiles.id
+                where deleted_by !=  $user_id  and delete_status != 2
             order by chats.created_at desc limit  3");
       // dd($messages);
             $groups = DB::table('chat_group_members')
@@ -1867,7 +1869,8 @@ class SocialMediaController extends Controller
                     (created_at = m)
                 left join users on users.id = user
                 left join profiles on users.profile_id = profiles.id
-            order by chats.created_at desc limit  3");
+                where deleted_by !=  $user_id  and delete_status != 2
+                order by chats.created_at desc limit  3");
       // dd($messages);
 
 
@@ -2183,7 +2186,8 @@ class SocialMediaController extends Controller
                         (created_at = m)
                     left join users on users.id = user
                     left join profiles on users.profile_id = profiles.id
-                order by chats.created_at desc limit  3");
+                    where deleted_by !=  $user_id  and delete_status != 2
+                    order by chats.created_at desc limit  3");
           // dd($messages);
 
 
