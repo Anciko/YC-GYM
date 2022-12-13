@@ -743,7 +743,7 @@
 } */
 
 .social-media-chat-media-container{
-    height: 100%;
+    height: calc(100% - 70px);
     overflow-y: scroll;
     display: flex;
     /* align-items: center; */
@@ -1788,7 +1788,7 @@ ul{
     box-shadow: 1px 1px 10px 0px rgba(0,0,0,0.25);
     -webkit-box-shadow: 1px 1px 10px 0px rgba(0,0,0,0.25);
     -moz-box-shadow: 1px 1px 10px 0px rgba(0,0,0,0.25);
-    background-color: var(--customer-card-bg-color);
+    background-color: white;
     position: absolute;
     left: -45px;
     top: 25px;
