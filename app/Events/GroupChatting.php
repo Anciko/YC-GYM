@@ -2,6 +2,7 @@
 
 namespace App\Events;
 
+use App\Models\ChatGroupMember;
 use App\Models\ChatGroupMessage;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
@@ -21,15 +22,15 @@ class GroupChatting implements ShouldBroadcast
      * @return void
      */
 
-    public $message;
-    public $senderImg;
-    public $senderName;
+    // public $message;
+    // public $senderImg;
+    // public $senderName;
 
-    public function __construct(ChatGroupMessage $message, $senderImg, $senderName)
+    public function __construct()
     {
-        $this->message = $message;
-        $this->senderImg = $senderImg;
-        $this->senderName = $senderName;
+        // $this->message = $message;
+        // $this->senderImg = $senderImg;
+        // $this->senderName = $senderName;
     }
 
     /**
@@ -39,7 +40,7 @@ class GroupChatting implements ShouldBroadcast
      */
     public function broadcastOn()
     {
-        return new Channel("groupChatting.{$this->message->member_id}");
+        return new Channel("groupChatting");
     }
 
     public function broadcastAs(){

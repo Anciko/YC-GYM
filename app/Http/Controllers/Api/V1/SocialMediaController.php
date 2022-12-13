@@ -1295,10 +1295,11 @@ class SocialMediaController extends Controller
             $options
             );
             $user_id=auth()->user()->id;
+
             $groups = DB::table('chat_group_members')
             ->select('group_id')
             ->groupBy('group_id')
-            ->where('chat_group_members.member_id',$user_id)
+            ->where('chat_group_members.member_id', $user_id)
             ->get()
             ->pluck('group_id')->toArray();
 
@@ -1318,7 +1319,28 @@ class SocialMediaController extends Controller
             $pusher->trigger('group_message.'.$user_id, 'group_chat', $chat_group);
             $group_message = ChatGroupMember::select('member_id')->where('group_id',$id)->get();
             for($i = 0;count($group_message)>$i;$i++){
-                broadcast(new GroupChatting($message,$request->senderImg, $request->senderName));
+                $groups = DB::table('chat_group_members')
+                ->select('group_id')
+                ->groupBy('group_id')
+                ->where('chat_group_members.member_id', $group_message[$i]['member_id'])
+                ->get()
+                ->pluck('group_id')->toArray();
+
+                $latest_group_message = DB::table('chat_group_messages')
+                            ->groupBy('group_id')
+                            ->whereIn('group_id',$groups)
+                            ->select(DB::raw('max(id) as id'))
+                            ->get()
+                            ->pluck('id')->toArray();
+
+                $chat_group =
+                ChatGroupMessage::leftJoin('chat_groups','chat_groups.id','chat_group_messages.group_id')
+                ->select('chat_group_messages.*','chat_groups.group_name','chat_groups.id')
+                ->whereIn('chat_group_messages.id',$latest_group_message)
+                ->orderBy('chat_group_messages.created_at','DESC')
+                ->get();
+                // broadcast(new GroupChatting($group_message[$i]['member_id'],$request->senderImg, $request->senderName));
+                $pusher->trigger('groupChatting.'.$group_message[$i]['member_id'], 'group-chatting-event', ["message"=>$message,"senderImg"=>$request->senderImg,"senderName"=> $request->senderName ]);
                 $pusher->trigger('group_message.'.$group_message[$i]['member_id'], 'group_chat', $chat_group);
             }
         }
