@@ -871,15 +871,19 @@ class SocialmediaController extends Controller
     {
         $auth_user = auth()->user();
 
-        $messages = DB::select("SELECT chats.*, receiver.name, profiles.profile_image FROM chats
-        left join users as receiver on chats.to_user_id = receiver.id
-        left join profiles on receiver.profile_id = profiles.id
-        where (from_user_id =  $auth_user->id or to_user_id =  $auth_user->id) and (from_user_id = $id or to_user_id = $id )
-        and  deleted_by !=  $auth_user->id  and delete_status != 2");
+        $messages = Chat::where(function ($que) use ($id) {
+            $que->where('from_user_id', $id)->orWhere('to_user_id', $id);
+        })->where(function ($query) use ($auth_user) {
+            $query->where('from_user_id', $auth_user->id)->orWhere('to_user_id', $auth_user->id);
+        })->get();
+
+
         foreach($messages as $mess){
 
             if($mess->delete_status == 1 && $mess->deleted_by == $auth_user->id){
-                $messages = Chat::where('delete_status',0)->where(function ($que) use ($id) {
+                $messages = Chat::where('delete_status',0)->orWhere(function ($q) use ($auth_user){
+                    $q->where('delete_status',1)->where('deleted_by','!=',$auth_user->id);
+                })->where(function ($que) use ($id) {
                     $que->where('from_user_id', $id)->orWhere('to_user_id', $id);
                 })->where(function ($query) use ($auth_user) {
                     $query->where('from_user_id', $auth_user->id)->orWhere('to_user_id', $auth_user->id);

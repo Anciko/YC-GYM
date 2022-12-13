@@ -146,7 +146,7 @@
                 @if ($receiver_user->user_profile == null)
                     <img class="nav-profile-img" src="{{ asset('img/customer/imgs/user_default.jpg') }}" />
                 @else
-                    <img src="{{ asset('/storage/post' . $receiver_user->user_profile->profile_image) }}" />
+                    <img src="{{ asset('/storage/post/' . $receiver_user->user_profile->profile_image) }}" />
                 @endif
 
                 <div class="group-chat-header-name-text-container">
@@ -185,7 +185,7 @@
                             <div class="message-actions-box">
                                 <p onclick="message_hide(event,{{ $send_message->id }})">
                                     <iconify-icon icon="mdi:hide" class="message-action-icon"></iconify-icon>
-                                    Hide
+                                    Delete
                                 </p>
                                 <p onclick="message_delete(event,{{ $send_message->id }})">
                                     <iconify-icon icon="material-symbols:cancel-schedule-send-rounded"
@@ -254,7 +254,7 @@
                         @if ($receiver_user->user_profile == null)
                             <img class="nav-profile-img" src="{{ asset('img/customer/imgs/user_default.jpg') }}" />
                         @else
-                            <img src="{{ asset('/storage/post/' . $receiver_user->profile_image) }}" />
+                            <img src="{{ asset('/storage/post/' . $receiver_user->user_profile->profile_image) }}" />
                         @endif
                         <div class="group-chat-receiver-text-container">
                             <span>{{ $send_message->name }}</span>
@@ -814,7 +814,7 @@
                                             <div class="message-actions-box">
                                                 <p onclick="message_hide(event,${data.message.id})">
                                                     <iconify-icon icon="mdi:hide" class="message-action-icon"></iconify-icon>
-                                                    Hide
+                                                    Delete
                                                 </p>
                                                 <p onclick="message_delete(event,${data.message.id})">
                                                     <iconify-icon icon="material-symbols:cancel-schedule-send-rounded" class="message-action-icon"></iconify-icon>
@@ -839,7 +839,7 @@
                                             <div class="message-actions-box">
                                                 <p onclick="message_hide(event,${data.message.id})">
                                                     <iconify-icon icon="mdi:hide" class="message-action-icon"></iconify-icon>
-                                                    Hide
+                                                    Delete
                                                 </p>
                                                 <p onclick="message_delete(event,${data.message.id})">
                                                     <iconify-icon icon="material-symbols:cancel-schedule-send-rounded" class="message-action-icon"></iconify-icon>
@@ -867,7 +867,7 @@
                                 <div class="message-actions-box">
                                     <p onclick="message_hide(event,${data.message.id})">
                                         <iconify-icon icon="mdi:hide" class="message-action-icon"></iconify-icon>
-                                        Hide
+                                        Delete
                                     </p>
                                     <p onclick="message_delete(event,${data.message.id})">
                                         <iconify-icon icon="material-symbols:cancel-schedule-send-rounded" class="message-action-icon"></iconify-icon>
@@ -891,7 +891,7 @@
                                 <div class="message-actions-box">
                                     <p onclick="message_hide(event,${data.message.id})">
                                         <iconify-icon icon="mdi:hide" class="message-action-icon"></iconify-icon>
-                                        Hide
+                                        Delete
                                     </p>
                                     <p onclick="message_delete(event,${data.message.id})">
                                         <iconify-icon icon="material-symbols:cancel-schedule-send-rounded" class="message-action-icon"></iconify-icon>
@@ -1073,7 +1073,7 @@
                                 <div class="message-actions-box">
                                     <p onclick="message_hide(event,${data.message.id})">
                                         <iconify-icon icon="mdi:hide" class="message-action-icon"></iconify-icon>
-                                        Hide
+                                        Delete
                                     </p>
                                     <p onclick="message_delete(event,${data.message.id})">
                                         <iconify-icon icon="material-symbols:cancel-schedule-send-rounded" class="message-action-icon"></iconify-icon>
@@ -1098,7 +1098,7 @@
                                 <div class="message-actions-box">
                                     <p onclick="message_hide(event,${data.message.id})">
                                         <iconify-icon icon="mdi:hide" class="message-action-icon"></iconify-icon>
-                                        Hide
+                                        Delete
                                     </p>
                                     <p onclick="message_delete(event,${data.message.id})">
                                         <iconify-icon icon="material-symbols:cancel-schedule-send-rounded" class="message-action-icon"></iconify-icon>
@@ -1126,7 +1126,7 @@
                                 <div class="message-actions-box">
                                     <p onclick="message_hide(event,${data.message.id})">
                                         <iconify-icon icon="mdi:hide" class="message-action-icon"></iconify-icon>
-                                        Hide
+                                        Delete
                                     </p>
                                     <p onclick="message_delete(event,${data.message.id})">
                                         <iconify-icon icon="material-symbols:cancel-schedule-send-rounded" class="message-action-icon"></iconify-icon>
@@ -1150,7 +1150,7 @@
                                 <div class="message-actions-box">
                                     <p onclick="message_hide(event,${data.message.id})">
                                         <iconify-icon icon="mdi:hide" class="message-action-icon"></iconify-icon>
-                                        Hide
+                                        Delete
                                     </p>
                                     <p onclick="message_delete(event,${data.message.id})">
                                         <iconify-icon icon="material-symbols:cancel-schedule-send-rounded" class="message-action-icon"></iconify-icon>
