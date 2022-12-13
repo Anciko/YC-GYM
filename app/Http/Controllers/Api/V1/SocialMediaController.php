@@ -1262,7 +1262,8 @@ class SocialMediaController extends Controller
                 (created_at = m)
             left join users on users.id = user
             left join profiles on users.profile_id = profiles.id
-        order by chats.created_at desc limit  3");
+            where deleted_by !=  $user_id  and delete_status != 2
+            order by chats.created_at desc limit  3");
 
         $options = array(
             'cluster' => env('PUSHER_APP_CLUSTER'),
@@ -1386,7 +1387,8 @@ class SocialMediaController extends Controller
             env('PUSHER_APP_ID'),
             $options
             );
-        $pusher->trigger('chat_message.'.$to_user_id , 'chat', $message);
+        // $pusher->trigger('chat_message.'.$to_user_id , 'chat', $message);
+        broadcast(new Chatting($message, $request->sender));
 
         $user_id=auth()->user()->id;
         $messages =DB::select("SELECT users.id as id,users.name,profiles.profile_image,chats.text,chats.created_at as date
@@ -1410,10 +1412,9 @@ class SocialMediaController extends Controller
                     (created_at = m)
                 left join users on users.id = user
                 left join profiles on users.profile_id = profiles.id
+                where deleted_by !=  $user_id  and delete_status != 2
             order by chats.created_at desc limit  3");
       // dd($messages);
-
-
             $groups = DB::table('chat_group_members')
                         ->select('group_id')
                         ->groupBy('group_id')
@@ -1465,21 +1466,14 @@ class SocialMediaController extends Controller
         $id = $request->id;
         $auth_user = auth()->user();
         if($request->is_group == 0){
-            $messages = Chat::where(function($query) use ($auth_user){
-                $query->where('from_user_id',$auth_user->id)->orWhere('to_user_id',$auth_user->id);
-            })->where(function($que) use ($id){
-                $que->where('from_user_id',$id)->orWhere('to_user_id',$id);
-            })->get();
-
-
+            $messages = DB::select("SELECT * FROM chats where (from_user_id =  $auth_user->id or to_user_id =  $auth_user->id) and (from_user_id = $id or to_user_id = $id)
+            and  deleted_by !=  $auth_user->id  and delete_status != 2 ");
             $receiver_user = User::select('users.id','users.name','profiles.profile_image')
-                                ->where('users.id',$id)
-                                ->leftjoin('profiles','profiles.id','users.profile_id')->first();
-
-
+            ->where('users.id',$id)
+            ->leftjoin('profiles','profiles.id','users.profile_id')->first();
             foreach($messages as $key=>$value){
-                        $messages[$key]['profile_image'] = $receiver_user->profile_image == null ?  null : $receiver_user->profile_image;
-            }
+            $messages[$key]->profile_image = $receiver_user->profile_image == null ?  null : $receiver_user->profile_image;
+             }
         }
         else{
             $messages = ChatGroupMessage::
@@ -1875,7 +1869,8 @@ class SocialMediaController extends Controller
                     (created_at = m)
                 left join users on users.id = user
                 left join profiles on users.profile_id = profiles.id
-            order by chats.created_at desc limit  3");
+                where deleted_by !=  $user_id  and delete_status != 2
+                order by chats.created_at desc limit  3");
       // dd($messages);
 
 
@@ -2191,7 +2186,8 @@ class SocialMediaController extends Controller
                         (created_at = m)
                     left join users on users.id = user
                     left join profiles on users.profile_id = profiles.id
-                order by chats.created_at desc limit  3");
+                    where deleted_by !=  $user_id  and delete_status != 2
+                    order by chats.created_at desc limit  3");
           // dd($messages);
 
 
@@ -2238,9 +2234,10 @@ class SocialMediaController extends Controller
             $pusher->trigger('all_message.'.$user_id , 'all', $merged);
             $group_message = ChatGroupMember::select('member_id')->where('group_id',$group_id)->get();
             for($i = 0;count($group_message)>$i;$i++){
-                $pusher->trigger('group_message.'.$group_message[$i]['member_id'], 'group_chat', $sms);
+               // $pusher->trigger('group_message.'.$group_message[$i]['member_id'], 'group_chat', $sms);
                 $pusher->trigger('all_message.'.$group_message[$i]['member_id'], 'all', $merged);
             }
+            broadcast(new GroupChatting($sms,$request->senderImg, $request->senderName));
         return response()->json([
             'success' =>  $sms
         ]);
