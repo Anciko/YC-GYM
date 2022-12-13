@@ -168,7 +168,8 @@ class AppServiceProvider extends ServiceProvider
                  (created_at = m)
             left join users on users.id = user
             left join profiles on users.profile_id = profiles.id
-           order by chats.created_at desc limit  3");
+            where deleted_by !=  $user_id  and delete_status != 2
+            order by chats.created_at desc limit  3");
 
             $message->with('latest_messages', $messages);
         }

@@ -354,6 +354,16 @@
             dt_message.clearData()
             document.getElementById('groupChatImg_message').files = dt_message.files;
             $(".group-chat-img-preview-container").empty();
+
+            if (storedFiles_message.length === 0) {
+                console.log($('.group-chat-send-form-message-parent-container'))
+                $('.group-chat-send-form-message-parent-container').append(messageInput_message)
+                $(".group-chat-img-preview-container-wrapper").hide()
+
+            } else {
+                messageInput_message.remove()
+                $(".group-chat-img-preview-container-wrapper").show()
+            }
         }
 
 
