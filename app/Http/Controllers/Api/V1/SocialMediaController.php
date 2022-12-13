@@ -16,6 +16,7 @@ use App\Models\Friendship;
 use App\Models\Notification;
 use Illuminate\Http\Request;
 use App\Events\GroupChatting;
+use App\Events\MessageDelete;
 use App\Models\UserReactPost;
 use App\Models\UserSavedPost;
 use App\Models\ChatGroupMember;
@@ -2237,9 +2238,66 @@ class SocialMediaController extends Controller
                // $pusher->trigger('group_message.'.$group_message[$i]['member_id'], 'group_chat', $sms);
                 $pusher->trigger('all_message.'.$group_message[$i]['member_id'], 'all', $merged);
             }
-            broadcast(new GroupChatting($sms,$request->senderImg, $request->senderName));
+            broadcast(new GroupChatting($message,$request->senderImg, $request->senderName));
         return response()->json([
             'success' =>  $sms
+        ]);
+    }
+
+
+    public function delete_message(Request $request){
+        $message = Chat::findOrFail($request->id);
+        $message->delete_status = 1;
+        $message->deleted_by = auth()->user()->id;
+        $message->save();
+        return response()->json([
+            'success' => 'Deleted Success'
+        ]);
+    }
+
+    public function delete_allchat_message(Request $request)
+    {
+        $data=$request->all();
+        $from_id=$data['from_id'];
+        $to_id=$data['to_id'];
+        $auth_user=auth()->user()->id;
+        $messages=Chat::where('delete_status','!=',2)
+                        ->where(function($query1) use ($from_id,$to_id)
+                        {
+                            $query1->where('from_user_id', $from_id)
+                                    ->orWhere('from_user_id',$to_id);
+                        })
+                        ->where( function($query2) use ($from_id,$to_id)
+                        {
+                            $query2->where('to_user_id', $from_id)
+                            ->orWhere('to_user_id',$to_id);
+                        })
+                        ->get();
+
+            if(($messages)->count()>0){
+                foreach($messages as $key=>$value){
+                    if($value->delete_status==0){
+                        Chat::where('id',$value->id)->update(['delete_status'=>1,'deleted_by'=>$auth_user]);
+                    }elseif($value->delete_status==1){
+                        Chat::where('id',$value->id)->update(['delete_status'=>2]);
+
+                    }
+                }
+            }
+            return response()->json([
+                'success' =>  'Deleted'
+            ]);
+    }
+
+
+    public function unsend_message(Request $request){
+        $message = Chat::findOrFail($request->id);
+        $message->delete_status = 2;
+        $message->deleted_by = auth()->user()->id;
+        $message->update();
+        broadcast(new MessageDelete($message, $request->id));
+        return response()->json([
+            'success' => 'Deleted Success'
         ]);
     }
 

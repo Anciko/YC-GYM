@@ -966,9 +966,6 @@ class SocialmediaController extends Controller
             return response()->json([
                 'success' =>  'Deleted'
             ]);
-
-
-
     }
 
 
@@ -988,7 +985,6 @@ class SocialmediaController extends Controller
     }
 
     public function hide_message(Request $request){
-
         $message = Chat::findOrFail($request->id);
         $message->delete_status = 1;
         $message->deleted_by = $request->delete_user;
