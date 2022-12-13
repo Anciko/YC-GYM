@@ -254,10 +254,10 @@
                         @if ($receiver_user->user_profile == null)
                             <img class="nav-profile-img" src="{{ asset('img/customer/imgs/user_default.jpg') }}" />
                         @else
-                            <img src="{{ asset('/storage/post/' . $receiver_user->user_profile->profile_image) }}" />
+                            <img src="{{ asset('/storage/post/' . $receiver_user->profile_image) }}" />
                         @endif
                         <div class="group-chat-receiver-text-container">
-                            <span>{{ $send_message->from_user->name }}</span>
+                            <span>{{ $send_message->name }}</span>
 
                             @if ($send_message->media == null)
                                 <p>{{ $send_message->text }}</p>
@@ -1351,7 +1351,7 @@
                 const tokenRes = await generateToken(channelName)
 
                 console.log(tokenRes.data);
-
+                console.log(tokenRes , "call Token")
                 axios.post("/agora/call-user", {
                     user_to_call: id,
                     username: authuser,
@@ -1429,7 +1429,7 @@
             callPlaced = true;
             videoCallEvent = true;
             incomingCallContainer.innerHTML = ""
-
+            console.log(tokenRes , "accept")
         }
 
         function declineCall() {
@@ -1439,7 +1439,7 @@
         }
 
         async function joinRoom(token, channel) {
-            console.log('leeeeeee', channel);
+            console.log(token, channel);
             client.join(
                 token,
                 channel,

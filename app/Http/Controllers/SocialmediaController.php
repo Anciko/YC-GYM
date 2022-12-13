@@ -61,25 +61,37 @@ class SocialmediaController extends Controller
                 ->with('user')
                 ->paginate(30);
         }
-
-        // $post_likes=UserReactPost::select('users.name','profiles.profile_image','user_react_posts.*')
-        //             ->leftJoin('users','users.id','user_react_posts.user_id')
-        //             ->leftJoin('profiles','users.profile_id','profiles.id')
-        //             ->where('post_id',$post_id)
-        //             ->get();
-
-        // $left_friends=User::whereIn('id',$n)
-        //                 ->where('id','!=',$user->id)
-        //                 ->paginate(6);
-
-        //dd($left_friends);
-        //$posts=Post::orderBy('created_at','DESC')->with('user')->paginate(10);
-        // $post_reacted=UserReactPost::groupBy('post_id')->get('post_id');
-        // dd($post_reacted->toArray());
-
         return view('customer.socialmedia', compact('posts'));
     }
+    public function latest_messages(){
+        $user_id=auth()->user()->id;
 
+        $messages =DB::select("SELECT users.id,users.name,profiles.profile_image,chats.text
+        from
+            chats
+          join
+            (select user, max(created_at) m
+                from
+                   (
+                     (select id, to_user_id user, created_at
+                       from chats
+                       where from_user_id= $user_id )
+                   union
+                     (select id, from_user_id user, created_at
+                       from chats
+                       where to_user_id= $user_id)
+                    ) t1
+               group by user) t2
+         on ((from_user_id= $user_id and to_user_id=user) or
+             (from_user_id=user and to_user_id= $user_id)) and
+             (created_at = m)
+        left join users on users.id = user
+        left join profiles on users.profile_id = profiles.id
+       order by chats.created_at desc limit  3");
+        return response()->json([
+            'data' => $messages,
+        ]);
+    }
     public function user_react_post(Request $request)
     {
         $post_id = $request['post_id'];
@@ -146,10 +158,6 @@ class SocialmediaController extends Controller
 
     public function profile_photo_delete(Request $request)
     {
-        // $profile=Profile::find($request->profile_id);
-        // $profile->profile_image=null;
-        // $profile->cover_photo=null;
-        // $profile->update();
         $user = User::find(auth()->user()->id);
         if ($user->profile_id == $request->profile_id) {
             $user->profile_id = null;
@@ -833,7 +841,7 @@ class SocialmediaController extends Controller
     public function see_all_message()
     {
         $user_id = auth()->user()->id;
-        $messages = DB::select("SELECT users.id,users.name,profiles.profile_image,chats.text,chats.created_at
+        $messages = DB::select("SELECT users.id,users.name,profiles.profile_image,chats.text,chats.created_at,chats.from_user_id as from_id,chats.to_user_id as to_id
             from
                 chats
               join
@@ -855,6 +863,7 @@ class SocialmediaController extends Controller
             left join users on users.id = user
             left join profiles on users.profile_id = profiles.id
            order by chats.created_at desc");
+
         return view('customer.message_seeall', compact('messages'));
     }
 
@@ -862,11 +871,11 @@ class SocialmediaController extends Controller
     {
         $auth_user = auth()->user();
 
-        $messages = Chat::where(function ($query) use ($auth_user) {
-            $query->where('from_user_id', $auth_user->id)->orWhere('to_user_id', $auth_user->id);
-        })->where(function ($que) use ($id) {
-            $que->where('from_user_id', $id)->orWhere('to_user_id', $id);
-        })->with('to_user')->with('from_user')->get();
+        $messages = DB::select("SELECT chats.*, receiver.name, profiles.profile_image FROM chats
+        left join users as receiver on chats.to_user_id = receiver.id
+        left join profiles on receiver.profile_id = profiles.id
+        where (from_user_id =  $auth_user->id or to_user_id =  $auth_user->id) and (from_user_id = $id or to_user_id = $id )
+        and  deleted_by !=  $auth_user->id  and delete_status != 2");
 
 
         foreach($messages as $mess){
@@ -895,9 +904,7 @@ class SocialmediaController extends Controller
         $receiver_user = User::where('users.id', $id)->with('user_profile')->first();
 
         $sender_user = User::where('id', $auth_user->id)->with('user_profile')->first();
-// dd($receiver_user->toArray());
 
-        //active friend
         $auth = Auth()->user()->id;
         $user = User::where('id', $auth)->first();
 
@@ -922,6 +929,48 @@ class SocialmediaController extends Controller
             ->get();
 
         return view('customer.chat_message', compact('id', 'messages', 'auth_user_name', 'receiver_user', 'sender_user', 'friends'));
+    }
+
+    public function delete_allchat_message(Request $request)
+    {
+        $data=$request->all();
+        $from_id=$data['from_id'];
+        $to_id=$data['to_id'];
+        $auth_user=auth()->user()->id;
+
+        $messages=Chat::where('delete_status','!=',2)
+                        ->where(function($query1) use ($from_id,$to_id)
+                        {
+                            $query1->where('from_user_id', $from_id)
+                                    ->orWhere('from_user_id',$to_id);
+                        })
+                        ->where( function($query2) use ($from_id,$to_id)
+                        {
+                            $query2->where('to_user_id', $from_id)
+                            ->orWhere('to_user_id',$to_id);
+                        })
+                        ->get();
+
+            if(($messages)->count()>0){
+                foreach($messages as $key=>$value){
+                    if($value->delete_status==0){
+                        // $messages[$key]['delete_status']=1;
+                        // $messages[$key]['deleted_by']=$auth_user;
+                        Chat::where('id',$value->id)->update(['delete_status'=>1,'deleted_by'=>$auth_user]);
+                    }elseif($value->delete_status==1){
+                        // $messages[$key]['delete_status']=2;
+                        Chat::where('id',$value->id)->update(['delete_status'=>2]);
+
+                    }
+                }
+            }
+
+            return response()->json([
+                'success' =>  'Deleted'
+            ]);
+
+
+
     }
 
 
@@ -973,120 +1022,6 @@ class SocialmediaController extends Controller
         $post_likes = UserReactPost::where('post_id', $post->id)
             ->with('user')
             ->get();
-        $auth = Auth()->user()->id;
-
-        $friend_request = DB::table('friendships')
-            ->where('friend_status', 2)
-            ->where(function ($query) use ($auth) {
-                $query->where('sender_id', $auth)
-                    ->orWhere('receiver_id', $auth);
-            })
-            ->join('users as sender', 'sender.id', 'friendships.sender_id')
-            ->join('users as receiver', 'receiver.id', 'friendships.receiver_id')
-            ->get(['sender_id', 'receiver_id'])->toArray();
-
-        // dd($friend_request);
-        $request = array();
-        foreach ($friend_request as $req) {
-            $r = (array)$req;
-            array_push($request, $r['sender_id'], $r['receiver_id']);
-        }
-        $request_profile_id = DB::table('profiles')
-            ->groupBy('user_id')
-            ->select(DB::raw('max(id) as id'))
-            ->where('cover_photo', null)
-            ->whereIn('user_id', $request)
-            ->get()
-            ->pluck('id')->toArray();
-
-        $latest_sms = DB::table('chats')
-            ->select(DB::raw('max(id) as id'))
-            ->where('from_user_id', $auth)
-            ->orWhere('to_user_id', $auth)
-            ->groupBy('from_user_id', 'to_user_id')
-            ->get()
-            ->pluck('id')->toArray();
-
-        $latest = DB::table('chats')
-            ->whereIn('id', $latest_sms)
-            ->get();
-        // dd($latest)->toArray();
-
-        $user_id = auth()->user()->id;
-
-                        $messages =DB::select("SELECT users.id as id,users.name,profiles.profile_image,chats.text,chats.created_at as date
-                        from
-                            chats
-                          join
-                            (select user, max(created_at) m
-                                from
-                                   (
-                                     (select id, to_user_id user, created_at
-                                       from chats
-                                       where from_user_id= $user_id )
-                                   union
-                                     (select id, from_user_id user, created_at
-                                       from chats
-                                       where to_user_id= $user_id)
-                                    ) t1
-                               group by user) t2
-                         on ((from_user_id= $user_id and to_user_id=user) or
-                             (from_user_id=user and to_user_id= $user_id)) and
-                             (created_at = m)
-                        left join users on users.id = user
-                        left join profiles on users.profile_id = profiles.id
-                       order by chats.created_at desc limit  3");
-        // dd($messages);
-
-        $id = auth()->user()->id;
-        $friendships=DB::table('friendships')
-        ->where('friend_status',2)
-        ->where(function($query) use ($id){
-            $query->where('sender_id',$id)
-                ->orWhere('receiver_id',$id);
-        })
-        ->join('users as sender','sender.id','friendships.sender_id')
-        ->join('users as receiver','receiver.id','friendships.receiver_id')
-        ->get(['sender_id','receiver_id'])->toArray();
-        //dd($friends);
-        $n= array();
-            foreach($friendships as $friend){
-                    $f=(array)$friend;
-                    array_push($n, $f['sender_id'],$f['receiver_id']);
-            }
-            $friend = User::select('users.id','users.name','profiles.profile_image')
-            ->leftjoin('friendships', function ($join) {
-                  $join->on('friendships.receiver_id', '=', 'users.id')
-            ->orOn('friendships.sender_id', '=', 'users.id');})
-            ->leftJoin('profiles','profiles.id','users.profile_id')
-            ->where('users.id','!=',$id)
-            ->where('friendships.friend_status',2)
-            ->where('friendships.receiver_id',$id)
-            ->orWhere('friendships.sender_id',$id)
-            ->whereIn('users.id',$n)
-            ->where('users.id','!=',$id)
-            ->get()->toArray();
-            $group_id = 1;
-            $group_members = ChatGroupMember::select('users.id','users.name','profiles.profile_image')
-                                       ->leftJoin('users','users.id','chat_group_members.member_id')
-                                       ->leftJoin('profiles','users.profile_id','profiles.id')
-                                       ->where('chat_group_members.group_id',$group_id)
-                                       ->where('chat_group_members.member_id','!=',$id)
-                                       ->get()->toArray();
-
-                                       foreach($friend as $key=>$fri){
-                                        foreach($group_members as $value=>$gp){
-                                            if ($fri['id'] == $gp['id'] ) {
-                                                  unset($friend[$key]);
-                                            }
-                                        }
-                                    }
-                // dd($friend,$group_members);
-
-                             //members
-
-                            // dd($group_members->toArray(), $friend, $friends);
-
         return view('customer.comments',compact('post','comments','post_likes'));
     }
 
@@ -1354,7 +1289,13 @@ class SocialmediaController extends Controller
         $group->group_name = $groupName;
         $group->group_owner_id = $groupOwner;
         $group->save();
+        $message = "Hi All";
         ChatGroupMember::create(['group_id' => $group->id, 'member_id' => $groupOwner]);
+        $chat_message = new ChatGroupMessage();
+        $chat_message->group_id =  $group->id;
+        $chat_message->sender_id = $groupOwner;
+        $chat_message->text = $message;
+        $chat_message->save();
         return back();
     }
 
