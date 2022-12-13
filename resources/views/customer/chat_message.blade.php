@@ -253,10 +253,10 @@
                         @if ($receiver_user->user_profile == null)
                             <img class="nav-profile-img" src="{{ asset('img/customer/imgs/user_default.jpg') }}" />
                         @else
-                            <img src="{{ asset('/storage/post/' . $receiver_user->user_profile->profile_image) }}" />
+                            <img src="{{ asset('/storage/post/' . $receiver_user->profile_image) }}" />
                         @endif
                         <div class="group-chat-receiver-text-container">
-                            <span>{{ $send_message->from_user->name }}</span>
+                            <span>{{ $send_message->name }}</span>
 
                             @if ($send_message->media == null)
                                 <p>{{ $send_message->text }}</p>
