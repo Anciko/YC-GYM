@@ -1360,7 +1360,7 @@ class SocialMediaController extends Controller
             env('PUSHER_APP_ID'),
             $options
             );
-        $pusher->trigger('chatting.'.auth()->user()->id.$to_user_id, 'chatting-event', $message);
+        $pusher->trigger('chatting.'.auth()->user()->id.'.'.$to_user_id, 'chatting-event', $message);
         //broadcast(new Chatting($message, $request->sender));
 
         $user_id=auth()->user()->id;
