@@ -87,6 +87,8 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
         
         Route::get('/socialmedia/message/deletechat',[SocialmediaController::class, 'delete_allchat_message'])->name('message.all.delete');
         Route::get('/socialmedia/message/viewmedia/{id}',[SocialmediaController::class, 'viewmedia_message'])->name('message.viewmedia');
+        Route::post('/socialmedia/message/hide',[SocialmediaController::class, 'hide_message'])->name('message.hide');
+        Route::post('/socialmedia/message/delete',[SocialmediaController::class, 'delete_message'])->name('message.delete');
         Route::post('/agora/call-user',  [VideoController::class, 'callUser'])->name('socialmedia.videocall');
         Route::post('/agora/call-audio-user',  [VideoController::class, 'callAudioUser'])->name('socialmedia.videocall');
         Route::post('/agora/token',  [VideoController::class, 'token']);

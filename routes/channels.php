@@ -21,6 +21,10 @@ Broadcast::channel('chatting.{sender}.{receiver}', function ($user, $receiver) {
     return true;
  });
 
+ Broadcast::channel('message-delete.{sender}.{receiver}', function ($user, $receiver) {
+    return true;
+ });
+
  Broadcast::channel('groupChatting.{groupId}', function () {
     return true;
  });
