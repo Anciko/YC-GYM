@@ -591,8 +591,8 @@
         })
 
         // Here
-        Echo.private('groupChatting.' + groupId)
-            .listen('GroupChatting', (data) => {
+        Echo.channel('groupChatting.' + groupId)
+            .listen('.group-chatting-event', (data) => {
                     console.log(data);
                     console.log(auth_user_img);
 

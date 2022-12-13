@@ -25,9 +25,9 @@ Broadcast::channel('App.Models.User.{id}', function ($user, $id) {
     return true;
  });
 
- Broadcast::channel('groupChatting.{groupId}', function () {
-    return true;
- });
+//  Broadcast::channel('groupChatting.{groupId}', function () {
+//     return true;
+//  });
 
  Broadcast::channel('agora-videocall', function ($user) {
     if($user != null){

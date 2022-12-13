@@ -256,7 +256,7 @@
                             <img src="{{ asset('/storage/post/' . $receiver_user->user_profile->profile_image) }}" />
                         @endif
                         <div class="group-chat-receiver-text-container">
-                            <span>{{ $send_message->name }}</span>
+                            {{-- <span>{{ $send_message->name }}</span> --}}
 
                             @if ($send_message->media == null)
                                 <p>{{ $send_message->text }}</p>
@@ -714,7 +714,7 @@
                                     messageContainer.innerHTML += `<div class="group-chat-receiver-container" data-messageId="${data.message.id}">
                                                             <img src="{{ asset('/storage/post/${receive_user_img}') }}" />
                                                             <div class="group-chat-receiver-text-container">
-                                                                <span>${data.sender}</span>
+
                                                                 ${receiverMessageMedia}
                                                             </div>
                                                         </div>`;
@@ -722,7 +722,7 @@
                                     messageContainer.innerHTML += `<div class="group-chat-receiver-container" data-messageId="${data.message.id}">
                                                             <img src="{{ asset('img/customer/imgs/user_default.jpg') }}" />
                                                             <div class="group-chat-receiver-text-container">
-                                                                <span>${data.sender}</span>
+
                                                                 ${receiverMessageMedia}
                                                             </div>
                                                         </div>`;
@@ -734,7 +734,7 @@
                                     messageContainer.innerHTML += `<div class="group-chat-receiver-container" data-messageId="${data.message.id}">
                                                             <img src="{{ asset('/storage/post/${receive_user_img}') }}" />
                                                             <div class="group-chat-receiver-text-container">
-                                                                <span>${data.sender}</span>
+
                                                                 ${receiverMessageMedia}
                                                             </div>
                                                         </div>`;
@@ -742,7 +742,7 @@
                                     messageContainer.innerHTML += `<div class="group-chat-receiver-container" data-messageId="${data.message.id}">
                                                                 <img src="{{ asset('img/customer/imgs/user_default.jpg') }}" />
                                                                 <div class="group-chat-receiver-text-container">
-                                                                    <span>${data.sender}</span>
+
                                                                     ${receiverMessageMedia}
                                                                 </div>
                                                             </div>`;
@@ -976,7 +976,7 @@
                     messageContainer.innerHTML += `<div class="group-chat-receiver-container" data-messageId="${data.message.id}">
                                                             <img src="{{ asset('storage/post/${receive_user_img}') }}" />
                                                             <div class="group-chat-receiver-text-container">
-                                                                <span>${data.sender}</span>
+
                                                                 ${receiverMessageMedia}
                                                             </div>
                                                         </div>`;
@@ -984,7 +984,7 @@
                     messageContainer.innerHTML += `<div class="group-chat-receiver-container" data-messageId="${data.message.id}">
                                                             <img src="{{ asset('img/customer/imgs/user_default.jpg') }}" />
                                                             <div class="group-chat-receiver-text-container">
-                                                                <span>${data.sender}</span>
+
                                                                 ${receiverMessageMedia}
                                                             </div>
                                                         </div>`;
@@ -997,7 +997,7 @@
                 messageContainer.innerHTML += `<div class="group-chat-receiver-container" data-messageId="${data.message.id}">
                                     <img src="{{ asset('/storage/post/${receive_user_img}') }}" />
                                     <div class="group-chat-receiver-text-container">
-                                        <span>${data.sender}</span>
+
                                         <p>${data.message.text}</p>
                                     </div>
                                 </div>`;
@@ -1005,7 +1005,7 @@
                 messageContainer.innerHTML += `<div class="group-chat-receiver-container" data-messageId="${data.message.id}">
                                         <img src="{{ asset('img/customer/imgs/user_default.jpg') }}" />
                                     <div class="group-chat-receiver-text-container">
-                                        <span>${data.sender}</span>
+
                                         <p>${data.message.text}</p>
                                     </div>
                                 </div>`;
@@ -1089,7 +1089,7 @@
 
                             </div>
                                         <div class="group-chat-sender-text-container">
-                                            <span>${data.sender}</span>
+
                                             ${messageMediaContainer}
                                         </div>
                                         <img class="nav-profile-img" src="{{ asset('storage/post/${sender_user_img}') }}" />
@@ -1114,7 +1114,7 @@
 
                             </div>
                                         <div class="group-chat-sender-text-container">
-                                            <span>${data.sender}</span>
+
                                             ${messageMediaContainer}
                                         </div>
                                         <img class="nav-profile-img" src="{{ asset('img/customer/imgs/user_default.jpg') }}" />
@@ -1141,7 +1141,7 @@
 
                             </div>
                                         <div class="group-chat-sender-text-container">
-                                            <span>${data.sender}</span>
+
                                             <p>${data.message.text}</p>
                                         </div>
                                         <img class="nav-profile-img" src="{{ asset('storage/post/${sender_user_img}') }}" />
@@ -1165,7 +1165,7 @@
 
                             </div>
                                         <div class="group-chat-sender-text-container">
-                                            <span>${data.sender}</span>
+
                                             <p>${data.message.text}</p>
                                         </div>
                                         <img class="nav-profile-img" src="{{ asset('img/customer/imgs/user_default.jpg') }}" />

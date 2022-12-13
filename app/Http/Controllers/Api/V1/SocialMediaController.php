@@ -1360,7 +1360,7 @@ class SocialMediaController extends Controller
             env('PUSHER_APP_ID'),
             $options
             );
-        $pusher->trigger('chatting.'.auth()->user()->id.'.'.$to_user_id, 'chatting-event', ['message'=>$message]);
+        // $pusher->trigger('chatting.'.auth()->user()->id.'.'.$to_user_id, 'chatting-event', ['message'=>$message]);
         $pusher->trigger('chatting.'.$to_user_id.'.'.auth()->user()->id, 'chatting-event', ['message'=>$message]);
         //broadcast(new Chatting($message, $request->sender));
 
@@ -2227,7 +2227,8 @@ class SocialMediaController extends Controller
                // $pusher->trigger('group_message.'.$group_message[$i]['member_id'], 'group_chat', $sms);
                 $pusher->trigger('all_message.'.$group_message[$i]['member_id'], 'all', $merged);
             }
-            broadcast(new GroupChatting($message,$request->senderImg, $request->senderName));
+            $pusher->trigger('groupChatting.'.$group_id, 'group-chatting-event', ["message"=>$message,$request->senderImg, $request->senderName ]);
+           // broadcast(new GroupChatting($message,$request->senderImg, $request->senderName));
         return response()->json([
             'success' =>  $sms
         ]);
