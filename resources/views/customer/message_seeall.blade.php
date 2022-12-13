@@ -63,7 +63,7 @@
 
                             <p>{{$list->text}}</p>
 
-                            <span>{{ \Carbon\Carbon::parse($list->created_at)->format('d M Y , g:i A')}}</span>
+                            <span>{{ \Carbon\Carbon::parse($list->created_at)->format('d M, g:i A')}}</span>
                         </a>
 
                         <div class="social-media-allchats-actions-container">
@@ -73,7 +73,7 @@
                                     <iconify-icon icon="tabler:trash" class="social-media-allchats-action-icon"></iconify-icon>
                                     <span>Delete</span>
                                 </div>
-                                <a>
+                                <a href="{{route('socialmedia.profile',$list->id)}}" style="text-decoration:none">
                                     <iconify-icon icon="material-symbols:person" class="social-media-allchats-action-icon"></iconify-icon>
                                     Profile
                                 </a>

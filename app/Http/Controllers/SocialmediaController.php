@@ -862,6 +862,21 @@ class SocialmediaController extends Controller
             left join profiles on users.profile_id = profiles.id
            order by chats.created_at desc");
 
+
+            // $messages=Chat::where('delete_status','!=',2)
+            //             ->where(function($query1) use ($from_id,$to_id)
+            //             {
+            //                 $query1->where('from_user_id', $from_id)
+            //                         ->orWhere('from_user_id',$to_id);
+            //             })
+            //             ->where( function($query2) use ($from_id,$to_id)
+            //             {
+            //                 $query2->where('to_user_id', $from_id)
+            //                 ->orWhere('to_user_id',$to_id);
+            //             })
+            //             ->get();
+
+        dd($messages);
         return view('customer.message_seeall', compact('messages'));
     }
 
@@ -903,23 +918,6 @@ class SocialmediaController extends Controller
             ->where('id', '!=', $user->id)
             ->get();
 
-
-
-            $auth_user = auth()->user();
-            $messages = Chat::where(function($query) use ($auth_user){
-                $query->where('from_user_id',$auth_user->id)->orWhere('to_user_id',$auth_user->id);
-            })->where(function($que) use ($id){
-                $que->where('from_user_id',$id)->orWhere('to_user_id',$id);
-            })
-            ->where('deleted_by','=',null)
-            ->where('deleted_by','!=',$auth_user->id)
-
-            // ->where(function($del) use ($auth_user){
-            //     $del->where('delete_status',1)->where('deleted_by','!=',$auth_user->id);
-            // })
-            ->orderBy('created_at','DESC')
-            ->get();
-
         return view('customer.chat_message', compact('id', 'messages', 'auth_user_name', 'receiver_user', 'sender_user', 'friends'));
     }
 
@@ -958,13 +956,7 @@ class SocialmediaController extends Controller
                 return response()->json([
                     'success' =>  'Deleted'
                 ]);
-            }else{
-                dd('already deleted');
             }
-
-
-
-
 
     }
 
