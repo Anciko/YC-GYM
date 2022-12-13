@@ -90,8 +90,17 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
         Route::post('/socialmedia/message/hide',[SocialmediaController::class, 'hide_message'])->name('message.hide');
         Route::post('/socialmedia/message/delete',[SocialmediaController::class, 'delete_message'])->name('message.delete');
         Route::post('/agora/call-user',  [VideoController::class, 'callUser'])->name('socialmedia.videocall');
+        // ------
+        Route::post('/agora/call-gp-user', [VideoController::class, 'callGpuser'])->name('socialmedia.gpcall');
+        Route::post('/agora/call-gpaudio-user', [VideoController::class, 'callGpAudioUser'])->name('socialmedia.gpaudiocall');
+        //-------
         Route::post('/agora/call-audio-user',  [VideoController::class, 'callAudioUser'])->name('socialmedia.videocall');
+
         Route::post('/agora/token',  [VideoController::class, 'token']);
+
+
+
+
 
         Route::post('/socialmedia/group/create',[SocialmediaController::class,'group_create'])->name('socialmedia.group.create');
         Route::get('/socialmedia/group/{id}',[SocialmediaController::class,'group'])->name('socialmedia.group');
