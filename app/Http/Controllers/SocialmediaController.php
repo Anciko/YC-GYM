@@ -874,7 +874,7 @@ class SocialmediaController extends Controller
         left join profiles on receiver.profile_id = profiles.id
         where (from_user_id =  $auth_user->id or to_user_id =  $auth_user->id) and (from_user_id = $id or to_user_id = $id )
         and  deleted_by !=  $auth_user->id  and delete_status != 2");
-
+        dd($messages);
         $auth_user_name = auth()->user()->name;
         $receiver_user = User::where('users.id', $id)->with('user_profile')->first();
 
