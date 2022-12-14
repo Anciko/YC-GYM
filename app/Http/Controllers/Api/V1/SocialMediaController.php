@@ -1373,6 +1373,7 @@ class SocialMediaController extends Controller
         $message->to_user_id = $to_user_id;
         $message->text = $request->text == null ?  null : $request->text;
         $message->save();
+
         $options = array(
             'cluster' => env('PUSHER_APP_CLUSTER'),
             'encrypted' => true
@@ -1450,7 +1451,7 @@ class SocialMediaController extends Controller
                         foreach($group_owner as $owner){
                             if($value['id'] == $owner['id'] AND $value['is_group'] == 1)
                             $merged[$key]['owner_id'] = $owner->group_owner_id;
-                        }
+                           }
                     }
         $pusher->trigger('all_message.'.$to_user_id , 'all', $merged);
         $pusher->trigger('all_message.'.$user_id , 'all', $merged);
@@ -1537,7 +1538,8 @@ class SocialMediaController extends Controller
                     (created_at = m)
                 left join users on users.id = user
                 left join profiles on users.profile_id = profiles.id
-            order by chats.created_at desc limit  3");
+                where deleted_by !=  $user_id  and delete_status != 2
+            order by chats.created_at desc");
         // dd($messages);
 
 
@@ -2309,7 +2311,21 @@ class SocialMediaController extends Controller
         $message->delete_status = 2;
         $message->deleted_by = auth()->user()->id;
         $message->update();
-        broadcast(new MessageDelete($message, $request->id));
+        $options = array(
+            'cluster' => env('PUSHER_APP_CLUSTER'),
+            'encrypted' => true
+        );
+        $to_user_id = Chat::select('to_user_id')->where('id',$request->id)->first();
+        $pusher = new Pusher(
+            env('PUSHER_APP_KEY'),
+            env('PUSHER_APP_SECRET'),
+            env('PUSHER_APP_ID'),
+            $options
+            );
+        $pusher->trigger('message-delete.'.$to_user_id->to_user_id.'.'.auth()->user()->id, 'message-delete-event', ['message'=>$message]);
+
+        $pusher->trigger('message-delete.'.auth()->user()->id.'.'.$to_user_id->to_user_id, 'message-delete-event', ['message'=>$message]);
+        // broadcast(new MessageDelete($message, $request->id));
         return response()->json([
             'success' => 'Deleted Success'
         ]);
