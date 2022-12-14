@@ -257,7 +257,7 @@
                             <img src="{{ asset('/storage/post/' . $receiver_user->user_profile->profile_image) }}" />
                         @endif
                         <div class="group-chat-receiver-text-container">
-                            <span>{{ $send_message->name }}</span>
+                            <span>{{ $receiver_user->name }}</span>
 
                             @if ($send_message->media == null)
                                 <p>{{ $send_message->text }}</p>
@@ -688,7 +688,7 @@
                                                     </div>
 
                                                     <a data-bs-toggle="modal" href="#exampleModalToggle${data.message.id}${key}" role="button">
-                                                        <img src="{{ asset('storage/customer_message_media/${imageArr[key]}') }}" title="${key}">
+                                                        <img src="{{ asset('storage/customer_message_media/${imageArr[key]}') }}">
                                                     </a>
                                                     `
 
@@ -783,7 +783,7 @@
                                                     </div>
 
                                                 <a data-bs-toggle="modal" href="#exampleModalToggle${data.message.id}${key}" role="button">
-                                                    <img src="{{ asset('storage/customer_message_media/${imageArr[key]}') }}" title="${key}">
+                                                    <img src="{{ asset('storage/customer_message_media/${imageArr[key]}') }}">
                                                 </a>`
 
 
@@ -932,8 +932,8 @@
                                     'jpg' || imageArr[key].split('.').pop() === 'jpeg' || imageArr[key].split(
                                         '.')
                                     .pop() === 'gif') {
-                                        return `
-                                                    <div class="modal fade" id="exampleModalToggle${data.message.id}${key}" aria-hidden="true"
+
+                                                   return `<div class="modal fade" id="exampleModalToggle${data.message.id}${key}" aria-hidden="true"
                                                         aria-labelledby="exampleModalToggleLabel" tabindex="-1">
                                                         <div class="modal-dialog modal-dialog-centered">
                                                             <div class="modal-content">
@@ -950,9 +950,8 @@
                                                     </div>
 
                                                     <a data-bs-toggle="modal" href="#exampleModalToggle${data.message.id}${key}" role="button">
-                                                        <img src="{{ asset('storage/customer_message_media/${imageArr[key]}') }}" title="${key}">
-                                                    </a>
-                                                    `
+                                                        <img src="{{ asset('storage/customer_message_media/${imageArr[key]}') }}">
+                                                    </a>`
 
 
                                 } else if (imageArr[key].split('.').pop() === 'mp4' || imageArr[key].split('.')
@@ -1040,7 +1039,7 @@
                                                     </div>
 
                                                 <a data-bs-toggle="modal" href="#exampleModalToggle${data.message.id}${key}" role="button">
-                                                    <img src="{{ asset('storage/customer_message_media/${imageArr[key]}') }}" title="${key}">
+                                                    <img src="{{ asset('storage/customer_message_media/${imageArr[key]}') }}">
                                                 </a>`
 
 

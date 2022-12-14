@@ -6,7 +6,7 @@
         <input type="text" value="{{ $group->id }}" id="groupId" hidden>
         <div class="group-chat-header">
             <a href="{{ route('socialmedia.group.detail', $group->id) }}" class="group-chat-header-name-container">
-                <img src="../imgs/avatar.png" />
+                <img src="{{asset('img/customer/imgs/group_default.png')}}" />
                 <div class="group-chat-header-name-text-container">
                     <p>{{ $group->group_name }}</p>
                 </div>
@@ -30,7 +30,7 @@
                             @if ($gp_message->user->user_profile == null)
                                 <img class="nav-profile-img" src="{{ asset('img/customer/imgs/user_default.jpg') }}" />
                             @else
-                                <img src="{{ asset('/storage/post' . $gp_message->user->user_profile->profile_image) }}" />
+                                <img src="{{ asset('/storage/post/' . $gp_message->user->user_profile->profile_image) }}" />
                             @endif
                             <div class="group-chat-receiver-text-container">
                                 <span>{{ $gp_message->user->name }}</span>
@@ -42,7 +42,7 @@
                             @if ($gp_message->user->user_profile == null)
                                 <img class="nav-profile-img" src="{{ asset('img/customer/imgs/user_default.jpg') }}" />
                             @else
-                                <img src="{{ asset('/storage/post' . $gp_message->user->user_profile->profile_image) }}" />
+                                <img src="{{ asset('/storage/post/' . $gp_message->user->user_profile->profile_image) }}" />
                             @endif
                             <div class="group-chat-receiver-text-container">
                                 <span>{{ $gp_message->user->name }}</span>
@@ -72,8 +72,7 @@
                                             <a data-bs-toggle="modal"
                                                 href="#exampleModalToggle{{ $gp_message->id }}{{ $key }}"
                                                 role="button">
-                                                <img src="{{ asset('storage/customer_message_media/' . $media) }}"
-                                                    title="{{ $key }}">
+                                                <img src="{{ asset('storage/customer_message_media/' . $media) }}">
                                             </a>
                                         {{-- </div> --}}
                                     @elseif(pathinfo($media, PATHINFO_EXTENSION) == 'mp4' ||
@@ -125,8 +124,7 @@
                                         <a data-bs-toggle="modal"
                                             href="#exampleModalToggle{{ $gp_message->id }}{{ $key }}"
                                             role="button">
-                                            <img src="{{ asset('storage/customer_message_media/' . $media) }}"
-                                                title="{{ $key }}">
+                                            <img src="{{ asset('storage/customer_message_media/' . $media) }}">
                                         </a>
                                     @elseif(pathinfo($media, PATHINFO_EXTENSION) == 'mp4' ||
                                         pathinfo($media, PATHINFO_EXTENSION) == 'mov' ||
@@ -143,7 +141,7 @@
                         @if ($gp_message->user->user_profile == null)
                             <img class="nav-profile-img" src="{{ asset('img/customer/imgs/user_default.jpg') }}" />
                         @else
-                            <img src="{{ asset('/storage/post' . $gp_message->user->user_profile->profile_image) }}" />
+                            <img src="{{ asset('/storage/post/' . $gp_message->user->user_profile->profile_image) }}" />
                         @endif
                     </div>
                 @else
@@ -473,7 +471,7 @@
                                         </div>
 
                                     <a data-bs-toggle="modal" href="#exampleModalToggle${data.message.id}${key}" role="button">
-                                        <img src="{{ asset('storage/customer_message_media/${imageArr[key]}') }}" title="${key}">
+                                        <img src="{{ asset('storage/customer_message_media/${imageArr[key]}') }}">
                                     </a>`
 
 
@@ -555,7 +553,7 @@
                                         </div>
 
                                         <a data-bs-toggle="modal" href="#exampleModalToggle${data.message.id}${key}" role="button">
-                                            <img src="{{ asset('storage/customer_message_media/${imageArr[key]}') }}" title="${key}">
+                                            <img src="{{ asset('storage/customer_message_media/${imageArr[key]}') }}">
                                         </a>
                                         `
                                     // messageContainer.innerHTML += `
@@ -653,7 +651,7 @@
                                         </div>
 
                                         <a data-bs-toggle="modal" href="#exampleModalToggle${data.message.id}${key}" role="button">
-                                            <img src="{{ asset('storage/customer_message_media/${imageArr[key]}') }}" title="${key}">
+                                            <img src="{{ asset('storage/customer_message_media/${imageArr[key]}') }}">
                                         </a>
                                         `
 

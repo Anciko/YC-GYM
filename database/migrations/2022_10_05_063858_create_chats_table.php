@@ -18,7 +18,7 @@ class CreateChatsTable extends Migration
             $table->integer('from_user_id');
             $table->integer('to_user_id');
             $table->integer('delete_status')->default(0);
-            $table->integer('deleted_by')->nullable();
+            $table->integer('deleted_by')->default(0);
             $table->longText('text')->nullable();
             $table->string('media')->nullable();
             $table->timestamps();

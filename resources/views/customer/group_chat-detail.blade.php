@@ -52,7 +52,7 @@
         <div class="group-chat-header">
             <div class="group-chat-header-name-container">
                 <a href="{{ route('socialmedia.group', $group->id) }}" class="group-chat-header-name-container">
-                    <img src="../imgs/avatar.png" />
+                    <img src="{{asset('img/customer/imgs/group_default.png')}}" />
                     <div class="group-chat-header-name-text-container">
                         <p>{{ $group->group_name }}</p>
                     </div>
@@ -82,7 +82,7 @@
                 <div class="social-media-view-memers-row-name">
 
                     @if ($gp_admin->user->user_profile != null && $gp_admin->user->user_profile->profile_image != null)
-                        <img src="{{ asset('storage/post' . $gp_admin->user->user_profile->profile_image) }}">
+                        <img src="{{ asset('storage/post/' . $gp_admin->user->user_profile->profile_image) }}">
                     @else
                         <img class="nav-profile-img" src="{{ asset('img/customer/imgs/user_default.jpg') }}" />
                     @endif
@@ -102,7 +102,7 @@
                     <div class="social-media-view-memers-row">
                         <div class="social-media-view-memers-row-name">
                             @if ($member->user->user_profile != null && $member->user->user_profile->profile_image != null)
-                                <img src="{{ asset('storage/post' . $member->user->user_profile->profile_image) }}">
+                                <img src="{{ asset('storage/post/' . $member->user->user_profile->profile_image) }}">
                             @else
                                 <img class="nav-profile-img" src="{{ asset('img/customer/imgs/user_default.jpg') }}" />
                             @endif
