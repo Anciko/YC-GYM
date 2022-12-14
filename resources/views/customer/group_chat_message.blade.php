@@ -144,7 +144,7 @@
         <input type="text" value="{{ $group->id }}" id="groupId" hidden>
         <div class="group-chat-header">
             <a href="{{ route('socialmedia.group.detail', $group->id) }}" class="group-chat-header-name-container">
-                <img src="../imgs/avatar.png" />
+                <img src="{{asset('img/customer/imgs/group_default.png')}}" />
                 <div class="group-chat-header-name-text-container">
                     <p>{{ $group->group_name }}</p>
                 </div>
@@ -173,7 +173,7 @@
                             @if ($gp_message->user->user_profile == null)
                                 <img class="nav-profile-img" src="{{ asset('img/customer/imgs/user_default.jpg') }}" />
                             @else
-                                <img src="{{ asset('/storage/post' . $gp_message->user->user_profile->profile_image) }}" />
+                                <img src="{{ asset('/storage/post/' . $gp_message->user->user_profile->profile_image) }}" />
                             @endif
                             <div class="group-chat-receiver-text-container">
                                 <span>{{ $gp_message->user->name }}</span>
@@ -185,7 +185,7 @@
                             @if ($gp_message->user->user_profile == null)
                                 <img class="nav-profile-img" src="{{ asset('img/customer/imgs/user_default.jpg') }}" />
                             @else
-                                <img src="{{ asset('/storage/post' . $gp_message->user->user_profile->profile_image) }}" />
+                                <img src="{{ asset('/storage/post/' . $gp_message->user->user_profile->profile_image) }}" />
                             @endif
                             <div class="group-chat-receiver-text-container">
                                 <span>{{ $gp_message->user->name }}</span>
@@ -215,8 +215,7 @@
                                             <a data-bs-toggle="modal"
                                                 href="#exampleModalToggle{{ $gp_message->id }}{{ $key }}"
                                                 role="button">
-                                                <img src="{{ asset('storage/customer_message_media/' . $media) }}"
-                                                    title="{{ $key }}">
+                                                <img src="{{ asset('storage/customer_message_media/' . $media) }}">
                                             </a>
                                             {{-- </div> --}}
                                         @elseif(pathinfo($media, PATHINFO_EXTENSION) == 'mp4' ||
@@ -265,28 +264,27 @@
                                                 </div>
                                             </div>
 
-                                            <a data-bs-toggle="modal"
-                                                href="#exampleModalToggle{{ $gp_message->id }}{{ $key }}"
-                                                role="button">
-                                                <img src="{{ asset('storage/customer_message_media/' . $media) }}"
-                                                    title="{{ $key }}">
-                                            </a>
-                                        @elseif(pathinfo($media, PATHINFO_EXTENSION) == 'mp4' ||
-                                            pathinfo($media, PATHINFO_EXTENSION) == 'mov' ||
-                                            pathinfo($media, PATHINFO_EXTENSION) == 'webm')
-                                            <video width="100%" height="100%" controls>
-                                                <source src="{{ asset('storage/customer_message_media/' . $media) }}"
-                                                    type="video/mp4">
-                                            </video>
-                                        @endif
-                                    @endforeach
+                                        <a data-bs-toggle="modal"
+                                            href="#exampleModalToggle{{ $gp_message->id }}{{ $key }}"
+                                            role="button">
+                                            <img src="{{ asset('storage/customer_message_media/' . $media) }}">
+                                        </a>
+                                    @elseif(pathinfo($media, PATHINFO_EXTENSION) == 'mp4' ||
+                                        pathinfo($media, PATHINFO_EXTENSION) == 'mov' ||
+                                        pathinfo($media, PATHINFO_EXTENSION) == 'webm')
+                                        <video width="100%" height="100%" controls>
+                                            <source src="{{ asset('storage/customer_message_media/' . $media) }}"
+                                                type="video/mp4">
+                                        </video>
+                                    @endif
+                                @endforeach
                                 </div>
                             @endif
                         </div>
                         @if ($gp_message->user->user_profile == null)
                             <img class="nav-profile-img" src="{{ asset('img/customer/imgs/user_default.jpg') }}" />
                         @else
-                            <img src="{{ asset('/storage/post' . $gp_message->user->user_profile->profile_image) }}" />
+                            <img src="{{ asset('/storage/post/' . $gp_message->user->user_profile->profile_image) }}" />
                         @endif
                     </div>
                 @else
@@ -726,12 +724,82 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                            </div>
+                                        </div>
 
-                                            <a data-bs-toggle="modal" href="#exampleModalToggle${data.message.id}${key}" role="button">
-                                                <img src="{{ asset('storage/customer_message_media/${imageArr[key]}') }}" title="${key}">
-                                            </a>
-                                            `
+                                    <a data-bs-toggle="modal" href="#exampleModalToggle${data.message.id}${key}" role="button">
+                                        <img src="{{ asset('storage/customer_message_media/${imageArr[key]}') }}">
+                                    </a>`
+
+
+
+
+                            } else if (imageArr[key].split('.').pop() === 'mp4' || imageArr[key].split('.')
+                                .pop() ===
+                                'mov' || imageArr[key].split('.').pop() === 'webm') {
+
+                                return `<video width="100%" height="100%" controls>
+                                    <source src="{{ asset('storage/customer_message_media/${imageArr[key]}') }}" type="video/mp4">
+                                </video>`
+
+                            }
+                            }).join('')
+                        }
+                        </div>`
+                        if (auth_user_img == null) {
+                            messageContainer.innerHTML += `
+                                    <div class="group-chat-sender-container">
+                                        <div class="group-chat-sender-text-container">
+                                            <span>${data.senderName}</span>
+                                            ${messageMediaContainer}
+                                            </div>`
+
+                    }
+
+                } else {
+                    var receiverMessageMedia = ``
+                    if (data.senderImg == 'user_default') {
+                        if (data.message.text != null) {
+                            messageContainer.innerHTML += `<div class="group-chat-receiver-container">
+                                    <img class="nav-profile-img" src="{{ asset('img/customer/imgs/user_default.jpg') }}" />
+                                <div class="group-chat-receiver-text-container">
+                                    <span>${data.senderName}</span>
+                                    <p>${data.message.text}</p>
+                                </div>
+                            </div>`;
+                        } else {
+                            var imageFile = data.message.media
+                            var imageArr = JSON.parse(imageFile)
+
+                            receiverMessageMedia = `
+                            <div class="group-chat-imgs-vids-container">
+                            ${Object.keys(imageArr).map(key => {
+
+                                if (imageArr[key].split('.').pop() === 'png' || imageArr[key]
+                                    .split('.').pop() ===
+                                    'jpg' || imageArr[key].split('.').pop() === 'jpeg' || imageArr[key].split(
+                                        '.')
+                                    .pop() === 'gif') {
+                                        return `
+                                        <div class="modal fade" id="exampleModalToggle${data.message.id}${key}" aria-hidden="true"
+                                            aria-labelledby="exampleModalToggleLabel" tabindex="-1">
+                                            <div class="modal-dialog modal-dialog-centered">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                            aria-label="Close"></button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <img src="{{ asset('/storage/customer_message_media/${imageArr[key]}') }}"
+                                                            alt="test" class="w-100">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <a data-bs-toggle="modal" href="#exampleModalToggle${data.message.id}${key}" role="button">
+                                            <img src="{{ asset('storage/customer_message_media/${imageArr[key]}') }}">
+                                        </a>
+                                        `
                                     // messageContainer.innerHTML += `
                                         // <div class="modal fade" id="exampleModalToggle${data.message.id}${key}" aria-hidden="true"
                                         //     aria-labelledby="exampleModalToggleLabel" tabindex="-1">
@@ -840,10 +908,10 @@
                                                 </div>
                                             </div>
 
-                                            <a data-bs-toggle="modal" href="#exampleModalToggle${data.message.id}${key}" role="button">
-                                                <img src="{{ asset('storage/customer_message_media/${imageArr[key]}') }}" title="${key}">
-                                            </a>
-                                            `
+                                        <a data-bs-toggle="modal" href="#exampleModalToggle${data.message.id}${key}" role="button">
+                                            <img src="{{ asset('storage/customer_message_media/${imageArr[key]}') }}">
+                                        </a>
+                                        `
 
                                     // messageContainer.innerHTML += `<div class="modal fade" id="exampleModalToggle${data.message.id}${key}" aria-hidden="true"
                                         //     aria-labelledby="exampleModalToggleLabel" tabindex="-1">

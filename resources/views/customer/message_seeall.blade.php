@@ -37,9 +37,6 @@
             <div class="social-media-allchats-header">
                 <p>Messages</p>
                 <div class="social-media-allchats-header-btn-container">
-                    <button class="social-media-allchats-header-search-btn customer-primary-btn">
-                        <iconify-icon icon="akar-icons:search" class="social-media-allchats-header-search-icon"></iconify-icon>
-                    </button>
                     <button type="button" class="social-media-allchats-header-add-btn customer-primary-btn" data-bs-toggle="modal" data-bs-target="#createGroupModal">
                         <iconify-icon icon="akar-icons:circle-plus" class="social-media-allchats-header-plus-icon"></iconify-icon>
                         <p>Group</p>
