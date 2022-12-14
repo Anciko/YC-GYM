@@ -1080,7 +1080,7 @@
             $(event.target).next('.message-actions-box').toggle()
         }
 
-        Echo.private('message-delete.' + recieveUserId + '.' + auth_user_id)
+        Echo.channel('message-delete.' + recieveUserId + '.' + auth_user_id)
             .listen('.message-delete-event', (data) => {
                 console.log(data);
                 $.each($(".group-chat-receiver-container"), function() {
