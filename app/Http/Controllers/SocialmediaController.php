@@ -994,6 +994,15 @@ class SocialmediaController extends Controller
                     $query->where('from_user_id', $auth_user->id)->orWhere('to_user_id', $auth_user->id);
                 })->where('media','!=',null)->get();
             }
+            if($mess->delete_status ==2){
+                $messages = Chat::where('delete_status',0)->orWhere(function ($q) use ($auth_user){
+                    $q->where('delete_status',1)->where('deleted_by','!=',$auth_user->id);
+                })->where(function ($que) use ($id) {
+                    $que->where('from_user_id', $id)->orWhere('to_user_id', $id);
+                })->where(function ($query) use ($auth_user) {
+                    $query->where('from_user_id', $auth_user->id)->orWhere('to_user_id', $auth_user->id);
+                })->where('media','!=',null)->get();
+            }
         }
 
         $auth_user_name = auth()->user()->name;

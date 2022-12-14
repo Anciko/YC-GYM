@@ -18,7 +18,10 @@
 
         <div class="social-media-chat-media-container">
             @foreach ($messages as $message)
-                @forelse (json_decode($message->media) as $key =>$media)
+            @if ($message->media != null)
+
+
+                @foreach (json_decode($message->media) as $key =>$media)
 
                     <div class="modal fade" id="exampleModalToggle{{ $message->id }}{{$key}}" aria-hidden="true"
                         aria-labelledby="exampleModalToggleLabel" tabindex="-1">
@@ -69,8 +72,10 @@
                         </div>
                     @endif
 
-                @empty
-                @endforelse
+
+
+                @endforeach
+                @endif
             @endforeach
 
         </div>
