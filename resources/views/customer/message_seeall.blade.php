@@ -94,8 +94,6 @@
             $(".social-media-allchats-actions-box").not($(this).next(".social-media-allchats-actions-box")).hide()
             $(this).next('.social-media-allchats-actions-box').toggle()
         })
-
-
             $(document).on('click', '.converstion_delete', function(e){
             var from_id=$(this).data('id');
             var to_id=$(this).attr('id');
