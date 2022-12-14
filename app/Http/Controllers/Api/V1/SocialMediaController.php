@@ -1373,6 +1373,7 @@ class SocialMediaController extends Controller
         $message->to_user_id = $to_user_id;
         $message->text = $request->text == null ?  null : $request->text;
         $message->save();
+
         $options = array(
             'cluster' => env('PUSHER_APP_CLUSTER'),
             'encrypted' => true
@@ -2310,7 +2311,19 @@ class SocialMediaController extends Controller
         $message->delete_status = 2;
         $message->deleted_by = auth()->user()->id;
         $message->update();
-        broadcast(new MessageDelete($message, $request->id));
+        $options = array(
+            'cluster' => env('PUSHER_APP_CLUSTER'),
+            'encrypted' => true
+        );
+        $to_user_id = Chat::select('to_user_id')->where('id',$request->id)->first();
+        $pusher = new Pusher(
+            env('PUSHER_APP_KEY'),
+            env('PUSHER_APP_SECRET'),
+            env('PUSHER_APP_ID'),
+            $options
+            );
+        $pusher->trigger('message-delete.'.$to_user_id.'.'.auth()->user()->id, 'message-delete-event', ['message'=>$message]);
+        // broadcast(new MessageDelete($message, $request->id));
         return response()->json([
             'success' => 'Deleted Success'
         ]);
