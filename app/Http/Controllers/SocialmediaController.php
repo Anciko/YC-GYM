@@ -75,11 +75,11 @@ class SocialmediaController extends Controller
                    (
                      (select id, to_user_id user, created_at
                        from chats
-                       where from_user_id= $user_id )
+                       where from_user_id= $user_id  and delete_status <> 2 and deleted_by != $user_id)
                    union
                      (select id, from_user_id user, created_at
                        from chats
-                       where to_user_id= $user_id)
+                       where to_user_id= $user_id  and delete_status <> 2 and deleted_by != $user_id)
                     ) t1
                group by user) t2
          on ((from_user_id= $user_id and to_user_id=user) or
@@ -87,7 +87,6 @@ class SocialmediaController extends Controller
              (created_at = m)
         left join users on users.id = user
         left join profiles on users.profile_id = profiles.id
-        where deleted_by !=  $user_id  and delete_status != 2
        order by chats.created_at desc");
         return response()->json([
             'data' => $messages,
@@ -851,11 +850,13 @@ class SocialmediaController extends Controller
                        (
                          (select id, to_user_id user, created_at
                            from chats
-                           where from_user_id= $user_id )
+                           where from_user_id= $user_id
+                           and delete_status <> 2 and deleted_by != $user_id )
                        union
                          (select id, from_user_id user, created_at
                            from chats
-                           where to_user_id= $user_id)
+                           where to_user_id= $user_id
+                           and delete_status <> 2 and deleted_by != $user_id)
                         ) t1
                    group by user) t2
              on ((from_user_id= $user_id and to_user_id=user) or
@@ -864,7 +865,7 @@ class SocialmediaController extends Controller
             left join users on users.id = user
             left join profiles on users.profile_id = profiles.id
            order by chats.created_at desc");
-       // dd($messages);
+
         return view('customer.message_seeall', compact('messages'));
     }
 
