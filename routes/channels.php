@@ -17,17 +17,17 @@ Broadcast::channel('App.Models.User.{id}', function ($user, $id) {
     return (int) $user->id === (int) $id;
 });
 
-Broadcast::channel('chatting.{sender}.{receiver}', function ($user, $receiver) {
-    return true;
- });
+// Broadcast::channel('chatting.{sender}.{receiver}', function ($user, $receiver) {
+//     return true;
+//  });
 
  Broadcast::channel('message-delete.{sender}.{receiver}', function ($user, $receiver) {
     return true;
  });
 
- Broadcast::channel('groupChatting.{groupId}', function () {
-    return true;
- });
+//  Broadcast::channel('groupChatting.{groupId}', function () {
+//     return true;
+//  });
 
  Broadcast::channel('agora-videocall', function ($user) {
     if($user != null){

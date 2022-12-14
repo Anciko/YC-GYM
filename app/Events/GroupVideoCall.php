@@ -2,8 +2,6 @@
 
 namespace App\Events;
 
-use App\Models\ChatGroupMember;
-use App\Models\ChatGroupMessage;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PresenceChannel;
@@ -12,7 +10,7 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class GroupChatting implements ShouldBroadcast
+class GroupVideoCall implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
@@ -21,16 +19,13 @@ class GroupChatting implements ShouldBroadcast
      *
      * @return void
      */
+    public $group_id;
+    public $data;
 
-    // public $message;
-    // public $senderImg;
-    // public $senderName;
-
-    public function __construct()
+    public function __construct($data, $group_id)
     {
-        // $this->message = $message;
-        // $this->senderImg = $senderImg;
-        // $this->senderName = $senderName;
+        $this->group_id = $group_id;
+        $this->data = $data;
     }
 
     /**
@@ -40,10 +35,6 @@ class GroupChatting implements ShouldBroadcast
      */
     public function broadcastOn()
     {
-        return new Channel("groupChatting");
-    }
-
-    public function broadcastAs(){
-        return 'group-chatting-event';
+        return new PrivateChannel("groupChatting.{$this->group_id}");
     }
 }
