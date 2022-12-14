@@ -90,13 +90,13 @@
 @push('scripts')
 <script>
     $(document).ready(function(){
-
-        $(".social-media-allchats-actions-toggle").click(function(){
+        $(document).on('click', '.social-media-allchats-actions-toggle', function(){
             $(".social-media-allchats-actions-box").not($(this).next(".social-media-allchats-actions-box")).hide()
             $(this).next('.social-media-allchats-actions-box').toggle()
         })
 
-        $('.converstion_delete').click(function(e){
+
+            $(document).on('click', '.converstion_delete', function(e){
             var from_id=$(this).data('id');
             var to_id=$(this).attr('id');
 
@@ -131,6 +131,67 @@
                     })
 
         })
+
+        messages()
+        //
+        function messages() {
+                var latest_messages = "{{ route('socialmedia.latest_messages') }}";
+                $.get(latest_messages, {
+                        _token: $('meta[name="csrf-token"]').attr('content'),
+                    },
+                    function(data) {
+                        table_post_row(data);
+                    });
+            }
+            // table row with ajax
+            function table_post_row(res) {
+
+                let htmlView = '';
+                if (res.data.length <= 0) {
+                    htmlView += `
+                        No data found.
+                        `;
+                }
+                for (let i = 0; i < res.data.length; i++) {
+                    id = res.data[i].id;
+                    var url = "{{ route('message.chat', ':id') }}";
+                    url = url.replace(':id', id);
+                    htmlView += `
+                            <div class="social-media-allchats-message-row-container">
+                        <a href=` + url + ` class="social-media-allchats-message-row">
+                            <div class="social-media-allchats-message-img">
+                            <img  class="nav-profile-img" src="{{asset('img/customer/imgs/user_default.jpg')}}"/>
+                                <p>` + res.data[i].name + `</p>
+                            </div>
+
+                            <p>` + res.data[i].text + `</p>
+
+                            <span>` + res.data[i].created_at + `</span>
+                        </a>
+
+                        <div class="social-media-allchats-actions-container">
+                            <iconify-icon icon="mdi:dots-vertical" class="social-media-allchats-actions-toggle"></iconify-icon>
+                            <div class="social-media-allchats-actions-box">
+                                <div  data-id=` + res.data[i].from_id + ` class="converstion_delete"
+                                id= `+ res.data[i].to_id + `>
+                                    <iconify-icon icon="tabler:trash" class="social-media-allchats-action-icon"></iconify-icon>
+                                    <span>Delete</span>
+                                </div>
+                                <a>
+                                    <iconify-icon icon="material-symbols:person" class="social-media-allchats-action-icon"></iconify-icon>
+                                    Profile
+                                </a>
+                            </div>
+
+                        </div>
+                    </div>
+
+                            `
+                }
+                $('.social-media-allchats-messages-container').html(htmlView);
+            }
+
+
         $('.social-media-seeallmessage-header-icon').click(function(){
             $(this).next().toggle()
         })

@@ -2322,7 +2322,9 @@ class SocialMediaController extends Controller
             env('PUSHER_APP_ID'),
             $options
             );
-        $pusher->trigger('message-delete.'.$to_user_id.'.'.auth()->user()->id, 'message-delete-event', ['message'=>$message]);
+        $pusher->trigger('message-delete.'.$to_user_id->to_user_id.'.'.auth()->user()->id, 'message-delete-event', ['message'=>$message]);
+
+        $pusher->trigger('message-delete.'.auth()->user()->id.'.'.$to_user_id->to_user_id, 'message-delete-event', ['message'=>$message]);
         // broadcast(new MessageDelete($message, $request->id));
         return response()->json([
             'success' => 'Deleted Success'
