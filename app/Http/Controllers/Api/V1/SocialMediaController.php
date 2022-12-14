@@ -1454,7 +1454,7 @@ class SocialMediaController extends Controller
                     $merged[$key]['owner_id'] = $owner->group_owner_id;
             }
         }
-           
+
         //to user
         $messages_to =DB::select("SELECT users.id as id,users.name,profiles.profile_image,chats.text,chats.created_at as date
         from
@@ -1916,16 +1916,9 @@ class SocialMediaController extends Controller
             env('PUSHER_APP_SECRET'),
             env('PUSHER_APP_ID'),
             $options
-<<<<<<< HEAD
             );
         $user_id=auth()->user()->id;
         $messages =DB::select("SELECT users.id as id,users.name,profiles.profile_image,chats.text,chats.created_at as date
-=======
-        );
-
-        $user_id = auth()->user()->id;
-        $messages = DB::select("SELECT users.id as id,users.name,profiles.profile_image,chats.text,chats.created_at as date
->>>>>>> d82cd522228033eee51960a6a36fc0f0a0a39172
         from
             chats
           join
@@ -2002,7 +1995,6 @@ class SocialMediaController extends Controller
                 $group_members->group_id = $id;
                 $group_members->member_id = $memberId;
                 $group_members->save();
-<<<<<<< HEAD
                 $messages =DB::select("SELECT users.id as id,users.name,profiles.profile_image,chats.text,chats.created_at as date
                 from
                     chats
@@ -2076,15 +2068,6 @@ class SocialMediaController extends Controller
              $group_members->save();
         }
         else{
-=======
-                $pusher->trigger('all_message.' . $memberId, 'all', $merged);
-            }
-            $group_members = new ChatGroupMember();
-            $group_members->group_id = $group->id;
-            $group_members->member_id = $groupOwner;
-            $group_members->save();
-        } else {
->>>>>>> d82cd522228033eee51960a6a36fc0f0a0a39172
             $group_members = new ChatGroupMember();
             $group_members->group_id = $group->id;
             $group_members->member_id = $groupOwner;
@@ -2471,7 +2454,7 @@ class SocialMediaController extends Controller
                             }
                 $pusher->trigger('all_message.'.$group_message[$i]['member_id'], 'all', $merged);
                 $pusher->trigger('groupChatting.'.$group_message[$i]['member_id'], 'group-chatting-event', ["message"=>$message,"senderImg"=>$request->senderImg,"senderName"=> $request->senderName ]);
-            }
+
         }
         $pusher->trigger('all_message.' . $user_id, 'all', $merged);
         $group_message = ChatGroupMember::select('member_id')->where('group_id', $group_id)->get();
