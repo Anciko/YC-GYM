@@ -2384,14 +2384,13 @@ class SocialMediaController extends Controller
                             }
                 $pusher->trigger('all_message.'.$group_message[$i]['member_id'], 'all', $merged_to);
                 $pusher->trigger('groupChatting.'.$group_message[$i]['member_id'], 'group-chatting-event', ["message"=>$message,"senderImg"=>$request->senderImg,"senderName"=> $request->senderName ]);
-
         }
         $pusher->trigger('all_message.' . $user_id, 'all', $merged);
-        $group_message = ChatGroupMember::select('member_id')->where('group_id', $group_id)->get();
+        $group_message = ChatGroupMember::select('member_id')->where('group_id', $group_id)->where('member_id','!=',$user_id)->get();
         for ($i = 0; count($group_message) > $i; $i++) {
             // $pusher->trigger('group_message.'.$group_message[$i]['member_id'], 'group_chat', $sms);
-            $pusher->trigger('all_message.' . $group_message[$i]['member_id'], 'all', $merged);
             $pusher->trigger('groupChatting.' . $group_message[$i]['member_id'], 'group-chatting-event', ["message" => $message, "senderImg" => $request->senderImg, "senderName" => $request->senderName]);
+            $pusher->trigger('all_message.' . $group_message[$i]['member_id'], 'all', $merged);
         }
 
         // broadcast(new GroupChatting($message,$request->senderImg, $request->senderName));
