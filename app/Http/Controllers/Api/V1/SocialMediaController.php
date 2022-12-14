@@ -1927,7 +1927,6 @@ class SocialMediaController extends Controller
                 $group_members->member_id = $memberId;
                 $group_members->save();
                 $user_id_to = $members[$i];
-
                 $messages = DB::select("SELECT users.id as id,users.name,profiles.profile_image,chats.text,chats.created_at as date
                 from
                     chats
@@ -1998,10 +1997,6 @@ class SocialMediaController extends Controller
                 }
                 $pusher->trigger('all_message.' .  $user_id_to , 'all', $merged);
              }
-             $group_members = new ChatGroupMember();
-             $group_members->group_id = $group->id;
-             $group_members->member_id = $groupOwner;
-             $group_members->save();
         }
         else{
             $group_members = new ChatGroupMember();
