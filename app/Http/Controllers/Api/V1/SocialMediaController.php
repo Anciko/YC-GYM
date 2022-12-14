@@ -1450,7 +1450,7 @@ class SocialMediaController extends Controller
                         foreach($group_owner as $owner){
                             if($value['id'] == $owner['id'] AND $value['is_group'] == 1)
                             $merged[$key]['owner_id'] = $owner->group_owner_id;
-                        }
+                           }
                     }
         $pusher->trigger('all_message.'.$to_user_id , 'all', $merged);
         $pusher->trigger('all_message.'.$user_id , 'all', $merged);
@@ -1537,7 +1537,8 @@ class SocialMediaController extends Controller
                     (created_at = m)
                 left join users on users.id = user
                 left join profiles on users.profile_id = profiles.id
-            order by chats.created_at desc limit  3");
+                where deleted_by !=  $user_id  and delete_status != 2
+            order by chats.created_at desc");
         // dd($messages);
 
 

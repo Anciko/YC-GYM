@@ -840,29 +840,33 @@ class SocialmediaController extends Controller
 
     public function see_all_message()
     {
-        $user_id = auth()->user()->id;
-        $messages = DB::select("SELECT users.id,users.name,profiles.profile_image,chats.text,chats.created_at,chats.from_user_id as from_id,chats.to_user_id as to_id
-            from
-                chats
-              join
-                (select user, max(created_at) m
-                    from
-                       (
-                         (select id, to_user_id user, created_at
-                           from chats
-                           where from_user_id= $user_id )
-                       union
-                         (select id, from_user_id user, created_at
-                           from chats
-                           where to_user_id= $user_id)
-                        ) t1
-                   group by user) t2
-             on ((from_user_id= $user_id and to_user_id=user) or
-                 (from_user_id=user and to_user_id= $user_id)) and
-                 (created_at = m)
-            left join users on users.id = user
-            left join profiles on users.profile_id = profiles.id
-           order by chats.created_at desc");
+        $user_id=auth()->user()->id;
+
+        $messages =DB::select("SELECT users.id,users.name,profiles.profile_image,chats.text
+        from
+            chats
+          join
+            (select user, max(created_at) m
+                from
+                   (
+                     (select id, to_user_id user, created_at
+                       from chats
+                       where from_user_id= $user_id )
+                   union
+                     (select id, from_user_id user, created_at
+                       from chats
+                       where to_user_id= $user_id)
+                    ) t1
+               group by user) t2
+         on ((from_user_id= $user_id and to_user_id=user) or
+             (from_user_id=user and to_user_id= $user_id)) and
+             (created_at = m)
+        left join users on users.id = user
+        left join profiles on users.profile_id = profiles.id
+        where deleted_by !=  $user_id  and delete_status != 2
+        order by chats.created_at desc limit  3");
+
+                    
 
         return view('customer.message_seeall', compact('messages'));
     }
