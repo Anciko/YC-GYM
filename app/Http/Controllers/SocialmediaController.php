@@ -88,8 +88,8 @@ class SocialmediaController extends Controller
                         (created_at = m)
                     left join users on users.id = user
                     left join profiles on users.profile_id = profiles.id
-                    order by chats.created_at desc limit 3");
-        // dd($messages);
+                    order by chats.created_at desc");
+// dd($messages);
 
 
         $groups = DB::table('chat_group_members')
@@ -99,43 +99,44 @@ class SocialmediaController extends Controller
             ->get()
             ->pluck('group_id')->toArray();
 
-        $latest_group_message = DB::table('chat_group_messages')
-            ->groupBy('group_id')
-            ->whereIn('group_id', $groups)
-            ->select(DB::raw('max(id) as id'))
-            ->get()
-            ->pluck('id')->toArray();
-        $latest_group_sms = ChatGroupMessage::select(
-            'chat_group_messages.group_id as id',
-            'chat_groups.group_name as name',
-            'profiles.profile_image',
-            'chat_group_messages.text',
-            DB::raw('DATE_FORMAT(chat_group_messages.created_at, "%Y-%m-%d %H:%i:%s") as date')
-        )
-            ->leftJoin('chat_groups', 'chat_groups.id', 'chat_group_messages.group_id')
-            ->leftJoin('users', 'users.id', 'chat_group_messages.sender_id')
-            ->leftJoin('profiles', 'users.profile_id', 'profiles.id')
-            ->whereIn('chat_group_messages.id', $latest_group_message)->take(3)->get()->toArray();
-
-        //   $ids = json_encode($messages);
-        $arr = json_decode(json_encode($messages), true);
-        foreach ($arr as $key => $value) {
-            $arr[$key]['is_group'] = 0;
-        }
-        foreach ($latest_group_sms as $key => $value) {
-            $latest_group_sms[$key]['is_group'] = 1;
-        }
-        $merged = array_merge($arr, $latest_group_sms);
-        $keys = array_column($merged, 'date');
-        array_multisort($keys, SORT_DESC, $merged);
-        $group_owner = ChatGroup::whereIn('chat_groups.id', $groups)->get();
-        foreach ($merged as $key => $value) {
-            $merged[$key]['owner_id'] = 0;
-            foreach ($group_owner as $owner) {
-                if ($value['id'] == $owner['id'] and $value['is_group'] == 1)
-                    $merged[$key]['owner_id'] = $owner->group_owner_id;
+            $latest_group_message = DB::table('chat_group_messages')
+                ->groupBy('group_id')
+                ->whereIn('group_id', $groups)
+                ->select(DB::raw('max(id) as id'))
+                ->get()
+                ->pluck('id')->toArray();
+            $latest_group_sms = ChatGroupMessage::select(
+                    'chat_group_messages.group_id as id',
+                    'chat_groups.group_name as name',
+                    'profiles.profile_image',
+                    'chat_group_messages.text',
+                    'chat_group_messages.created_at',
+                    DB::raw('DATE_FORMAT(chat_group_messages.created_at, "%Y-%m-%d %H:%i:%s") as date')
+                )
+                ->leftJoin('chat_groups', 'chat_groups.id', 'chat_group_messages.group_id')
+                ->leftJoin('users', 'users.id', 'chat_group_messages.sender_id')
+                ->leftJoin('profiles', 'users.profile_id', 'profiles.id')
+                ->whereIn('chat_group_messages.id', $latest_group_message)->get()->toArray();
+            //   $ids = json_encode($messages);
+            $arr = json_decode(json_encode($messages), true);
+            foreach ($arr as $key => $value) {
+                $arr[$key]['is_group'] = 0;
             }
-        }
+            foreach ($latest_group_sms as $key => $value) {
+                $latest_group_sms[$key]['is_group'] = 1;
+            }
+            $merged = array_merge($arr, $latest_group_sms);
+            $keys = array_column($merged, 'date');
+            array_multisort($keys, SORT_DESC, $merged);
+            $group_owner = ChatGroup::whereIn('chat_groups.id', $groups)->get();
+            foreach ($merged as $key => $value) {
+                $merged[$key]['owner_id'] = 0;
+                foreach ($group_owner as $owner) {
+                    if ($value['id'] == $owner['id'] and $value['is_group'] == 1)
+                        $merged[$key]['owner_id'] = $owner->group_owner_id;
+                }
+            }
+        
 
         return response()->json([
             'data' => $merged,

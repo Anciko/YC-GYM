@@ -225,6 +225,22 @@
 
                                     <span>` + res.data[i].date + `</span>
                                 </a>
+
+                        <div class="social-media-allchats-actions-container">
+                            <iconify-icon icon="mdi:dots-vertical" class="social-media-allchats-actions-toggle"></iconify-icon>
+                            <div class="social-media-allchats-actions-box">
+                                <div  data-id=` + res.data[i].from_id + ` class="converstion_delete"
+                                id= `+ res.data[i].to_id + `>
+                                    <iconify-icon icon="tabler:trash" class="social-media-allchats-action-icon"></iconify-icon>
+                                    <span>Leave</span>
+                                </div>
+                                <a>
+                                    <iconify-icon icon="material-symbols:person" class="social-media-allchats-action-icon"></iconify-icon>
+                                    Detail
+                                </a>
+                            </div>
+
+                        </div>
                             </div>
                             `
                     }
