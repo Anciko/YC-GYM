@@ -347,7 +347,7 @@
                 url = url.replace(':id', id);
                 var group_url = "{{ route('socialmedia.group', ':id') }}";
                 group_url = group_url.replace(':id', id);
-                if(latest_messages[i].is_group == 0){
+                if(data[i].is_group == 0){
                 htmlView += `
                                     <a href=`+url+` class="social-media-left-messages-row">
                                             <img  class="nav-profile-img" src="{{asset('img/customer/imgs/user_default.jpg')}}"/>

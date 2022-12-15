@@ -1290,101 +1290,10 @@ class SocialMediaController extends Controller
                 env('PUSHER_APP_ID'),
                 $options
             );
-            $user_id = auth()->user()->id;
-            $group_message = ChatGroupMember::select('member_id')
-                                ->where('group_id', $id)
-                                ->get();
-            $groups = DB::table('chat_group_members')
-                ->select('group_id')
-                ->groupBy('group_id')
-                ->where('chat_group_members.member_id', $user_id)
-                ->get()
-                ->pluck('group_id')->toArray();
-
-            $latest_group_message = DB::table('chat_group_messages')
-                ->groupBy('group_id')
-                ->whereIn('group_id', $groups)
-                ->select(DB::raw('max(id) as id'))
-                ->get()
-                ->pluck('id')->toArray();
-
-            $chat_group =
-                ChatGroupMessage::leftJoin('chat_groups', 'chat_groups.id', 'chat_group_messages.group_id')
-                ->select('chat_group_messages.*', 'chat_groups.group_name', 'chat_groups.id')
-                ->whereIn('chat_group_messages.id', $latest_group_message)
-                ->orderBy('chat_group_messages.created_at', 'DESC')
-                ->get();
-           $pusher->trigger('group_message.' . $user_id, 'group_chat', $chat_group);
 
             $group_message = ChatGroupMember::select('member_id')->where('group_id', $id)->get();
             for ($i = 0; count($group_message) > $i; $i++) {
                 $user_id = $group_message[$i]['member_id'];
-                $messages_three = DB::select("SELECT users.id as id,users.name,profiles.profile_image,chats.text,chats.created_at as date
-                from
-                    chats
-                  join
-                    (select user, max(created_at) m
-                        from
-                           (
-                             (select id, to_user_id user, created_at
-                               from chats
-                               where from_user_id= $user_id  and delete_status <> 2 and deleted_by != $user_id)
-                           union
-                             (select id, from_user_id user, created_at
-                               from chats
-                               where to_user_id= $user_id and delete_status <> 2 and deleted_by != $user_id)
-                            ) t1
-                       group by user) t2
-                        on ((from_user_id= $user_id and to_user_id=user) or
-                            (from_user_id=user and to_user_id= $user_id)) and
-                            (created_at = m)
-                        left join users on users.id = user
-                        left join profiles on users.profile_id = profiles.id
-                        order by chats.created_at desc limit 3");
-                // dd($messages);
-                $groups_three = DB::table('chat_group_members')
-                    ->select('group_id')
-                    ->groupBy('group_id')
-                    ->where('chat_group_members.member_id', $user_id)
-                    ->get()
-                    ->pluck('group_id')->toArray();
-
-                $latest_group_message_three = DB::table('chat_group_messages')
-                    ->groupBy('group_id')
-                    ->whereIn('group_id', $groups_three)
-                    ->select(DB::raw('max(id) as id'))
-                    ->get()
-                    ->pluck('id')->toArray();
-                $latest_group_sms_three = ChatGroupMessage::select(
-                        'chat_group_messages.group_id as id',
-                        'chat_groups.group_name as name',
-                        'profiles.profile_image',
-                        'chat_group_messages.text',
-                        DB::raw('DATE_FORMAT(chat_group_messages.created_at, "%Y-%m-%d %H:%m:%s") as date')
-                    )
-                    ->leftJoin('chat_groups', 'chat_groups.id', 'chat_group_messages.group_id')
-                    ->leftJoin('users', 'users.id', 'chat_group_messages.sender_id')
-                    ->leftJoin('profiles', 'users.profile_id', 'profiles.id')
-                    ->whereIn('chat_group_messages.id', $latest_group_message_three)->take(3)->get()->toArray();
-                //   $ids = json_encode($messages);
-                $arr_three = json_decode(json_encode($messages_three), true);
-                foreach ($arr_three as $key => $value) {
-                    $arr_three[$key]['is_group'] = 0;
-                }
-                foreach ($latest_group_sms_three as $key => $value) {
-                    $latest_group_sms_three[$key]['is_group'] = 1;
-                }
-                $merged_three = array_merge($arr_three, $latest_group_sms_three);
-                $keys_three = array_column($merged_three, 'date');
-                array_multisort($keys_three, SORT_DESC, $merged_three);
-                $group_owner_three = ChatGroup::whereIn('chat_groups.id', $groups_three)->get();
-                foreach ($merged_three as $key => $value) {
-                    $merged_three[$key]['owner_id'] = 0;
-                    foreach ($group_owner_three as $owner) {
-                        if ($value['id'] == $owner['id'] and $value['is_group'] == 1)
-                            $merged_three[$key]['owner_id'] = $owner->group_owner_id;
-                    }
-                }
                 //all
                 $messages_all = DB::select("SELECT users.id as id,users.name,profiles.profile_image,chats.text,chats.created_at as date,chats.from_user_id as from_id,chats.to_user_id as to_id
                 from
@@ -1452,6 +1361,7 @@ class SocialMediaController extends Controller
                             $merged_all[$key]['owner_id'] = $owner->group_owner_id;
                     }
                 }
+                $merged_three = array_slice($merged_all, -6);
 
                 $pusher->trigger('groupChatting.' . $group_message[$i]['member_id'], 'group-chatting-event', ["message" => $message, "senderImg" => $request->senderImg, "senderName" => $request->senderName]);
                 $pusher->trigger('chat_message.' . $group_message[$i]['member_id'], 'chat', $merged_three);
@@ -1545,7 +1455,7 @@ class SocialMediaController extends Controller
                 'chat_groups.group_name as name',
                 'profiles.profile_image',
                 'chat_group_messages.text',
-                DB::raw('DATE_FORMAT(chat_group_messages.created_at, "%Y-%m-%d %H:%m:%s") as date')
+                DB::raw('DATE_FORMAT(chat_group_messages.created_at, "%Y-%m-%d %H:%i:%s") as date')
             )
             ->leftJoin('chat_groups', 'chat_groups.id', 'chat_group_messages.group_id')
             ->leftJoin('users', 'users.id', 'chat_group_messages.sender_id')
@@ -2106,7 +2016,7 @@ class SocialMediaController extends Controller
             'chat_groups.group_name as name',
             'profiles.profile_image',
             'chat_group_messages.text',
-            DB::raw('DATE_FORMAT(chat_group_messages.created_at, "%Y-%m-%d %H:%m:%s") as date')
+            DB::raw('DATE_FORMAT(chat_group_messages.created_at, "%Y-%m-%d %H:%i:%s") as date')
         )
             ->leftJoin('chat_groups', 'chat_groups.id', 'chat_group_messages.group_id')
             ->leftJoin('users', 'users.id', 'chat_group_messages.sender_id')
@@ -2414,7 +2324,7 @@ class SocialMediaController extends Controller
                 $latest_group_sms =ChatGroupMessage::
                         select('chat_group_messages.group_id as id','chat_groups.group_name as name',
                         'profiles.profile_image','chat_group_messages.text',
-                        DB::raw('DATE_FORMAT(chat_group_messages.created_at, "%Y-%m-%d %H:%m:%s") as date'))
+                        DB::raw('DATE_FORMAT(chat_group_messages.created_at, "%Y-%m-%d %H:%i:%s") as date'))
                         ->leftJoin('chat_groups','chat_groups.id','chat_group_messages.group_id')
                         ->leftJoin('users','users.id','chat_group_messages.sender_id')
                         ->leftJoin('profiles','users.profile_id','profiles.id')

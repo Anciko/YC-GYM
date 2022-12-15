@@ -168,7 +168,7 @@ class AppServiceProvider extends ServiceProvider
                         (created_at = m)
                     left join users on users.id = user
                     left join profiles on users.profile_id = profiles.id
-                    order by chats.created_at desc limit 3");
+                    order by chats.created_at desc");
             // dd($messages);
 
 
@@ -190,12 +190,12 @@ class AppServiceProvider extends ServiceProvider
                     'chat_groups.group_name as name',
                     'profiles.profile_image',
                     'chat_group_messages.text',
-                    DB::raw('DATE_FORMAT(chat_group_messages.created_at, "%Y-%m-%d %H:%m:%s") as date')
+                    DB::raw('DATE_FORMAT(chat_group_messages.created_at, "%Y-%m-%d %H:%i:%s") as date')
                 )
                 ->leftJoin('chat_groups', 'chat_groups.id', 'chat_group_messages.group_id')
                 ->leftJoin('users', 'users.id', 'chat_group_messages.sender_id')
                 ->leftJoin('profiles', 'users.profile_id', 'profiles.id')
-                ->whereIn('chat_group_messages.id', $latest_group_message)->take(3)->get()->toArray();
+                ->whereIn('chat_group_messages.id', $latest_group_message)->get()->toArray();
             //   $ids = json_encode($messages);
             $arr = json_decode(json_encode($messages), true);
             foreach ($arr as $key => $value) {
@@ -215,6 +215,8 @@ class AppServiceProvider extends ServiceProvider
                         $merged[$key]['owner_id'] = $owner->group_owner_id;
                 }
             }
+            $merged = array_slice($merged, -6);
+
             $message->with('latest_messages', $merged);
         }
 
