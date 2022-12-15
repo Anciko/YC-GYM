@@ -16,6 +16,7 @@ use App\Models\Friendship;
 use App\Models\Notification;
 use Illuminate\Http\Request;
 use App\Events\GroupChatting;
+use App\Events\MakeAgoraCall;
 use App\Events\MessageDelete;
 use App\Models\UserReactPost;
 use App\Models\UserSavedPost;
@@ -2483,7 +2484,6 @@ class SocialMediaController extends Controller
 
     public function mobile_token(Request $request)
     {
-
         $appID = env('AGORA_APP_ID');
         $appCertificate = env('AGORA_APP_CERTIFICATE');
         $channelName = $request->channelName;
@@ -2494,18 +2494,23 @@ class SocialMediaController extends Controller
         $privilegeExpiredTs = $currentTimestamp + $expireTimeInSeconds;
 
         $token = RtcTokenBuilder::buildTokenWithUserAccount($appID, $appCertificate, $channelName, $user, $role, $privilegeExpiredTs);
-
-        $options = array(
-            'cluster' => env('PUSHER_APP_CLUSTER'),
-            'encrypted' => true
-        );
-        $pusher = new Pusher(
-            env('PUSHER_APP_KEY'),
-            env('PUSHER_APP_SECRET'),
-            env('PUSHER_APP_ID'),
-            $options
-        );
-        $pusher->trigger('video_call.' . $request->to_call, 'call', $channelName);
+        
+        $data['userToCall'] = $request->user_to_call;
+        $data['channelName'] = $channelName;
+        $data['from'] = Auth::id();
+        
+        broadcast(new MakeAgoraCall($data))->toOthers();
+        // $options = array(
+        //     'cluster' => env('PUSHER_APP_CLUSTER'),
+        //     'encrypted' => true
+        // );
+        // $pusher = new Pusher(
+        //     env('PUSHER_APP_KEY'),
+        //     env('PUSHER_APP_SECRET'),
+        //     env('PUSHER_APP_ID'),
+        //     $options
+        // );
+        // $pusher->trigger('video_call.' . $request->to_call, 'call', $channelName);
         return response()->json([
             'data' => $token
         ]);
@@ -2514,7 +2519,6 @@ class SocialMediaController extends Controller
 
     public function accept_call(Request $request)
     {
-
         $appID = env('AGORA_APP_ID');
         $appCertificate = env('AGORA_APP_CERTIFICATE');
         $channelName = $request->channelName;
