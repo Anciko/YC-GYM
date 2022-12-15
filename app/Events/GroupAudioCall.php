@@ -35,6 +35,6 @@ class GroupAudioCall implements ShouldBroadcast
      */
     public function broadcastOn()
     {
-        return new PrivateChannel("groupChatting.{$this->group_id}");
+        return new Channel("groupCalling.{$this->group_id}");
     }
 }

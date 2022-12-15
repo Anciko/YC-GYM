@@ -22,7 +22,7 @@ class GroupVideoCall implements ShouldBroadcast
     public $group_id;
     public $data;
 
-    public function __construct($data, $group_id)
+    public function __construct($group_id, $data)
     {
         $this->group_id = $group_id;
         $this->data = $data;
@@ -35,6 +35,6 @@ class GroupVideoCall implements ShouldBroadcast
      */
     public function broadcastOn()
     {
-        return new PrivateChannel("groupChatting.{$this->group_id}");
+        return new Channel("groupCalling.{$this->group_id}");
     }
 }

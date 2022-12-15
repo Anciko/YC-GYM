@@ -1256,7 +1256,6 @@ class SocialMediaController extends Controller
 
             $message = new ChatGroupMessage();
 
-            $message = new ChatGroupMessage();
 
             $sendFile = $request->all();
             if ($request->totalFiles != 0) {
@@ -1315,6 +1314,7 @@ class SocialMediaController extends Controller
                 ->orderBy('chat_group_messages.created_at', 'DESC')
                 ->get();
            $pusher->trigger('group_message.' . $user_id, 'group_chat', $chat_group);
+
             $group_message = ChatGroupMember::select('member_id')->where('group_id', $id)->get();
             for ($i = 0; count($group_message) > $i; $i++) {
                 $groups = DB::table('chat_group_members')
