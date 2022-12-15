@@ -947,7 +947,7 @@
                 const channelName = groupId.toString();
                 const tokenRes = await generateToken(channelName)
 
-                // console.log("fdsafeeeeeeeeeeeeeeeeeee",channelName, groupId);
+                console.log("fdsafeeeeeeeeeeeeeeeeeee",channelName, groupId);
 
                 console.log(tokenRes.data);
 

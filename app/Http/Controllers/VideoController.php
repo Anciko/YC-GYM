@@ -37,7 +37,7 @@ class VideoController extends Controller
         $data['groupId'] = $request->group_id;
         // $data['from'] = Auth::id();
         // dd($data);
-        broadcast(new GroupVideoCall($data, $data['groupId']))->toOthers();
+        broadcast(new GroupVideoCall($data['groupId'],$data))->toOthers();
     }
 
     public function callGpAudioUser(Request $request) {
@@ -46,7 +46,7 @@ class VideoController extends Controller
         $data['groupId'] = $request->group_id;
         // $data['from'] = Auth::id();
 
-        broadcast(new GroupAudioCall($data, $data['groupId']))->toOthers();
+        broadcast(new GroupAudioCall($data['groupId'],$data))->toOthers();
     }
 
     public function token(Request $request)

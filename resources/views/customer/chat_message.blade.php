@@ -1139,51 +1139,19 @@
         let friends = @json($friends);
 
 
-        Echo.join('agora-videocall')
-            .here((users) => {
-                console.log('onlineuser', users);
-                onlineUsers = users;
-                console.log(onlineUsers, 'onlineuser');
-
-                users.forEach((user, index) => {
-                    friends.forEach(friend => {
-                        if (user.id == friend.id) {
-                            let element = document.querySelector('.active-now')
-                            element.innerText = 'Active Now'
-                        }
-                    })
-                })
-
-            })
-            .joining((user) => {
-                const joiningUserIndex = onlineUsers.findIndex(
-                    (data) => data.id === user.id
-                )
-                if (joiningUserIndex < 0) {
-                    onlineUsers.push(user);
-                }
-            })
-            .leaving((user) => {
-                const leavingUserIndex = onlineUsers.findIndex(
-                    (data) => data.id === user.id
-                );
-                onlineUsers.splice(leavingUserIndex, 1);
-                console.log('leeeving');
-            })
+        Echo.channel('agora-videocall')
             .listen("MakeAgoraCall", ({
                 data
             }) => {
                 console.log('listening-------------------------', data);
                 if (parseInt(data.userToCall) === parseInt(authuserId)) {
-                    const callerIndex = onlineUsers.findIndex(
-                        (user) => user.id === data.from
-                    )
-                    console.log('caller index', callerIndex);
-                    incomingCaller = onlineUsers[callerIndex]["name"]
+
+                    // console.log('caller index', callerIndex);
+                    // incomingCaller = onlineUsers[callerIndex]["name"]
                     incomingCall = true
 
 
-                    console.log('incomingcaller', incomingCaller);
+                    // console.log('incomingcaller', incomingCaller);
 
                     console.log('llllllrweer', incomingCall);
 
@@ -1195,7 +1163,7 @@
 
                                 <div class="card shadow p-4 col-12">
                                     <p>
-                                        Video Call From <span>${incomingCaller}</span>
+                                        Video Call From <span>Hello Test</span>
                                     </p>
                                     <div class="d-flex justify-content-center gap-3">
                                         <button type="button" class="btn btn-sm btn-danger"  id="" onclick="declineCall()">
@@ -1217,11 +1185,9 @@
             }) => {
                 console.log('listening-------------------------', data);
                 if (parseInt(data.userToCall) === parseInt(authuserId)) {
-                    const callerIndex = onlineUsers.findIndex(
-                        (user) => user.id === data.from
-                    )
-                    console.log('caller index', callerIndex);
-                    incomingCaller = onlineUsers[callerIndex]["name"]
+
+                    // console.log('caller index', callerIndex);
+                    // incomingCaller = onlineUsers[callerIndex]["name"]
                     incomingCall = true
                     incomingAudioCall = true
 
@@ -1232,7 +1198,7 @@
 
                                 <div class="card shadow p-4 col-12">
                                     <p>
-                                        Audio Call From <span>${incomingCaller}</span>
+                                        Audio Call From <span>Hello Test</span>
                                     </p>
                                     <div class="d-flex justify-content-center gap-3">
                                         <button type="button" class="btn btn-sm btn-danger"  id="" onclick="declineCall()">

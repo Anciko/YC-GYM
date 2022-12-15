@@ -22,7 +22,7 @@ class GroupAudioCall implements ShouldBroadcast
     public $group_id;
     public $data;
 
-    public function __construct($data, $group_id)
+    public function __construct($group_id, $data)
     {
         $this->group_id = $group_id;
         $this->data = $data;
