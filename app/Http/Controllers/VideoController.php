@@ -6,7 +6,10 @@ use Illuminate\Http\Request;
 use App\Events\MakeAgoraCall;
 use Illuminate\Support\Facades\Auth;
 use App\Class\AgoraDynamicKey\RtcTokenBuilder;
+use App\Events\GroupAudioCall;
+use App\Events\GroupVideoCall;
 use App\Events\MakeAgoraAudioCall;
+use App\Models\ChatGroupMessage;
 
 class VideoController extends Controller
 {
@@ -25,6 +28,25 @@ class VideoController extends Controller
         $data['from'] = Auth::id();
 
         broadcast(new MakeAgoraAudioCall($data))->toOthers();
+    }
+
+
+    public function callGpuser(Request $request) {
+        // $data['userToCall'] = $request->user_to_call;
+        $data['channelName'] = $request->channel_name;
+        $data['groupId'] = $request->group_id;
+        // $data['from'] = Auth::id();
+        // dd($data);
+        broadcast(new GroupVideoCall($data['groupId'],$data))->toOthers();
+    }
+
+    public function callGpAudioUser(Request $request) {
+        // $data['userToCall'] = $request->user_to_call;
+        $data['channelName'] = $request->channel_name;
+        $data['groupId'] = $request->group_id;
+        // $data['from'] = Auth::id();
+
+        broadcast(new GroupAudioCall($data['groupId'],$data))->toOthers();
     }
 
     public function token(Request $request)

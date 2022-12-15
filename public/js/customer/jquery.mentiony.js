@@ -101,7 +101,7 @@ var tmpEle = null;
                 listItem:         '<li class="mentiony-item" data-item-id="">' +
                                   '<div class="d-flex">' +
                                   '<div class="">' +
-                                  '<img src="https://avatars2.githubusercontent.com/u/1859127?v=3&s=140">' +
+                                  '<img src="">' +
                                   '</div>' +
                                   '<div class="">' +
                                   '<p class="title">Company name</p>' +
@@ -419,8 +419,15 @@ var tmpEle = null;
 
                 responseData.forEach(function (item, index) {
                     var listItem = $(settings.templates.listItem);
+                    if(item.avatar===null){
+                        var profile_image='/img/customer/imgs/user_default.jpg';
+                    }else{
+                        var profile_image='/storage/post/'+item.avatar;
+                    }
+
+                    console.log(profile_image);
                     listItem.attr('data-item-id', item.id);
-                    listItem.find('img:first').attr('src', item.avatar);
+                    listItem.find('img:first').attr('src', profile_image);
                     listItem.find('p.title:first').html(item.name);
                     listItem.find('p.help-block:first').html(item.info);
                     listItem.bind('click', onListItemClick);

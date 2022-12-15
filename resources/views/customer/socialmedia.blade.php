@@ -340,7 +340,7 @@
 
         $('.post_save').click(function(e){
             e.preventDefault();
-
+            $('.post-actions-container').hide();
             var post_id=$(this).attr('id');
             var add_url = "{{ route('socialmedia.post.save', [':post_id']) }}";
             add_url = add_url.replace(':post_id', post_id);

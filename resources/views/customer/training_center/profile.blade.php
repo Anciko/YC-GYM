@@ -2118,7 +2118,7 @@
 
 
         $(document).on('click', '.post_save', function(e) {
-            $('.customer-post-header-icon').next().toggle()
+            $('.post-actions-container').hide();
             var post_id=$(this).attr('id');
             var add_url = "{{ route('socialmedia.post.save', [':post_id']) }}";
             add_url = add_url.replace(':post_id', post_id);
@@ -2240,7 +2240,7 @@
 
                 //edit comment start
                 $(document).on('click', '#editCommentModal', function(e) {
-                    $('.social-media-comment-icon').next().toggle()
+
                     $('#view_comments_modal').modal('hide')
                         $('#edit_comments_modal').modal('show');
                         var id = $(this).data('id');
@@ -2317,7 +2317,7 @@
                         dataType: "json",
                         success: function (response) {
                             $('#edit_comments_modal').modal('hide');
-                            $('#view_comments_modal').modal('show');
+                            viewcomments()
 
                         }
 
@@ -2376,9 +2376,8 @@
                         data : {'post_id':post_id,'mention' : arr , 'comment' : comment},
                         dataType: "json",
                         success: function (response) {
-                            viewcomments();
-                            saved_posts(e);
                             $('.mentiony-content').empty()
+                            viewcomments()
                             all_posts()
                             saved_posts(e)
                         }
@@ -2417,8 +2416,10 @@
                                 No Comment.
                                 `;
                             }
-                            console.log("data");
+                            var auth_id={{auth()->user()->id}};
                             for(let i = 0; i < res.comment.length; i++){
+                                var comment_user=res.comment[i].user_id;
+                                var post_owner=res.comment[i].post_owner;
                                   htmlView += `
                                     <div class="social-media-comment-container">`
 
@@ -2433,11 +2434,12 @@
                                               <div class="social-media-comment-box-name">
                                                   <p>`+res.comment[i].name+`</p>
                                                   <span>`+res.comment[i].date+`</span>
-                                              </div>
+                                              </div>`
 
+                                    if(auth_id==post_owner && auth_id==comment_user){
 
-                                        <iconify-icon icon="bx:dots-vertical-rounded" class="social-media-comment-icon"></iconify-icon>
-                                        <div class="comment-actions-container" >
+                                    htmlView+=`<iconify-icon icon="bx:dots-vertical-rounded" class="social-media-comment-icon"></iconify-icon>
+                                        <div class="comment-actions-container">
 
                                             <div class="comment-action" id="editCommentModal"
                                             data-id=`+res.comment[i].id+`>
@@ -2451,8 +2453,38 @@
                                                 <p>Delete</p>
                                             </div>
                                             </a>
-                                        </div>
-                                        </div>
+                                        </div>`
+                                    }else if(auth_id==post_owner && auth_id!=comment_user){
+                                        htmlView+=`
+                                                <iconify-icon icon="bx:dots-vertical-rounded" class="social-media-comment-icon"></iconify-icon>
+                                                        <div class="comment-actions-container" >
+                                                        <a id="delete_comment" data-id=`+res.comment[i].id+`>
+                                                        <div class="comment-action">
+                                                            <iconify-icon icon="fluent:delete-12-regular" class="comment-action-icon"></iconify-icon>
+                                                            <p>Delete</p>
+                                                        </div>
+                                                        </a>
+                                                    </div>`
+                                    }else if(auth_id==comment_user){
+                                        htmlView+=`
+                                                <iconify-icon icon="bx:dots-vertical-rounded" class="social-media-comment-icon"></iconify-icon>
+                                                        <div class="comment-actions-container" >
+                                                        <div class="comment-action" id="editCommentModal" data-id=`+res.comment[i].id+`>
+                                                            <iconify-icon icon="akar-icons:edit" class="comment-action-icon"></iconify-icon>
+                                                            <p>Edit</p>
+                                                        </div>
+                                                        <a id="delete_comment" data-id=`+res.comment[i].id+`>
+                                                        <div class="comment-action">
+                                                            <iconify-icon icon="fluent:delete-12-regular" class="comment-action-icon"></iconify-icon>
+                                                            <p>Delete</p>
+                                                        </div>
+                                                        </a>
+                                                    </div>`
+                                    }else{
+
+                                    }
+
+                                    htmlView+=`</div>
                                         <p>`+res.comment[i].Replace+`</p>
                                     </div>
                                 </div>
@@ -3001,7 +3033,7 @@
 
         $(document).on('click','#edit_post',function(e){
             e.preventDefault();
-            $('.customer-post-header-icon').next().toggle()
+            $('.customer-post-header-icon').toggle()
             $(".editpost-photo-video-imgpreview-container").empty();
 
             dtEdit.clearData()

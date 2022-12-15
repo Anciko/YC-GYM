@@ -33,6 +33,6 @@ class MakeAgoraCall implements ShouldBroadcast
      */
     public function broadcastOn()
     {
-        return new PresenceChannel('agora-videocall');
+        return new Channel('agora-videocall');
     }
 }
