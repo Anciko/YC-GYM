@@ -68,6 +68,7 @@
 
 
         @if (auth()->user()->id == $gp_admin->group_owner_id)
+        <div class="social-media-view-members-header-btns-container">
             <button type="button" class="social-media-allchats-header-add-btn customer-primary-btn group-chat-add-btn"
                 data-bs-toggle="modal" data-bs-target="#createGroupModal">
                 <iconify-icon icon="akar-icons:circle-plus" class="social-media-allchats-header-plus-icon"></iconify-icon>
@@ -79,6 +80,7 @@
                     <p>Delete Group</p>
                 </button>
             </a>
+        </div>
         @else
             <a href="{{ route('socialmedia.group.leave', [$group->id, auth()->user()->id]) }}"
                 class="text-decoration-none">
@@ -102,7 +104,7 @@
 
                 </div>
                 <div class="social-media-view-members-row-btns">
-                    <p class="me-3" style="color: #3CDD57;">Admin</p>
+                    <p style="color: #3CDD57;">Admin</p>
                 </div>
             </div>
 
