@@ -34,7 +34,7 @@
             width: 100%;
             height: 100%;
             /* max-width: 90vw;
-                                                    max-height: 50vh; */
+                                                                                    max-height: 50vh; */
             margin: 0 auto;
             border-radius: 0.25rem;
             position: relative;
@@ -174,7 +174,6 @@
 
         <div class="group-chat-messages-container">
 
-
             @forelse ($messages as $send_message)
                 @if (auth()->user()->id == $send_message->from_user_id)
                     <div class="group-chat-sender-container" data-messageId="{{ $send_message->id }}">
@@ -257,7 +256,7 @@
                             <img src="{{ asset('/storage/post/' . $receiver_user->user_profile->profile_image) }}" />
                         @endif
                         <div class="group-chat-receiver-text-container">
-                            <span>{{ $send_message->name }}</span>
+                            {{-- <span>{{ $send_message->name }}</span> --}}
 
                             @if ($send_message->media == null)
                                 <p>{{ $send_message->text }}</p>
@@ -651,7 +650,7 @@
 
 
 
-        Echo.private('chatting.' + auth_user_id + '.' + recieveUserId)
+        Echo.channel('chatting.' + auth_user_id + '.' + recieveUserId)
             .listen('.chatting-event', (data) => {
                     console.log('asdufsasusiui', data);
                     if (data.message.from_user_id == recieveUserId) {
@@ -671,94 +670,77 @@
                                         '.')
                                     .pop() === 'gif') {
                                         return `
-                                                    <div class="modal fade" id="exampleModalToggle${data.message.id}${key}" aria-hidden="true"
-                                                        aria-labelledby="exampleModalToggleLabel" tabindex="-1">
-                                                        <div class="modal-dialog modal-dialog-centered">
-                                                            <div class="modal-content">
-                                                                <div class="modal-header">
-                                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                                        aria-label="Close"></button>
-                                                                </div>
-                                                                <div class="modal-body">
-                                                                    <img src="{{ asset('/storage/customer_message_media/${imageArr[key]}') }}"
-                                                                        alt="test" class="w-100">
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
+                                                                                    <div class="modal fade" id="exampleModalToggle${data.message.id}${key}" aria-hidden="true"
+                                                                                        aria-labelledby="exampleModalToggleLabel" tabindex="-1">
+                                                                                        <div class="modal-dialog modal-dialog-centered">
+                                                                                            <div class="modal-content">
+                                                                                                <div class="modal-header">
+                                                                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                                                                        aria-label="Close"></button>
+                                                                                                </div>
+                                                                                                <div class="modal-body">
+                                                                                                    <img src="{{ asset('/storage/customer_message_media/${imageArr[key]}') }}"
+                                                                                                        alt="test" class="w-100">
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
 
-                                                    <a data-bs-toggle="modal" href="#exampleModalToggle${data.message.id}${key}" role="button">
-                                                        <img src="{{ asset('storage/customer_message_media/${imageArr[key]}') }}" title="${key}">
-                                                    </a>
-                                                    `
+                                                                                <a data-bs-toggle="modal" href="#exampleModalToggle${data.message.id}${key}" role="button">
+                                                                                    <img src="{{ asset('storage/customer_message_media/${imageArr[key]}') }}">
+                                                                                </a>
+                                                                                `
 
 
-                                } else if (imageArr[key].split('.').pop() === 'mp4' || imageArr[key].split('.')
-                                    .pop() ===
-                                    'mov' || imageArr[key].split('.').pop() === 'webm') {
-                                        return ` <
-                                    video width = "100%"
+                                        } else if (imageArr[key].split('.').pop() === 'mp4' || imageArr[key].split('.')
+                                            .pop() ===
+                                            'mov' || imageArr[key].split('.').pop() === 'webm') {
+                                                return ` < video width = "100%"
                                 height = "100%"
                                 controls >
                                     <
                                     source src = "{{ asset('storage/customer_message_media/${imageArr[key]}') }}"
                                 type = "video/mp4" >
                                     <
-                                    /video>
-                                `
+                                    /video>`
 
-                                }
-                            }).join('')}
-                            </div>`
 
-                                if (receive_user_img != null) {
-                                    messageContainer.innerHTML += `<div class="group-chat-receiver-container" data-messageId="${data.message.id}">
+                        }
+                    }).join('')
+            } <
+            /div>`;
+
+                if (receive_user_img != null) {
+                    messageContainer.innerHTML += `<div class="group-chat-receiver-container" data-messageId="${data.message.id}">
                                                             <img src="{{ asset('/storage/post/${receive_user_img}') }}" />
                                                             <div class="group-chat-receiver-text-container">
-                                                                <span>${data.sender}</span>
+
                                                                 ${receiverMessageMedia}
                                                             </div>
                                                         </div>`;
-                                } else {
-                                    messageContainer.innerHTML += `<div class="group-chat-receiver-container" data-messageId="${data.message.id}">
+                } else {
+                    messageContainer.innerHTML += `<div class="group-chat-receiver-container" data-messageId="${data.message.id}">
                                                             <img src="{{ asset('img/customer/imgs/user_default.jpg') }}" />
                                                             <div class="group-chat-receiver-text-container">
-                                                                <span>${data.sender}</span>
+
                                                                 ${receiverMessageMedia}
                                                             </div>
                                                         </div>`;
-                                }
+                }
 
 
-                            } else {
-                                if (receive_user_img != null) {
-                                    messageContainer.innerHTML += `<div class="group-chat-receiver-container" data-messageId="${data.message.id}">
-                                                            <img src="{{ asset('/storage/post/${receive_user_img}') }}" />
-                                                            <div class="group-chat-receiver-text-container">
-                                                                <span>${data.sender}</span>
-                                                                ${receiverMessageMedia}
-                                                            </div>
-                                                        </div>`;
-                                } else {
-                                    messageContainer.innerHTML += `<div class="group-chat-receiver-container" data-messageId="${data.message.id}">
-                                                                <img src="{{ asset('img/customer/imgs/user_default.jpg') }}" />
-                                                                <div class="group-chat-receiver-text-container">
-                                                                    <span>${data.sender}</span>
-                                                                    ${receiverMessageMedia}
-                                                                </div>
-                                                            </div>`;
-                                }
-                            }
-                        }
-                    } else {
-                        if (data.message.media == null && data.message.text == null) {} else {
-                            if (data.message.media != null) {
+            }
+        }
+        }
+        else {
+            if (data.message.media == null && data.message.text == null) {} else {
+                if (data.message.media != null) {
 
-                                var imageFile = data.message.media
-                                var imageArr = JSON.parse(imageFile)
-                                var messageMediaContainer
+                    var imageFile = data.message.media
+                    var imageArr = JSON.parse(imageFile)
+                    var messageMediaContainer
 
-                                var messageMediaContainer = `<div class="group-chat-imgs-vids-container">
+                    var messageMediaContainer = `<div class="group-chat-imgs-vids-container">
                         ${
                             Object.keys(imageArr).map(key => {
 
@@ -767,24 +749,24 @@
                                 'jpg' || imageArr[key].split('.').pop() === 'jpeg' || imageArr[key].split('.')
                                 .pop() === 'gif') {
                                     return `<div class="modal fade" id="exampleModalToggle${data.message.id}${key}" aria-hidden="true"
-                                                            aria-labelledby="exampleModalToggleLabel" tabindex="-1">
-                                                            <div class="modal-dialog modal-dialog-centered">
-                                                                <div class="modal-content">
-                                                                    <div class="modal-header">
-                                                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                                            aria-label="Close"></button>
-                                                                    </div>
-                                                                    <div class="modal-body">
-                                                                        <img src="{{ asset('/storage/customer_message_media/${imageArr[key]}') }}"
-                                                                            alt="test" class="w-100">
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                    </div>
+                                                                                            aria-labelledby="exampleModalToggleLabel" tabindex="-1">
+                                                                                            <div class="modal-dialog modal-dialog-centered">
+                                                                                                <div class="modal-content">
+                                                                                                    <div class="modal-header">
+                                                                                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                                                                            aria-label="Close"></button>
+                                                                                                    </div>
+                                                                                                    <div class="modal-body">
+                                                                                                        <img src="{{ asset('/storage/customer_message_media/${imageArr[key]}') }}"
+                                                                                                            alt="test" class="w-100">
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                    </div>
 
-                                                <a data-bs-toggle="modal" href="#exampleModalToggle${data.message.id}${key}" role="button">
-                                                    <img src="{{ asset('storage/customer_message_media/${imageArr[key]}') }}" title="${key}">
-                                                </a>`
+                                                                            <a data-bs-toggle="modal" href="#exampleModalToggle${data.message.id}${key}" role="button">
+                                                                                <img src="{{ asset('storage/customer_message_media/${imageArr[key]}') }}">
+                                                                            </a>`
 
 
 
@@ -794,18 +776,20 @@
                                 'mov' || imageArr[key].split('.').pop() === 'webm') {
 
                                 return ` < video width = "100%"
-                                height = "100%"
-                                controls >
-                                    <source src = "{{ asset('storage/customer_message_media/${imageArr[key]}') }}"
-                                type = "video/mp4" >
-                                    </video>`
+                    height = "100%"
+                    controls >
+                        <
+                        source src = "{{ asset('storage/customer_message_media/${imageArr[key]}') }}"
+                    type = "video/mp4" >
+                        <
+                        /video>`
 
-                        }
-                    }).join('')
-            } </div>`
+            }
+        }).join('')
+    } < /div>`
 
-                if (sender_user_img != null) {
-                    messageContainer.innerHTML += `
+        if (sender_user_img != null) {
+            messageContainer.innerHTML += `
                                     <div class="group-chat-sender-container">
                                         <div class="message-actions-parent-container">
                                             <iconify-icon icon="mdi:dots-vertical" class="message-icon" onclick="toggleActionBox(event)">
@@ -829,8 +813,8 @@
                                             </div>
                                         <img class="nav-profile-img" src="{{ asset('/storage/post/${sender_user_img}') }}" />
                                     </div>`;
-                } else {
-                    messageContainer.innerHTML += `
+        } else {
+            messageContainer.innerHTML += `
                                     <div class="group-chat-sender-container">
                                         <div class="message-actions-parent-container">
                                             <iconify-icon icon="mdi:dots-vertical" class="message-icon" onclick="toggleActionBox(event)">
@@ -854,10 +838,9 @@
                                             </div>
                                         <img class="nav-profile-img" src="{{ asset('img/customer/imgs/user_default.jpg') }}" />
                                     </div>`;
-                }
+        }
 
-            }
-        else {
+        } else {
             if (sender_user_img != null) {
                 messageContainer.innerHTML += `<div class="group-chat-sender-container">
                     <div class="message-actions-parent-container">
@@ -913,7 +896,7 @@
         }
         })
 
-        Echo.private('chatting.' + recieveUserId + '.' + auth_user_id)
+        Echo.channel('chatting.' + recieveUserId + '.' + auth_user_id)
             .listen('.chatting-event', (data) => {
                     console.log(data);
                     if (data.message.from_user_id == recieveUserId) {
@@ -925,132 +908,39 @@
                                 var receiverMessageMedia
 
                                 receiverMessageMedia = `
-                            <div class = "group-chat-imgs-vids-container">
-                            ${Object.keys(imageArr).map(key => {
-                                if (imageArr[key].split('.').pop() === 'png' || imageArr[key]
-                                    .split('.').pop() ===
-                                    'jpg' || imageArr[key].split('.').pop() === 'jpeg' || imageArr[key].split(
-                                        '.')
-                                    .pop() === 'gif') {
-                                        return `
-                                                    <div class="modal fade" id="exampleModalToggle${data.message.id}${key}" aria-hidden="true"
-                                                        aria-labelledby="exampleModalToggleLabel" tabindex="-1">
-                                                        <div class="modal-dialog modal-dialog-centered">
-                                                            <div class="modal-content">
-                                                                <div class="modal-header">
-                                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                                        aria-label="Close"></button>
-                                                                </div>
-                                                                <div class="modal-body">
-                                                                    <img src="{{ asset('/storage/customer_message_media/${imageArr[key]}') }}"
-                                                                        alt="test" class="w-100">
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
+                                <div class = "group-chat-imgs-vids-container">
+                                    ${Object.keys(imageArr).map(key => {
+                                        if (imageArr[key].split('.').pop() === 'png' || imageArr[key]
+                                            .split('.').pop() ===
+                                            'jpg' || imageArr[key].split('.').pop() === 'jpeg' || imageArr[key].split(
+                                                '.')
+                                            .pop() === 'gif') {
 
-                                                    <a data-bs-toggle="modal" href="#exampleModalToggle${data.message.id}${key}" role="button">
-                                                        <img src="{{ asset('storage/customer_message_media/${imageArr[key]}') }}" title="${key}">
-                                                    </a>
-                                                    `
+                                                        return `<div class="modal fade" id="exampleModalToggle${data.message.id}${key}" aria-hidden="true"
+                                                                                            aria-labelledby="exampleModalToggleLabel" tabindex="-1">
+                                                                                            <div class="modal-dialog modal-dialog-centered">
+                                                                                                <div class="modal-content">
+                                                                                                    <div class="modal-header">
+                                                                                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                                                                            aria-label="Close"></button>
+                                                                                                    </div>
+                                                                                                    <div class="modal-body">
+                                                                                                        <img src="{{ asset('/storage/customer_message_media/${imageArr[key]}') }}"
+                                                                                                            alt="test" class="w-100">
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        </div>
 
-
-                                } else if (imageArr[key].split('.').pop() === 'mp4' || imageArr[key].split('.')
-                                    .pop() ===
-                                    'mov' || imageArr[key].split('.').pop() === 'webm') {
-                                        return ` <video width = "100%"
-                                height = "100%"
-                                controls >
-                                    <source src = "{{ asset('storage/customer_message_media/${imageArr[key]}') }}" type = "video/mp4" >
-                                    </video>`
-
-                                }
-                            }).join('')}</div>`
-
-                                if (receive_user_img != null) {
-                                    messageContainer.innerHTML += `<div class="group-chat-receiver-container" data-messageId="${data.message.id}">
-                                                            <img src="{{ asset('storage/post/${receive_user_img}') }}" />
-                                                            <div class="group-chat-receiver-text-container">
-                                                                <span>${data.sender}</span>
-                                                                ${receiverMessageMedia}
-                                                            </div>
-                                                        </div>`;
-                                } else {
-                                    messageContainer.innerHTML += `<div class="group-chat-receiver-container" data-messageId="${data.message.id}">
-                                                            <img src="{{ asset('img/customer/imgs/user_default.jpg') }}" />
-                                                            <div class="group-chat-receiver-text-container">
-                                                                <span>${data.sender}</span>
-                                                                ${receiverMessageMedia}
-                                                            </div>
-                                                        </div>`;
-                                }
-
-                            } else {
-
-                                if (receive_user_img != null) {
-                                    messageContainer.innerHTML += `<div class="group-chat-receiver-container" data-messageId="${data.message.id}">
-                                    <img src="{{ asset('/storage/post/${receive_user_img}') }}" />
-                                    <div class="group-chat-receiver-text-container">
-                                        <span>${data.sender}</span>
-                                        <p>${data.message.text}</p>
-                                    </div>
-                                </div>`;
-                                } else {
-                                    messageContainer.innerHTML += `<div class="group-chat-receiver-container" data-messageId="${data.message.id}">
-                                        <img src="{{ asset('img/customer/imgs/user_default.jpg') }}" />
-                                    <div class="group-chat-receiver-text-container">
-                                        <span>${data.sender}</span>
-                                        <p>${data.message.text}</p>
-                                    </div>
-                                </div>`;
-                                }
-
-                            }
-                        }
-                    } else {
-                        if (data.message.media == null && data.message.text == null) {} else {
-                            if (data.message.media != null) {
-
-                                var imageFile = data.message.media
-                                var imageArr = JSON.parse(imageFile)
-                                var messageMediaContainer
-
-                                var messageMediaContainer = `<div class="group-chat-imgs-vids-container">
-                        ${
-                            Object.keys(imageArr).map(key => {
-
-                            if (imageArr[key].split('.').pop() === 'png' || imageArr[key]
-                                .split('.').pop() ===
-                                'jpg' || imageArr[key].split('.').pop() === 'jpeg' || imageArr[key].split('.')
-                                .pop() === 'gif') {
-                                    return `<div class="modal fade" id="exampleModalToggle${data.message.id}${key}" aria-hidden="true"
-                                                            aria-labelledby="exampleModalToggleLabel" tabindex="-1">
-                                                            <div class="modal-dialog modal-dialog-centered">
-                                                                <div class="modal-content">
-                                                                    <div class="modal-header">
-                                                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                                            aria-label="Close"></button>
-                                                                    </div>
-                                                                    <div class="modal-body">
-                                                                        <img src="{{ asset('/storage/customer_message_media/${imageArr[key]}') }}"
-                                                                            alt="test" class="w-100">
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                    </div>
-
-                                                <a data-bs-toggle="modal" href="#exampleModalToggle${data.message.id}${key}" role="button">
-                                                    <img src="{{ asset('storage/customer_message_media/${imageArr[key]}') }}" title="${key}">
-                                                </a>`
+                                                                                        <a data-bs-toggle="modal" href="#exampleModalToggle${data.message.id}${key}" role="button">
+                                                                                            <img src="{{ asset('storage/customer_message_media/${imageArr[key]}') }}">
+                                                                                        </a>`;
 
 
-
-
-                            } else if (imageArr[key].split('.').pop() === 'mp4' || imageArr[key].split('.')
-                                .pop() ===
-                                'mov' || imageArr[key].split('.').pop() === 'webm') {
-
-                                return ` < video width = "100%"
+                                        } else if (imageArr[key].split('.').pop() === 'mp4' || imageArr[key].split('.')
+                                            .pop() ===
+                                            'mov' || imageArr[key].split('.').pop() === 'webm') {
+                                                    return ` < video width = "100%"
                                 height = "100%"
                                 controls >
                                     <
@@ -1061,113 +951,140 @@
 
                         }
                     }).join('')
-            } < /div>`
+            } < /div>`;
 
-                if (sender_user_img != null) {
-                    messageContainer.innerHTML += `
-                                    <div class="group-chat-sender-container">
-                                        <div class="message-actions-parent-container">
-                                <iconify-icon icon="mdi:dots-vertical" class="message-icon" onclick="toggleActionBox(event)">
+                if (receive_user_img != null) {
+                    messageContainer.innerHTML += `<div class="group-chat-receiver-container" data-messageId="${data.message.id}">
+                                                                            <img src="{{ asset('storage/post/${receive_user_img}') }}" />
+                                                                            <div class="group-chat-receiver-text-container">
 
-                                </iconify-icon>
-                                <div class="message-actions-box">
-                                    <p onclick="message_hide(event,${data.message.id})">
-                                        <iconify-icon icon="mdi:hide" class="message-action-icon"></iconify-icon>
-                                        Delete
-                                    </p>
-                                    <p onclick="message_delete(event,${data.message.id})">
-                                        <iconify-icon icon="material-symbols:cancel-schedule-send-rounded" class="message-action-icon"></iconify-icon>
-                                        Unsend
-                                    </p>
-                                </div>
-
-                            </div>
-                                        <div class="group-chat-sender-text-container">
-                                            <span>${data.sender}</span>
-                                            ${messageMediaContainer}
-                                        </div>
-                                        <img class="nav-profile-img" src="{{ asset('storage/post/${sender_user_img}') }}" />
-                                    </div>`;
+                                                                                ${receiverMessageMedia}
+                                                                            </div>
+                                                                        </div>`;
                 } else {
-                    messageContainer.innerHTML += `
-                                    <div class="group-chat-sender-container">
-                                        <div class="message-actions-parent-container">
-                                <iconify-icon icon="mdi:dots-vertical" class="message-icon" onclick="toggleActionBox(event)">
+                    messageContainer.innerHTML += `<div class="group-chat-receiver-container" data-messageId="${data.message.id}">
+                                                                            <img src="{{ asset('img/customer/imgs/user_default.jpg') }}" />
+                                                                            <div class="group-chat-receiver-text-container">
 
-                                </iconify-icon>
-                                <div class="message-actions-box">
-                                    <p onclick="message_hide(event,${data.message.id})">
-                                        <iconify-icon icon="mdi:hide" class="message-action-icon"></iconify-icon>
-                                        Delete
-                                    </p>
-                                    <p onclick="message_delete(event,${data.message.id})">
-                                        <iconify-icon icon="material-symbols:cancel-schedule-send-rounded" class="message-action-icon"></iconify-icon>
-                                        Unsend
-                                    </p>
-                                </div>
-
-                            </div>
-                                        <div class="group-chat-sender-text-container">
-                                            <span>${data.sender}</span>
-                                            ${messageMediaContainer}
-                                        </div>
-                                        <img class="nav-profile-img" src="{{ asset('img/customer/imgs/user_default.jpg') }}" />
-                                    </div>`;
+                                                                                ${receiverMessageMedia}
+                                                                            </div>
+                                                                        </div>`;
                 }
 
             }
         else {
-            if (sender_user_img != null) {
-                messageContainer.innerHTML += `<div class="group-chat-sender-container">
-                    <div class="message-actions-parent-container">
-                                <iconify-icon icon="mdi:dots-vertical" class="message-icon" onclick="toggleActionBox(event)">
 
-                                </iconify-icon>
-                                <div class="message-actions-box">
-                                    <p onclick="message_hide(event,${data.message.id})">
-                                        <iconify-icon icon="mdi:hide" class="message-action-icon"></iconify-icon>
-                                        Delete
-                                    </p>
-                                    <p onclick="message_delete(event,${data.message.id})">
-                                        <iconify-icon icon="material-symbols:cancel-schedule-send-rounded" class="message-action-icon"></iconify-icon>
-                                        Unsend
-                                    </p>
-                                </div>
+            if (receive_user_img != null) {
+                messageContainer.innerHTML += `<div class="group-chat-receiver-container" data-messageId="${data.message.id}">
+                                                        <img src="{{ asset('/storage/post/${receive_user_img}') }}" />
+                                                        <div class="group-chat-receiver-text-container">
 
-                            </div>
-                                        <div class="group-chat-sender-text-container">
-                                            <span>${data.sender}</span>
-                                            <p>${data.message.text}</p>
-                                        </div>
-                                        <img class="nav-profile-img" src="{{ asset('storage/post/${sender_user_img}') }}" />
-                                    </div>`;
+                                                            <p>${data.message.text}</p>
+                                                        </div>
+                                                    </div>`;
             } else {
-                messageContainer.innerHTML += `<div class="group-chat-sender-container">
-                    <div class="message-actions-parent-container">
-                                <iconify-icon icon="mdi:dots-vertical" class="message-icon" onclick="toggleActionBox(event)">
+                messageContainer.innerHTML += `<div class="group-chat-receiver-container" data-messageId="${data.message.id}">
+                                                            <img src="{{ asset('img/customer/imgs/user_default.jpg') }}" />
+                                                        <div class="group-chat-receiver-text-container">
 
-                                </iconify-icon>
-                                <div class="message-actions-box">
-                                    <p onclick="message_hide(event,${data.message.id})">
-                                        <iconify-icon icon="mdi:hide" class="message-action-icon"></iconify-icon>
-                                        Delete
-                                    </p>
-                                    <p onclick="message_delete(event,${data.message.id})">
-                                        <iconify-icon icon="material-symbols:cancel-schedule-send-rounded" class="message-action-icon"></iconify-icon>
-                                        Unsend
-                                    </p>
-                                </div>
-
-                            </div>
-                                        <div class="group-chat-sender-text-container">
-                                            <span>${data.sender}</span>
-                                            <p>${data.message.text}</p>
-                                        </div>
-                                        <img class="nav-profile-img" src="{{ asset('img/customer/imgs/user_default.jpg') }}" />
-                                    </div>`;
+                                                            <p>${data.message.text}</p>
+                                                        </div>
+                                                    </div>`;
             }
 
         }
+        }
+        } else {
+            if (data.message.media == null && data.message.text == null) {} else {
+                if (data.message.media != null) {
+
+                    var imageFile = data.message.media
+                    var imageArr = JSON.parse(imageFile)
+                    var messageMediaContainer
+
+                    var messageMediaContainer = `<div class="group-chat-imgs-vids-container">
+                                    ${
+                                        Object.keys(imageArr).map(key => {
+
+                                        if (imageArr[key].split('.').pop() === 'png' || imageArr[key]
+                                            .split('.').pop() ===
+                                            'jpg' || imageArr[key].split('.').pop() === 'jpeg' || imageArr[key].split('.')
+                                            .pop() === 'gif') {
+                                                return `<div class="modal fade" id="exampleModalToggle${data.message.id}${key}" aria-hidden="true"
+                                                                                                    aria-labelledby="exampleModalToggleLabel" tabindex="-1">
+                                                                                                    <div class="modal-dialog modal-dialog-centered">
+                                                                                                        <div class="modal-content">
+                                                                                                            <div class="modal-header">
+                                                                                                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                                                                                    aria-label="Close"></button>
+                                                                                                            </div>
+                                                                                                            <div class="modal-body">
+                                                                                                                <img src="{{ asset('/storage/customer_message_media/${imageArr[key]}') }}"
+                                                                                                                    alt="test" class="w-100">
+                                                                                                            </div>
+                                                                                                        </div>
+                                                                                                    </div>
+                                                                                                </div>
+
+                                                                                        <a data-bs-toggle="modal" href="#exampleModalToggle${data.message.id}${key}" role="button">
+                                                                                            <img src="{{ asset('storage/customer_message_media/${imageArr[key]}') }}">
+                                                                                        </a>`
+
+
+                                            } else if (imageArr[key].split('.').pop() === 'mp4' || imageArr[key].split('.')
+                                                .pop() ===
+                                                'mov' || imageArr[key].split('.').pop() === 'webm') {
+                                                    return ` < video width = "100%"
+                    height = "100%"
+                    controls >
+                        <
+                        source src = "{{ asset('storage/customer_message_media/${imageArr[key]}') }}"
+                    type = "video/mp4" >
+                        <
+                        /video>`
+
+            }
+        }).join('')
+    } < /div>`;
+
+        if (receive_user_img != null) {
+            messageContainer.innerHTML += `<div class="group-chat-receiver-container" data-messageId="${data.message.id}">
+                                                                                    <img src="{{ asset('storage/post/${receive_user_img}') }}" />
+                                                                                    <div class="group-chat-receiver-text-container">
+
+                                                                                        ${receiverMessageMedia}
+                                                                                    </div>
+                                                                                </div>`;
+        } else {
+            messageContainer.innerHTML += `<div class="group-chat-receiver-container" data-messageId="${data.message.id}">
+                                                                                    <img src="{{ asset('img/customer/imgs/user_default.jpg') }}" />
+                                                                                    <div class="group-chat-receiver-text-container">
+
+                                                                                        ${receiverMessageMedia}
+                                                                                    </div>
+                                                                                </div>`;
+        }
+        } else {
+            if (receive_user_img != null) {
+                messageContainer.innerHTML += `<div class="group-chat-receiver-container" data-messageId="${data.message.id}">
+                                                            <img src="{{ asset('/storage/post/${receive_user_img}') }}" />
+                                                            <div class="group-chat-receiver-text-container">
+
+                                                                <p>${data.message.text}</p>
+                                                            </div>
+                                                        </div>`;
+            } else {
+                messageContainer.innerHTML += `<div class="group-chat-receiver-container" data-messageId="${data.message.id}">
+                                                                <img src="{{ asset('img/customer/imgs/user_default.jpg') }}" />
+                                                            <div class="group-chat-receiver-text-container">
+
+                                                                <p>${data.message.text}</p>
+                                                            </div>
+                                                        </div>`;
+            }
+
+        }
+
         }
         }
 
@@ -1181,15 +1098,15 @@
             $(event.target).next('.message-actions-box').toggle()
         }
 
-        Echo.private('message-delete.'+ recieveUserId + '.' + auth_user_id)
-        .listen('.message-delete-event', (data)=>{
-            console.log(data);
-            $.each($(".group-chat-receiver-container"), function(){
-                if($(this).data('messageid') === data.id){
-                    $(this).remove()
-                }
+        Echo.channel('message-delete.' + recieveUserId + '.' + auth_user_id)
+            .listen('.message-delete-event', (data) => {
+                console.log(data);
+                $.each($(".group-chat-receiver-container"), function() {
+                    if ($(this).data('messageid') === data.id) {
+                        $(this).remove()
+                    }
+                })
             })
-        })
 
         // message delete and hide end
     </script>
@@ -1222,52 +1139,19 @@
         let friends = @json($friends);
 
 
-        // ////////////////////////
-        Echo.join('agora-videocall')
-            .here((users) => {
-                console.log('onlineuser', users);
-                onlineUsers = users;
-                console.log(onlineUsers, 'onlineuser');
-
-                users.forEach((user, index) => {
-                    friends.forEach(friend => {
-                        if (user.id == friend.id) {
-                            let element = document.querySelector('.active-now')
-                            element.innerText = 'Active Now'
-                        }
-                    })
-                })
-
-            })
-            .joining((user) => {
-                const joiningUserIndex = onlineUsers.findIndex(
-                    (data) => data.id === user.id
-                )
-                if (joiningUserIndex < 0) {
-                    onlineUsers.push(user);
-                }
-            })
-            .leaving((user) => {
-                const leavingUserIndex = onlineUsers.findIndex(
-                    (data) => data.id === user.id
-                );
-                onlineUsers.splice(leavingUserIndex, 1);
-                console.log('leeeving');
-            })
+        Echo.channel('agora-videocall')
             .listen("MakeAgoraCall", ({
                 data
             }) => {
                 console.log('listening-------------------------', data);
                 if (parseInt(data.userToCall) === parseInt(authuserId)) {
-                    const callerIndex = onlineUsers.findIndex(
-                        (user) => user.id === data.from
-                    )
-                    console.log('caller index', callerIndex);
-                    incomingCaller = onlineUsers[callerIndex]["name"]
+
+                    // console.log('caller index', callerIndex);
+                    // incomingCaller = onlineUsers[callerIndex]["name"]
                     incomingCall = true
 
 
-                    console.log('incomingcaller', incomingCaller);
+                    // console.log('incomingcaller', incomingCaller);
 
                     console.log('llllllrweer', incomingCall);
 
@@ -1279,7 +1163,7 @@
 
                                 <div class="card shadow p-4 col-12">
                                     <p>
-                                        Video Call From <span>${incomingCaller}</span>
+                                        Video Call From <span>Hello Test</span>
                                     </p>
                                     <div class="d-flex justify-content-center gap-3">
                                         <button type="button" class="btn btn-sm btn-danger"  id="" onclick="declineCall()">
@@ -1301,20 +1185,12 @@
             }) => {
                 console.log('listening-------------------------', data);
                 if (parseInt(data.userToCall) === parseInt(authuserId)) {
-                    const callerIndex = onlineUsers.findIndex(
-                        (user) => user.id === data.from
-                    )
-                    console.log('caller index', callerIndex);
-                    incomingCaller = onlineUsers[callerIndex]["name"]
+
+                    // console.log('caller index', callerIndex);
+                    // incomingCaller = onlineUsers[callerIndex]["name"]
                     incomingCall = true
                     incomingAudioCall = true
 
-
-                    console.log('incomingcaller', incomingCaller);
-
-                    console.log('llllllrweer', incomingCall);
-
-                    console.log('incoming audio calll checkkkkk', incomingAudioCall);
                     if (incomingCall) {
                         $(".chat-backdrop").show();
                         if (incomingAudioCall) {
@@ -1322,7 +1198,7 @@
 
                                 <div class="card shadow p-4 col-12">
                                     <p>
-                                        Audio Call From <span>${incomingCaller}</span>
+                                        Audio Call From <span>Hello Test</span>
                                     </p>
                                     <div class="d-flex justify-content-center gap-3">
                                         <button type="button" class="btn btn-sm btn-danger"  id="" onclick="declineCall()">
@@ -1343,7 +1219,7 @@
                 }
             })
 
-        // /////////////////////////
+
 
         async function placeCall(id, call_name) {
             try {
@@ -1351,7 +1227,7 @@
                 const tokenRes = await generateToken(channelName)
 
                 console.log(tokenRes.data);
-                console.log(tokenRes , "call Token")
+                console.log(tokenRes, "call Token")
                 axios.post("/agora/call-user", {
                     user_to_call: id,
                     username: authuser,
@@ -1429,7 +1305,7 @@
             callPlaced = true;
             videoCallEvent = true;
             incomingCallContainer.innerHTML = ""
-            console.log(tokenRes , "accept")
+            console.log(tokenRes, "accept")
         }
 
         function declineCall() {

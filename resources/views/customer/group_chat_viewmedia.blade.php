@@ -4,7 +4,7 @@
 
         <div class="group-chat-header">
             <a href="javascript:history.back()" class="group-chat-header-name-container">
-                <img src="../imgs/avatar.png" />
+                <img src="{{asset('img/customer/imgs/group_default.png')}}" />
                 <div class="group-chat-header-name-text-container">
                     <p>{{ $group->group_name }}</p>
                 </div>

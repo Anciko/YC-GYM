@@ -37,9 +37,6 @@
             <div class="social-media-allchats-header">
                 <p>Messages</p>
                 <div class="social-media-allchats-header-btn-container">
-                    <button class="social-media-allchats-header-search-btn customer-primary-btn">
-                        <iconify-icon icon="akar-icons:search" class="social-media-allchats-header-search-icon"></iconify-icon>
-                    </button>
                     <button type="button" class="social-media-allchats-header-add-btn customer-primary-btn" data-bs-toggle="modal" data-bs-target="#createGroupModal">
                         <iconify-icon icon="akar-icons:circle-plus" class="social-media-allchats-header-plus-icon"></iconify-icon>
                         <p>Group</p>
@@ -48,7 +45,7 @@
             </div>
 
             <div class="social-media-allchats-messages-container">
-                    @forelse ($messages as $list)
+                    {{-- @forelse ($messages as $list)
                     <div class="social-media-allchats-message-row-container">
                         <a href="{{route('message.chat',$list->id)}}" class="social-media-allchats-message-row">
                             <div class="social-media-allchats-message-img">
@@ -80,14 +77,11 @@
                             </div>
 
                         </div>
-
-
-                        {{-- <iconify-icon icon="bi:three-dots-vertical" class="social-media-seeallmessage-header-icon"></iconify-icon> --}}
                     </div>
 
                     @empty
                         <p>No Message</p>
-                    @endforelse
+                    @endforelse --}}
     </div>
 </div>
 
@@ -96,13 +90,11 @@
 @push('scripts')
 <script>
     $(document).ready(function(){
-
-        $(".social-media-allchats-actions-toggle").click(function(){
+        $(document).on('click', '.social-media-allchats-actions-toggle', function(){
             $(".social-media-allchats-actions-box").not($(this).next(".social-media-allchats-actions-box")).hide()
             $(this).next('.social-media-allchats-actions-box').toggle()
         })
-
-        $('.converstion_delete').click(function(e){
+            $(document).on('click', '.converstion_delete', function(e){
             var from_id=$(this).data('id');
             var to_id=$(this).attr('id');
 
@@ -132,11 +124,124 @@
                                             timer: 5000,
                                             icon: 'success',
                                         })
+
+                                        messages()
                                 }
                             })
                     })
 
         })
+
+
+                var user_id = {{auth()->user()->id}};
+                console.log(user_id);
+                var pusher = new Pusher('{{env("MIX_PUSHER_APP_KEY")}}', {
+                cluster: '{{env("PUSHER_APP_CLUSTER")}}',
+                encrypted: true
+                });
+
+                var channel = pusher.subscribe('all_message.'+user_id);
+                channel.bind('all', function(data) {
+                console.log(data , "ted");
+                    messages()
+                });
+
+        messages()
+        //
+        function messages() {
+                var latest_messages = "{{ route('socialmedia.latest_messages') }}";
+                $.get(latest_messages, {
+                        _token: $('meta[name="csrf-token"]').attr('content'),
+                    },
+                    function(data) {
+                        table_post_row(data);
+                    });
+            }
+            // table row with ajax
+            function table_post_row(res) {
+
+                let htmlView = '';
+                if (res.data.length <= 0) {
+                    htmlView += `
+                        No data found.
+                        `;
+                }
+                for (let i = 0; i < res.data.length; i++) {
+                    id = res.data[i].id;
+                    var url = "{{ route('message.chat', ':id') }}";
+                    url = url.replace(':id', id);
+                    var group_url = "{{ route('socialmedia.group', ':id') }}";
+                    group_url = group_url.replace(':id', id);
+                    if(res.data[i].is_group == 0){
+                        htmlView += `
+                            <div class="social-media-allchats-message-row-container">
+                        <a href=` + url + ` class="social-media-allchats-message-row">
+                            <div class="social-media-allchats-message-img">
+                            <img  class="nav-profile-img" src="{{asset('img/customer/imgs/user_default.jpg')}}"/>
+                                <p>` + res.data[i].name + `</p>
+                            </div>
+
+                            <p>` + res.data[i].text + `</p>
+
+                            <span>` + res.data[i].date + `</span>
+                        </a>
+
+                        <div class="social-media-allchats-actions-container">
+                            <iconify-icon icon="mdi:dots-vertical" class="social-media-allchats-actions-toggle"></iconify-icon>
+                            <div class="social-media-allchats-actions-box">
+                                <div  data-id=` + res.data[i].from_id + ` class="converstion_delete"
+                                id= `+ res.data[i].to_id + `>
+                                    <iconify-icon icon="tabler:trash" class="social-media-allchats-action-icon"></iconify-icon>
+                                    <span>Delete</span>
+                                </div>
+                                <a>
+                                    <iconify-icon icon="material-symbols:person" class="social-media-allchats-action-icon"></iconify-icon>
+                                    Profile
+                                </a>
+                            </div>
+
+                        </div>
+                    </div>
+
+                            `
+                    }
+                    else{
+                    htmlView += `
+                            <div class="social-media-allchats-message-row-container">
+                                <a href=` + group_url + ` class="social-media-allchats-message-row">
+                                    <div class="social-media-allchats-message-img">
+                                    <img  class="nav-profile-img" src="{{asset('img/customer/imgs/user_default.jpg')}}"/>
+                                        <p>` + res.data[i].name + `</p>
+                                    </div>
+
+                                    <p>` + res.data[i].text + `</p>
+
+                                    <span>` + res.data[i].date + `</span>
+                                </a>
+
+                        <div class="social-media-allchats-actions-container">
+                            <iconify-icon icon="mdi:dots-vertical" class="social-media-allchats-actions-toggle"></iconify-icon>
+                            <div class="social-media-allchats-actions-box">
+                                <div  data-id=` + res.data[i].from_id + ` class="converstion_delete"
+                                id= `+ res.data[i].to_id + `>
+                                    <iconify-icon icon="tabler:trash" class="social-media-allchats-action-icon"></iconify-icon>
+                                    <span>Leave</span>
+                                </div>
+                                <a>
+                                    <iconify-icon icon="material-symbols:person" class="social-media-allchats-action-icon"></iconify-icon>
+                                    Detail
+                                </a>
+                            </div>
+
+                        </div>
+                            </div>
+                            `
+                    }
+                }
+                $('.social-media-allchats-messages-container').html(htmlView);
+            }
+
+
         $('.social-media-seeallmessage-header-icon').click(function(){
             $(this).next().toggle()
         })
