@@ -867,7 +867,7 @@
     display: flex;
     flex: 1;
     align-items: center;
-    justify-content: space-between;
+    /* justify-content: space-evenly; */
     border-top-left-radius: 5px;
     border-bottom-left-radius: 5px;
     gap: 10px 0;
@@ -901,6 +901,11 @@
     margin-bottom: 0;
     font-size: 14px;
     color: var(--customer-text-color);
+    width: 100px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    margin-right: 50px;
 }
 
 .social-media-allchats-message-img img{
@@ -911,13 +916,14 @@
 }
 
 .social-media-allchats-message-row > p{
-    max-width: 200px;
+    width: 200px;
     white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;
     font-size: 14px;
     margin-bottom: 0;
     color: var(--customer-text-color);
+    margin-right: 50px;
 }
 
 .social-media-allchats-message-row > span{
@@ -2104,6 +2110,7 @@ ul{
 
     .social-media-allchats-message-row > p{
         max-width: 200px;
+        margin-right: 0;
     }
 
     .group-chat-img-preview-container{
