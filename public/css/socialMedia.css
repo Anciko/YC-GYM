@@ -820,6 +820,7 @@
 
 .social-media-allchats-header-add-btn p{
     margin-bottom: 0;
+    font-size: 14px;
 }
 
 .group-chat-add-btn{
@@ -827,6 +828,7 @@
     margin-right: 5px;
     margin-top: 10px;
     margin-bottom: 10px;
+    padding: 8px 5px;
 }
 
 .create-group-name, .create-group-addfris{
@@ -868,7 +870,7 @@
     display: flex;
     flex: 1;
     align-items: center;
-    justify-content: space-between;
+    /* justify-content: space-evenly; */
     border-top-left-radius: 5px;
     border-bottom-left-radius: 5px;
     gap: 10px 0;
@@ -902,6 +904,11 @@
     margin-bottom: 0;
     font-size: 14px;
     color: var(--customer-text-color);
+    width: 100px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    margin-right: 50px;
 }
 
 .social-media-allchats-message-img img{
@@ -912,13 +919,14 @@
 }
 
 .social-media-allchats-message-row > p{
-    max-width: 200px;
+    width: 200px;
     white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;
     font-size: 14px;
     margin-bottom: 0;
     color: var(--customer-text-color);
+    margin-right: 50px;
 }
 
 .social-media-allchats-message-row > span{
@@ -1084,6 +1092,10 @@
     gap: 0 5px;
 }
 
+.social-media-view-memers-row-name a{
+    text-decoration: none;
+}
+
 .social-media-view-memers-row-name img{
     width: 35px;
     height: 35px;
@@ -1101,6 +1113,16 @@
     display: flex;
     align-items: center;
     gap: 10px;
+}
+
+.social-media-view-members-row-btns .customer-red-btn{
+    padding: 8px 15px;
+    font-size: 14px;
+}
+
+.social-media-view-members-row-btns > p{
+    margin-bottom: 0;
+    margin-right: 10px;
 }
 
 .social-media-view-memers-row .customer-secondary-btn{
@@ -1888,6 +1910,12 @@ ul{
     background-color: var(--customer-primary-color);
 }
 
+.social-media-view-members-header-btns-container{
+    display: flex;
+    align-items: center;
+    gap: 0 10px;
+}
+
 @media screen and (max-width:1000px){
 
     .social-media-left-container-trigger{
@@ -2105,6 +2133,7 @@ ul{
 
     .social-media-allchats-message-row > p{
         max-width: 200px;
+        margin-right: 0;
     }
 
     .group-chat-img-preview-container{
