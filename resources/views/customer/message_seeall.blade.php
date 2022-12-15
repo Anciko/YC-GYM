@@ -124,11 +124,27 @@
                                             timer: 5000,
                                             icon: 'success',
                                         })
+
+                                        messages()
                                 }
                             })
                     })
 
         })
+
+
+                var user_id = {{auth()->user()->id}};
+                console.log(user_id);
+                var pusher = new Pusher('{{env("MIX_PUSHER_APP_KEY")}}', {
+                cluster: '{{env("PUSHER_APP_CLUSTER")}}',
+                encrypted: true
+                });
+
+                var channel = pusher.subscribe('all_message.'+user_id);
+                channel.bind('all', function(data) {
+                console.log(data , "ted");
+                    messages()
+                });
 
         messages()
         //
@@ -154,7 +170,10 @@
                     id = res.data[i].id;
                     var url = "{{ route('message.chat', ':id') }}";
                     url = url.replace(':id', id);
-                    htmlView += `
+                    var group_url = "{{ route('socialmedia.group', ':id') }}";
+                    group_url = group_url.replace(':id', id);
+                    if(res.data[i].is_group == 0){
+                        htmlView += `
                             <div class="social-media-allchats-message-row-container">
                         <a href=` + url + ` class="social-media-allchats-message-row">
                             <div class="social-media-allchats-message-img">
@@ -164,7 +183,7 @@
 
                             <p>` + res.data[i].text + `</p>
 
-                            <span>` + res.data[i].created_at + `</span>
+                            <span>` + res.data[i].date + `</span>
                         </a>
 
                         <div class="social-media-allchats-actions-container">
@@ -185,6 +204,23 @@
                     </div>
 
                             `
+                    }
+                    else{
+                    htmlView += `
+                            <div class="social-media-allchats-message-row-container">
+                                <a href=` + group_url + ` class="social-media-allchats-message-row">
+                                    <div class="social-media-allchats-message-img">
+                                    <img  class="nav-profile-img" src="{{asset('img/customer/imgs/user_default.jpg')}}"/>
+                                        <p>` + res.data[i].name + `</p>
+                                    </div>
+
+                                    <p>` + res.data[i].text + `</p>
+
+                                    <span>` + res.data[i].date + `</span>
+                                </a>
+                            </div>
+                            `
+                    }
                 }
                 $('.social-media-allchats-messages-container').html(htmlView);
             }
