@@ -345,6 +345,9 @@
                 var id =  data[i].id;
                 var url = "{{ route('message.chat', ':id') }}";
                 url = url.replace(':id', id);
+                var group_url = "{{ route('socialmedia.group', ':id') }}";
+                group_url = group_url.replace(':id', id);
+                if(latest_messages[i].is_group == 0){
                 htmlView += `
                                     <a href=`+url+` class="social-media-left-messages-row">
                                             <img  class="nav-profile-img" src="{{asset('img/customer/imgs/user_default.jpg')}}"/>
@@ -354,35 +357,22 @@
                                         </p>
                                     </a>
                             `
+                }
+                else{
+                    htmlView += `
+                                    <a href=`+group_url+` class="social-media-left-messages-row">
+                                            <img  class="nav-profile-img" src="{{asset('img/customer/imgs/user_default.jpg')}}"/>
+                                        <p>
+                                            ` + data[i].name + `<br>
+                                            <span>` + data[i].text + ` </span>
+                                        </p>
+                                    </a>
+                            `
+                }
             }
             $('.social-media-left-messages-rows-container').html(htmlView);
                 });
 
-
-            var channel = pusher.subscribe('group_message.'+user_id);
-                channel.bind('group_chat', function(data) {
-                console.log(data , "gp");
-                // group_messages()
-            let htmlView2 = '';
-                var latest_messages=data;
-                console.log(latest_messages)
-
-                for (let i = 0; i < latest_messages.length; i++) {
-                var id =  latest_messages[i].id;
-                var url = "{{ route('socialmedia.group', ':id') }}";
-                url = url.replace(':id', id);
-                htmlView2 += `
-                                    <a href=`+url+` class="social-media-left-gpmessages-row">
-                                            <img src="{{asset('img/customer/imgs/group_default.png')}}" class="w-25">
-                                            <p>
-                                                ` + latest_messages[i].group_name + `<br>
-                                                <span>` + latest_messages[i].text + `</span>
-                                            </p>
-                                        </a>
-                            `
-            }
-            $('.social-media-left-gpmessages-rows-container').html(htmlView2);
-        });
                     table()
             function table(){
                 // alert("send");
