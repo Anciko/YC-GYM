@@ -685,7 +685,7 @@
 
                     }
                 }).join('')
-        } < /div>`;
+        } </div>`;
         if (auth_user_img == null) {
             messageContainer.innerHTML += `
                                     <div class="group-chat-sender-container">
@@ -823,13 +823,15 @@
 
         }
     }).join('')
-    } </div>`}
-
-                            messageContainer.innerHTML += `<div class ="group-chat-receiver-container">
+    } </div>`
+    messageContainer.innerHTML += `<div class ="group-chat-receiver-container">
         <img src = "{{ asset('/storage/post/${data.senderImg}') }}" / >
         <div class = "group-chat-receiver-text-container" >
         <span>${data.senderName}</span>
     ${receiverMessageMedia}</div> </div>`;
+    }
+
+
 
         }
 
