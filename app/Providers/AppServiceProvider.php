@@ -145,31 +145,31 @@ class AppServiceProvider extends ServiceProvider
 
     view()->composer('*',function($message){
         if (Auth::check()) {
-            $user_id = auth()->user()->id;
+            $user_id=auth()->user()->id;
 
-            $messages = DB::select("SELECT users.id as id,users.name,profiles.profile_image,chats.text,chats.created_at as date
+            $messages = DB::select("SELECT users.id as id,users.name,profiles.profile_image,chats.text,chats.created_at as date, chats.from_user_id as from_id,chats.to_user_id as to_id
             from
                 chats
-              join
+            join
                 (select user, max(created_at) m
                     from
-                       (
-                         (select id, to_user_id user, created_at
-                           from chats
-                           where from_user_id= $user_id  and delete_status <> 2 and deleted_by != $user_id)
-                       union
-                         (select id, from_user_id user, created_at
-                           from chats
-                           where to_user_id= $user_id and delete_status <> 2 and deleted_by != $user_id)
+                    (
+                        (select id, to_user_id user, created_at
+                        from chats
+                        where from_user_id= $user_id  and delete_status <> 2 and deleted_by != $user_id)
+                    union
+                        (select id, from_user_id user, created_at
+                        from chats
+                        where to_user_id= $user_id and delete_status <> 2 and deleted_by != $user_id)
                         ) t1
-                   group by user) t2
+                group by user) t2
                     on ((from_user_id= $user_id and to_user_id=user) or
                         (from_user_id=user and to_user_id= $user_id)) and
                         (created_at = m)
                     left join users on users.id = user
                     left join profiles on users.profile_id = profiles.id
                     order by chats.created_at desc");
-            // dd($messages);
+// dd($messages);
 
 
             $groups = DB::table('chat_group_members')
@@ -190,6 +190,7 @@ class AppServiceProvider extends ServiceProvider
                     'chat_groups.group_name as name',
                     'profiles.profile_image',
                     'chat_group_messages.text',
+                    'chat_group_messages.created_at',
                     DB::raw('DATE_FORMAT(chat_group_messages.created_at, "%Y-%m-%d %H:%i:%s") as date')
                 )
                 ->leftJoin('chat_groups', 'chat_groups.id', 'chat_group_messages.group_id')
@@ -215,7 +216,9 @@ class AppServiceProvider extends ServiceProvider
                         $merged[$key]['owner_id'] = $owner->group_owner_id;
                 }
             }
-            $merged = array_slice($merged, -6);
+            $arr = array_reverse($merged);
+            $merged = array_slice($arr, -6);
+            $merged = array_reverse($merged);
 
             $message->with('latest_messages', $merged);
         }

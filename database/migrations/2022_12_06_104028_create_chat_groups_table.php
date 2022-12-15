@@ -16,7 +16,7 @@ class CreateChatGroupsTable extends Migration
         Schema::create('chat_groups', function (Blueprint $table) {
             $table->id();
             $table->string('group_name');
-            $table->integer('member_id');
+            $table->integer('group_owner_id');
             $table->timestamps();
         });
     }
