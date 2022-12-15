@@ -18,7 +18,7 @@
                                 <p>Add Your Friends</p>
                                 <select class="js-example-basic-multiple" name="members[]" multiple="multiple">
 
-                                    @if ($members == null || count($members) == 0 )
+                                    @if ($members == null || count($members) == 0)
                                         @foreach ($friends as $friend)
                                             <option value="{{ $friend->id }}">{{ $friend->name }}</option>
                                         @endforeach
@@ -27,15 +27,12 @@
                                             @foreach ($members as $item)
                                                 @if ($item->member_id == $friend->id)
                                                 @elseif(count($members) == count($friends))
-
                                                 @else
                                                     <option value="{{ $friend->id }}">{{ $friend->name }}</option>
                                                 @endif
                                             @endforeach
                                         @endforeach
                                     @endif
-
-
 
                                 </select>
                             </div>
@@ -52,7 +49,7 @@
         <div class="group-chat-header">
             <div class="group-chat-header-name-container">
                 <a href="{{ route('socialmedia.group', $group->id) }}" class="group-chat-header-name-container">
-                    <img src="{{asset('img/customer/imgs/group_default.png')}}" />
+                    <img src="{{ asset('img/customer/imgs/group_default.png') }}" />
                     <div class="group-chat-header-name-text-container">
                         <p>{{ $group->group_name }}</p>
                     </div>
@@ -62,20 +59,37 @@
                 <iconify-icon icon="ant-design:phone-outlined" class="chat-header-phone-icon"></iconify-icon>
                 <iconify-icon icon="eva:video-outline" class="chat-header-video-icon"></iconify-icon>
 
-                <a href="{{route('socialmedia.group.viewmedia',$group->id)}}" class="group-chat-view-midea-link">
+                <a href="{{ route('socialmedia.group.viewmedia', $group->id) }}" class="group-chat-view-midea-link">
                     <p>View Media</p>
                     <iconify-icon icon="akar-icons:arrow-right" class="group-chat-view-midea-link-icon"></iconify-icon>
                 </a>
             </div>
-
-
         </div>
 
-        <button type="button" class="social-media-allchats-header-add-btn customer-primary-btn group-chat-add-btn"
-            data-bs-toggle="modal" data-bs-target="#createGroupModal">
-            <iconify-icon icon="akar-icons:circle-plus" class="social-media-allchats-header-plus-icon"></iconify-icon>
-            <p>Add Member</p>
-        </button>
+
+        @if (auth()->user()->id == $gp_admin->group_owner_id)
+        <div class="social-media-view-members-header-btns-container">
+            <button type="button" class="social-media-allchats-header-add-btn customer-primary-btn group-chat-add-btn"
+                data-bs-toggle="modal" data-bs-target="#createGroupModal">
+                <iconify-icon icon="akar-icons:circle-plus" class="social-media-allchats-header-plus-icon"></iconify-icon>
+                <p>Add Member</p>
+            </button>
+
+            <a href="{{ route('socialmedia.group.delete', $group->id) }}" class="text-decoration-none">
+                <button type="button" class="social-media-allchats-header-add-btn customer-primary-btn group-chat-add-btn">
+                    <p>Delete Group</p>
+                </button>
+            </a>
+        </div>
+        @else
+            <a href="{{ route('socialmedia.group.leave', [$group->id, auth()->user()->id]) }}"
+                class="text-decoration-none">
+                <button class="social-media-allchats-header-add-btn customer-primary-btn group-chat-add-btn">
+                    <p>Leave group</p>
+                </button>
+            </a>
+        @endif
+
 
         <div class="social-media-view-members-container">
             <div class="social-media-view-memers-row">
@@ -90,7 +104,7 @@
 
                 </div>
                 <div class="social-media-view-members-row-btns">
-                    <p class="text-success me-3">Admin</p>
+                    <p style="color: #3CDD57;">Admin</p>
                 </div>
             </div>
 
@@ -106,16 +120,13 @@
                             @else
                                 <img class="nav-profile-img" src="{{ asset('img/customer/imgs/user_default.jpg') }}" />
                             @endif
-                            <p>{{ $member->user->name }}</p>
+                            <a href="{{ route('socialmedia.profile', $member->member_id) }}">
+                                <p>{{ $member->user->name }}</p>
+                            </a>
                         </div>
-
                         <div class="social-media-view-members-row-btns">
-                            <a href="{{ route('socialmedia.profile', $member->member_id) }}"
-                                class="customer-secondary-btn">View Profile</a>
                             @if (auth()->user()->id == $gp_admin->group_owner_id)
-                                    <button type="submit" class="customer-red-btn">Kick</button>
-                            @elseif(auth()->user()->id == $member->member_id)
-                                <a href="{{route('socialmedia.group.leave',[$member->group_id,$member->member_id])}}" class="customer-red-btn">Leave group</a>
+                                <button type="submit" class="customer-red-btn">Kick</button>
                             @endif
                         </div>
                     </div>
