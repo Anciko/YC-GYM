@@ -36,7 +36,7 @@ class VideoController extends Controller
         $data['channelName'] = $request->channel_name;
         $data['groupId'] = $request->group_id;
         // $data['from'] = Auth::id();
-
+        // dd($data);
         broadcast(new GroupVideoCall($data, $data['groupId']))->toOthers();
     }
 

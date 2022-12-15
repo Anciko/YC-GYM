@@ -337,7 +337,7 @@
     </div>
 @endsection
 @push('scripts')
-    <script>
+<script>
         var messageForm = document.getElementById('message_form');
         var sendMessage = document.querySelector('.group-chat-send-form-submit-btn');
         const emojibutton = document.querySelector('.emoji-trigger');
@@ -348,29 +348,6 @@
         var auth_user_img;
         var messageInput_message = document.querySelector('.message_input');
 
-        // Here
-        $(".chat-backdrop").hide();
-        let hero = "Super"
-        let onlineUsers = [];
-        let client = null;
-        let callPlaced = false;
-        let localStream = null;
-        let incomingCaller = "";
-        let agoraChannel = null;
-        let incomingCall = false;
-        let incomingAudioCall = false;
-        let videoCallEvent = false;
-        let audioCallEvent = false;
-        let mutedVideo = false;
-        let mutedAudio = false;
-        const agora_id = 'e8d6696cc7dc449dbd78ebbd1e15ee13';
-
-        let authuser = "{{ auth()->user()->name }}"
-        let authuserId = "{{ auth()->id() }}"
-
-        let incoming_call = document.getElementById('incoming_call')
-        let video_container = document.getElementById('video-main-container')
-        let incomingCallContainer = document.querySelector('#incomingCallContainer')
 
 
         $(document).ready(function() {
@@ -402,7 +379,6 @@
 
             emojibutton.addEventListener('click', () => {
                 picker.togglePicker(emojibutton);
-
             });
 
             picker.on('emoji', emoji => {
@@ -591,6 +567,58 @@
 
         // Here
         Echo.channel('groupChatting.' + auth_user_id)
+        .listen('GroupVideoCall', (data) => {
+                console.log("Listening data Grop Call .............", data.data.channelName);
+                incomingCall = true;
+                agoraChannel = data.data.channelName;
+                console.log("Listeninggagdg ", agoraChannel);
+                if (incomingCall) {
+                    $(".chat-backdrop").show();
+                    document.getElementById('incomingCallContainer').innerHTML += `<div class="row my-5">
+                                        <div class="card shadow p-4 col-12">
+                                            <p>
+                                                Incoming Call From <strong>One for All</strong>
+                                            </p>
+                                            <div class="btn-group" role="group">
+                                                <button type="button" class="btn btn-danger" data-dismiss="modal" onclick="declineGroupCall()">
+                                                    Decline
+                                                </button>
+                                                <button type="button" class="btn btn-success ml-5" onclick="acceptGroupCall()">
+                                                    Accept
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>`;
+                }
+            })
+            .listen('GroupAudioCall', (data) => {
+                console.log("Group audio start.....", data);
+                incomingCall = true;
+                agoraChannel = data.data.channelName;
+                incomingAudioCall = true;
+                console.log("Listeninggagdg ", agoraChannel);
+                if (incomingCall) {
+                    $(".chat-backdrop").show();
+                    if (incomingAudioCall) {
+                        incomingCallContainer.innerHTML += `<div class="row my-5" id="incoming_call">
+                                <div class="card shadow p-4 col-12">
+                                    <p>
+                                        Audio Call From <span>${groupId}</span>
+                                    </p>
+                                    <div class="d-flex justify-content-center gap-3">
+                                        <button type="button" class="btn btn-sm btn-danger"  id="" onclick="declineGroupCall()">
+                                            Decline
+                                        </button>
+                                        <button type="button" class="btn btn-sm btn-success ml-5" onclick="acceptGroupCall()">
+                                            Accept
+                                        </button>
+                                    </div>
+                                </div>
+                           </div>`;
+                    }
+                }
+            })
+
             .listen('.group-chatting-event', (data) => {
                     console.log(data);
                     console.log(auth_user_img);
@@ -657,7 +685,7 @@
 
                     }
                 }).join('')
-        } < /div>`;
+        } </div>`;
         if (auth_user_img == null) {
             messageContainer.innerHTML += `
                                     <div class="group-chat-sender-container">
@@ -725,7 +753,7 @@
                                                 <img src="{{ asset('storage/customer_message_media/${imageArr[key]}') }}" title="${key}">
                                             </a>
                                             `
-                                   
+
                                 } else if (imageArr[key].split('.').pop() === 'mp4' || imageArr[key].split('.')
                                     .pop() ===
                                     'mov' || imageArr[key].split('.').pop() === 'webm') {
@@ -795,18 +823,71 @@
 
         }
     }).join('')
-    } </div>`}
-
-                            messageContainer.innerHTML += `<div class ="group-chat-receiver-container">
+    } </div>`
+    messageContainer.innerHTML += `<div class ="group-chat-receiver-container">
         <img src = "{{ asset('/storage/post/${data.senderImg}') }}" / >
         <div class = "group-chat-receiver-text-container" >
         <span>${data.senderName}</span>
     ${receiverMessageMedia}</div> </div>`;
+    }
+
+
 
         }
 
         }
         })
+
+
+
+
+        //////////////////////////////////////////////////////////////////////////////////////////
+        var messageInput = document.querySelector('.message_input');
+
+        var groupChatImgInput = document.querySelector('#groupChatImg');
+
+        function clearGroupChatImg() {
+            console.log("clear img preview")
+            groupChatImgPreview.removeAttribute("src")
+            groupChatImgPreview.remove()
+
+            cancelBtn.remove()
+            $('.video-preview').removeAttr("src")
+            $('.video-prev').hide();
+            document.querySelector(".group-chat-send-form-message-parent-container").append(messageInput)
+            groupChatImgInput.value = ""
+
+        }
+</script>
+
+<script>
+        $(".chat-backdrop").hide();
+        let hero = "Super"
+        let onlineUsers = [];
+        let client = null;
+        let callPlaced = false;
+        let localStream = null;
+        let incomingCaller = "";
+        let agoraChannel = null;
+        let incomingCall = false;
+        let incomingAudioCall = false;
+        let videoCallEvent = false;
+        let audioCallEvent = false;
+        let mutedVideo = false;
+        let mutedAudio = false;
+        const agora_id = 'e8d6696cc7dc449dbd78ebbd1e15ee13';
+        var groupId = document.getElementById('groupId').value;
+
+
+        let authuser = "{{ auth()->user()->name }}"
+        let authuserId = "{{ auth()->id() }}"
+
+        let incoming_call = document.getElementById('incoming_call')
+        let video_container = document.getElementById('video-main-container')
+        let incomingCallContainer = document.querySelector('#incomingCallContainer')
+
+        // Here
+        Echo.channel('groupCalling.' + groupId)
         .listen('GroupVideoCall', (data) => {
                 console.log("Listening data Grop Call .............", data.data.channelName);
                 incomingCall = true;
@@ -832,7 +913,7 @@
                 }
             })
             .listen('GroupAudioCall', (data) => {
-                console.log("Group audio start.....");
+                console.log("Group audio start.....", data);
                 incomingCall = true;
                 agoraChannel = data.data.channelName;
                 incomingAudioCall = true;
@@ -857,14 +938,16 @@
                            </div>`;
                     }
                 }
-            })
+            });
 
 
-        // vcall functions start
+            // vcall functions start
         async function placeCall(groupId) {
             try {
                 const channelName = groupId.toString();
                 const tokenRes = await generateToken(channelName)
+
+                // console.log("fdsafeeeeeeeeeeeeeeeeeee",channelName, groupId);
 
                 console.log(tokenRes.data);
 
@@ -1146,22 +1229,7 @@
 
         // vcall functions end
 
-        //////////////////////////////////////////////////////////////////////////////////////////
-        var messageInput = document.querySelector('.message_input');
 
-        var groupChatImgInput = document.querySelector('#groupChatImg');
 
-        function clearGroupChatImg() {
-            console.log("clear img preview")
-            groupChatImgPreview.removeAttribute("src")
-            groupChatImgPreview.remove()
-
-            cancelBtn.remove()
-            $('.video-preview').removeAttr("src")
-            $('.video-prev').hide();
-            document.querySelector(".group-chat-send-form-message-parent-container").append(messageInput)
-            groupChatImgInput.value = ""
-
-        }
-    </script>
+</script>
 @endpush

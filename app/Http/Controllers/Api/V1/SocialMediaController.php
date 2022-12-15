@@ -1255,6 +1255,11 @@ class SocialMediaController extends Controller
         } else {
 
             $message = new ChatGroupMessage();
+<<<<<<< HEAD
+=======
+
+
+>>>>>>> 9728cde4c898a12501cb797f55e4c53030f6415d
             $sendFile = $request->all();
             if ($request->totalFiles != 0) {
                 $files = $sendFile['fileSend'];
@@ -1291,9 +1296,35 @@ class SocialMediaController extends Controller
                 $options
             );
 
+<<<<<<< HEAD
             $group_message = ChatGroupMember::select('member_id')
                                 ->where('group_id', $id)
                                 ->get();
+=======
+            $groups = DB::table('chat_group_members')
+                ->select('group_id')
+                ->groupBy('group_id')
+                ->where('chat_group_members.member_id', $user_id)
+                ->get()
+                ->pluck('group_id')->toArray();
+
+            $latest_group_message = DB::table('chat_group_messages')
+                ->groupBy('group_id')
+                ->whereIn('group_id', $groups)
+                ->select(DB::raw('max(id) as id'))
+                ->get()
+                ->pluck('id')->toArray();
+
+            $chat_group =
+                ChatGroupMessage::leftJoin('chat_groups', 'chat_groups.id', 'chat_group_messages.group_id')
+                ->select('chat_group_messages.*', 'chat_groups.group_name', 'chat_groups.id')
+                ->whereIn('chat_group_messages.id', $latest_group_message)
+                ->orderBy('chat_group_messages.created_at', 'DESC')
+                ->get();
+           $pusher->trigger('group_message.' . $user_id, 'group_chat', $chat_group);
+
+            $group_message = ChatGroupMember::select('member_id')->where('group_id', $id)->get();
+>>>>>>> 9728cde4c898a12501cb797f55e4c53030f6415d
             for ($i = 0; count($group_message) > $i; $i++) {
                 $user_id = $group_message[$i]['member_id'];
                 $messages_three = DB::select("SELECT users.id as id,users.name,profiles.profile_image,chats.text,chats.created_at as date
