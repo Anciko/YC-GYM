@@ -65,7 +65,7 @@
 
                             <p>{{$list->text}}</p>
 
-                            <span>{{ \Carbon\Carbon::parse($list->created_at)->format('d M Y , g:i A')}}</span>
+                            <span>{{ \Carbon\Carbon::parse($list->created_at)->format('d M, g:i A')}}</span>
                         </a>
 
                         <div class="social-media-allchats-actions-container">
@@ -75,7 +75,7 @@
                                     <iconify-icon icon="tabler:trash" class="social-media-allchats-action-icon"></iconify-icon>
                                     <span>Delete</span>
                                 </div>
-                                <a>
+                                <a href="{{route('socialmedia.profile',$list->id)}}" style="text-decoration:none">
                                     <iconify-icon icon="material-symbols:person" class="social-media-allchats-action-icon"></iconify-icon>
                                     Profile
                                 </a>
@@ -184,9 +184,14 @@
                         htmlView += `
                             <div class="social-media-allchats-message-row-container">
                         <a href=` + url + ` class="social-media-allchats-message-row">
-                            <div class="social-media-allchats-message-img">
-                            <img  class="nav-profile-img" src="{{ asset('img/customer/imgs/user_default.jpg') }}"/>
-                                <p>` + res.data[i].name + `</p>
+                            <div class="social-media-allchats-message-img">`
+                        if(res.data[i].profile_image==null){
+                            htmlView +=` <img  class="nav-profile-img" src="{{asset('img/customer/imgs/user_default.jpg')}}"/>`
+                        }else{
+                            htmlView +=` <img  class="nav-profile-img" src="{{asset('storage/post/`+res.data[i].profile_image+`')}}"/>`
+                        }
+
+                        htmlView +=` <p>` + res.data[i].name + `</p>
                             </div>
 
                             <p>` + res.data[i].text + `</p>
@@ -217,7 +222,11 @@
                             <div class="social-media-allchats-message-row-container">
                                 <a href=` + group_url + ` class="social-media-allchats-message-row">
                                     <div class="social-media-allchats-message-img">
+<<<<<<< HEAD
+                                    <img  class="nav-profile-img" src="{{asset('img/customer/imgs/group_default.png')}}"/>
+=======
                                     <img  class="nav-profile-img" src="{{ asset('img/customer/imgs/user_default.jpg') }}"/>
+>>>>>>> 3f54e14e4ff5529d282b36ff385acb867d362273
                                         <p>` + res.data[i].name + `</p>
                                     </div>
 

@@ -82,13 +82,13 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
         Route::post('/socialmedia/update', [SocialmediaController::class, 'post_update'])->name('post.update');
         Route::post('/profile/photo/delete', [SocialmediaController::class, 'profile_photo_delete'])->name('profile.photo.delete');
 
-        Route::get('/socialmedia/message/seeall', [SocialmediaController::class, 'see_all_message'])->name('message.seeall');
-        Route::get('/socialmedia/message/chat/{id}', [SocialmediaController::class, 'chat_message'])->name('message.chat');
+        Route::get('/socialmedia/message/seeall',[SocialmediaController::class, 'see_all_message'])->name('message.seeall');
+        Route::get('/socialmedia/message/chat/{id}',[SocialmediaController::class, 'chat_message'])->name('message.chat');
 
-        Route::get('/socialmedia/message/deletechat', [SocialmediaController::class, 'delete_allchat_message'])->name('message.all.delete');
-        Route::get('/socialmedia/message/viewmedia/{id}', [SocialmediaController::class, 'viewmedia_message'])->name('message.viewmedia');
-        Route::post('/socialmedia/message/hide', [SocialmediaController::class, 'hide_message'])->name('message.hide');
-        Route::post('/socialmedia/message/delete', [SocialmediaController::class, 'delete_message'])->name('message.delete');
+        Route::get('/socialmedia/message/deletechat',[SocialmediaController::class, 'delete_allchat_message'])->name('message.all.delete');
+        Route::get('/socialmedia/message/viewmedia/{id}',[SocialmediaController::class, 'viewmedia_message'])->name('message.viewmedia');
+        Route::post('/socialmedia/message/hide',[SocialmediaController::class, 'hide_message'])->name('message.hide');
+        Route::post('/socialmedia/message/delete',[SocialmediaController::class, 'delete_message'])->name('message.delete');
         Route::post('/agora/call-user',  [VideoController::class, 'callUser'])->name('socialmedia.videocall');
         // ------
         Route::post('/agora/call-gp-user', [VideoController::class, 'callGpuser'])->name('socialmedia.gpcall');
@@ -129,7 +129,9 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
 
         Route::post('customer/profile/image/update', [Customer_TrainingCenterController::class, 'profile_update_profile_img'])->name('customer-profile-img.update');
 
-        Route::post('customer/profile/saved_post', [Customer_TrainingCenterController::class, 'saved_post'])->name('saved.post');
+        Route::get('customer/profile/saved_post', [Customer_TrainingCenterController::class, 'saved_post'])->name('saved.post');
+
+        Route::get('customer/profile/posts/', [Customer_TrainingCenterController::class, 'all_post'])->name('all.post');
 
         Route::get('customer/profile/year/{year}', [Customer_TrainingCenterController::class, 'year_filter'])->name('customer-profile.year');
         Route::get('/home', [App\Http\Controllers\HomeController::class, 'home'])->name('social_media');

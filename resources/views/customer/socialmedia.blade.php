@@ -340,7 +340,7 @@
 
         $('.post_save').click(function(e){
             e.preventDefault();
-
+            $('.post-actions-container').hide();
             var post_id=$(this).attr('id');
             var add_url = "{{ route('socialmedia.post.save', [':post_id']) }}";
             add_url = add_url.replace(':post_id', post_id);
@@ -359,7 +359,7 @@
                                         timer: 5000,
                                         icon: 'success',
                                     }).then((result) => {
-                                        e.target.innerHTML = "Unsave";
+                                        e.target.querySelector(".save").innerHTML = `Unsave`;
                                     })
                                 }else{
                                     Swal.fire({
@@ -368,9 +368,9 @@
                                             timer: 5000,
                                             icon: 'success',
                                         }).then((result) => {
-                                            e.target.innerHTML="Save";
+                                            e.target.querySelector(".save").innerHTML = `Save`;
 
-                                    })
+                                        })
                                 }
 
                             }

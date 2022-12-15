@@ -19,6 +19,7 @@ use App\Models\PersonalMealInfo;
 use Illuminate\Support\Facades\DB;
 use App\Models\PersonalWorkOutInfo;
 use App\Http\Controllers\Controller;
+use App\Models\Comment;
 use RealRashid\SweetAlert\Facades\Alert;
 
 class Customer_TrainingCenterController extends Controller
@@ -90,7 +91,6 @@ class Customer_TrainingCenterController extends Controller
                                 ->where('cover_photo',null)
                                 ->orderBy('created_at','DESC')
                                 ->first();
-        //dd($user_profile_image);
 
         if($user_profile_cover==null){
             $user_profile_cover=null;
@@ -160,22 +160,36 @@ class Customer_TrainingCenterController extends Controller
             }
         }
 
-        $save_posts=UserSavedPost::where('user_id',$user_id)->with('user')->get();
-        $saved_posts = UserSavedPost::select('users.name','profiles.profile_image','posts.*')
+        // $save_posts=UserSavedPost::where('user_id',$user_id)->with('user')->get();
+
+        // $saved_posts = DB::table('user_saved_posts')
+        //                     ->select('users.name','profiles.profile_image','posts.*','posts.id as post_id','posts.created_at as post_date')
+        //                     ->leftJoin('posts','posts.id','user_saved_posts.post_id')
+        //                     ->where('user_saved_posts.user_id',auth()->user()->id)
+        //                     ->leftJoin('users','users.id','posts.user_id')
+        //                     ->leftJoin('profiles','users.profile_id','profiles.id')
+        //                     ->orderBy('posts.created_at','DESC')
+        //                     ->get();
+
+        //$already_liked=$user->user_reacted_posts->where('post_id',$save_post->post->id)->count();
+
+        return view('customer.training_center.profile', compact('user','posts','user_friends','user_profile_cover','user_profile_image','year','workouts', 'workout_date', 'cal_sum', 'time_min', 'time_sec', 'weight_history', 'newDate'));
+    }
+
+    public function saved_post(){
+
+        $saved_post = UserSavedPost::select('users.name','profiles.profile_image','posts.*')
                         ->leftJoin('posts','posts.id','user_saved_posts.post_id')
                         ->where('user_saved_posts.user_id',auth()->user()->id)
+                        ->where('posts.report_status',0)
                         ->leftJoin('users','users.id','posts.user_id')
                         ->leftJoin('profiles','users.profile_id','profiles.id')
-                        ->orderBy('posts.created_at','DESC')
+                        ->orderBy('user_saved_posts.created_at','DESC')
                         ->get();
 
-                        //dd($saved_posts);
-
-
-        return view('customer.training_center.profile', compact('saved_posts','save_posts','user','posts','user_friends','user_profile_cover','user_profile_image','year','workouts', 'workout_date', 'cal_sum', 'time_min', 'time_sec', 'weight_history', 'newDate'));
-    }
-    public function saved_post(){
-        $saved_post = UserSavedPost::select('users.name','profiles.profile_image','posts.*')
+        //////////////
+        $saved_posts = DB::table('user_saved_posts')
+                        ->select('users.name','profiles.profile_image','posts.*','posts.id as post_id','posts.created_at as post_date')
                         ->leftJoin('posts','posts.id','user_saved_posts.post_id')
                         ->where('user_saved_posts.user_id',auth()->user()->id)
                         ->where('posts.report_status',0)
@@ -183,8 +197,78 @@ class Customer_TrainingCenterController extends Controller
                         ->leftJoin('profiles','users.profile_id','profiles.id')
                         ->orderBy('posts.created_at','DESC')
                         ->get();
+
+            foreach($saved_posts as $key=>$value){
+
+            $react = auth()->user()->user_reacted_posts()->where('post_id', $value->post_id)->first();
+            if (!empty($react)) {
+                $isLike=1;
+            }else{
+                $isLike=0;
+            }
+            $date= Carbon::parse($value->post_date)
+                            ->format('d M Y , g:i A');
+
+            $total_likes=UserReactPost::where('post_id',$value->post_id)
+                            ->get()->count();
+            $total_comments=Comment::where('post_id',$value->post_id)
+                            ->get()->count();
+
+            $saved_posts[$key]->total_likes=$total_likes;
+            $saved_posts[$key]->total_comments=$total_comments;
+            $saved_posts[$key]->date= $date;
+            $saved_posts[$key]->isLike=$isLike;
+            }
+
         return response()->json([
-            'save' => $saved_post
+            'save_posts' => $saved_posts
+            ]);
+    }
+
+    public function all_post(){
+
+        $posts=DB::table('posts')
+                    ->select('users.name','profiles.profile_image','posts.*','posts.id as post_id','posts.created_at as post_date')
+                    ->where('posts.user_id',auth()->user()->id)
+                    ->where('posts.report_status',0)
+                    ->where('posts.deleted_at',null)
+                    ->leftJoin('users','users.id','posts.user_id')
+                    ->leftJoin('profiles','users.profile_id','profiles.id')
+                    ->orderBy('posts.created_at','DESC')
+                    ->get();
+            foreach($posts as $key=>$value){
+
+            $saved=auth()->user()->user_saved_posts->where('post_id',$value->post_id)->first();
+
+            $react = auth()->user()->user_reacted_posts()->where('post_id', $value->post_id)->first();
+            if (!empty($react)) {
+                $isLike=1;
+            }else{
+                $isLike=0;
+            }
+
+            if($saved==null){
+                $already_saved=0;
+            }else{
+                $already_saved=1;
+            }
+            $date= Carbon::parse($value->post_date)
+                            ->format('d M Y , g:i A');
+
+            $total_likes=UserReactPost::where('post_id',$value->post_id)
+                            ->get()->count();
+            $total_comments=Comment::where('post_id',$value->post_id)
+                            ->get()->count();
+
+            $posts[$key]->total_likes=$total_likes;
+            $posts[$key]->total_comments=$total_comments;
+            $posts[$key]->date= $date;
+            $posts[$key]->isLike=$isLike;
+            $posts[$key]->already_saved=$already_saved;
+            }
+
+        return response()->json([
+            'posts' => $posts
             ]);
     }
     public function profile_post_likes($post_id)
