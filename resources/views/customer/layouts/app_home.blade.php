@@ -238,13 +238,13 @@
                                 </div>
                             </div>
 
-                            <div class="social-media-left-gpmessages-container">
+                            {{-- <div class="social-media-left-gpmessages-container">
                                 <div class="social-media-left-container-header">
                                     <p id = "testing">Group Messages</p>
                                     <a href="#">See All <iconify-icon icon="bi:arrow-right" class="arrow-icon"></iconify-icon></a>
                                 </div>
 
-                                <div class="social-media-left-gpmessages-rows-container">
+                                <div class="social-media-left-gpmessages-rows-container"> --}}
                                     {{-- @forelse ($chat_group as $group)
                                         <a href="{{route('socialmedia.group',$group->id)}}"             class="social-media-left-gpmessages-row">
                                     @if ($group->group_id != null)
@@ -269,8 +269,8 @@
                                 @endforelse --}}
 
 
-                                </div>
-                            </div>
+                                {{-- </div> --}}
+                            {{-- </div> --}}
                         </div>
 
                         <div class="social-media-left-searched-items-container">
@@ -398,7 +398,11 @@
                 var id =  latest_messages[i].id;
                 var url = "{{ route('message.chat', ':id') }}";
                 url = url.replace(':id', id);
-                htmlView += `
+
+                var group_url = "{{ route('socialmedia.group', ':id') }}";
+                group_url = group_url.replace(':id', id);
+                if(latest_messages[i].is_group == 0){
+                    htmlView += `
                                     <a href=`+url+` class="social-media-left-messages-row">
                                             <img  class="nav-profile-img" src="{{asset('img/customer/imgs/user_default.jpg')}}"/>
                                         <p>
@@ -407,37 +411,49 @@
                                         </p>
                                     </a>
                             `
+                }
+                else{
+                    htmlView += `
+                                    <a href=`+group_url+` class="social-media-left-messages-row">
+                                            <img  class="nav-profile-img" src="{{asset('img/customer/imgs/user_default.jpg')}}"/>
+                                        <p>
+                                            ` + latest_messages[i].name + `<br>
+                                            <span>` + latest_messages[i].text + ` </span>
+                                        </p>
+                                    </a>
+                            `
+                }
+
             }
             $('.social-media-left-messages-rows-container').html(htmlView);
         }
-        group_messages()
-        function group_messages(){
-                // alert("send");
-                let htmlView = '';
-                var latest_messages=@json($chat_group);
-                console.log(latest_messages)
-                if (latest_messages.length <= 0) {
-                    htmlView += `
-                        No Messages.
-                        `;
-                }
-                for (let i = 0; i < latest_messages.length; i++) {
-                var id =  latest_messages[i].id;
-                var url = "{{ route('socialmedia.group', ':id') }}";
-                url = url.replace(':id', id);
-                htmlView += `
-                                    <a href=`+url+` class="social-media-left-gpmessages-row">
-                                            <img src="{{asset('img/customer/imgs/group_default.png')}}" class="w-25">
-                                            <p>
-                                                ` + latest_messages[i].group_name + `<br>
-                                                <span>` + latest_messages[i].text + `</span>
-                                            </p>
-                                        </a>
-                            `
+        // group_messages()
+        // function group_messages(){
+        //         // alert("send");
+        //         let htmlView = '';
+        //         var latest_messages=@json($chat_group);
+        //         console.log(latest_messages)
+        //         if (latest_messages.length <= 0) {
+        //             htmlView += `
+        //                 No Messages.
+        //                 `;
+        //         }
+        //         for (let i = 0; i < latest_messages.length; i++) {
+        //         var id =  latest_messages[i].id;
 
-            }
-            $('.social-media-left-gpmessages-rows-container').html(htmlView);
-        }
+        //         htmlView += `
+        //                             <a href=`+url+` class="social-media-left-gpmessages-row">
+        //                                     <img src="{{asset('img/customer/imgs/group_default.png')}}" class="w-25">
+        //                                     <p>
+        //                                         ` + latest_messages[i].group_name + `<br>
+        //                                         <span>` + latest_messages[i].text + `</span>
+        //                                     </p>
+        //                                 </a>
+        //                     `
+
+        //     }
+        //     $('.social-media-left-gpmessages-rows-container').html(htmlView);
+        // }
 
 
     $(document).ready(function() {
