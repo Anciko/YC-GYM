@@ -309,8 +309,8 @@
         })
 
         $('.post_save').click(function(e){
+            $('.social-media-post-header-icon').next().toggle()
             e.preventDefault();
-
             var post_id=$(this).attr('id');
             var add_url = "{{ route('socialmedia.post.save', [':post_id']) }}";
             add_url = add_url.replace(':post_id', post_id);
@@ -329,7 +329,7 @@
                                         timer: 5000,
                                         icon: 'success',
                                     }).then((result) => {
-                                        e.target.innerHTML = "Unsave";
+                                        e.target.querySelector(".save").innerHTML = `Unsave`;
                                     })
                                 }else{
                                     Swal.fire({
@@ -338,7 +338,7 @@
                                             timer: 5000,
                                             icon: 'success',
                                         }).then((result) => {
-                                            e.target.innerHTML="Save";
+                                            e.target.querySelector(".save").innerHTML = `Save`;
 
                                     })
                                 }
@@ -701,7 +701,7 @@
                                                     <p>`+res.comment[i].Replace+`</p>
                                                 </div>
                                             </div>
-                                            `           
+                                            `
                                 }
 
                 }

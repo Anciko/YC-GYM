@@ -359,7 +359,7 @@
                                         timer: 5000,
                                         icon: 'success',
                                     }).then((result) => {
-                                        e.target.innerHTML = "Unsave";
+                                        e.target.querySelector(".save").innerHTML = `Unsave`;
                                     })
                                 }else{
                                     Swal.fire({
@@ -368,9 +368,9 @@
                                             timer: 5000,
                                             icon: 'success',
                                         }).then((result) => {
-                                            e.target.innerHTML="Save";
+                                            e.target.querySelector(".save").innerHTML = `Save`;
 
-                                    })
+                                        })
                                 }
 
                             }

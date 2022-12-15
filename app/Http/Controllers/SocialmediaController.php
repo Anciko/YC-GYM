@@ -831,11 +831,18 @@ class SocialmediaController extends Controller
 
     public function post_destroy($id)
     {
-        Post::find($id)->delete($id);
+        $post=Post::find($id);
 
-        return response()->json([
-            'success' => 'Post deleted successfully!'
-        ]);
+        if ($post != null) {
+            $post->delete();
+            return response()->json([
+                'success' => 'Post deleted successfully!'
+            ]);
+        }else{
+
+        }
+
+
     }
 
     public function see_all_message()
@@ -862,23 +869,9 @@ class SocialmediaController extends Controller
                  (created_at = m)
             left join users on users.id = user
             left join profiles on users.profile_id = profiles.id
+            where deleted_by !=  $user_id  and delete_status != 2
            order by chats.created_at desc");
 
-
-            // $messages=Chat::where('delete_status','!=',2)
-            //             ->where(function($query1) use ($from_id,$to_id)
-            //             {
-            //                 $query1->where('from_user_id', $from_id)
-            //                         ->orWhere('from_user_id',$to_id);
-            //             })
-            //             ->where( function($query2) use ($from_id,$to_id)
-            //             {
-            //                 $query2->where('to_user_id', $from_id)
-            //                 ->orWhere('to_user_id',$to_id);
-            //             })
-            //             ->get();
-
-        dd($messages);
         return view('customer.message_seeall', compact('messages'));
     }
 
@@ -1018,7 +1011,6 @@ class SocialmediaController extends Controller
 
     public function post_comment($id)
     {
-        // dd("dd");
         $post = Post::select('users.name', 'profiles.profile_image', 'posts.*')
             ->where('posts.id', $id)
             ->leftJoin('users', 'users.id', 'posts.user_id')
