@@ -1180,18 +1180,16 @@ class SocialmediaController extends Controller
             $em_banword = $b->ban_word_myanglish;
 
             if (str_contains($request->comment, $e_banword)) {
-                // Alert::warning('Warning', 'Ban Ban Ban');
-                //return redirect()->back();
                 return response()->json([
-                    'ban' => 'Ban',
+                    'ban' => 'You used our banned words!',
                 ]);
             } elseif (str_contains($request->comment, $m_banword)) {
                 return response()->json([
-                    'ban' => 'Ban',
+                    'ban' => 'You used our banned words!',
                 ]);
             } elseif (str_contains($request->comment, $em_banword)) {
                 return response()->json([
-                    'ban' => 'Ban',
+                    'ban' => 'You used our banned words!',
                 ]);
             }
         }
@@ -1352,15 +1350,15 @@ class SocialmediaController extends Controller
             $em_banword = $b->ban_word_myanglish;
             if (str_contains($request->comment, $e_banword)) {
                 return response()->json([
-                    'ban' => 'Ban',
+                    'ban' => 'You used our banned words!',
                 ]);
             } elseif (str_contains($request->comment, $m_banword)) {
                 return response()->json([
-                    'ban' => 'Ban',
+                    'ban' => 'You used our banned words!',
                 ]);
             } elseif (str_contains($request->comment, $em_banword)) {
                 return response()->json([
-                    'ban' => 'Ban',
+                    'ban' => 'You used our banned words!',
                 ]);
             }
         }
