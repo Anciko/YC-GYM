@@ -112,6 +112,7 @@
                 cancelButtonText: 'No',
 
                 }).then((result) =>{
+                    if (result.isConfirmed) {
                         var add_url = "{{ route('message.all.delete')}}";
                     $.ajax({
                                 method: "GET",
@@ -128,6 +129,7 @@
                                         messages()
                                 }
                             })
+                        }
                     })
 
         })
@@ -172,6 +174,10 @@
                     url = url.replace(':id', id);
                     var group_url = "{{ route('socialmedia.group', ':id') }}";
                     group_url = group_url.replace(':id', id);
+
+                    var social_media = "{{ route('socialmedia.profile', [':id']) }}";
+                    social_media = social_media.replace(':id',id);
+
                     if(res.data[i].is_group == 0){
                         htmlView += `
                             <div class="social-media-allchats-message-row-container">
@@ -194,7 +200,7 @@
                                     <iconify-icon icon="tabler:trash" class="social-media-allchats-action-icon"></iconify-icon>
                                     <span>Delete</span>
                                 </div>
-                                <a>
+                                <a href=` + social_media + ` >
                                     <iconify-icon icon="material-symbols:person" class="social-media-allchats-action-icon"></iconify-icon>
                                     Profile
                                 </a>

@@ -15,6 +15,7 @@ class VideoController extends Controller
 {
     public function callUser(Request $request){
         $data['userToCall'] = $request->user_to_call;
+
         $data['channelName'] = $request->channel_name;
         $data['from'] = Auth::id();
 

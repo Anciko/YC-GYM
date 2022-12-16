@@ -698,17 +698,13 @@
                                                 return ` < video width = "100%"
                                 height = "100%"
                                 controls >
-                                    <
-                                    source src = "{{ asset('storage/customer_message_media/${imageArr[key]}') }}"
-                                type = "video/mp4" >
-                                    <
-                                    /video>`
+                                    <source src = "{{ asset('storage/customer_message_media/${imageArr[key]}') }}" type = "video/mp4" >
+                                    </video>`
 
 
                         }
                     }).join('')
-            } <
-            /div>`;
+            } </div>`;
 
                 if (receive_user_img != null) {
                     messageContainer.innerHTML += `<div class="group-chat-receiver-container" data-messageId="${data.message.id}">
@@ -778,15 +774,13 @@
                                 return ` < video width = "100%"
                     height = "100%"
                     controls >
-                        <
-                        source src = "{{ asset('storage/customer_message_media/${imageArr[key]}') }}"
+                        <source src = "{{ asset('storage/customer_message_media/${imageArr[key]}') }}"
                     type = "video/mp4" >
-                        <
-                        /video>`
+                        </video>`
 
             }
         }).join('')
-    } < /div>`
+    }</div>`
 
         if (sender_user_img != null) {
             messageContainer.innerHTML += `
@@ -943,15 +937,13 @@
                                                     return ` < video width = "100%"
                                 height = "100%"
                                 controls >
-                                    <
-                                    source src = "{{ asset('storage/customer_message_media/${imageArr[key]}') }}"
+                                    <source src = "{{ asset('storage/customer_message_media/${imageArr[key]}') }}"
                                 type = "video/mp4" >
-                                    <
-                                    /video>`
+                                    </video>`
 
                         }
                     }).join('')
-            } < /div>`;
+            } </div>`;
 
                 if (receive_user_img != null) {
                     messageContainer.innerHTML += `<div class="group-chat-receiver-container" data-messageId="${data.message.id}">
@@ -1034,18 +1026,14 @@
                                             } else if (imageArr[key].split('.').pop() === 'mp4' || imageArr[key].split('.')
                                                 .pop() ===
                                                 'mov' || imageArr[key].split('.').pop() === 'webm') {
-                                                    return ` < video width = "100%"
-                    height = "100%"
-                    controls >
-                        <
-                        source src = "{{ asset('storage/customer_message_media/${imageArr[key]}') }}"
+                                                    return `<video width = "100%" height = "100%" controls >
+                        <source src = "{{ asset('storage/customer_message_media/${imageArr[key]}') }}"
                     type = "video/mp4" >
-                        <
-                        /video>`
+                        </video>`
 
             }
         }).join('')
-    } < /div>`;
+    } </div>`;
 
         if (receive_user_img != null) {
             messageContainer.innerHTML += `<div class="group-chat-receiver-container" data-messageId="${data.message.id}">
