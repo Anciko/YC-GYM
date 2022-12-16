@@ -219,9 +219,8 @@
                             </div>
 
                         </div>
-                    </div>
-
-                            `
+                    </div>`
+                    
                     } else {
                         htmlView += `
                             <div class="social-media-allchats-message-row-container">

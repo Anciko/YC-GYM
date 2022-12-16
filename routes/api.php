@@ -200,7 +200,11 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
 
     Route::post('socialmedia/report',[SocialmediaController::class,'post_report']);
 
-    Route::post('socialmedia/video_call',[SocialmediaController::class,'mobile_token']);
+    Route::post('socialmedia/video_call',[SocialmediaController::class,'video_token']);
+    Route::post('socialmedia/audio_call',[SocialMediaController::class,'audio_token']);
+    Route::post('socialmedia/gp_video_call',[SocialmediaController::class,'gp_video_token']);
+    Route::post('socialmedia/gp_audio_call',[SocialmediaController::class,'gp_audio_token']);
+
     Route::post('socialmedia/call_accept',[SocialmediaController::class,'accept_call']);
 
     Route::get('user/list', [SocialmediaController::class, 'user_list']);
