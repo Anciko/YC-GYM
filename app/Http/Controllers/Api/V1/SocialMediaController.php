@@ -1533,7 +1533,7 @@ class SocialMediaController extends Controller
         );
         // $pusher->trigger('chatting.'.auth()->user()->id.'.'.$to_user_id, 'chatting-event', ['message'=>$message]);
         $pusher->trigger('chatting.' . $to_user_id . '.' . auth()->user()->id, 'chatting-event', ['message' => $message]);
-        //broadcast(new Chatting($message, $request->sender));
+       // broadcast(new Chatting($message, $request->sender));
 
         $user_id = auth()->user()->id;
         $messages = DB::select("SELECT users.id as id,users.name,profiles.profile_image,chats.text,chats.created_at as date
@@ -2701,11 +2701,11 @@ class SocialMediaController extends Controller
         $privilegeExpiredTs = $currentTimestamp + $expireTimeInSeconds;
 
         $token = RtcTokenBuilder::buildTokenWithUserAccount($appID, $appCertificate, $channelName, $user, $role, $privilegeExpiredTs);
-        
+
         $data['userToCall'] = $request->user_to_call;
         $data['channelName'] = $channelName;
         $data['from'] = Auth::id();
-        
+
         broadcast(new MakeAgoraCall($data))->toOthers();
         // $options = array(
         //     'cluster' => env('PUSHER_APP_CLUSTER'),

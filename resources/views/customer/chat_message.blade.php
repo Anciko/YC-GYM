@@ -694,16 +694,12 @@
                                         } else if (imageArr[key].split('.').pop() === 'mp4' || imageArr[key].split('.')
                                             .pop() ===
                                             'mov' || imageArr[key].split('.').pop() === 'webm') {
-                                                return ` < video width = "100%"
-                                height = "100%"
-                                controls >
-                                    <source src = "{{ asset('storage/customer_message_media/${imageArr[key]}') }}" type = "video/mp4" >
+                                                return `<video width = "100%" height = "100%" controls >
+                                    <source src = "{{ asset('storage/customer_message_media/${imageArr[key]}') }}"type = "video/mp4">
                                     </video>`
-
-
                         }
                     }).join('')
-            } </div>`;
+            }</div>`;
 
                 if (receive_user_img != null) {
                     messageContainer.innerHTML += `<div class="group-chat-receiver-container" data-messageId="${data.message.id}">
@@ -780,7 +776,20 @@
 
         if (sender_user_img != null) {
             messageContainer.innerHTML += `
+                                    <div class="group-chat-sender-container">
+                                        <div class="message-actions-parent-container">
+                                            <iconify-icon icon="mdi:dots-vertical" class="message-icon" onclick="toggleActionBox(event)">
+
+                                            </iconify-icon>
+                                            <div class="message-actions-box">
+                                                <p onclick="message_hide(event,${data.message.id})">
+                                                    <iconify-icon icon="mdi:hide" class="message-action-icon"></iconify-icon>
+                                                    Delete
+                                                </p>
+                                                <p onclick="message_delete(event,${data.message.id})">
+                                                    <iconify-icon icon="material-symbols:cancel-schedule-send-rounded" class="message-action-icon"></iconify-icon>
                                                     Unsend
+                                                </p>
                                             </div>
 
                                         </div>
@@ -917,7 +926,7 @@
                                         } else if (imageArr[key].split('.').pop() === 'mp4' || imageArr[key].split('.')
                                             .pop() ===
                                             'mov' || imageArr[key].split('.').pop() === 'webm') {
-                                return `<video width = "100%" height = "100%" controls >
+                                                    return `<video width = "100%" height = "100%" controls >
                                     <source src = "{{ asset('storage/customer_message_media/${imageArr[key]}') }}" type = "video/mp4" >
                                     </video>`
 

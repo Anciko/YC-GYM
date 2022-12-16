@@ -1228,8 +1228,5 @@
         }
 
         // vcall functions end
-
-
-
 </script>
 @endpush
