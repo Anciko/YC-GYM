@@ -214,19 +214,14 @@
                             </div>
 
                         </div>
-                    </div>
-
-                            `
+                    </div>`
+                    
                     } else {
                         htmlView += `
                             <div class="social-media-allchats-message-row-container">
                                 <a href=` + group_url + ` class="social-media-allchats-message-row">
                                     <div class="social-media-allchats-message-img">
-<<<<<<< HEAD
                                     <img  class="nav-profile-img" src="{{asset('img/customer/imgs/group_default.png')}}"/>
-=======
-                                    <img  class="nav-profile-img" src="{{ asset('img/customer/imgs/user_default.jpg') }}"/>
->>>>>>> 3f54e14e4ff5529d282b36ff385acb867d362273
                                         <p>` + res.data[i].name + `</p>
                                     </div>
 
