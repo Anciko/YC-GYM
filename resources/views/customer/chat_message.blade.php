@@ -1118,7 +1118,7 @@
 
 
         Echo.channel('agora-videocall')
-            .listen("MakeAgoraCall", ({
+            .listen(".MakeAgoraCall", ({
                 data
             }) => {
                 console.log('listening-------------------------', data);
