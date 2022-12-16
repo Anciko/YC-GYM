@@ -100,11 +100,13 @@
                         $profile_id=$user->profile_id;
                          $img=$user->profiles->where('id',$profile_id)->first();
                         ?>
+
                         @if ($img==null)
                             <img src="{{asset('img/customer/imgs/user_default.jpg')}}"/>
                         @else
                             <img src="{{asset('storage/post/'.$img->profile_image)}}"/>
                         @endif
+
                     </div>
                 </div>
 
@@ -183,13 +185,16 @@
                                     $profile_id=$friend->profile_id;
                                     $img=$friend->profiles->where('id',$profile_id)->first();
                                 ?>
+                                 <a href="{{route('socialmedia.profile',$friend->id)}}" style="text-decoration:none">
                                 @if ($img==null)
-                                    <img style="text-decoration:none" src="{{asset('img/customer/imgs/user_default.jpg')}}"/>
+                                    <img src="{{asset('img/customer/imgs/user_default.jpg')}}"/>
                                 @else
-                                    <img style="text-decoration:none" src="{{asset('storage/post/'.$img->profile_image)}}"/>
+                                    <img src="{{asset('storage/post/'.$img->profile_image)}}"/>
                                 @endif
 
+
                                 <p>{{$friend->name}}</p>
+                                 </a>
                             </a>
                             </div>
                             @empty
