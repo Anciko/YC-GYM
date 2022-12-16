@@ -2166,7 +2166,7 @@ class SocialMediaController extends Controller
                     $merged[$key]['owner_id'] = $owner->group_owner_id;
             }
         }
-        $pusher->trigger('all_message.' .  $user_id_to , 'all', $merged);
+        $pusher->trigger('all_message.'.$user_id_to , 'all', $merged);
     }
         return response()->json([
             'success' => 'Success',
@@ -2727,13 +2727,13 @@ class SocialMediaController extends Controller
         $privilegeExpiredTs = $currentTimestamp + $expireTimeInSeconds;
 
         $token = RtcTokenBuilder::buildTokenWithUserAccount($appID, $appCertificate, $channelName, $user, $role, $privilegeExpiredTs);
-        
+
         $data['userToCall'] = $request->user_to_call;
         $data['channelName'] = $channelName;
         $data['from'] = Auth::id();
-        
+
         broadcast(new MakeAgoraAudioCall($data))->toOthers();
-    
+
         return response()->json([
             'data' => $token
         ]);
@@ -2751,7 +2751,7 @@ class SocialMediaController extends Controller
         $privilegeExpiredTs = $currentTimestamp + $expireTimeInSeconds;
 
         $token = RtcTokenBuilder::buildTokenWithUserAccount($appID, $appCertificate, $channelName, $user, $role, $privilegeExpiredTs);
-        
+
           // $data['userToCall'] = $request->user_to_call;
           $data['channelName'] = $request->channel_name;
           $data['groupId'] = $request->group_id;
