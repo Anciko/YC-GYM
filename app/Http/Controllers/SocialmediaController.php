@@ -1055,10 +1055,6 @@ class SocialmediaController extends Controller
                 ]);
             }
         }
-
-            // return response()->json([
-            //     'success' =>  'Deleted'
-            // ]);
     }
 
 
@@ -1338,20 +1334,6 @@ class SocialmediaController extends Controller
                 }
                 $comments['Replace'] = $main;
             }
-
-            // for($i = 0; $i < sizeof($ids) ; $i++){
-            //     $mentioned_user_id = $mentioned_user_id;
-
-            //     $url = route('socialmedia.profile',$mentioned_user_id);
-            //     $comments[$key]['Replace']= sizeof($ids);
-            //     if (str_contains($main,'@'.$ids[$i]->id)) {
-            //         $replace=
-            //         str_replace(['@'.$ids[$i]->id],
-            //         "<a href=$url>".$ids[$i]->name.'</a>',$main);
-            //         $main=$replace;
-            //         $comments[$key]['Replace']= $main;
-            // }
-            //     }
 
         } else {
             $comments['Replace'] = $comments->comment;

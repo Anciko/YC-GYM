@@ -20,7 +20,6 @@ class MakeAgoraCall implements ShouldBroadcast
      * @return void
      */
     public $data;
-
     public function __construct($data)
     {
         $this->data = $data;

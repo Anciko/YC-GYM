@@ -116,8 +116,9 @@
                     confirmButtonText: 'Yes',
                     cancelButtonText: 'No',
 
-                }).then((result) => {
-                    var add_url = "{{ route('message.all.delete') }}";
+                }).then((result) =>{
+                    if (result.isConfirmed) {
+                        var add_url = "{{ route('message.all.delete')}}";
                     $.ajax({
                         method: "GET",
                         url: add_url,
@@ -132,11 +133,11 @@
                                 timer: 5000,
                                 icon: 'success',
                             })
-
                             messages()
                         }
                     })
-                })
+                }
+            })
 
             })
 
@@ -180,7 +181,11 @@
                     url = url.replace(':id', id);
                     var group_url = "{{ route('socialmedia.group', ':id') }}";
                     group_url = group_url.replace(':id', id);
-                    if (res.data[i].is_group == 0) {
+
+                    var social_media = "{{ route('socialmedia.profile', [':id']) }}";
+                    social_media = social_media.replace(':id',id);
+
+                    if(res.data[i].is_group == 0){
                         htmlView += `
                             <div class="social-media-allchats-message-row-container">
                         <a href=` + url + ` class="social-media-allchats-message-row">
@@ -207,7 +212,7 @@
                                     <iconify-icon icon="tabler:trash" class="social-media-allchats-action-icon"></iconify-icon>
                                     <span>Delete</span>
                                 </div>
-                                <a>
+                                <a href=` + social_media + ` >
                                     <iconify-icon icon="material-symbols:person" class="social-media-allchats-action-icon"></iconify-icon>
                                     Profile
                                 </a>
