@@ -10,7 +10,7 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class GroupVideoCall implements ShouldBroadcast
+class DeclineCallUser implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
@@ -19,12 +19,9 @@ class GroupVideoCall implements ShouldBroadcast
      *
      * @return void
      */
-    public $member_id;
     public $data;
-
-    public function __construct($member_id, $data)
+    public function __construct($data)
     {
-        $this->member_id = $member_id;
         $this->data = $data;
     }
 
@@ -35,11 +32,10 @@ class GroupVideoCall implements ShouldBroadcast
      */
     public function broadcastOn()
     {
-        return new Channel("groupCalling.{$this->member_id}");
+        return new Channel('agora-videocall');
     }
 
-    public function broadcastAs()
-    {
-        return 'GroupVideoCall';
+    public function broadcastAs() {
+        return "DeclineCallUser";
     }
 }
