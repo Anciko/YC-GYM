@@ -1295,3 +1295,42 @@ transition: max-height 0.6s ease-out;
         margin-top: 150px;
 
     }
+
+
+ /* prepoader */
+ .preloader{
+    position: fixed;
+    left:0;
+    top:0;
+    height: 100%;
+    width:100%;
+    background-color:rgba(255, 255, 255, 0.984);
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* opacity: 1; */
+
+}
+.preloader.fade-out{
+    opacity: 0;
+    transition: opacity 1s ease;
+}
+.preloader div{
+    height: 40px;
+    width: 40px;
+    border-radius: 50%;
+    border-left:4px solid black;
+    border-right:4px solid black;
+    border-top:4px solid transparent;
+    border-bottom:4px solid transparent;
+    animation: preloader 1s linear infinite;
+}
+@keyframes preloader{
+    0%{
+        transform : rotate(0);
+    }
+    100%{
+        transform: rotate(360deg);
+    }
+}

@@ -89,6 +89,19 @@
         <script src="https://twemoji.maxcdn.com/v/latest/twemoji.min.js" crossorigin="anonymous"></script>
         <script src="{{asset('js/customer/DisMojiPicker.js')}}"></script>
       <script>
+        window.addEventListener("load", ()=> {
+
+            const preloader = document.querySelector(".js-preloader");
+            console.log('preloader');
+
+            preloader.classList.add("fade-out");
+
+            setTimeout(() =>{
+            preloader.style.display = "none";
+            //animate on scroll
+                //AOS.init();
+            },400);
+        });
                     $( document ).ready(function() {
                 $('.nav-icon').click(function(){
                         $('.notis-box-container').toggle()

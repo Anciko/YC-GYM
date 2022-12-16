@@ -3,6 +3,11 @@
 @section('content')
 @include('sweetalert::alert')
 
+<!-- preloader start -->
+<div class="preloader js-preloader">
+    <div></div>
+</div>
+
 <div class="modal fade" id="editPostModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
@@ -1474,6 +1479,7 @@
 
 <script>
 
+ // program to display a text using setTimeout method
         function onClick(element) {
 
             var profile_id=$(element).attr('id');
