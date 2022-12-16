@@ -116,8 +116,9 @@
                     confirmButtonText: 'Yes',
                     cancelButtonText: 'No',
 
-                }).then((result) => {
-                    var add_url = "{{ route('message.all.delete') }}";
+                }).then((result) =>{
+                    if (result.isConfirmed) {
+                        var add_url = "{{ route('message.all.delete')}}";
                     $.ajax({
                         method: "GET",
                         url: add_url,
@@ -132,11 +133,11 @@
                                 timer: 5000,
                                 icon: 'success',
                             })
-
                             messages()
                         }
                     })
-                })
+                }
+            })
 
             })
 
@@ -180,7 +181,11 @@
                     url = url.replace(':id', id);
                     var group_url = "{{ route('socialmedia.group', ':id') }}";
                     group_url = group_url.replace(':id', id);
-                    if (res.data[i].is_group == 0) {
+
+                    var social_media = "{{ route('socialmedia.profile', [':id']) }}";
+                    social_media = social_media.replace(':id',id);
+
+                    if(res.data[i].is_group == 0){
                         htmlView += `
                             <div class="social-media-allchats-message-row-container">
                         <a href=` + url + ` class="social-media-allchats-message-row">
@@ -207,26 +212,21 @@
                                     <iconify-icon icon="tabler:trash" class="social-media-allchats-action-icon"></iconify-icon>
                                     <span>Delete</span>
                                 </div>
-                                <a>
+                                <a href=` + social_media + ` >
                                     <iconify-icon icon="material-symbols:person" class="social-media-allchats-action-icon"></iconify-icon>
                                     Profile
                                 </a>
                             </div>
 
                         </div>
-                    </div>
-
-                            `
+                    </div>`
+                    
                     } else {
                         htmlView += `
                             <div class="social-media-allchats-message-row-container">
                                 <a href=` + group_url + ` class="social-media-allchats-message-row">
                                     <div class="social-media-allchats-message-img">
-<<<<<<< HEAD
                                     <img  class="nav-profile-img" src="{{asset('img/customer/imgs/group_default.png')}}"/>
-=======
-                                    <img  class="nav-profile-img" src="{{ asset('img/customer/imgs/user_default.jpg') }}"/>
->>>>>>> 3f54e14e4ff5529d282b36ff385acb867d362273
                                         <p>` + res.data[i].name + `</p>
                                     </div>
 

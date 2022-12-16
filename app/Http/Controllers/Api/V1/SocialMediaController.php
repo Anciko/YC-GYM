@@ -20,8 +20,10 @@ use App\Events\MakeAgoraCall;
 use App\Events\MessageDelete;
 use App\Models\UserReactPost;
 use App\Models\UserSavedPost;
+use App\Events\GroupVideoCall;
 use App\Models\ChatGroupMember;
 use App\Models\ChatGroupMessage;
+use App\Events\MakeAgoraAudioCall;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
@@ -1533,7 +1535,7 @@ class SocialMediaController extends Controller
         );
         // $pusher->trigger('chatting.'.auth()->user()->id.'.'.$to_user_id, 'chatting-event', ['message'=>$message]);
         $pusher->trigger('chatting.' . $to_user_id . '.' . auth()->user()->id, 'chatting-event', ['message' => $message]);
-        //broadcast(new Chatting($message, $request->sender));
+       // broadcast(new Chatting($message, $request->sender));
 
         $user_id = auth()->user()->id;
         $messages = DB::select("SELECT users.id as id,users.name,profiles.profile_image,chats.text,chats.created_at as date
@@ -2164,7 +2166,7 @@ class SocialMediaController extends Controller
                     $merged[$key]['owner_id'] = $owner->group_owner_id;
             }
         }
-        $pusher->trigger('all_message.' .  $user_id_to , 'all', $merged);
+        $pusher->trigger('all_message.'.$user_id_to , 'all', $merged);
     }
         return response()->json([
             'success' => 'Success',
@@ -2689,7 +2691,7 @@ class SocialMediaController extends Controller
     }
 
 
-    public function mobile_token(Request $request)
+    public function video_token(Request $request)
     {
         $appID = env('AGORA_APP_ID');
         $appCertificate = env('AGORA_APP_CERTIFICATE');
@@ -2701,23 +2703,61 @@ class SocialMediaController extends Controller
         $privilegeExpiredTs = $currentTimestamp + $expireTimeInSeconds;
 
         $token = RtcTokenBuilder::buildTokenWithUserAccount($appID, $appCertificate, $channelName, $user, $role, $privilegeExpiredTs);
-        
+
         $data['userToCall'] = $request->user_to_call;
         $data['channelName'] = $channelName;
         $data['from'] = Auth::id();
-        
+
         broadcast(new MakeAgoraCall($data))->toOthers();
-        // $options = array(
-        //     'cluster' => env('PUSHER_APP_CLUSTER'),
-        //     'encrypted' => true
-        // );
-        // $pusher = new Pusher(
-        //     env('PUSHER_APP_KEY'),
-        //     env('PUSHER_APP_SECRET'),
-        //     env('PUSHER_APP_ID'),
-        //     $options
-        // );
-        // $pusher->trigger('video_call.' . $request->to_call, 'call', $channelName);
+        return response()->json([
+            'data' => $token
+        ]);
+    }
+
+
+    public function audio_token(Request $request)
+    {
+        $appID = env('AGORA_APP_ID');
+        $appCertificate = env('AGORA_APP_CERTIFICATE');
+        $channelName = $request->channelName;
+        $user = Auth::user()->name;
+        $role = RtcTokenBuilder::RoleAttendee;
+        $expireTimeInSeconds = 3600;
+        $currentTimestamp = now()->getTimestamp();
+        $privilegeExpiredTs = $currentTimestamp + $expireTimeInSeconds;
+
+        $token = RtcTokenBuilder::buildTokenWithUserAccount($appID, $appCertificate, $channelName, $user, $role, $privilegeExpiredTs);
+
+        $data['userToCall'] = $request->user_to_call;
+        $data['channelName'] = $channelName;
+        $data['from'] = Auth::id();
+
+        broadcast(new MakeAgoraAudioCall($data))->toOthers();
+
+        return response()->json([
+            'data' => $token
+        ]);
+    }
+
+    public function gp_video_token(Request $request)
+    {
+        $appID = env('AGORA_APP_ID');
+        $appCertificate = env('AGORA_APP_CERTIFICATE');
+        $channelName = $request->channelName;
+        $user = Auth::user()->name;
+        $role = RtcTokenBuilder::RoleAttendee;
+        $expireTimeInSeconds = 3600;
+        $currentTimestamp = now()->getTimestamp();
+        $privilegeExpiredTs = $currentTimestamp + $expireTimeInSeconds;
+
+        $token = RtcTokenBuilder::buildTokenWithUserAccount($appID, $appCertificate, $channelName, $user, $role, $privilegeExpiredTs);
+
+          // $data['userToCall'] = $request->user_to_call;
+          $data['channelName'] = $request->channel_name;
+          $data['groupId'] = $request->group_id;
+          // $data['from'] = Auth::id();
+          // dd($data);
+          broadcast(new GroupVideoCall($data['groupId'],$data))->toOthers();
         return response()->json([
             'data' => $token
         ]);

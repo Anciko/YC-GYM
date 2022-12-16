@@ -35,4 +35,8 @@ class MakeAgoraAudioCall implements ShouldBroadcast
     {
         return new Channel('agora-videocall');
     }
+
+    public function broadcastAs(){
+        return 'MakeAgoraAudioCall';
+    }
 }
