@@ -1158,7 +1158,7 @@
                     }
                     agoraChannel = data.channelName
                 }
-            }).listen("MakeAgoraAudioCall", ({
+            }).listen(".MakeAgoraAudioCall", ({
                 data
             }) => {
                 console.log('listening-------------------------', data);
