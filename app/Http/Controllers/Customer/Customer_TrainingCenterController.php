@@ -178,16 +178,6 @@ class Customer_TrainingCenterController extends Controller
 
     public function saved_post(){
 
-        $saved_post = UserSavedPost::select('users.name','profiles.profile_image','posts.*')
-                        ->leftJoin('posts','posts.id','user_saved_posts.post_id')
-                        ->where('user_saved_posts.user_id',auth()->user()->id)
-                        ->where('posts.report_status',0)
-                        ->leftJoin('users','users.id','posts.user_id')
-                        ->leftJoin('profiles','users.profile_id','profiles.id')
-                        ->orderBy('user_saved_posts.created_at','DESC')
-                        ->get();
-
-        //////////////
         $saved_posts = DB::table('user_saved_posts')
                         ->select('users.name','profiles.profile_image','posts.*','posts.id as post_id','posts.created_at as post_date')
                         ->leftJoin('posts','posts.id','user_saved_posts.post_id')
@@ -195,7 +185,7 @@ class Customer_TrainingCenterController extends Controller
                         ->where('posts.report_status',0)
                         ->leftJoin('users','users.id','posts.user_id')
                         ->leftJoin('profiles','users.profile_id','profiles.id')
-                        ->orderBy('posts.created_at','DESC')
+                        ->orderBy('user_saved_posts.created_at','DESC')
                         ->get();
 
             foreach($saved_posts as $key=>$value){

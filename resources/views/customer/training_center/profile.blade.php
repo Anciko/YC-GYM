@@ -58,10 +58,12 @@
 
 <!-- The Image Modal -->
 <div id="modal01" class="modal-image" onclick="this.style.display='none'">
-    <span class="close-image">&times;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-    <a href="#" class="delete-image" id="delete-image" onclick=deleteImage(this)>
-        <i class="fa-solid fa-trash fa-xs"></i>
-    </a>
+    <div class="view-media-modal-btns">
+        <span class="close-image">&times;</span>
+        <a href="#" class="delete-image" id="delete-image" onclick=deleteImage(this)>
+            <i class="fa-solid fa-trash fa-xs"></i>
+        </a>
+    </div>
     <div class="modal-content-image">
       <img id="img01" style="max-width:100%">
     </div>
