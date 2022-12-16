@@ -100,7 +100,7 @@
             preloader.style.display = "none";
             //animate on scroll
                 //AOS.init();
-            },400);
+            },600);
         });
                     $( document ).ready(function() {
                 $('.nav-icon').click(function(){
