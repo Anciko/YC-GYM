@@ -3,16 +3,17 @@
 namespace App\Http\Controllers;
 
 use Pusher\Pusher;
+use App\Models\ChatGroup;
 use Illuminate\Http\Request;
 use App\Events\MakeAgoraCall;
 use App\Events\GroupAudioCall;
 use App\Events\GroupVideoCall;
+use App\Events\DeclineCallUser;
 use App\Models\ChatGroupMember;
 use App\Models\ChatGroupMessage;
 use App\Events\MakeAgoraAudioCall;
 use Illuminate\Support\Facades\Auth;
 use App\Class\AgoraDynamicKey\RtcTokenBuilder;
-use App\Events\DeclineCallUser;
 
 class VideoController extends Controller
 {
@@ -42,7 +43,7 @@ class VideoController extends Controller
 
     public function callGpuser(Request $request)
     {
-        $members = ChatGroupMember::where('group_id', $request->group_id)->get();
+        $members = ChatGroupMember::where('group_id', $request->group_id)->where('member_id','!=',auth()->user()->id)->get();
         $data['channelName'] = $request->channel_name;
 
         foreach ($members as $member) {
@@ -53,9 +54,11 @@ class VideoController extends Controller
 
     public function callGpAudioUser(Request $request)
     {
-        $members = ChatGroupMember::where('group_id', $request->group_id)->get();
+        $members = ChatGroupMember::where('group_id', $request->group_id)->where('member_id','!=',auth()->user()->id)->get();
         $data['channelName'] = $request->channel_name;
-
+        $group_name = ChatGroup::select('group_name')->where('id',$request->group_id)->first();
+        $data['groupName'] = $group_name;
+        
         foreach ($members as $member) {
             $data['memberId'] = $member->member_id;
             broadcast(new GroupAudioCall($data['memberId'], $data))->toOthers();
