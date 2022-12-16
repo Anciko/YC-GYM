@@ -93,6 +93,8 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
         // ------
         Route::post('/agora/call-gp-user', [VideoController::class, 'callGpuser'])->name('socialmedia.gpcall');
         Route::post('/agora/call-gpaudio-user', [VideoController::class, 'callGpAudioUser'])->name('socialmedia.gpaudiocall');
+        Route::post('/agora/decline-call-user', [VideoController::class, 'declineCallUser'])->name('decline.user');
+
         //-------
         Route::post('/agora/call-audio-user',  [VideoController::class, 'callAudioUser'])->name('socialmedia.videocall');
 
