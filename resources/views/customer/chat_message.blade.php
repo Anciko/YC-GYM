@@ -1106,7 +1106,8 @@
 
     <script>
         $(".chat-backdrop").hide();
-        let voice_receive_user_img = @json($receiver_user->user_profile->profile_image);
+        var voice_receive_user_img = @json($receiver_user->user_profile);
+        var profile
         console.log("ferer", voice_receive_user_img);
         let onlineUsers = []
         let client = null
@@ -1133,6 +1134,12 @@
 
         let friends = @json($friends);
 
+        if(voice_receive_user_img == null){
+            profile =  `img/customer/imgs/user_default.jpg`
+        }else{
+            var image = @json($receiver_user->user_profile?->profile_image);
+            profile = `storage/post/${image}`
+        }
 
         Echo.channel('agora-videocall')
             .listen(".MakeAgoraCall", ({
@@ -1344,7 +1351,7 @@
                                                        <div id="local-audio"></div>
                                                         <div id="remote-audio"></div>
                                                     <div class="text-center ">
-                                                        <img src="{{ asset('/storage/post/${voice_receive_user_img}') }}" class="rounded-circle img-thumbnail img-fluid shadow" style="width:150px; height:150px;"/>
+                                                        <img src="{{ asset('${profile}') }}" class="rounded-circle img-thumbnail img-fluid shadow" style="width:150px; height:150px;"/>
                                                         <p class="mb-0 mt-3" style="color:#3CDD57;">${receiverUserName}</p>
                                                     </div>
                                                     <div class="action-btns">

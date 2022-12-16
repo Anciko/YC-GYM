@@ -2,20 +2,6 @@
 
 @section('content')
 @include('sweetalert::alert')
-<style>
-
-/* .se-pre-con {
-	position: fixed;
-	left: 0px;
-	top: 0px;
-	width: 100%;
-	height: 100%;
-	z-index: 9999;
-	background: url(/img/Spinner-3.gif) center no-repeat #fff;
-} */
-
-</style>
-
 
 <!-- Report Modal -->
 <div class="modal fade " id="reportmodal">

@@ -478,8 +478,6 @@
 
             $(".social-media-all-comments-input").on('submit',function(e){
                 e.preventDefault()
-                // console.log($('.mentiony-content').text())
-
 
                 var arr = []
                 $.each($('.social-media-all-comments-input .mentiony-link'),function(){
@@ -510,8 +508,20 @@
                         data : {'post_id':post_id,'mention' : arr , 'comment' : comment},
                         dataType: "json",
                         success: function (response) {
-                            fetch_comment();
-                            $('.mentiony-content').empty()
+                            if(response.ban){
+                                Swal.fire({
+                                            text: response.ban,
+                                            timerProgressBar: true,
+                                            timer: 5000,
+                                            icon: 'error',
+                                        }).then(() => {
+                                            $('.mentiony-content').empty()
+                                        })
+
+                            }else{
+                                fetch_comment();
+                                $('.mentiony-content').empty()
+                            }
                         }
 
                     });
@@ -547,7 +557,21 @@
                         data : {'post_id':post_id,'mention' : arr , 'comment' : comment},
                         dataType: "json",
                         success: function (response) {
-                            window.location.reload()
+                            if(response.ban){
+                                Swal.fire({
+                                            text: response.ban,
+                                            timerProgressBar: true,
+                                            timer: 5000,
+                                            icon: 'error',
+                                        }).then(() => {
+                                            $('#editModal').modal('hide');
+                                            fetch_comment();
+                                        })
+
+                            }else{
+                                fetch_comment();
+                                $('.mentiony-content').empty()
+                            }
                         }
 
                     });

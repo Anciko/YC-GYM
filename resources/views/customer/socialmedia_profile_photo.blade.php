@@ -5,7 +5,9 @@
 
 <!-- The Image Modal -->
 <div id="modal01" class="modal-image" onclick="this.style.display='none'">
-    <span class="close-image">&times;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+    <div class="view-media-modal-btns">
+        <span class="close-image">&times;</span>
+    </div>
     <div class="modal-content-image">
       <img id="img01" style="max-width:100%">
     </div>

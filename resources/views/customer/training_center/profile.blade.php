@@ -58,10 +58,12 @@
 
 <!-- The Image Modal -->
 <div id="modal01" class="modal-image" onclick="this.style.display='none'">
-    <span class="close-image">&times;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-    <a href="#" class="delete-image" id="delete-image" onclick=updateDiv(this)>
-        <i class="fa-solid fa-trash fa-xs"></i>
-    </a>
+    <div class="view-media-modal-btns">
+        <span class="close-image">&times;</span>
+        <a href="#" class="delete-image" id="delete-image" onclick=deleteImage(this)>
+            <i class="fa-solid fa-trash fa-xs"></i>
+        </a>
+    </div>
     <div class="modal-content-image">
       <img id="img01" style="max-width:100%">
     </div>
@@ -2206,7 +2208,6 @@
 
 
                         });
-                        console.log($("#editComment .mentiony-content") , "not edit")
                     },
                 });
                 $('#editCommentTextArea').mentiony({
@@ -2322,9 +2323,21 @@
                         data : {'post_id':post_id,'mention' : arr , 'comment' : comment},
                         dataType: "json",
                         success: function (response) {
-                            $('#edit_comments_modal').modal('hide');
-                            viewcomments()
+                            if(response.ban){
+                                Swal.fire({
+                                            text: response.ban,
+                                            timerProgressBar: true,
+                                            timer: 5000,
+                                            icon: 'error',
+                                        }).then(() => {
+                                            $('#edit_comments_modal').modal('hide');
+                                            viewcomments()
+                                        })
 
+                            }else{
+                                $('#edit_comments_modal').modal('hide');
+                                viewcomments()
+                            }
                         }
 
                     });
@@ -2382,10 +2395,24 @@
                         data : {'post_id':post_id,'mention' : arr , 'comment' : comment},
                         dataType: "json",
                         success: function (response) {
-                            $('.mentiony-content').empty()
-                            viewcomments()
-                            all_posts()
-                            saved_posts(e)
+                            if(response.ban){
+                                Swal.fire({
+                                            text: response.ban,
+                                            timerProgressBar: true,
+                                            timer: 5000,
+                                            icon: 'error',
+                                        }).then(() => {
+                                            $('.mentiony-content').empty()
+                                            viewcomments()
+                                        })
+
+                            }else{
+                                $('.mentiony-content').empty()
+                                viewcomments()
+                                all_posts()
+                                saved_posts(e)
+                            }
+
                         }
 
                     });
@@ -3367,7 +3394,7 @@
 
     }
 
-    function updateDiv(element)
+    function deleteImage(element)
 {
     var profile_id=element.name;
     console.log(profile_id+" Profile ID");
