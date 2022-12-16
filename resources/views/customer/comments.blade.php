@@ -309,8 +309,8 @@
         })
 
         $('.post_save').click(function(e){
+            $('.post-actions-container').hide();
             e.preventDefault();
-
             var post_id=$(this).attr('id');
             var add_url = "{{ route('socialmedia.post.save', [':post_id']) }}";
             add_url = add_url.replace(':post_id', post_id);
@@ -329,7 +329,7 @@
                                         timer: 5000,
                                         icon: 'success',
                                     }).then((result) => {
-                                        e.target.innerHTML = "Unsave";
+                                        e.target.querySelector(".save").innerHTML = `Unsave`;
                                     })
                                 }else{
                                     Swal.fire({
@@ -338,7 +338,7 @@
                                             timer: 5000,
                                             icon: 'success',
                                         }).then((result) => {
-                                            e.target.innerHTML="Save";
+                                            e.target.querySelector(".save").innerHTML = `Save`;
 
                                     })
                                 }
@@ -352,6 +352,7 @@
             $(document).on('click', '.social-media-comment-icon', function(e) {
                 $(this).next().toggle()
             })
+
             fetch_comment();
                 $('#textarea').mentiony({
                     onDataRequest: function (mode, keyword, onDataRequestCompleteCallback) {
@@ -368,7 +369,7 @@
                             dataType: "json",
                             success: function (response) {
                                 var data = response.data;
-                                console.log(data)
+
 
                                 // NOTE: Assuming this filter process was done on server-side
                                 data = jQuery.grep(data, function( item ) {
@@ -401,7 +402,7 @@
                             dataType: "json",
                             success: function (response) {
                                 var data = response.data;
-                                console.log(data)
+
 
                                 // NOTE: Assuming this filter process was done on server-side
                                 data = jQuery.grep(data, function( item ) {
@@ -443,8 +444,7 @@
                     })
                 })
 
-
-                // //emoji end
+                //emoji end
 
                 //edit comment start
                 $(document).on('click', '#editCommentModal', function(e) {
@@ -471,7 +471,6 @@
                     });
                 })
                 //edit comment end
-
 
             $(".mentiony-container").attr('style','')
             $(".mentiony-content").attr('style','')
@@ -521,9 +520,6 @@
 
             $(".social-media-all-comments-input-edit").on('submit',function(e){
                 e.preventDefault()
-                // console.log($('.mentiony-content').text())
-                console.log($(".social-media-all-comments-input-edit").data('id') , "dddddddddd")
-
 
                 var arr = []
                 $.each($('.social-media-all-comments-input-edit .mentiony-link'),function(){
@@ -580,17 +576,21 @@
                                 No Comment.
                                 `;
                             }
-                            console.log("data");
+
                             var auth_id={{auth()->user()->id}};
 
                             for(let i = 0; i < res.comment.length; i++){
                                 var comment_user=res.comment[i].user_id;
                                     var post_owner=res.comment[i].post_owner;
                                     if(res.comment[i].profile_image != null){
-                                        htmlView += `
-                                        <div class="social-media-comment-container">
-                                        <img src="{{ asset('/storage/post/${res.comment[i].profile_image}') }}">
-                                        <div class="social-media-comment-box">
+                                        htmlView += `<div class="social-media-comment-container">`
+                                        if(res.comment[i].profile_image===null){
+                                            htmlView+= `<img src="{{ asset('/img/customer/imgs/user_default.jpg') }}" >`
+                                        }else{
+                                            htmlView+= `<img src="{{ asset('/storage/post/${res.comment[i].profile_image}') }}" >`
+                                        }
+
+                                        htmlView += `<div class="social-media-comment-box">
                                             <div class="social-media-comment-box-header">
                                                 <div class="social-media-comment-box-name">
                                                     <p>`+res.comment[i].name+`</p>
@@ -616,10 +616,12 @@
                                                 htmlView+=`
                                                 <iconify-icon icon="bx:dots-vertical-rounded" class="social-media-comment-icon"></iconify-icon>
                                                         <div class="comment-actions-container" >
-                                                        <div class="comment-action" id="editCommentModal" data-id=`+res.comment[i].id+`>
-                                                            <iconify-icon icon="akar-icons:edit" class="comment-action-icon"></iconify-icon>
-                                                            <p>Edit</p>
+                                                        <a id="delete_comment" data-id=`+res.comment[i].id+`>
+                                                        <div class="comment-action">
+                                                            <iconify-icon icon="fluent:delete-12-regular" class="comment-action-icon"></iconify-icon>
+                                                            <p>Delete</p>
                                                         </div>
+                                                        </a>
                                                     </div>`
                                             }else if(auth_id==comment_user){
                                                 htmlView+=`
@@ -701,7 +703,7 @@
                                                     <p>`+res.comment[i].Replace+`</p>
                                                 </div>
                                             </div>
-                                            `           
+                                            `
                                 }
 
                 }
@@ -764,7 +766,7 @@
                                     url: url,
                                     datatype: "json",
                                     success: function(data) {
-                                        console.log(data);
+                        ;
                                         fetch_comment();
                                     }
                                 })

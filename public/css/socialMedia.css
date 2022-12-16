@@ -553,6 +553,7 @@
     margin-bottom: 0;
     font-size: 14px;
     color: black;
+    pointer-events: none;
 }
 
 .post-action-icon{
@@ -819,6 +820,7 @@
 
 .social-media-allchats-header-add-btn p{
     margin-bottom: 0;
+    font-size: 14px;
 }
 
 .group-chat-add-btn{
@@ -826,6 +828,7 @@
     margin-right: 5px;
     margin-top: 10px;
     margin-bottom: 10px;
+    padding: 8px 5px;
 }
 
 .create-group-name, .create-group-addfris{
@@ -1089,6 +1092,10 @@
     gap: 0 5px;
 }
 
+.social-media-view-memers-row-name a{
+    text-decoration: none;
+}
+
 .social-media-view-memers-row-name img{
     width: 35px;
     height: 35px;
@@ -1106,6 +1113,16 @@
     display: flex;
     align-items: center;
     gap: 10px;
+}
+
+.social-media-view-members-row-btns .customer-red-btn{
+    padding: 8px 15px;
+    font-size: 14px;
+}
+
+.social-media-view-members-row-btns > p{
+    margin-bottom: 0;
+    margin-right: 10px;
 }
 
 .social-media-view-memers-row .customer-secondary-btn{
@@ -1891,6 +1908,12 @@ ul{
 
 .social-media-allchats-actions-box div:hover, .social-media-allchats-actions-box a:hover{
     background-color: var(--customer-primary-color);
+}
+
+.social-media-view-members-header-btns-container{
+    display: flex;
+    align-items: center;
+    gap: 0 10px;
 }
 
 @media screen and (max-width:1000px){

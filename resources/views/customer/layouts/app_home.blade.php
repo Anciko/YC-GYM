@@ -338,7 +338,6 @@
 
                 var channel = pusher.subscribe('chat_message.'+user_id);
                 channel.bind('chat', function(data) {
-                console.log(data , "ted");
 
                 let htmlView = '';
                 for (let i = 0; i < data.length; i++) {
@@ -347,21 +346,33 @@
                 url = url.replace(':id', id);
                 var group_url = "{{ route('socialmedia.group', ':id') }}";
                 group_url = group_url.replace(':id', id);
+
                 if(data[i].is_group == 0){
-                htmlView += `
-                                    <a href=`+url+` class="social-media-left-messages-row">
-                                            <img  class="nav-profile-img" src="{{asset('img/customer/imgs/user_default.jpg')}}"/>
+                    if(data[i].profile_image!=null){
+                        htmlView += `<a href=`+url+` class="social-media-left-messages-row">
+                                            <img  class="nav-profile-img" src="{{asset('storage/post/`+data[i].profile_image+`')}}"/>
                                         <p>
                                             ` + data[i].name + `<br>
                                             <span>` + data[i].text + ` </span>
                                         </p>
                                     </a>
                             `
+                    }else{
+                        htmlView += `<a href=`+url+` class="social-media-left-messages-row">
+                                            <img  class="nav-profile-img" src="{{asset('img/customer/imgs/user_default.jpg')}}" />
+                                        <p>
+                                            ` + data[i].name + `<br>
+                                            <span>` + data[i].text + ` </span>
+                                        </p>
+                                    </a>
+                            `
+                    }
+
                 }
                 else{
                     htmlView += `
                                     <a href=`+group_url+` class="social-media-left-messages-row">
-                                            <img  class="nav-profile-img" src="{{asset('img/customer/imgs/user_default.jpg')}}"/>
+                                            <img  class="nav-profile-img" src="{{asset('img/customer/imgs/group_default.png')}}" />
                                         <p>
                                             ` + data[i].name + `<br>
                                             <span>` + data[i].text + ` </span>
@@ -378,7 +389,7 @@
                 // alert("send");
                 let htmlView = '';
                 var latest_messages=@json($latest_messages);
-                console.log(latest_messages)
+                console.log(latest_messages,'latest msg')
                 if (latest_messages.length <= 0) {
                     htmlView += `
                         No Messages.
@@ -392,7 +403,9 @@
                 var group_url = "{{ route('socialmedia.group', ':id') }}";
                 group_url = group_url.replace(':id', id);
                 if(latest_messages[i].is_group == 0){
-                    htmlView += `
+
+                    if(latest_messages[i].profile_image===null){
+                        htmlView += `
                                     <a href=`+url+` class="social-media-left-messages-row">
                                             <img  class="nav-profile-img" src="{{asset('img/customer/imgs/user_default.jpg')}}"/>
                                         <p>
@@ -401,11 +414,23 @@
                                         </p>
                                     </a>
                             `
+                    }else{
+                        htmlView += `
+                                    <a href=`+url+` class="social-media-left-messages-row">
+                                            <img  class="nav-profile-img" src="{{asset('storage/post/`+latest_messages[i].profile_image+`')}}"/>
+                                        <p>
+                                            ` + latest_messages[i].name + `<br>
+                                            <span>` + latest_messages[i].text + ` </span>
+                                        </p>
+                                    </a>
+                            `
+                    }
+
                 }
                 else{
                     htmlView += `
                                     <a href=`+group_url+` class="social-media-left-messages-row">
-                                            <img  class="nav-profile-img" src="{{asset('img/customer/imgs/user_default.jpg')}}"/>
+                                            <img  class="nav-profile-img" src="{{asset('img/customer/imgs/group_default.png')}}"/>
                                         <p>
                                             ` + latest_messages[i].name + `<br>
                                             <span>` + latest_messages[i].text + ` </span>

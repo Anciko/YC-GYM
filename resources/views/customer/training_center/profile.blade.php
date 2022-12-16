@@ -115,6 +115,7 @@
     </div>
 </div>
 
+<!-- Edit Comment Modal -->
 <div class="modal fade" id ="edit_comments_modal"  tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
@@ -294,317 +295,14 @@
                     <p>Post & Activities</p>
                     <select class="customer-profile-selector">
                         <option value="all">All</option>
-                        <option value="saved">Saved</option>
+                        <option value="saved" class="saved_post_selectbox">Saved</option>
                     </select>
                 </div>
-
                 <div class="customer-all-posts-container">
-                    @forelse ($posts as $post)
-                        <div class="customer-post-container">
-                            <div class="customer-post-header">
-                                <div class="customer-post-name-container">
-
-                                    @if ($user_profile_image==null)
-                                        <img class="nav-profile-img" src="{{asset('img/customer/imgs/user_default.jpg')}}"/>
-                                    @else
-                                        <img class="nav-profile-img" src="{{asset('storage/post/'.$user_profile_image->profile_image)}}"/>
-                                    @endif
-                                    <div class="customer-post-name">
-                                        <p>{{$post->user->name}}</p>
-                                        <span>{{ \Carbon\Carbon::parse($post->created_at)->format('d M Y , g:i A')}}</span>
-                                    </div>
-                                </div>
-
-                                <iconify-icon icon="bi:three-dots-vertical" class="customer-post-header-icon"></iconify-icon>
-                                <div class="post-actions-container">
-                                    <a href="#" style="text-decoration:none" class="post_save" id="{{$post->id}}">
-                                        <div class="post-action">
-                                            <iconify-icon icon="bi:save" class="post-action-icon"></iconify-icon>
-                                            @php
-                                                $already_save=auth()->user()->user_saved_posts->where('post_id',$post->id)->first();
-                                            @endphp
-
-                                            @if ($already_save)
-                                                <p class="save">Unsave</p>
-                                            @else
-                                                <p class="save">Save</p>
-                                             @endif
-                                        </div>
-                                    </a>
-                                    <a id="edit_post" data-id="{{$post->id}}" data-bs-toggle="modal" >
-                                        <div class="post-action">
-                                            <iconify-icon icon="material-symbols:edit" class="post-action-icon"></iconify-icon>
-                                            <p>Edit</p>
-                                        </div>
-                                    </a>
-                                    <a id="delete_post" data-id="{{$post->id}}">
-                                        <div class="post-action">
-                                        <iconify-icon icon="material-symbols:delete-forever-outline-rounded" class="post-action-icon"></iconify-icon>
-                                        <p>Delete</p>
-                                        </div>
-                                    </a>
-                                </div>
-                            </div>
-
-                            <div class="customer-content-container">
-                                @if ($post->media==null)
-                                <p>{{$post->caption}}</p>
-                                @else
-                                <p>{{$post->caption}}</p>
-                                <div class="customer-media-container">
-                                    <?php foreach (json_decode($post->media)as $m){?>
-                                        <div class="customer-media">
-                                        @if (pathinfo($m, PATHINFO_EXTENSION) == 'mp4')
-                                        <video controls>
-                                            <source src="{{asset('storage/post/'.$m) }}">
-                                        </video>
-                                        @else
-                                            <img src="{{asset('storage/post/'.$m) }}">
-                                        @endif
-                                    </div>
-                                    <?php }?>
-                                </div>
-                                <div id="slider-wrapper" class="social-media-media-slider">
-                                    <iconify-icon icon="akar-icons:cross" class="slider-close-icon"></iconify-icon>
-
-                                    <div id="image-slider" class="image-slider">
-                                        <ul class="ul-image-slider">
-
-                                            <?php foreach (json_decode($post->media)as $m){?>
-                                                @if (pathinfo($m, PATHINFO_EXTENSION) == 'mp4')
-                                                <li>
-                                                    <video controls>
-                                                        <source src="{{asset('storage/post/'.$m) }}">
-                                                    </video>
-                                                </li>
-                                                @else
-                                                    <li>
-                                                        <img src="{{asset('storage/post/'.$m) }}" alt="" />
-                                                    </li>
-                                                @endif
-
-                                            <?php }?>
-                                        </ul>
-
-                                    </div>
-
-                                    <div id="thumbnail" class="img-slider-thumbnails">
-                                        <ul>
-                                            <?php foreach (json_decode($post->media)as $m){?>
-                                                @if (pathinfo($m, PATHINFO_EXTENSION) == 'mp4')
-                                                <li>
-                                                    <video>
-                                                        <source src="{{asset('storage/post/'.$m) }}">
-                                                    </video>
-                                                </li>
-                                                @else
-                                                    <li>
-                                                        <img src="{{asset('storage/post/'.$m) }}" alt="" />
-                                                    </li>
-                                                @endif
-
-                                            <?php }?>
-
-                                        </ul>
-                                    </div>
-
-                                </div>
-                                @endif
-
-                            </div>
-
-                            <div class="customer-post-footer-container">
-                                <div class="customer-post-like-container">
-                                    @php
-                                        $total_likes=$post->user_reacted_posts->count();
-                                        $total_comments=$post->comments->count();
-                                        $user=auth()->user();
-                                        $already_liked=$user->user_reacted_posts->where('post_id',$post->id)->count();
-                                    @endphp
-
-                                    <a class="like" href="#" id="{{$post->id}}">
-
-                                    @if($already_liked==0)
-                                    <iconify-icon icon="mdi:cards-heart-outline" class="like-icon">
-                                    </iconify-icon>
-                                    @else
-                                    <iconify-icon icon="mdi:cards-heart" style="color: red;" class="like-icon already-liked">
-                                    </iconify-icon>
-                                    @endif
-
-                                    </a>
-                                    <p>
-                                        <span class="total_likes">
-
-                                        {{$total_likes}}
-                                        </span>
-                                        <a class="viewlikes" id={{$post->id}}>Likes</a>
-                                    </p>
-                                </div>
-                                <div class="customer-post-comment-container">
-                                    {{-- <a href = "{{route('post.comment',$post->id)}}"> --}}
-                                    <a class="viewcomments" id = "{{$post->id}}">
-                                    <iconify-icon icon="bi:chat-right" class="comment-icon"></iconify-icon>
-                                    <p id="{{$post->id}}"><span>{{$total_comments}}</span> Comments</p>
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                        @empty
-                        <p class="text-secondary p-1">No Post And Activity</p>
-                    @endforelse
                 </div>
 
                 {{-- Saved Post Start --}}
                 <div class="customer-saved-posts-container">
-                    @forelse ($save_posts->sortByDesc('created_at') as $save_post)
-                        <div class="customer-post-container">
-                            <div class="customer-post-header">
-                                <div class="customer-post-name-container">
-                                    <?php $profile=$save_post->post->user->profiles->where('cover_photo',null)->sortByDesc('created_at')->first() ?>
-                                    @if ($profile==null)
-                                        <img class="nav-profile-img" src="{{asset('img/customer/imgs/user_default.jpg')}}"/>
-                                    @else
-                                        <img class="nav-profile-img" src="{{asset('storage/post/'.$profile->profile_image)}}"/>
-                                    @endif
-                                    <div class="customer-post-name">
-                                        <p>{{$save_post->post->user->name}}</p>
-                                        <span>{{ \Carbon\Carbon::parse($save_post->post->created_at)->format('d M Y , g:i A')}}</span>
-                                    </div>
-                                </div>
-
-                                <iconify-icon icon="bi:three-dots-vertical" class="customer-post-header-icon"></iconify-icon>
-                                <div class="post-actions-container">
-                                    <a href="#" style="text-decoration:none" class="post_save" id="{{$save_post->post_id}}">
-                                        <div class="post-action">
-                                            <iconify-icon icon="bi:save" class="post-action-icon"></iconify-icon>
-                                                <p class="save">Unsave</p>
-                                        </div>
-                                    </a>
-                                    @if ($save_post->post->user->id == auth()->user()->id)
-                                        <a id="edit_post" data-id="{{$save_post->post->id}}" data-bs-toggle="modal" >
-                                            <div class="post-action">
-                                                <iconify-icon icon="material-symbols:edit" class="post-action-icon"></iconify-icon>
-                                                <p>Edit</p>
-                                            </div>
-                                        </a>
-                                        <a id="delete_post" data-id="{{$save_post->post->id}}">
-                                            <div class="post-action">
-                                            <iconify-icon icon="material-symbols:delete-forever-outline-rounded" class="post-action-icon"></iconify-icon>
-                                            <p>Delete</p>
-                                            </div>
-                                        </a>
-                                    @endif
-                                </div>
-                            </div>
-
-                            <div class="customer-content-container">
-                                @if ($save_post->post->media==null)
-                                <p>{{$save_post->post->caption}}</p>
-                                @else
-                                <p>{{$save_post->post->caption}}</p>
-                                <div class="customer-media-container">
-                                    <?php foreach (json_decode($save_post->post->media)as $m){?>
-                                        <div class="customer-media">
-                                        @if (pathinfo($m, PATHINFO_EXTENSION) == 'mp4')
-                                        <video controls>
-                                            <source src="{{asset('storage/post/'.$m) }}">
-                                        </video>
-                                        @else
-                                            <img src="{{asset('storage/post/'.$m) }}">
-                                        @endif
-                                    </div>
-                                    <?php }?>
-                                </div>
-                                <div id="slider-wrapper" class="social-media-media-slider">
-                                    <iconify-icon icon="akar-icons:cross" class="slider-close-icon"></iconify-icon>
-
-                                    <div id="image-slider" class="image-slider">
-                                        <ul class="ul-image-slider">
-
-                                            <?php foreach (json_decode($save_post->post->media)as $m){?>
-                                                @if (pathinfo($m, PATHINFO_EXTENSION) == 'mp4')
-                                                <li>
-                                                    <video controls>
-                                                        <source src="{{asset('storage/post/'.$m) }}">
-                                                    </video>
-                                                </li>
-                                                @else
-                                                    <li>
-                                                        <img src="{{asset('storage/post/'.$m) }}" alt="" />
-                                                    </li>
-                                                @endif
-
-                                            <?php }?>
-                                        </ul>
-
-                                    </div>
-
-                                    <div id="thumbnail" class="img-slider-thumbnails">
-                                        <ul>
-                                            <?php foreach (json_decode($save_post->post->media)as $m){?>
-                                                @if (pathinfo($m, PATHINFO_EXTENSION) == 'mp4')
-                                                <li>
-                                                    <video>
-                                                        <source src="{{asset('storage/post/'.$m) }}">
-                                                    </video>
-                                                </li>
-                                                @else
-                                                    <li>
-                                                        <img src="{{asset('storage/post/'.$m) }}" alt="" />
-                                                    </li>
-                                                @endif
-
-                                            <?php }?>
-
-                                        </ul>
-                                    </div>
-
-                                </div>
-                                @endif
-
-                            </div>
-
-                            <div class="customer-post-footer-container">
-                                <div class="customer-post-like-container">
-                                    @php
-                                        $total_likes=$save_post->post->user_reacted_posts->count();
-                                        $total_comments=$save_post->post->comments->count();
-                                        $user=auth()->user();
-                                        $already_liked=$user->user_reacted_posts->where('post_id',$save_post->post->id)->count();
-                                    @endphp
-
-                                    <a class="like" href="#" id="{{$save_post->post->id}}">
-
-                                    @if($already_liked==0)
-                                    <iconify-icon icon="mdi:cards-heart-outline" class="like-icon">
-                                    </iconify-icon>
-                                    @else
-                                    <iconify-icon icon="mdi:cards-heart" style="color: red;" class="like-icon already-liked">
-                                    </iconify-icon>
-                                    @endif
-
-                                    </a>
-                                    <p>
-                                        <span class="total_likes">
-
-                                        {{$total_likes}}
-                                        </span>
-                                        <a class="viewlikes" id={{$save_post->post->id}}>Likes</a>
-                                    </p>
-                                </div>
-                                <div class="customer-post-comment-container">
-                                    {{-- <a href = "{{route('post.comment',$save_post->post->id)}}"> --}}
-                                    <a class="viewcomments" id = "{{$save_post->post->id}}">
-                                    <iconify-icon icon="bi:chat-right" class="comment-icon"></iconify-icon>
-                                    <p id="{{$save_post->post->id}}"><span>{{$total_comments}}</span> Comments</p>
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    @empty
-                        <p class="text-secondary p-1">No Saved Post And Activity</p>
-                    @endforelse
                 </div>
             </div>
         </div>
@@ -1788,9 +1486,8 @@
 
     $(document).ready(function() {
 
-        //save_post();
-
-        $('.like').click(function(e){
+         all_posts();
+            $(document).on('click', '.like', function(e) {
             e.preventDefault();
             $('.staticBackdrop').show();
             var isLike=e.target.previousElementSibiling == null ? true : false;
@@ -1829,6 +1526,10 @@
 
         $('.viewlikes').click(function(e){
             viewlikes(e);
+        })
+
+        $(document).on('click', '.customer-post-header-icon', function(e) {
+            $(this).next().toggle()
         })
 
         function viewlikes(e){
@@ -1897,6 +1598,572 @@
 
         }
 
+        function saved_posts(e){
+            e.preventDefault();
+            var url="{{route('saved.post')}}"
+            $.ajax({
+                    method: "GET",
+                    url:url,
+                    dataType: "json",
+                    success: function (data) {
+
+                    console.log(data.save_posts,'saved_posts')
+                    var save_posts=data.save_posts;
+
+                        var auth_user={{auth()->user()->id}};
+
+                        let htmlView = '';
+                        if(save_posts.length <= 0){
+                            htmlView+= `No data found.`;
+                        }else{
+                            for(let i=0;i<save_posts.length;i++){
+                                htmlView += `<div class="customer-post-container">
+                                            <div class="customer-post-header">
+                                                <div class="customer-post-name-container">`
+
+                                if(save_posts[i].profile_image===null){
+                                    htmlView +=`<img class="nav-profile-img" src="{{asset('img/customer/imgs/user_default.jpg')}}"/>`
+
+                                }else{
+                                    htmlView +=`<img class="nav-profile-img" src="{{asset('storage/post/`+save_posts[i].profile_image+`')}}"/>`
+                                }
+                                htmlView +=`<div class="customer-post-name">
+                                                        <p>`+save_posts[i].name+`</p>
+                                                        <span>`+save_posts[i].date+`</span>
+                                                    </div>
+                                                    </div>
+                                                    <iconify-icon icon="bi:three-dots-vertical" class="customer-post-header-icon"></iconify-icon>
+                                                    <div class="post-actions-container">
+                                                    <a style="text-decoration:none" class="post_save" id=`+save_posts[i].id+`>
+                                                        <div class="post-action">
+                                                            <iconify-icon icon="bi:save" class="post-action-icon"></iconify-icon>
+                                                                <p class="save">Unsave</p>
+                                                        </div>
+                                                    </a>`
+                                                    if(auth_user==save_posts[i].user_id){
+                                                    htmlView +=`<a id="edit_post" data-id="`+save_posts[i].id+`" data-bs-toggle="modal" >
+                                                                    <div class="post-action">
+                                                                        <iconify-icon icon="material-symbols:edit" class="post-action-icon"></iconify-icon>
+                                                                        <p>Edit</p>
+                                                                    </div>
+                                                                </a>
+                                                                <a id="delete_post" data-id="`+save_posts[i].post_id+`">
+                                                                    <div class="post-action">
+                                                                    <iconify-icon icon="material-symbols:delete-forever-outline-rounded" class="post-action-icon"></iconify-icon>
+                                                                    <p>Delete</p>
+                                                                    </div>
+                                                                </a>`
+                                                    }else{
+                                                        htmlView +=``
+                                                    }
+                                                    htmlView += `</div>
+                                                                </div>
+                                                                <div class="customer-content-container">
+                                                                `
+                                                    if(save_posts[i].media===null){
+                                                        htmlView +=`<p>`+save_posts[i].caption+`</p>`
+                                                    }else{
+
+                                                    var caption =save_posts[i].caption ? save_posts[i].caption : '';
+                                                        htmlView +=`<p>`+caption+`</p>
+                                                                        <div class="customer-media-container">
+                                                                            `
+                                                    var imageFile = save_posts[i].media
+                                                    var imageArr = jQuery.parseJSON(imageFile);
+
+                                                    $.each(imageArr,function(key,val){
+                                                        var extension = val.substr( (val.lastIndexOf('.') +1) );
+
+                                                        switch(extension) {
+                                                                case 'jpg':
+                                                                case 'png':
+                                                                case 'gif':
+                                                                case 'jpeg':
+                                                                htmlView += ` <div class="customer-media">
+                                                                        <img src="{{asset('storage/post/`+val+`') }}">
+                                                                        </div>`
+                                                                break;
+                                                                case 'mp4':
+                                                                htmlView += ` <div class="customer-media">
+                                                                        <video controls>
+                                                                        <source src="{{asset('storage/post/`+val+`') }}">
+                                                                        </video>
+                                                                        </div>`
+                                                                break;
+
+                                                            }
+                                                    });
+                                                        htmlView +=  `
+                                                                    </div>
+                                                                    <div id="slider-wrapper" class="social-media-media-slider">
+                                                                        <iconify-icon icon="akar-icons:cross" class="slider-close-icon"></iconify-icon>
+
+                                                                        <div id="image-slider" class="image-slider">
+                                                                            <ul class="ul-image-slider">`
+                                                    $.each(imageArr,function(k,v){
+                                                        var exten = v.substr( (v.lastIndexOf('.') +1) );
+                                                        switch(exten) {
+                                                                case 'jpg':
+                                                                case 'png':
+                                                                case 'gif':
+                                                                case 'jpeg':
+                                                                htmlView += `<li>
+                                                                        <img src="{{asset('storage/post/`+v+`') }}" alt="" />
+                                                                    </li>`
+                                                                break;
+                                                                case 'mp4':
+                                                                htmlView += `<li><video controls>
+                                                                            <source src="{{asset('storage/post/`+v+`') }}">
+                                                                            </video> </li>`
+                                                                break;
+                                                                    }
+
+                                                    });
+                                                        htmlView += `</ul>
+                                                                        </div>
+                                                                        <div id="thumbnail" class="img-slider-thumbnails">
+                                                                            <ul>`
+                                                    $.each(imageArr,function(k,v){
+                                                        var exten = v.substr( (v.lastIndexOf('.') +1) );
+                                                        switch(exten) {
+                                                                case 'jpg':
+                                                                case 'png':
+                                                                case 'gif':
+                                                                case 'jpeg':
+                                                                htmlView += `<li>
+                                                                        <img src="{{asset('storage/post/`+v+`') }}" alt="" />
+                                                                    </li>`
+                                                                break;
+                                                                case 'mp4':
+                                                                htmlView += `<li><video controls>
+                                                                            <source src="{{asset('storage/post/`+v+`') }}">
+                                                                            </video> </li>`
+                                                                break;
+                                                                    }
+                                                    });
+
+                                                        htmlView += `</ul></div></div></div>`
+                                                    }
+                                                    htmlView += ` <div class="customer-post-footer-container">
+                                                                    <div class="customer-post-like-container">
+                                                                    <a class="like" id="`+save_posts[i].post_id+`">`
+                                                    if(save_posts[i].isLike==0){
+                                                        htmlView+=`
+                                                        <iconify-icon icon="mdi:cards-heart-outline" class="like-icon"></iconify-icon>`
+
+                                                    }else{
+                                                        htmlView+=`
+                                                        <iconify-icon icon="mdi:cards-heart" style="color: red;" class="like-icon already-liked"></iconify-icon>`
+                                                    }
+                                                        htmlView +=`</a>
+                                                                    <p>
+                                                                        <span class="total_likes">
+                                                                            `+save_posts[i].total_likes+`
+                                                                        </span>
+                                                                        <a class="viewlikes" id="">Likes</a>
+                                                                    </p>
+                                                                    </div>
+                                                                    <div class="customer-post-comment-container">
+                                                                        <a class="viewcomments" id = "`+save_posts[i].post_id+`">
+                                                                            <iconify-icon icon="bi:chat-right" class="comment-icon"></iconify-icon>
+                                                                            <p id="`+save_posts[i].post_id+`"><span>`+save_posts[i].total_comments+`</span> Comments</p>
+                                                                        </a>
+                                                                    </div>
+                                                                    </div>
+                                                                        `
+                                                    htmlView+=`</div>
+                                                                </div>`
+
+                            }
+                        }
+
+                        $('.customer-saved-posts-container').html(htmlView);
+                        $('.social-media-media-slider').hide();
+                        //image slider start
+                                console.log($(".image-slider"))
+
+                        $.each($(".ul-image-slider"),function(){
+                            console.log($(this).children('li').length)
+
+                            $(this).children('li:first').addClass("active-img")
+                        })
+
+                        $.each($(".img-slider-thumbnails ul"),function(){
+                            console.log($(this).children('li').length)
+
+                            $(this).children('li:first').addClass("active")
+                        })
+
+
+
+
+                        $(document).on('click','.img-slider-thumbnails li',function(){
+
+                            var thisIndex = $(this).index()
+                            // console.log(thisIndex,$(this).siblings("li.active").index())
+                            if($(this).siblings(".active").index() === -1){
+                                return
+                            }
+
+
+                            if(thisIndex < $(this).siblings(".active").index()){
+                                prevImage(thisIndex, $(this).parents(".img-slider-thumbnails").prev("#image-slider"));
+                            }else if(thisIndex > $(this).siblings(".active").index()){
+                                nextImage(thisIndex, $(this).parents(".img-slider-thumbnails").prev("#image-slider"));
+                            }
+
+
+                            $(this).siblings('.active').removeClass('active');
+                            $(this).addClass('active');
+
+                            });
+
+
+
+                        var width = $('#image-slider').width();
+                        console.log(width)
+
+                        function nextImage(newIndex, parent){
+                            parent.find('li').eq(newIndex).addClass('next-img').css('left', width).animate({left: 0},600);
+                            parent.find('li.active-img').removeClass('active-img').css('left', '0').animate({left: '-100%'},600);
+                            parent.find('li.next-img').attr('class', 'active-img');
+                        }
+                        function prevImage(newIndex, parent){
+                            parent.find('li').eq(newIndex).addClass('next-img').css('left', -width).animate({left: 0},600);
+                            parent.find('li.active-img').removeClass('active-img').css('left', '0').animate({left: '100%'},600);
+                            parent.find('li.next-img').attr('class', 'active-img');
+                        }
+
+                        /* Thumbails */
+                        // var ThumbailsWidth = ($('#image-slider').width() - 18.5)/7;
+                        // $('#thumbnail li').find('img').css('width', ThumbailsWidth);
+
+                        $('.social-media-media-slider').hide()
+
+                        $(document).on('click','.customer-media-container',function(){
+                            $(this).siblings(".social-media-media-slider").show()
+                            $(this).hide()
+                        })
+
+                        $(document).on('click','.slider-close-icon',function(){
+                            $(this).closest('.social-media-media-slider').hide()
+                            $(this).closest('.social-media-media-slider').siblings('.customer-media-container').show()
+                        })
+                        //image slider end
+                    }
+            })
+        }
+
+        function all_posts(){
+
+            var url="{{route('all.post')}}"
+            $.ajax({
+                    method: "GET",
+                    url:url,
+                    dataType: "json",
+                    success: function (data) {
+
+                    console.log(data.posts,'all posts')
+                    var save_posts=data.posts;
+
+                        var auth_user={{auth()->user()->id}};
+
+                        let htmlView = '';
+                        if(save_posts.length <= 0){
+                            htmlView+= `No data found.`;
+                        }else{
+                            for(let i=0;i<save_posts.length;i++){
+                                htmlView += `<div class="customer-post-container">
+                                            <div class="customer-post-header">
+                                                <div class="customer-post-name-container">`
+
+                                if(save_posts[i].profile_image===null){
+                                    htmlView +=`<img class="nav-profile-img" src="{{asset('img/customer/imgs/user_default.jpg')}}"/>`
+
+                                }else{
+                                    htmlView +=`<img class="nav-profile-img" src="{{asset('storage/post/`+save_posts[i].profile_image+`')}}"/>`
+                                }
+                                htmlView +=`<div class="customer-post-name">
+                                                        <p>`+save_posts[i].name+`</p>
+                                                        <span>`+save_posts[i].date+`</span>
+                                                    </div>
+                                                    </div>
+                                                    <iconify-icon icon="bi:three-dots-vertical" class="customer-post-header-icon"></iconify-icon>
+                                                    <div class="post-actions-container">
+                                                    <a style="text-decoration:none" class="post_save" id=`+save_posts[i].id+`>
+                                                        <div class="post-action">
+                                                            <iconify-icon icon="bi:save" class="post-action-icon"></iconify-icon>`
+                                if(save_posts[i].already_saved==1){
+                                    htmlView +=`<p class="save">Unsave</p>`
+                                }else{
+                                    htmlView +=`<p class="save">Save</p>`
+                                }
+
+
+                                htmlView +=`</div>
+                                                    </a>`
+                                                    if(auth_user==save_posts[i].user_id){
+                                                    htmlView +=`<a id="edit_post" data-id="`+save_posts[i].id+`" data-bs-toggle="modal" >
+                                                                    <div class="post-action">
+                                                                        <iconify-icon icon="material-symbols:edit" class="post-action-icon"></iconify-icon>
+                                                                        <p>Edit</p>
+                                                                    </div>
+                                                                </a>
+                                                                <a id="delete_post" data-id="`+save_posts[i].id+`">
+                                                                    <div class="post-action">
+                                                                    <iconify-icon icon="material-symbols:delete-forever-outline-rounded" class="post-action-icon"></iconify-icon>
+                                                                    <p>Delete</p>
+                                                                    </div>
+                                                                </a>`
+                                                    }else{
+                                                        htmlView +=``
+                                                    }
+                                                    htmlView += `</div>
+                                                                </div>
+                                                                <div class="customer-content-container">
+                                                                `
+                                                    if(save_posts[i].media===null){
+                                                        htmlView +=`<p>`+save_posts[i].caption+`</p>`
+                                                    }else{
+
+                                                    var caption =save_posts[i].caption ? save_posts[i].caption : '';
+                                                        htmlView +=`<p>`+caption+`</p>
+                                                                        <div class="customer-media-container">
+                                                                            `
+                                                    var imageFile = save_posts[i].media
+                                                    var imageArr = jQuery.parseJSON(imageFile);
+
+                                                    $.each(imageArr,function(key,val){
+                                                        var extension = val.substr( (val.lastIndexOf('.') +1) );
+
+                                                        switch(extension) {
+                                                                case 'jpg':
+                                                                case 'png':
+                                                                case 'gif':
+                                                                case 'jpeg':
+                                                                htmlView += ` <div class="customer-media">
+                                                                        <img src="{{asset('storage/post/`+val+`') }}">
+                                                                        </div>`
+                                                                break;
+                                                                case 'mp4':
+                                                                htmlView += ` <div class="customer-media">
+                                                                        <video controls>
+                                                                        <source src="{{asset('storage/post/`+val+`') }}">
+                                                                        </video>
+                                                                        </div>`
+                                                                break;
+
+                                                            }
+                                                    });
+                                                        htmlView +=  `
+                                                                    </div>
+                                                                    <div id="slider-wrapper" class="social-media-media-slider">
+                                                                        <iconify-icon icon="akar-icons:cross" class="slider-close-icon"></iconify-icon>
+
+                                                                        <div id="image-slider" class="image-slider">
+                                                                            <ul class="ul-image-slider">`
+                                                    $.each(imageArr,function(k,v){
+                                                        var exten = v.substr( (v.lastIndexOf('.') +1) );
+                                                        switch(exten) {
+                                                                case 'jpg':
+                                                                case 'png':
+                                                                case 'gif':
+                                                                case 'jpeg':
+                                                                htmlView += `<li>
+                                                                        <img src="{{asset('storage/post/`+v+`') }}" alt="" />
+                                                                    </li>`
+                                                                break;
+                                                                case 'mp4':
+                                                                htmlView += `<li><video controls>
+                                                                            <source src="{{asset('storage/post/`+v+`') }}">
+                                                                            </video> </li>`
+                                                                break;
+                                                                    }
+
+                                                    });
+                                                        htmlView += `</ul>
+                                                                        </div>
+                                                                        <div id="thumbnail" class="img-slider-thumbnails">
+                                                                            <ul>`
+                                                    $.each(imageArr,function(k,v){
+                                                        var exten = v.substr( (v.lastIndexOf('.') +1) );
+                                                        switch(exten) {
+                                                                case 'jpg':
+                                                                case 'png':
+                                                                case 'gif':
+                                                                case 'jpeg':
+                                                                htmlView += `<li>
+                                                                        <img src="{{asset('storage/post/`+v+`') }}" alt="" />
+                                                                    </li>`
+                                                                break;
+                                                                case 'mp4':
+                                                                htmlView += `<li><video controls>
+                                                                            <source src="{{asset('storage/post/`+v+`') }}">
+                                                                            </video> </li>`
+                                                                break;
+                                                                    }
+                                                    });
+
+                                                        htmlView += `</ul></div></div></div>`
+                                                    }
+                                                    htmlView += ` <div class="customer-post-footer-container">
+                                                                    <div class="customer-post-like-container">
+                                                                    <a class="like" id="`+save_posts[i].post_id+`">`
+                                                    if(save_posts[i].isLike==0){
+                                                        htmlView+=`
+                                                        <iconify-icon icon="mdi:cards-heart-outline" class="like-icon"></iconify-icon>`
+
+                                                    }else{
+                                                        htmlView+=`
+                                                        <iconify-icon icon="mdi:cards-heart" style="color: red;" class="like-icon already-liked"></iconify-icon>`
+                                                    }
+                                                        htmlView +=`</a>
+                                                                    <p>
+                                                                        <span class="total_likes">
+                                                                            `+save_posts[i].total_likes+`
+                                                                        </span>
+                                                                        <a class="viewlikes" id="">Likes</a>
+                                                                    </p>
+                                                                    </div>
+                                                                    <div class="customer-post-comment-container">
+                                                                        <a class="viewcomments" id = "`+save_posts[i].post_id+`">
+                                                                            <iconify-icon icon="bi:chat-right" class="comment-icon"></iconify-icon>
+                                                                            <p id="`+save_posts[i].post_id+`"><span>`+save_posts[i].total_comments+`</span> Comments</p>
+                                                                        </a>
+                                                                    </div>
+                                                                    </div>
+                                                                        `
+                                                    htmlView+=`</div>
+                                                                </div>`
+
+                            }
+                        }
+
+                        $('.customer-all-posts-container').html(htmlView);
+                        $('.social-media-media-slider').hide();
+                        //image slider start
+                                console.log($(".image-slider"))
+
+                        $.each($(".ul-image-slider"),function(){
+                            console.log($(this).children('li').length)
+
+                            $(this).children('li:first').addClass("active-img")
+                        })
+
+                        $.each($(".img-slider-thumbnails ul"),function(){
+                            console.log($(this).children('li').length)
+
+                            $(this).children('li:first').addClass("active")
+                        })
+
+
+
+
+                        $(document).on('click','.img-slider-thumbnails li',function(){
+
+                            var thisIndex = $(this).index()
+                            // console.log(thisIndex,$(this).siblings("li.active").index())
+                            if($(this).siblings(".active").index() === -1){
+                                return
+                            }
+
+
+                            if(thisIndex < $(this).siblings(".active").index()){
+                                prevImage(thisIndex, $(this).parents(".img-slider-thumbnails").prev("#image-slider"));
+                            }else if(thisIndex > $(this).siblings(".active").index()){
+                                nextImage(thisIndex, $(this).parents(".img-slider-thumbnails").prev("#image-slider"));
+                            }
+
+
+                            $(this).siblings('.active').removeClass('active');
+                            $(this).addClass('active');
+
+                            });
+
+
+
+                        var width = $('#image-slider').width();
+                        console.log(width)
+
+                        function nextImage(newIndex, parent){
+                            parent.find('li').eq(newIndex).addClass('next-img').css('left', width).animate({left: 0},600);
+                            parent.find('li.active-img').removeClass('active-img').css('left', '0').animate({left: '-100%'},600);
+                            parent.find('li.next-img').attr('class', 'active-img');
+                        }
+                        function prevImage(newIndex, parent){
+                            parent.find('li').eq(newIndex).addClass('next-img').css('left', -width).animate({left: 0},600);
+                            parent.find('li.active-img').removeClass('active-img').css('left', '0').animate({left: '100%'},600);
+                            parent.find('li.next-img').attr('class', 'active-img');
+                        }
+
+                        /* Thumbails */
+                        // var ThumbailsWidth = ($('#image-slider').width() - 18.5)/7;
+                        // $('#thumbnail li').find('img').css('width', ThumbailsWidth);
+
+                        $('.social-media-media-slider').hide()
+
+                        $(document).on('click','.customer-media-container',function(){
+                            $(this).siblings(".social-media-media-slider").show()
+                            $(this).hide()
+                        })
+
+                        $(document).on('click','.slider-close-icon',function(){
+                            $(this).closest('.social-media-media-slider').hide()
+                            $(this).closest('.social-media-media-slider').siblings('.customer-media-container').show()
+                        })
+                        //image slider end
+                    }
+            })
+        }
+
+
+        $(document).on('click', '.post_save', function(e) {
+            $('.post-actions-container').hide();
+            var post_id=$(this).attr('id');
+            var add_url = "{{ route('socialmedia.post.save', [':post_id']) }}";
+            add_url = add_url.replace(':post_id', post_id);
+
+                    $.ajax({
+                        method: "GET",
+                        url: add_url,
+                        data:{
+                                post_id : post_id
+                            },
+                            success: function(data) {
+                                // window.location.reload();
+                                if(data.save){
+                                    Swal.fire({
+                                        text: data.save,
+                                        timerProgressBar: true,
+                                        timer: 5000,
+                                        icon: 'success',
+                                    }).then((result) => {
+                                        saved_posts(e);
+
+                                        e.target.querySelector(".save").innerHTML = `Unsave`;
+                                    })
+
+                                }else{
+                                    Swal.fire({
+                                        text: data.unsave,
+                                        timerProgressBar: true,
+                                        timer: 5000,
+                                        icon: 'success',
+                                    }).then((result) => {
+                                        saved_posts(e);
+
+                                        e.target.querySelector(".save").innerHTML = `Save`;
+
+                                    })
+                                }
+
+                            }
+                    })
+
+
+        })
+
+
     // end like
 
         $(document).on('click', '.social-media-comment-icon', function(e) {
@@ -1940,7 +2207,8 @@
                     onDataRequest: function (mode, keyword, onDataRequestCompleteCallback) {
                         var search_url = "{{ route('users.mention') }}";
                         $.ajaxSetup({
-                                headers: {
+
+                            headers: {
                                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                                 }
                             });
@@ -1972,6 +2240,7 @@
 
                 //edit comment start
                 $(document).on('click', '#editCommentModal', function(e) {
+
                     $('#view_comments_modal').modal('hide')
                         $('#edit_comments_modal').modal('show');
                         var id = $(this).data('id');
@@ -2024,10 +2293,6 @@
 
                 $(".social-media-all-comments-input-edit").on('submit',function(e){
                 e.preventDefault()
-                // console.log($('.mentiony-content').text())
-                console.log($(".social-media-all-comments-input-edit").data('id') , "dddddddddd")
-
-
                 var arr = []
                 $.each($('.social-media-all-comments-input-edit .mentiony-link'),function(){
                     arr.push({'id' : $(this).data('item-id'),'name' : $(this).text()})
@@ -2037,8 +2302,7 @@
                 var post_id = $(".social-media-all-comments-input-edit").data('id');
 
                 var comment = $('.social-media-all-comments-input-edit .mentiony-content').text()
-                console.log(arr)
-                console.log(comment)
+
                 var search_url = "{{ route('post.comment.update') }}";
 
                     $.ajaxSetup({
@@ -2052,7 +2316,9 @@
                         data : {'post_id':post_id,'mention' : arr , 'comment' : comment},
                         dataType: "json",
                         success: function (response) {
-                            window.location.reload()
+                            $('#edit_comments_modal').modal('hide');
+                            viewcomments()
+
                         }
 
                     });
@@ -2086,8 +2352,6 @@
 
             $(".social-media-all-comments-input").on('submit',function(e){
                 e.preventDefault()
-                // console.log($('.mentiony-content').text())
-
 
                 var arr = []
                 $.each($('.social-media-all-comments-input .mentiony-link'),function(){
@@ -2097,13 +2361,10 @@
                 })
 
                 var comment = $('.social-media-all-comments-input .mentiony-content').text()
-                console.log(arr)
-                console.log(comment)
 
-                // <a href = "" >Trainer</a>
                 var search_url = "{{ route('post.comment.store') }}";
                 var post_id = $(".social-media-all-comments-input").data('id');
-                // console.log(post_id)
+
                     $.ajaxSetup({
                             headers: {
                                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -2115,15 +2376,17 @@
                         data : {'post_id':post_id,'mention' : arr , 'comment' : comment},
                         dataType: "json",
                         success: function (response) {
-                            viewcomments();
                             $('.mentiony-content').empty()
+                            viewcomments()
+                            all_posts()
+                            saved_posts(e)
                         }
 
                     });
 
             })
 
-        $('.viewcomments').click(function(e){
+            $(document).on('click','.viewcomments',function(e){
             e.preventDefault();
             var post_id = $(this).attr("id");
             var postid = $(".social-media-all-comments-input").data('id',post_id)
@@ -2153,21 +2416,30 @@
                                 No Comment.
                                 `;
                             }
-                            console.log("data");
+                            var auth_id={{auth()->user()->id}};
                             for(let i = 0; i < res.comment.length; i++){
+                                var comment_user=res.comment[i].user_id;
+                                var post_owner=res.comment[i].post_owner;
                                   htmlView += `
-                                    <div class="social-media-comment-container">
-                                      <img src="{{ asset('/storage/post/${res.comment[i].profile_image}') }}" >
+                                    <div class="social-media-comment-container">`
+
+                                        if(res.comment[i].profile_image===null){
+                                            htmlView+= `<img src="{{ asset('/img/customer/imgs/user_default.jpg') }}" >`
+                                        }else{
+                                            htmlView+= `<img src="{{ asset('/storage/post/${res.comment[i].profile_image}') }}" >`
+                                        }
+                                     htmlView+= `
                                       <div class="social-media-comment-box">
                                           <div class="social-media-comment-box-header">
                                               <div class="social-media-comment-box-name">
                                                   <p>`+res.comment[i].name+`</p>
                                                   <span>`+res.comment[i].date+`</span>
-                                              </div>
+                                              </div>`
 
+                                    if(auth_id==post_owner && auth_id==comment_user){
 
-                                        <iconify-icon icon="bx:dots-vertical-rounded" class="social-media-comment-icon"></iconify-icon>
-                                        <div class="comment-actions-container" >
+                                    htmlView+=`<iconify-icon icon="bx:dots-vertical-rounded" class="social-media-comment-icon"></iconify-icon>
+                                        <div class="comment-actions-container">
 
                                             <div class="comment-action" id="editCommentModal"
                                             data-id=`+res.comment[i].id+`>
@@ -2181,8 +2453,38 @@
                                                 <p>Delete</p>
                                             </div>
                                             </a>
-                                        </div>
-                                        </div>
+                                        </div>`
+                                    }else if(auth_id==post_owner && auth_id!=comment_user){
+                                        htmlView+=`
+                                                <iconify-icon icon="bx:dots-vertical-rounded" class="social-media-comment-icon"></iconify-icon>
+                                                        <div class="comment-actions-container" >
+                                                        <a id="delete_comment" data-id=`+res.comment[i].id+`>
+                                                        <div class="comment-action">
+                                                            <iconify-icon icon="fluent:delete-12-regular" class="comment-action-icon"></iconify-icon>
+                                                            <p>Delete</p>
+                                                        </div>
+                                                        </a>
+                                                    </div>`
+                                    }else if(auth_id==comment_user){
+                                        htmlView+=`
+                                                <iconify-icon icon="bx:dots-vertical-rounded" class="social-media-comment-icon"></iconify-icon>
+                                                        <div class="comment-actions-container" >
+                                                        <div class="comment-action" id="editCommentModal" data-id=`+res.comment[i].id+`>
+                                                            <iconify-icon icon="akar-icons:edit" class="comment-action-icon"></iconify-icon>
+                                                            <p>Edit</p>
+                                                        </div>
+                                                        <a id="delete_comment" data-id=`+res.comment[i].id+`>
+                                                        <div class="comment-action">
+                                                            <iconify-icon icon="fluent:delete-12-regular" class="comment-action-icon"></iconify-icon>
+                                                            <p>Delete</p>
+                                                        </div>
+                                                        </a>
+                                                    </div>`
+                                    }else{
+
+                                    }
+
+                                    htmlView+=`</div>
                                         <p>`+res.comment[i].Replace+`</p>
                                     </div>
                                 </div>
@@ -2249,86 +2551,23 @@
         // saved post
 
         $(".customer-profile-selector").change(function(e){
-            console.log(e.target.value)
 
             if(e.target.value === "all"){
+                all_posts();
                 $(".customer-all-posts-container").show()
                 $(".customer-saved-posts-container").hide()
             }
             if(e.target.value === "saved"){
+                saved_posts(e);
                 $(".customer-all-posts-container").hide()
                 $(".customer-saved-posts-container").show()
+
             }
 
         })
 
 
 
-        function saved_post(){
-
-            var save_posts=@json($saved_posts);
-
-            $('.customer-saved-posts-container').append(`
-            ${save_posts.map((item,index) => (`
-                <div class="customer-post-container">
-                    <div class="customer-post-header">
-                        <div class="customer-post-name-container">
-                            <img class="nav-profile-img" src="{{asset('img/customer/imgs/user_default.jpg')}}"/>
-                            <div class="customer-post-name">
-                                <p>${item.name}</p>
-                                <span>dstgyergdfhgf</span>
-                            </div>
-
-                        </div>
-                            <iconify-icon icon="bi:three-dots-vertical" class="customer-post-header-icon"></iconify-icon>
-                            <div class="post-actions-container">
-                                <a href="#" style="text-decoration:none" class="post_save" id="${item.id}">
-                                    <div class="post-action">
-                                        <iconify-icon icon="bi:save" class="post-action-icon"></iconify-icon>
-                                            <p class="save">Unsave</p>
-                                    </div>
-                                </a>
-                                    <a id="edit_post" data-id="${item.id}" data-bs-toggle="modal" >
-                                        <div class="post-action">
-                                            <iconify-icon icon="material-symbols:edit" class="post-action-icon"></iconify-icon>
-                                            <p>Edit</p>
-                                        </div>
-                                    </a>
-                                    <a id="delete_post" data-id="${item.id}">
-                                        <div class="post-action">
-                                        <iconify-icon icon="material-symbols:delete-forever-outline-rounded" class="post-action-icon"></iconify-icon>
-                                        <p>Delete</p>
-                                        </div>
-                                    </a>
-                            </div>
-                    </div>
-                    <div class="customer-content-container">
-                        <p>${item.caption}</p>
-                        <div class="customer-media-container">
-                            <div class="customer-media">
-                                <div class="customer-media">
-                                    <h1>${item.media}</h1>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>`
-            ))}
-
-            `)
-
-
-        }
-
-        function save_post(){
-            var save_posts=@json($saved_posts);
-            console.log(save_posts);
-            let htmlView = '';
-            for(let i=0;i<save_posts.length;i++){
-
-            }
-        }
 
 
         $(".mentiony-container").attr('style','')
@@ -2338,47 +2577,6 @@
 
         //comment
 
-        $('.post_save').click(function(e){
-            e.preventDefault();
-
-            var post_id=$(this).attr('id');
-            var add_url = "{{ route('socialmedia.post.save', [':post_id']) }}";
-            add_url = add_url.replace(':post_id', post_id);
-
-                    $.ajax({
-                        method: "GET",
-                        url: add_url,
-                        data:{
-                                post_id : post_id
-                            },
-                            success: function(data) {
-                                // window.location.reload();
-                                if(data.save){
-                                    Swal.fire({
-                                        text: data.save,
-                                        timerProgressBar: true,
-                                        timer: 5000,
-                                        icon: 'success',
-                                    }).then((result) => {
-                                        e.target.innerHTML = "Unsave";
-                                    })
-
-                                }else{
-                                    Swal.fire({
-                                        text: data.unsave,
-                                        timerProgressBar: true,
-                                        timer: 5000,
-                                        icon: 'success',
-                                    }).then((result) => {
-                                        e.target.innerHTML = "Save";
-                                    })
-                                }
-
-                            }
-                    })
-
-
-        })
 
         $('.social-media-fris-search input').on('keyup', function(){
                             search();
@@ -2428,7 +2626,7 @@
 
 
                                         <div class="social-media-fris-fri-btns-container">
-                                            <a href="#" class="customer-primary-btn">Message</a>
+                                            <a class="customer-primary-btn">Message</a>
 
                                             <a href="?id=` + res.friends[i].id+`" class="customer-red-btn"
                                             id = "unfriend">Remove</a>
@@ -2446,7 +2644,7 @@
 
 
                                         <div class="social-media-fris-fri-btns-container">
-                                            <a href="#" class="customer-primary-btn">Message</a>
+                                            <a class="customer-primary-btn">Message</a>
 
                                             <a href="?id=` + res.friends[i].id+`" class="customer-red-btn"
                                             id = "unfriend">Remove</a>
@@ -2549,9 +2747,10 @@
             $(this).children('li:first').addClass("active")
         })
 
-        $(function(){
 
-            $('.img-slider-thumbnails li').click(function(){
+
+
+         $(document).on('click','.img-slider-thumbnails li',function(){
 
             var thisIndex = $(this).index()
             // console.log(thisIndex,$(this).siblings("li.active").index())
@@ -2572,7 +2771,7 @@
 
             });
 
-        });
+
 
         var width = $('#image-slider').width();
         console.log(width)
@@ -2594,13 +2793,12 @@
 
         $('.social-media-media-slider').hide()
 
-        $(".customer-media-container").click(function(){
-
+        $(document).on('click','.customer-media-container',function(){
             $(this).siblings(".social-media-media-slider").show()
             $(this).hide()
         })
 
-        $(".slider-close-icon").click(function(){
+        $(document).on('click','.slider-close-icon',function(){
             $(this).closest('.social-media-media-slider').hide()
             $(this).closest('.social-media-media-slider').siblings('.customer-media-container').show()
         })
@@ -2652,7 +2850,7 @@
         $('.customer-name-calculate-btn').hide();
         $(".customer-bmi-calculate-btn").hide();
         $('#name_edit_pen').on('click',function(){
-            console.log("testing");
+
             $(".name").show();
             $('.customer-name-calculate-btn').show();
             $('#name_edit_pen').hide();
@@ -2793,10 +2991,6 @@
             $('.customer-profile-shop-container').show()
         })
 
-        $('.customer-post-header-icon').click(function(){
-            $(this).next().toggle()
-        })
-
         $(document).on('click', '#delete_post', function(e){
 
             e.preventDefault();
@@ -2816,15 +3010,18 @@
                                     headers: {
                                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                                     }
-                                });
+                            });
                             $.ajax({
                                     method: "POST",
                                     url: add_url,
                                     datatype: "json",
                                     success: function(data) {
-                                        window.location.reload();
+                                        console.log(data.success);
+                                       // window.location.reload();
+                                        all_posts();
+                                        saved_posts(e);
                                     }
-                                })
+                            })
                     }else{
 
                     }
@@ -2836,6 +3033,7 @@
 
         $(document).on('click','#edit_post',function(e){
             e.preventDefault();
+            $('.customer-post-header-icon').toggle()
             $(".editpost-photo-video-imgpreview-container").empty();
 
             dtEdit.clearData()
@@ -2994,8 +3192,6 @@
         $("#editPostInput").on("change", handleFileSelectEdit);
 
         selDiv = $(".addpost-photo-video-imgpreview-container");
-
-        console.log(selDiv);
 
         $("body").on("click", ".delete-preview-icon", removeFile);
         $("body").on("click", ".delete-preview-edit-input-icon", removeFileFromEditInput);

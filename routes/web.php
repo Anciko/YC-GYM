@@ -49,7 +49,7 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
     Route::post('customer/customerCreate', [CustomerRegisterController::class, 'CustomerData'])->name('customerCreate');
 
     // NCK
-    Route::post('/customer_payment_active_staus/{id}',[RegisterPaymentController::class, 'changeStatusAndType'])->name('customer_upgrade');
+    Route::post('/customer_payment_active_staus/{id}', [RegisterPaymentController::class, 'changeStatusAndType'])->name('customer_upgrade');
 
 
     Route::post('/member/upgraded-history/', [HomeController::class, 'memberUpgradedHistory'])->name('member-upgraded-history');
@@ -75,7 +75,7 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
 
         Route::get('/socialmedia/post/save/', [SocialmediaController::class, 'post_save'])->name('socialmedia.post.save');
 
-        Route::post('/socialmedia/report',[SocialmediaController::class,'post_report'])->name('socialmedia.report');
+        Route::post('/socialmedia/report', [SocialmediaController::class, 'post_report'])->name('socialmedia.report');
 
         Route::post('/socialmedia/delete/{id}', [SocialmediaController::class, 'post_destroy'])->name('post.destroy');
         Route::post('/socialmedia/edit/{id}', [SocialmediaController::class, 'post_edit'])->name('post.edit');
@@ -84,7 +84,7 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
 
         Route::get('/socialmedia/message/seeall',[SocialmediaController::class, 'see_all_message'])->name('message.seeall');
         Route::get('/socialmedia/message/chat/{id}',[SocialmediaController::class, 'chat_message'])->name('message.chat');
-        
+
         Route::get('/socialmedia/message/deletechat',[SocialmediaController::class, 'delete_allchat_message'])->name('message.all.delete');
         Route::get('/socialmedia/message/viewmedia/{id}',[SocialmediaController::class, 'viewmedia_message'])->name('message.viewmedia');
         Route::post('/socialmedia/message/hide',[SocialmediaController::class, 'hide_message'])->name('message.hide');
@@ -102,15 +102,16 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
 
 
 
-        Route::post('/socialmedia/group/create',[SocialmediaController::class,'group_create'])->name('socialmedia.group.create');
-        Route::get('/socialmedia/group/{id}',[SocialmediaController::class,'group'])->name('socialmedia.group');
-        Route::post('/socialmedia/group/{id}/addmember',[SocialmediaController::class,'addmember'])->name('socialmedia.group.addmember');
-        Route::get('/socialmedia/group/detail/{id}',[SocialmediaController::class,'group_detail'])->name('socialmedia.group.detail');
-        Route::post('/socialmedia/group/member/kick',[SocialmediaController::class,'group_member_kick'])->name('socialmedia.group.memberkick');
-        Route::get('/socialmedia/group/viewmedia/{id}',[SocialmediaController::class,'group_viewmedia'])->name('socialmedia.group.viewmedia');
-        Route::get('/socialmedia/group/leave/{gp_id}/{id}',[SocialmediaController::class,'group_leave'])->name('socialmedia.group.leave');
+        Route::post('/socialmedia/group/create', [SocialmediaController::class, 'group_create'])->name('socialmedia.group.create');
+        Route::get('/socialmedia/group/{id}', [SocialmediaController::class, 'group'])->name('socialmedia.group');
+        Route::post('/socialmedia/group/{id}/addmember', [SocialmediaController::class, 'addmember'])->name('socialmedia.group.addmember');
+        Route::get('/socialmedia/group/detail/{id}', [SocialmediaController::class, 'group_detail'])->name('socialmedia.group.detail');
+        Route::post('/socialmedia/group/member/kick', [SocialmediaController::class, 'group_member_kick'])->name('socialmedia.group.memberkick');
+        Route::get('/socialmedia/group/viewmedia/{id}', [SocialmediaController::class, 'group_viewmedia'])->name('socialmedia.group.viewmedia');
+        Route::get('/socialmedia/group/leave/{gp_id}/{id}', [SocialmediaController::class, 'group_leave'])->name('socialmedia.group.leave');
+        Route::get('/socialmedia/group/delete/{id}', [SocialmediaController::class, 'group_delete'])->name('socialmedia.group.delete');
 
-        Route::get('/socialmedia/latest_messages',[SocialmediaController::class,'latest_messages'])->name('socialmedia.latest_messages');
+        Route::get('/socialmedia/latest_messages', [SocialmediaController::class, 'latest_messages'])->name('socialmedia.latest_messages');
 
         // Route::get('/testing', [SocialmediaController::class, 'index'])->name('testing');
         // Route::post('/testing/store', [SocialmediaController::class, 'post_store'])->name('testing.store');
@@ -118,7 +119,7 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
         Route::get('customer/personal_infos', [CustomerRegisterController::class, 'personal_info'])->name('customer-personal_infos');
 
         Route::get('/profile', [Customer_TrainingCenterController::class, 'profile'])->name('customer-profile');
-        Route::get('/profile/likes/{post_id}',[Customer_TrainingCenterController::class, 'profile_post_likes'])->name('profile.likes.view');
+        Route::get('/profile/likes/{post_id}', [Customer_TrainingCenterController::class, 'profile_post_likes'])->name('profile.likes.view');
 
         Route::post('customer/profile/update', [Customer_TrainingCenterController::class, 'profile_update'])->name('customer-profile.update');
         Route::post('customer/profile/name/update', [Customer_TrainingCenterController::class, 'profile_update_name'])->name('customer-profile-name.update');
@@ -128,7 +129,9 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
 
         Route::post('customer/profile/image/update', [Customer_TrainingCenterController::class, 'profile_update_profile_img'])->name('customer-profile-img.update');
 
-        Route::post('customer/profile/saved_post', [Customer_TrainingCenterController::class, 'saved_post'])->name('saved.post');
+        Route::get('customer/profile/saved_post', [Customer_TrainingCenterController::class, 'saved_post'])->name('saved.post');
+
+        Route::get('customer/profile/posts/', [Customer_TrainingCenterController::class, 'all_post'])->name('all.post');
 
         Route::get('customer/profile/year/{year}', [Customer_TrainingCenterController::class, 'year_filter'])->name('customer-profile.year');
         Route::get('/home', [App\Http\Controllers\HomeController::class, 'home'])->name('social_media');
@@ -137,7 +140,7 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
 
         Route::get('/socialmedia/profile/{id}', [SocialmediaController::class, 'profile'])->name('socialmedia.profile');
 
-        Route::get('/socialmedia/likes/{post_id}',[SocialmediaController::class, 'social_media_likes'])->name('social_media_likes');
+        Route::get('/socialmedia/likes/{post_id}', [SocialmediaController::class, 'social_media_likes'])->name('social_media_likes');
 
         Route::post('/socialmedia_profile', [SocialmediaController::class, 'social_media_profile'])->name('social_media_profile');
 
@@ -147,13 +150,13 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
 
         Route::get('/friendsList/{id}', [SocialmediaController::class, 'friendsList'])->name('friendsList');
         Route::post('friend/search/{id}', [SocialmediaController::class, 'friList'])
-        ->name('friend_search');
+            ->name('friend_search');
 
         Route::get('/addUser/{id}', [SocialmediaController::class, 'addUser'])->name('addUser');
 
         Route::get('/unfriend/{id}', [SocialmediaController::class, 'unfriend'])->name('unfriend');
 
-        Route::post('/socialmedia/user/react/',[SocialmediaController::class,'user_react_post'])->name('user.react.post');
+        Route::post('/socialmedia/user/react/', [SocialmediaController::class, 'user_react_post'])->name('user.react.post');
 
         Route::get('/cancelRequest/{id}', [SocialmediaController::class, 'cancelRequest'])->name('cancelRequest');
         Route::get('/declineRequest/{id}', [SocialmediaController::class, 'declineRequest'])->name('declineRequest');
@@ -175,7 +178,7 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
         Route::post('/post/comment/delete/{id}', [SocialmediaController::class, 'comment_delete'])->name('post.comment.delete');
         Route::get('/post/comment/edit/{id}', [SocialmediaController::class, 'comment_edit'])->name('post.comment.edit');
         Route::post('post/comment/update', [SocialmediaController::class, 'comment_update'])->name('post.comment.update');
-});
+    });
     Route::get('customer/register', [App\Http\Controllers\HomeController::class, 'customer_register'])->name('customer_register');
     //Route::post('customer/register', [App\Http\Controllers\Auth\RegisterController::class, 'register'])->name('customer_register');
     Route::post('customer/register', [App\Http\Controllers\Customer\CustomerRegisterController::class, 'register'])->name('customer_register');
@@ -261,8 +264,8 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
             Route::get('admin/action-report/datatable/ssd', [ReportController::class, 'action_ssd']);
             Route::delete('admin/report/{$id}', [ReportController::class, 'destroy'])->name('report.destroy');
             Route::get('admin/report/{id}/view', [ReportController::class, 'view_post'])->name('admin.view.report');
-            Route::get('admin/report/accept/{report_id}',[ReportController::class, 'accept_report'])->name('admin.accept.report');
-            Route::get('admin/report/decline/{report_id}',[ReportController::class, 'decline_report'])->name('admin.decline.report');
+            Route::get('admin/report/accept/{report_id}', [ReportController::class, 'accept_report'])->name('admin.accept.report');
+            Route::get('admin/report/decline/{report_id}', [ReportController::class, 'decline_report'])->name('admin.decline.report');
 
             // Meal Plan
             Route::resource('mealplan', MealPlanController::class);
@@ -320,7 +323,7 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
             Route::get('/trainingcenter/kick_member/{id}', [TrainingCenterController::class, 'kick_member'])->name('kick_member');
 
             //report
-            Route::resource('report',ReportController::class);
+            Route::resource('report', ReportController::class);
         });
     }); //admin prefix
 

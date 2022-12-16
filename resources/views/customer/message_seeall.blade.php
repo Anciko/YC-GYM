@@ -1,55 +1,60 @@
 @extends('customer.layouts.app_home')
 
 @section('content')
+    <div class="social-media-right-container ">
 
-<div class="social-media-right-container ">
-
-            <div class="modal fade" id="createGroupModal" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered">
+        <div class="modal fade" id="createGroupModal" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
                     <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Create Group</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        <h5 class="modal-title" id="exampleModalLabel">Create Group</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                    <form action="{{route('socialmedia.group.create')}}" class="create-group-form" method="POST">
-                        @csrf
-                        <div class="create-group-name">
-                            <p>Group Name</p>
-                            <input type="text" name="group_name" required>
-                        </div>
-                        {{-- <div class="create-group-addfris">
-                            <p>Add Your Friends</p>
-                            <select class="js-example-basic-multiple" name="members[]" multiple="multiple">
-                                @foreach ($friends as $friend)
-                                    <option value="{{$friend->id}}">{{$friend->name}}</option>
-                                @endforeach
-                            </select>
-                        </div> --}}
-                        <button type="submit" class="customer-primary-btn create-group-submit-btn">Create</button>
-                    </form>
+                        <form action="{{ route('socialmedia.group.create') }}" class="create-group-form" method="POST">
+                            @csrf
+                            <div class="create-group-name">
+                                <p>Group Name</p>
+                                <input type="text" name="group_name" required>
+                            </div>
+                            <div class="create-group-addfris">
+                                <p>Add Your Friends</p>
+                                <select class="js-example-basic-multiple" name="members[]" multiple="multiple">
+
+                                    @forelse ($friends as $friend)
+                                        <option value="{{ $friend->id }}">{{ $friend->name }}</option>
+                                    @empty
+                                        <p>You have not friend. Please friend request to other people.</p>
+                                    @endforelse
+
+                                </select>
+                            </div>
+                            <button type="submit" class="customer-primary-btn create-group-submit-btn">Create</button>
+                        </form>
                     </div>
 
                 </div>
-                </div>
             </div>
+        </div>
 
-            <div class="social-media-allchats-header">
-                <p>Messages</p>
-                <div class="social-media-allchats-header-btn-container">
-                    <button type="button" class="social-media-allchats-header-add-btn customer-primary-btn" data-bs-toggle="modal" data-bs-target="#createGroupModal">
-                        <iconify-icon icon="akar-icons:circle-plus" class="social-media-allchats-header-plus-icon"></iconify-icon>
-                        <p>Group</p>
-                    </button>
-                </div>
+        <div class="social-media-allchats-header">
+            <p>Messages</p>
+            <div class="social-media-allchats-header-btn-container">
+                <button type="button" class="social-media-allchats-header-add-btn customer-primary-btn"
+                    data-bs-toggle="modal" data-bs-target="#createGroupModal">
+                    <iconify-icon icon="akar-icons:circle-plus" class="social-media-allchats-header-plus-icon">
+                    </iconify-icon>
+                    <p>Group</p>
+                </button>
             </div>
+        </div>
 
-            <div class="social-media-allchats-messages-container">
-                    {{-- @forelse ($messages as $list)
+        <div class="social-media-allchats-messages-container">
+            {{-- @forelse ($messages as $list)
                     <div class="social-media-allchats-message-row-container">
                         <a href="{{route('message.chat',$list->id)}}" class="social-media-allchats-message-row">
                             <div class="social-media-allchats-message-img">
-                                @if ($list->profile_image==null)
+                                @if ($list->profile_image == null)
                                                 <img  class="nav-profile-img" src="{{asset('img/customer/imgs/user_default.jpg')}}"/>
                                             @else
                                                 <img  class="nav-profile-img" src="{{asset('storage/post/'.$list->profile_image)}}"/>
@@ -60,7 +65,7 @@
 
                             <p>{{$list->text}}</p>
 
-                            <span>{{ \Carbon\Carbon::parse($list->created_at)->format('d M Y , g:i A')}}</span>
+                            <span>{{ \Carbon\Carbon::parse($list->created_at)->format('d M, g:i A')}}</span>
                         </a>
 
                         <div class="social-media-allchats-actions-container">
@@ -70,7 +75,7 @@
                                     <iconify-icon icon="tabler:trash" class="social-media-allchats-action-icon"></iconify-icon>
                                     <span>Delete</span>
                                 </div>
-                                <a>
+                                <a href="{{route('socialmedia.profile',$list->id)}}" style="text-decoration:none">
                                     <iconify-icon icon="material-symbols:person" class="social-media-allchats-action-icon"></iconify-icon>
                                     Profile
                                 </a>
@@ -82,75 +87,77 @@
                     @empty
                         <p>No Message</p>
                     @endforelse --}}
+        </div>
     </div>
-</div>
-
 @endsection
 
 @push('scripts')
-<script>
-    $(document).ready(function(){
-        $(document).on('click', '.social-media-allchats-actions-toggle', function(){
-            $(".social-media-allchats-actions-box").not($(this).next(".social-media-allchats-actions-box")).hide()
-            $(this).next('.social-media-allchats-actions-box').toggle()
-        })
-            $(document).on('click', '.converstion_delete', function(e){
-            var from_id=$(this).data('id');
-            var to_id=$(this).attr('id');
+    <script>
+        $(document).ready(function() {
+            $(document).on('click', '.social-media-allchats-actions-toggle', function() {
+                $(".social-media-allchats-actions-box").not($(this).next(
+                    ".social-media-allchats-actions-box")).hide()
+                $(this).next('.social-media-allchats-actions-box').toggle()
+            })
+            $(document).on('click', '.converstion_delete', function(e) {
+                var from_id = $(this).data('id');
+                var to_id = $(this).attr('id');
 
-            Swal.fire({
-                text: "Delete Conversation?",
-                showClass: {
+                Swal.fire({
+                    text: "Delete Conversation?",
+                    showClass: {
                         popup: 'animate__animated animate__fadeInDown'
                     },
                     hideClass: {
                         popup: 'animate__animated animate__fadeOutUp'
                     },
-                showCancelButton: true,
-                timerProgressBar: true,
-                confirmButtonText: 'Yes',
-                cancelButtonText: 'No',
+                    showCancelButton: true,
+                    timerProgressBar: true,
+                    confirmButtonText: 'Yes',
+                    cancelButtonText: 'No',
 
                 }).then((result) =>{
                     if (result.isConfirmed) {
                         var add_url = "{{ route('message.all.delete')}}";
                     $.ajax({
-                                method: "GET",
-                                url: add_url,
-                                data:{ from_id : from_id , to_id:to_id},
-                                success:function(data){
-                                    Swal.fire({
-                                            text: data.success,
-                                            timerProgressBar: true,
-                                            timer: 5000,
-                                            icon: 'success',
-                                        })
-
-                                        messages()
-                                }
+                        method: "GET",
+                        url: add_url,
+                        data: {
+                            from_id: from_id,
+                            to_id: to_id
+                        },
+                        success: function(data) {
+                            Swal.fire({
+                                text: data.success,
+                                timerProgressBar: true,
+                                timer: 5000,
+                                icon: 'success',
                             })
+                            messages()
                         }
                     })
+                }
+            })
 
-        })
+            })
 
 
-                var user_id = {{auth()->user()->id}};
-                console.log(user_id);
-                var pusher = new Pusher('{{env("MIX_PUSHER_APP_KEY")}}', {
-                cluster: '{{env("PUSHER_APP_CLUSTER")}}',
+            var user_id = {{ auth()->user()->id }};
+            console.log(user_id);
+            var pusher = new Pusher('{{ env('MIX_PUSHER_APP_KEY') }}', {
+                cluster: '{{ env('PUSHER_APP_CLUSTER') }}',
                 encrypted: true
-                });
+            });
 
-                var channel = pusher.subscribe('all_message.'+user_id);
-                channel.bind('all', function(data) {
-                console.log(data , "ted");
-                    messages()
-                });
+            var channel = pusher.subscribe('all_message.' + user_id);
+            channel.bind('all', function(data) {
+                console.log(data, "ted");
+                messages()
+            });
 
-        messages()
-        //
-        function messages() {
+            messages()
+            //
+            function messages() {
                 var latest_messages = "{{ route('socialmedia.latest_messages') }}";
                 $.get(latest_messages, {
                         _token: $('meta[name="csrf-token"]').attr('content'),
@@ -182,9 +189,14 @@
                         htmlView += `
                             <div class="social-media-allchats-message-row-container">
                         <a href=` + url + ` class="social-media-allchats-message-row">
-                            <div class="social-media-allchats-message-img">
-                            <img  class="nav-profile-img" src="{{asset('img/customer/imgs/user_default.jpg')}}"/>
-                                <p>` + res.data[i].name + `</p>
+                            <div class="social-media-allchats-message-img">`
+                        if(res.data[i].profile_image==null){
+                            htmlView +=` <img  class="nav-profile-img" src="{{asset('img/customer/imgs/user_default.jpg')}}"/>`
+                        }else{
+                            htmlView +=` <img  class="nav-profile-img" src="{{asset('storage/post/`+res.data[i].profile_image+`')}}"/>`
+                        }
+
+                        htmlView +=` <p>` + res.data[i].name + `</p>
                             </div>
 
                             <p>` + res.data[i].text + `</p>
@@ -196,7 +208,7 @@
                             <iconify-icon icon="mdi:dots-vertical" class="social-media-allchats-actions-toggle"></iconify-icon>
                             <div class="social-media-allchats-actions-box">
                                 <div  data-id=` + res.data[i].from_id + ` class="converstion_delete"
-                                id= `+ res.data[i].to_id + `>
+                                id= ` + res.data[i].to_id + `>
                                     <iconify-icon icon="tabler:trash" class="social-media-allchats-action-icon"></iconify-icon>
                                     <span>Delete</span>
                                 </div>
@@ -210,13 +222,12 @@
                     </div>
 
                             `
-                    }
-                    else{
-                    htmlView += `
+                    } else {
+                        htmlView += `
                             <div class="social-media-allchats-message-row-container">
                                 <a href=` + group_url + ` class="social-media-allchats-message-row">
                                     <div class="social-media-allchats-message-img">
-                                    <img  class="nav-profile-img" src="{{asset('img/customer/imgs/user_default.jpg')}}"/>
+                                    <img  class="nav-profile-img" src="{{asset('img/customer/imgs/group_default.png')}}"/>
                                         <p>` + res.data[i].name + `</p>
                                     </div>
 
@@ -248,17 +259,15 @@
             }
 
 
-        $('.social-media-seeallmessage-header-icon').click(function(){
-            $(this).next().toggle()
+            $('.social-media-seeallmessage-header-icon').click(function() {
+                $(this).next().toggle()
+            })
+
+            $('.js-example-basic-multiple').select2({
+                dropdownParent: "#createGroupModal"
+            });
+
+            $('.select2-container').attr('style', '');
         })
-
-        $('.js-example-basic-multiple').select2(
-                { dropdownParent: "#createGroupModal" }
-        );
-
-        $('.select2-container').attr('style', '');
-    })
-
-</script>
+    </script>
 @endpush
-
