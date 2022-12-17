@@ -1444,7 +1444,7 @@ class SocialMediaController extends Controller
                         left join users on users.id = user
                         left join profiles on users.profile_id = profiles.id
                         order by chats.created_at desc");
-                // dd($messages);
+       
                 $groups_all = DB::table('chat_group_members')
                     ->select('group_id')
                     ->groupBy('group_id')
@@ -1536,8 +1536,8 @@ class SocialMediaController extends Controller
             $options
         );
         // $pusher->trigger('chatting.'.auth()->user()->id.'.'.$to_user_id, 'chatting-event', ['message'=>$message]);
-        $pusher->trigger('chatting.' . $to_user_id . '.' . auth()->user()->id, 'chatting-event', ['message' => $message]);
-       // broadcast(new Chatting($message, $request->sender));
+        // $pusher->trigger('chatting.' . $to_user_id . '.' . auth()->user()->id, 'chatting-event', ['message' => $message]);
+       broadcast(new Chatting($message, $request->sender));
 
         $user_id = auth()->user()->id;
         $messages = DB::select("SELECT users.id as id,users.name,profiles.profile_image,chats.text,chats.created_at as date
@@ -2492,7 +2492,7 @@ class SocialMediaController extends Controller
         );
         $user_id = auth()->user()->id;
         $group_message = ChatGroupMember::select('member_id')->where('group_id', $group_id)
-        ->where('member_id','!=',$user_id)->get();
+        ->get();
         for ($i = 0; count($group_message) > $i; $i++) {
         $user_id_to = $group_message[$i]['member_id'];
         $messages = DB::select("SELECT users.id as id,users.name,profiles.profile_image,chats.text,chats.created_at as date
