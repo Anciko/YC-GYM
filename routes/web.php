@@ -30,6 +30,7 @@ use App\Http\Controllers\Customer\CustomerLoginController;
 use App\Http\Controllers\Customer\RegisterPaymentController;
 use App\Http\Controllers\Customer\CustomerRegisterController;
 use App\Http\Controllers\Admin\RequestAcceptDeclineController;
+use App\Http\Controllers\Admin\ShopRequestController;
 use App\Http\Controllers\Trainer\TrainerManagementConntroller;
 use App\Http\Controllers\Customer\CustomerManagementController;
 use App\Http\Controllers\Customer\Customer_TrainingCenterController;
@@ -82,13 +83,13 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
         Route::post('/socialmedia/update', [SocialmediaController::class, 'post_update'])->name('post.update');
         Route::post('/profile/photo/delete', [SocialmediaController::class, 'profile_photo_delete'])->name('profile.photo.delete');
 
-        Route::get('/socialmedia/message/seeall',[SocialmediaController::class, 'see_all_message'])->name('message.seeall');
-        Route::get('/socialmedia/message/chat/{id}',[SocialmediaController::class, 'chat_message'])->name('message.chat');
+        Route::get('/socialmedia/message/seeall', [SocialmediaController::class, 'see_all_message'])->name('message.seeall');
+        Route::get('/socialmedia/message/chat/{id}', [SocialmediaController::class, 'chat_message'])->name('message.chat');
 
-        Route::get('/socialmedia/message/deletechat',[SocialmediaController::class, 'delete_allchat_message'])->name('message.all.delete');
-        Route::get('/socialmedia/message/viewmedia/{id}',[SocialmediaController::class, 'viewmedia_message'])->name('message.viewmedia');
-        Route::post('/socialmedia/message/hide',[SocialmediaController::class, 'hide_message'])->name('message.hide');
-        Route::post('/socialmedia/message/delete',[SocialmediaController::class, 'delete_message'])->name('message.delete');
+        Route::get('/socialmedia/message/deletechat', [SocialmediaController::class, 'delete_allchat_message'])->name('message.all.delete');
+        Route::get('/socialmedia/message/viewmedia/{id}', [SocialmediaController::class, 'viewmedia_message'])->name('message.viewmedia');
+        Route::post('/socialmedia/message/hide', [SocialmediaController::class, 'hide_message'])->name('message.hide');
+        Route::post('/socialmedia/message/delete', [SocialmediaController::class, 'delete_message'])->name('message.delete');
         Route::post('/agora/call-user',  [VideoController::class, 'callUser'])->name('socialmedia.videocall');
         // ------
         Route::post('/agora/call-gp-user', [VideoController::class, 'callGpuser'])->name('socialmedia.gpcall');
@@ -326,6 +327,12 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
 
             //report
             Route::resource('report', ReportController::class);
+
+            //shop request
+            Route::get('shop/request', [ShopRequestController::class, 'index'])->name('admin.shop_request');
+            Route::get('shop/request/accept/{id}', [ShopRequestController::class, 'request_accept'])->name('admin.shop_request.accept');
+            Route::get('shop/request/decline/{id}', [ShopRequestController::class, 'request_decline'])->name('admin.shop_request.decline');
+            Route::get('request/shop/datatable/ssd', [ShopRequestController::class, 'ssd']);
         });
     }); //admin prefix
 
