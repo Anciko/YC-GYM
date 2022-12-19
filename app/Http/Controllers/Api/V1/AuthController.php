@@ -353,7 +353,7 @@ class AuthController extends Controller
             $user->shop_request=1;
         }
         $user->update();
-        
+
         return response()->json([
             'message' => 'success'
         ]);
@@ -386,7 +386,7 @@ class AuthController extends Controller
         $payment->save();
 
         $user = User::findOrFail($auth_user->id);
-        if($request->shopmember_type_id==0 || $request->shopmember_type_id==null){
+        if(empty($request->shopmember_type_id) || $request->shopmember_type_id==0 || $request->shopmember_type_id==null){
             $user->active_status = 1;
             $user->request_type = $request->member_id;
         }else{
