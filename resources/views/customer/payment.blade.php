@@ -33,12 +33,13 @@
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" onclick="clearTransactionInputs()"></button>
         </div>
         <div class="modal-body">
-            <form action="{{ route('ewallet_store') }}" method="POST" enctype="multipart/form-data" class="customer-transaction-form">
-                @csrf
+
+        <form action="{{ route('ewallet_store') }}" method="POST" enctype="multipart/form-data" class="customer-transaction-form">
+            @csrf
             <div class="customer-transaction-form-img">
                 <img src="{{asset('image/kpay.png')}}"/>
             </div>
-
+            @if(auth()->user()->shopmember_type_id==0 || auth()->user()->shopmember_type_id==null)
             <div class="customer-transaction-input-container">
                 <p>Choosen Plan:</p>
                 <p class="member-duration">{{$member->member_type}}( {{$member->duration}} month)</p>
@@ -47,20 +48,29 @@
                 <p>Cost:</p>
                 <p class="member-cost">{{$member->price}}MMK</p>
             </div>
+            @else
             <div class="customer-transaction-input-container">
-                <p>KPay Phone Number:</p>
-                <input type="text" name = "payment_name" hidden value="KBZ Pay">
-                <input type="number" name = "phone" required>
-
+                <p>Choosen Level:</p>
+                <p class="member-duration">{{$member->member_type}}( {{$member->duration}} month)</p>
             </div>
             <div class="customer-transaction-input-container">
-                <p>KPay Name:</p>
-                <input type="text" required name = "account_name">
+                <p>Cost:</p>
+                <p class="member-cost">{{$member->price}}MMK</p>
+            </div>
+            @endif
+            <div class="customer-transaction-input-container">
+                <p>Wave pay Phone Number:</p>
+                <input type="text" name = "payment_name" hidden value="Wave Pay">
+                <input type="number" name="phone" required>
+            </div>
+            <div class="customer-transaction-input-container">
+                <p>Wave pay Name:</p>
+                <input type="text" name="account_name" required>
             </div>
             <div class="customer-transaction-input-container">
                 <p>Amount:
                 </p>
-                <input type="text" required name = "amount" >
+                <input type="text" required name = "amount">
             </div>
 
             <div class="customer-transaction-receipt-img">
@@ -70,36 +80,37 @@
                 <div class="customer-screenshot-upload-btn">
                     <iconify-icon icon="akar-icons:circle-plus" class="customer-screenshot-upload-btn-icon"></iconify-icon>
                     <p>Photo</p>
-                    <input type="file" id="kpayImg" name="image" required>
+                    <input type="file" id="wavepayImg" name="image" required>
                 </div>
 
                 <button class="customer-transaction-clear-btn" type="button" onclick="clearTransactionImg()">Clear</button>
 
                 </span>
-                <img class="preview kpayImg">
+                <img class="preview wavepayImg">
             </div>
 
             <div class="customer-transaction-admin-details">
-                @foreach($banking_info as $kbz)
-                    @if($kbz->payment_name	== "KBZ Pay")
+                @foreach($banking_info as $wave)
+                @if($wave->payment_name	== "Wave Pay")
                 <div class="customer-transaction-admin-phone">
-                    <p>Kpay Phone Number:</p>
-                    <p>{{$kbz->phone}}</p>
+                    <p>Wave pay Phone Number:</p>
+                    <p>{{$wave->phone}}</p>
                 </div>
                 <div class="customer-transaction-admin-phone">
                     <p>Account Name:</p>
-                    <p>{{$kbz->account_name}}</p>
+                    <p>{{$wave->account_name}}</p>
                 </div>
                 <hr>
-                    @endif
+                @endif
                 @endforeach
             </div>
+
 
             <div class="customer-transaction-form-btn-container">
                 <button type="submit" class="customer-transaction-form-submit">Confirm</button>
                 <button type="reset"  class="customer-transaction-form-cencel" onclick="clearTransactionImg()">Reset</button>
             </div>
-          </form>
+        </form>
         </div>
 
       </div>
@@ -120,6 +131,7 @@
                 <div class="customer-transaction-form-img">
                     <img src="{{asset('image/cbpay.jfif')}}"/>
                 </div>
+                @if(auth()->user()->shopmember_type_id==0 || auth()->user()->shopmember_type_id==null)
                 <div class="customer-transaction-input-container">
                     <p>Choosen Plan:</p>
                     <p class="member-duration">{{$member->member_type}}( {{$member->duration}} month)</p>
@@ -128,13 +140,23 @@
                     <p>Cost:</p>
                     <p class="member-cost">{{$member->price}}MMK</p>
                 </div>
+                @else
                 <div class="customer-transaction-input-container">
-                    <p>CBpay Phone Number:</p>
-                    <input type="text" name = "payment_name" hidden value="CB Pay">
+                    <p>Choosen Level:</p>
+                    <p class="member-duration">{{$member->member_type}}( {{$member->duration}} month)</p>
+                </div>
+                <div class="customer-transaction-input-container">
+                    <p>Cost:</p>
+                    <p class="member-cost">{{$member->price}}MMK</p>
+                </div>
+                @endif
+                <div class="customer-transaction-input-container">
+                    <p>Wave pay Phone Number:</p>
+                    <input type="text" name = "payment_name" hidden value="Wave Pay">
                     <input type="number" name="phone" required>
                 </div>
                 <div class="customer-transaction-input-container">
-                    <p>CBpay Name:</p>
+                    <p>Wave pay Name:</p>
                     <input type="text" name="account_name" required>
                 </div>
                 <div class="customer-transaction-input-container">
@@ -150,29 +172,31 @@
                     <div class="customer-screenshot-upload-btn">
                         <iconify-icon icon="akar-icons:circle-plus" class="customer-screenshot-upload-btn-icon"></iconify-icon>
                         <p>Photo</p>
-                        <input type="file" id="cbpayImg" name="image" required>
+                        <input type="file" id="wavepayImg" name="image" required>
                     </div>
 
                     <button class="customer-transaction-clear-btn" type="button" onclick="clearTransactionImg()">Clear</button>
 
                     </span>
-                    <img class="preview cbpayImg">
+                    <img class="preview wavepayImg">
                 </div>
 
                 <div class="customer-transaction-admin-details">
-                    @foreach($banking_info as $cb)
-                    @if($cb->payment_name	== "CB Pay")
+                    @foreach($banking_info as $wave)
+                    @if($wave->payment_name	== "Wave Pay")
                     <div class="customer-transaction-admin-phone">
-                        <p>CBpay Phone Number:</p>
-                        <p>{{$cb->phone}}</p>
+                        <p>Wave pay Phone Number:</p>
+                        <p>{{$wave->phone}}</p>
                     </div>
                     <div class="customer-transaction-admin-phone">
                         <p>Account Name:</p>
-                        <p>{{$cb->account_name}}</p>
+                        <p>{{$wave->account_name}}</p>
                     </div>
+                    <hr>
                     @endif
                     @endforeach
                 </div>
+
 
                 <div class="customer-transaction-form-btn-container">
                     <button type="submit" class="customer-transaction-form-submit">Confirm</button>
@@ -198,6 +222,7 @@
                 <div class="customer-transaction-form-img">
                     <img src="{{asset('image/wavepay.jfif')}}"/>
                 </div>
+                @if(auth()->user()->shopmember_type_id==0 || auth()->user()->shopmember_type_id==null)
                 <div class="customer-transaction-input-container">
                     <p>Choosen Plan:</p>
                     <p class="member-duration">{{$member->member_type}}( {{$member->duration}} month)</p>
@@ -206,6 +231,16 @@
                     <p>Cost:</p>
                     <p class="member-cost">{{$member->price}}MMK</p>
                 </div>
+                @else
+                <div class="customer-transaction-input-container">
+                    <p>Choosen Level:</p>
+                    <p class="member-duration">{{$member->member_type}}( {{$member->duration}} month)</p>
+                </div>
+                <div class="customer-transaction-input-container">
+                    <p>Cost:</p>
+                    <p class="member-cost">{{$member->price}}MMK</p>
+                </div>
+                @endif
                 <div class="customer-transaction-input-container">
                     <p>Wave pay Phone Number:</p>
                     <input type="text" name = "payment_name" hidden value="Wave Pay">
@@ -278,6 +313,7 @@
                 <div class="customer-transaction-form-img">
                     <img src="{{asset('image/ayapay.jfif')}}"/>
                 </div>
+                @if(auth()->user()->shopmember_type_id==0 || auth()->user()->shopmember_type_id==null)
                 <div class="customer-transaction-input-container">
                     <p>Choosen Plan:</p>
                     <p class="member-duration">{{$member->member_type}}( {{$member->duration}} month)</p>
@@ -286,13 +322,23 @@
                     <p>Cost:</p>
                     <p class="member-cost">{{$member->price}}MMK</p>
                 </div>
+                @else
                 <div class="customer-transaction-input-container">
-                    <p>Ayapay Phone Number:</p>
-                    <input type="text" name = "payment_name" hidden value="AYA Pay">
+                    <p>Choosen Level:</p>
+                    <p class="member-duration">{{$member->member_type}}( {{$member->duration}} month)</p>
+                </div>
+                <div class="customer-transaction-input-container">
+                    <p>Cost:</p>
+                    <p class="member-cost">{{$member->price}}MMK</p>
+                </div>
+                @endif
+                <div class="customer-transaction-input-container">
+                    <p>Wave pay Phone Number:</p>
+                    <input type="text" name = "payment_name" hidden value="Wave Pay">
                     <input type="number" name="phone" required>
                 </div>
                 <div class="customer-transaction-input-container">
-                    <p>Ayapay Name:</p>
+                    <p>Wave pay Name:</p>
                     <input type="text" name="account_name" required>
                 </div>
                 <div class="customer-transaction-input-container">
@@ -308,29 +354,31 @@
                     <div class="customer-screenshot-upload-btn">
                         <iconify-icon icon="akar-icons:circle-plus" class="customer-screenshot-upload-btn-icon"></iconify-icon>
                         <p>Photo</p>
-                        <input type="file" id="ayapayImg" name="image" required>
+                        <input type="file" id="wavepayImg" name="image" required>
                     </div>
 
                     <button class="customer-transaction-clear-btn" type="button" onclick="clearTransactionImg()">Clear</button>
 
                     </span>
-                    <img class="preview ayapayImg">
+                    <img class="preview wavepayImg">
                 </div>
 
                 <div class="customer-transaction-admin-details">
-                    @foreach($banking_info as $aya)
-                    @if($aya->payment_name	== "AYA Pay")
+                    @foreach($banking_info as $wave)
+                    @if($wave->payment_name	== "Wave Pay")
                     <div class="customer-transaction-admin-phone">
-                        <p>Ayapay Phone Number:</p>
-                        <p>{{$aya->phone}}</p>
+                        <p>Wave pay Phone Number:</p>
+                        <p>{{$wave->phone}}</p>
                     </div>
                     <div class="customer-transaction-admin-phone">
                         <p>Account Name:</p>
-                        <p>{{$aya->account_name}}</p>
+                        <p>{{$wave->account_name}}</p>
                     </div>
+                    <hr>
                     @endif
                     @endforeach
                 </div>
+
 
                 <div class="customer-transaction-form-btn-container">
                     <button type="submit" class="customer-transaction-form-submit">Confirm</button>
@@ -357,10 +405,17 @@
                 <div class="customer-transaction-form-img">
                     <img src="{{asset('image/kbzbank-removebg-preview.png')}}"/>
                 </div>
+                @if(auth()->user()->shopmember_type_id==0 || auth()->user()->shopmember_type_id==null)
                 <div class="customer-transaction-input-container">
                     <p>Choosen Plan:</p>
                     <p class="member-duration">{{$member->member_type}}( {{$member->duration}} month)</p>
                 </div>
+                @else
+                <div class="customer-transaction-input-container">
+                    <p>Choosen Level:</p>
+                    <p class="member-duration">{{$member->member_type}}( {{$member->duration}} month)</p>
+                </div>
+                @endif
                 <div class="customer-transaction-input-container">
                     <p>Cost:</p>
                     <p class="member-cost">{{$member->price}}MMK</p>
@@ -451,10 +506,17 @@
                 <div class="customer-transaction-form-img">
                     <img src="{{asset('image/cbbank-removebg-preview.png')}}"/>
                 </div>
+                @if(auth()->user()->shopmember_type_id==0 || auth()->user()->shopmember_type_id==null)
                 <div class="customer-transaction-input-container">
                     <p>Choosen Plan:</p>
                     <p class="member-duration">{{$member->member_type}}( {{$member->duration}} month)</p>
                 </div>
+                @else
+                <div class="customer-transaction-input-container">
+                    <p>Choosen Level:</p>
+                    <p class="member-duration">{{$member->member_type}}( {{$member->duration}} month)</p>
+                </div>
+                @endif
                 <div class="customer-transaction-input-container">
                     <p>Cost:</p>
                     <p class="member-cost">{{$member->price}}MMK</p>
@@ -529,10 +591,17 @@
                 <div class="customer-transaction-form-img">
                     <img src="{{asset('image/ayabank-removebg-preview.png')}}"/>
                 </div>
+                @if(auth()->user()->shopmember_type_id==0 || auth()->user()->shopmember_type_id==null)
                 <div class="customer-transaction-input-container">
                     <p>Choosen Plan:</p>
                     <p class="member-duration">{{$member->member_type}}( {{$member->duration}} month)</p>
                 </div>
+                @else
+                <div class="customer-transaction-input-container">
+                    <p>Choosen Level:</p>
+                    <p class="member-duration">{{$member->member_type}}( {{$member->duration}} month)</p>
+                </div>
+                @endif
                 <div class="customer-transaction-input-container">
                     <p>Cost:</p>
                     <p class="member-cost">{{$member->price}}MMK</p>
@@ -607,10 +676,17 @@
                 <div class="customer-transaction-form-img">
                     <img src="{{asset('image/mabbank-removebg-preview.png')}}"/>
                 </div>
+                @if(auth()->user()->shopmember_type_id==0 || auth()->user()->shopmember_type_id==null)
                 <div class="customer-transaction-input-container">
                     <p>Choosen Plan:</p>
                     <p class="member-duration">{{$member->member_type}}( {{$member->duration}} month)</p>
                 </div>
+                @else
+                <div class="customer-transaction-input-container">
+                    <p>Choosen Level:</p>
+                    <p class="member-duration">{{$member->member_type}}( {{$member->duration}} month)</p>
+                </div>
+                @endif
                 <div class="customer-transaction-input-container">
                     <p>Cost:</p>
                     <p class="member-cost">{{$member->price}}MMK</p>

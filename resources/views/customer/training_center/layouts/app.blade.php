@@ -23,6 +23,7 @@
     <link href={{ asset('css/customer/css/customerTrainingCenter.css')}} rel="stylesheet"/>
     <link href={{ asset('css/customer/css/customerProfile.css')}} rel="stylesheet"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.css">
+    <link href="{{ asset('css/shop.css')}}" rel="stylesheet"/>
     {{-- calender --}}
 
 
