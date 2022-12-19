@@ -1,5 +1,6 @@
 ﻿<!doctype html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -9,14 +10,15 @@
 
     <!-- Bootstrap CSS -->
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css"
-    integrity="sha512-xh6O/CkQoPOWDdYTDqeRdPCVd1SpvCA9XXcUnZS2FmJNp1coAFzvtCN9BmamE+4aHK8yyUHUSCcJHgXloTyT2A=="
-    crossorigin="anonymous" referrerpolicy="no-referrer" />
+        integrity="sha512-xh6O/CkQoPOWDdYTDqeRdPCVd1SpvCA9XXcUnZS2FmJNp1coAFzvtCN9BmamE+4aHK8yyUHUSCcJHgXloTyT2A=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/boxicons@latest/css/boxicons.min.css">
 
-    <link href={{ asset('css/adminchat/trainingcenter.css')}} rel="stylesheet"/>
+    <link href={{ asset('css/adminchat/trainingcenter.css') }} rel="stylesheet" />
 
     {{-- //// --}}
 
@@ -63,22 +65,20 @@
     <!-- Font Awesome -->
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css"
-
         integrity="sha512-xh6O/CkQoPOWDdYTDqeRdPCVd1SpvCA9XXcUnZS2FmJNp1coAFzvtCN9BmamE+4aHK8yyUHUSCcJHgXloTyT2A=="
-
         crossorigin="anonymous" referrerpolicy="no-referrer" />
 
 
 
-    <link rel ="stylesheet" href="{{ asset('css/custom.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/custom.css') }}">
 
-    <link rel="stylesheet" href="{{asset('css/workout.css')}}">
+    <link rel="stylesheet" href="{{ asset('css/workout.css') }}">
 
-    <link rel="stylesheet" href="{{asset('css/globals.css')}}">
-    <link rel="stylesheet" href="{{asset('css/adminchat/trainingcenter.css')}}">
+    <link rel="stylesheet" href="{{ asset('css/globals.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/adminchat/trainingcenter.css') }}">
 
     <!--social media -->
-    <link href="{{ asset('css/socialMedia.css')}}" rel="stylesheet"/>
+    <link href="{{ asset('css/socialMedia.css') }}" rel="stylesheet" />
 
 
     @yield('styles')
@@ -129,13 +129,12 @@
                         <a class="sidebar-link" href="{{ route('request.index') }}">
 
                             <i class="fa-solid fa-user-group align-middle"></i> <span
-
                                 class="align-middle">Request</span>
-                                @if ($memberRequest_count<1)
+                            @if ($memberRequest_count < 1)
                                 <span></span>
-                                @else
-                                <span class="badge badge-light">{{$memberRequest_count}}</span>
-                                @endif
+                            @else
+                                <span class="badge badge-light">{{ $memberRequest_count }}</span>
+                            @endif
                         </a>
 
                     </li>
@@ -146,9 +145,8 @@
 
                         <a class="sidebar-link" href="{{ route('payment.transction') }}">
 
-                            <i class="fa-solid fa-money-bill-transfer"></i> <span
-
-                                class="align-middle">Payment Transaction</span>
+                            <i class="fa-solid fa-money-bill-transfer"></i> <span class="align-middle">Payment
+                                Transaction</span>
 
                         </a>
 
@@ -156,13 +154,11 @@
 
 
 
-                   <li class="sidebar-item @yield('user-active') ">
+                    <li class="sidebar-item @yield('user-active') ">
 
                         <a class="sidebar-link" href="{{ route('user.index') }}">
 
-                            <i class="fa-solid fa-users align-middle "></i> <span
-
-                                class="align-middle">Users</span>
+                            <i class="fa-solid fa-users align-middle "></i> <span class="align-middle">Users</span>
                         </a>
                     </li>
 
@@ -172,29 +168,33 @@
                         <a class="sidebar-link" href="{{ route('trainer.index') }}">
 
                             <i class="fa-solid fa-dumbbell align-middle "></i> <span
-
                                 class="align-middle">Trainers</span>
                         </a>
                     </li>
 
+                    <li class="sidebar-item @yield('shopmember-active') ">
+                        <a class="sidebar-link" href="{{ route('shop-member.index') }}">
 
-                        <li class="sidebar-item @yield('training-center-active') ">
-                            <a class="sidebar-link" href="{{ route('traininggroup.index') }}">
+                            <i class="fa-solid fa-dumbbell align-middle "></i> <span class="align-middle">Shop
+                                MemberPlan</span>
+                        </a>
+                    </li>
 
-                                <i class="fa-solid fa-dumbbell align-middle "></i> <span
 
-                                    class="align-middle">Training Center</span>
-                            </a>
-                        </li>
+                    <li class="sidebar-item @yield('training-center-active') ">
+                        <a class="sidebar-link" href="{{ route('traininggroup.index') }}">
 
-                        <li class="sidebar-item">
-                            <a class="sidebar-link" href="{{ route('traininggroup.create') }}">
+                            <i class="fa-solid fa-dumbbell align-middle "></i> <span class="align-middle">Training
+                                Center</span>
+                        </a>
+                    </li>
 
-                                <i class="fa-solid fa-people-group"></i> <span
+                    <li class="sidebar-item">
+                        <a class="sidebar-link" href="{{ route('traininggroup.create') }}">
 
-                                    class="align-middle">Training Group</span>
-                            </a>
-                        </li>
+                            <i class="fa-solid fa-people-group"></i> <span class="align-middle">Training Group</span>
+                        </a>
+                    </li>
 
 
                     {{-- <li class="sidebar-item @yield('member-active')">
@@ -211,9 +211,10 @@
 
 
 
-                    <li class="sidebar-item " >
+                    <li class="sidebar-item ">
 
-                        <a class="sidebar-link" href="#collapseExample" data-mdb-toggle="collapse" aria-expanded="false" aria-controls="collapseExample">
+                        <a class="sidebar-link" href="#collapseExample" data-mdb-toggle="collapse"
+                            aria-expanded="false" aria-controls="collapseExample">
 
                             <i class="fa-solid fa-m"></i>
 
@@ -221,25 +222,25 @@
 
                         </a>
 
-                        <li class="collapse mt-3" id="collapseExample">
+                    <li class="collapse mt-3" id="collapseExample">
 
-                            <a class="sidebar-link text-white" href="{{ route('member.user_member') }}">
+                        <a class="sidebar-link text-white" href="{{ route('member.user_member') }}">
 
-                                <i class="fa-solid fa-user-group  align-middle"></i>
+                            <i class="fa-solid fa-user-group  align-middle"></i>
 
-                              <span class="align-middle">Members</span>
+                            <span class="align-middle">Members</span>
 
-                            </a>
+                        </a>
 
-                            <a class="sidebar-link text-white" href="{{ route('member.index') }}">
+                        <a class="sidebar-link text-white" href="{{ route('member.index') }}">
 
-                                <i class="fa-solid fa-plus"></i>
+                            <i class="fa-solid fa-plus"></i>
 
-                                <span class="align-middle">Create Member Type</span>
+                            <span class="align-middle">Create Member Type</span>
 
-                            </a>
+                        </a>
 
-                        </li>
+                    </li>
                     </li>
 
                     {{-- <li class="sidebar-item @yield('mealplan-active')">
@@ -275,7 +276,6 @@
                         <a class="sidebar-link" href="{{ route('permission.index') }}">
 
                             <i class="fa-solid fa-shield-halved align-middle"></i> <span
-
                                 class="align-middle">Permissions</span>
 
                         </a>
@@ -289,7 +289,6 @@
                         <a class="sidebar-link" href="{{ route('role.index') }}">
 
                             <i class="fa-solid fa-user-shield align-middle"></i> <span
-
                                 class="align-middle">Roles</span>
 
                         </a>
@@ -373,31 +372,33 @@
 
                         <div class="notis-box-notis-container">
                             <?php $count = 0; ?>
-                            @foreach(auth()->user()->notifri->sortByDesc('created_at') as $noti)
-                            <?php if($count == 10) break; ?>
-                            @if($noti->report_id != 0 AND $noti->notification_status == 1)
-                                <a href ="{{route('admin.view.report',$noti->report_id)}}">
-                                    <div class="notis-box-noti-row notis-box-unread-noti">
-                                        <img src="{{asset('img/customer/imgs/report.png')}}"/>
-                                        <div class="notis-box-noti-row-detail">
-                                            <span>{{$noti->created_at->diffForHumans()}}
-                                            </span>
-                                            <p>{{$noti->description}}</p>
+                            @foreach (auth()->user()->notifri->sortByDesc('created_at') as $noti)
+                                <?php if ($count == 10) {
+                                    break;
+                                } ?>
+                                @if ($noti->report_id != 0 and $noti->notification_status == 1)
+                                    <a href="{{ route('admin.view.report', $noti->report_id) }}">
+                                        <div class="notis-box-noti-row notis-box-unread-noti">
+                                            <img src="{{ asset('img/customer/imgs/report.png') }}" />
+                                            <div class="notis-box-noti-row-detail">
+                                                <span>{{ $noti->created_at->diffForHumans() }}
+                                                </span>
+                                                <p>{{ $noti->description }}</p>
+                                            </div>
                                         </div>
-                                    </div>
-                                </a>
-                                @elseif($noti->report_id != 0 AND $noti->notification_status != 1)
-                                <a href ="{{route('admin.view.report',$noti->report_id)}}">
-                                    <div class="notis-box-noti-row notis-box-read-noti">
-                                        <img src="{{asset('img/customer/imgs/report.png')}}"/>
-                                        <div class="notis-box-noti-row-detail">
-                                            <span>{{$noti->created_at->diffForHumans()}}
-                                            </span>
-                                            <p>{{$noti->description}}</p>
+                                    </a>
+                                @elseif($noti->report_id != 0 and $noti->notification_status != 1)
+                                    <a href="{{ route('admin.view.report', $noti->report_id) }}">
+                                        <div class="notis-box-noti-row notis-box-read-noti">
+                                            <img src="{{ asset('img/customer/imgs/report.png') }}" />
+                                            <div class="notis-box-noti-row-detail">
+                                                <span>{{ $noti->created_at->diffForHumans() }}
+                                                </span>
+                                                <p>{{ $noti->description }}</p>
+                                            </div>
                                         </div>
-                                    </div>
-                                </a>
-                            @endif
+                                    </a>
+                                @endif
 
                                 <?php $count++; ?>
                             @endforeach
@@ -408,27 +409,28 @@
 
                     <div class="dropdown">
 
-                    <img src="{{ asset('img/avatar.png') }}" style="cursor: pointer;" class="rounded-circle me-2" width="35" alt="">
+                        <img src="{{ asset('img/avatar.png') }}" style="cursor: pointer;"
+                            class="rounded-circle me-2" width="35" alt="">
 
-                    <span class="mb-0 me-4 dropdown-toggle" style="cursor: pointer;" data-mdb-toggle="dropdown">
+                        <span class="mb-0 me-4 dropdown-toggle" style="cursor: pointer;" data-mdb-toggle="dropdown">
 
-                        {{ auth()->user()->name }} <i class="fa-solid fa-angle-down fa-sm"></i></span>
+                            {{ auth()->user()->name }} <i class="fa-solid fa-angle-down fa-sm"></i></span>
 
-                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
 
-                      <li><a class="dropdown-item" href="{{ route('admin-profile') }}">Profile</a></li>
+                            <li><a class="dropdown-item" href="{{ route('admin-profile') }}">Profile</a></li>
 
-                      {{-- <li><a class="dropdown-item logout-btn">Logout</a></li> --}}
-                    <li>
-                        <form id="logout-form" action="{{ route('logout') }}" method="POST">
-                            @csrf
-                            <button class="dropdown-item" type="submit">Logout</button>
-                        </form>
-                    </li>
+                            {{-- <li><a class="dropdown-item logout-btn">Logout</a></li> --}}
+                            <li>
+                                <form id="logout-form" action="{{ route('logout') }}" method="POST">
+                                    @csrf
+                                    <button class="dropdown-item" type="submit">Logout</button>
+                                </form>
+                            </li>
 
-                    </ul>
+                        </ul>
 
-                  </div>
+                    </div>
 
                 </div>
             </nav>
@@ -460,10 +462,10 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 
 
-    <script src=" https://code.jquery.com/ui/1.12.1/jquery-ui.js"> </script>
-     <!-- Scripts -->
+    <script src=" https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <!-- Scripts -->
 
-     <script src="{{ asset('js/app.js') }}" defer></script>
+    <script src="{{ asset('js/app.js') }}" defer></script>
 
     <!-- MDB -->
 
@@ -504,8 +506,8 @@
 
 
 
- <!--iconify-->
- <script src="https://code.iconify.design/iconify-icon/1.0.0/iconify-icon.min.js"></script>
+    <!--iconify-->
+    <script src="https://code.iconify.design/iconify-icon/1.0.0/iconify-icon.min.js"></script>
 
 
 
@@ -528,37 +530,41 @@
     <script type="text/javascript" src="{{ asset('vendor/jsvalidation/js/jsvalidation.js') }}"></script>
 
     {{-- axios --}}
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.1.3/axios.min.js" integrity="sha512-0qU9M9jfqPw6FKkPafM3gy2CBAvUWnYVOfNPDYKVuRTel1PrciTj+a9P3loJB+j0QmN2Y0JYQmkBBS8W+mbezg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.1.3/axios.min.js"
+        integrity="sha512-0qU9M9jfqPw6FKkPafM3gy2CBAvUWnYVOfNPDYKVuRTel1PrciTj+a9P3loJB+j0QmN2Y0JYQmkBBS8W+mbezg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
     {{-- pusher --}}
     <script src="https://js.pusher.com/7.2/pusher.min.js"></script>
 
-     {{-- emoji --}}
-     <script src="https://cdn.jsdelivr.net/npm/@joeattardi/emoji-button@3.0.3/dist/index.min.js"></script>
+    {{-- emoji --}}
+    <script src="https://cdn.jsdelivr.net/npm/@joeattardi/emoji-button@3.0.3/dist/index.min.js"></script>
 
-     <script src={{asset('js/notify.js')}}></script>
+    <script src={{ asset('js/notify.js') }}></script>
 
-     {{-- pusher --}}
-     <script src="https://js.pusher.com/7.2/pusher.min.js"></script>
+    {{-- pusher --}}
+    <script src="https://js.pusher.com/7.2/pusher.min.js"></script>
 
     @stack('scripts')
 
     <script>
-        $('.nav-icon').click(function(){
-                $('.notis-box-container').toggle()
-            })
+        $('.nav-icon').click(function() {
+            $('.notis-box-container').toggle()
+        })
 
-                var user_id = {{auth()->user()->id}};
-                console.log(user_id);
-                var pusher = new Pusher('{{env("MIX_PUSHER_APP_KEY")}}', {
-                cluster: '{{env("PUSHER_APP_CLUSTER")}}',
-                encrypted: true
-                });
-                var channel = pusher.subscribe('friend_request.'+user_id);
-                channel.bind('friendRequest', function(data) {
-                console.log(data);
-                $.notify(data, "success",{ position:"left" });
-                });
+        var user_id = {{ auth()->user()->id }};
+        console.log(user_id);
+        var pusher = new Pusher('{{ env('MIX_PUSHER_APP_KEY') }}', {
+            cluster: '{{ env('PUSHER_APP_CLUSTER') }}',
+            encrypted: true
+        });
+        var channel = pusher.subscribe('friend_request.' + user_id);
+        channel.bind('friendRequest', function(data) {
+            console.log(data);
+            $.notify(data, "success", {
+                position: "left"
+            });
+        });
 
         $(document).ready(function() {
 
@@ -567,9 +573,9 @@
                 e.preventDefault();
                 var url = new URL(this.href);
                 var id = url.searchParams.get("id");
-                 console.log(id,"noti_id");
+                console.log(id, "noti_id");
 
-        });
+            });
 
             let token = document.head.querySelector('meta[name="csrf-token"]');
             if (token) {
@@ -618,7 +624,6 @@
             $(".ninja-select").select2();
 
         });
-
     </script>
 
 </body>

@@ -19,10 +19,10 @@ class MealPlanController extends Controller
 
     public function index()
     {
-        //
         return view('admin.MealPlan.index');
     }
-    public function getmealplan(){
+    public function getmealplan()
+    {
         $mealPlan = MealPlan::query()->with(['member']);
         $i = 1;
         return Datatables::of($mealPlan)
@@ -38,7 +38,7 @@ class MealPlanController extends Controller
                 <i class="fa-solid fa-trash fa-xl delete" data-id="' . $each->id . '"></i>
             </a>';
 
-                return '<div class="d-flex justify-content-center">' . $edit_icon . $delete_icon. '</div>';
+                return '<div class="d-flex justify-content-center">' . $edit_icon . $delete_icon . '</div>';
             })
             ->removeColumn('id')
             ->make(true);
@@ -53,7 +53,7 @@ class MealPlanController extends Controller
         //
         $member = Member::groupBy('member_type')->get();
         // dd($member);
-        return view('admin.MealPlan.create',compact('member'));
+        return view('admin.MealPlan.create', compact('member'));
     }
 
     /**
@@ -83,15 +83,15 @@ class MealPlanController extends Controller
         //
         $member = Member::groupBy('member_type')->get();
         // $mealplan = MealPlan::where('meal_plan_id',$id)->first();
-        $mealplan =MealPlan::findOrFail($id);
-        return view('admin.MealPlan.edit', compact('mealplan','member'));
+        $mealplan = MealPlan::findOrFail($id);
+        return view('admin.MealPlan.edit', compact('mealplan', 'member'));
     }
 
 
     public function update(MealPlanRequest $request, $id)
     {
         // dd("df");
-        $mealPlan_update=MealPlan::findOrFail($id);
+        $mealPlan_update = MealPlan::findOrFail($id);
         $mealPlan_update->member_type = $request->member_type;
         $mealPlan_update->plan_name = $request->meal_plan_name;
         $mealPlan_update->update();
@@ -106,9 +106,9 @@ class MealPlanController extends Controller
      */
     public function destroy($id)
     {
-        $meal_delete = Meal::where('meal_plan_id',$id);
+        $meal_delete = Meal::where('meal_plan_id', $id);
         $meal_delete->delete();
-        $mealPlan_delete=MealPlan::findOrFail($id);
+        $mealPlan_delete = MealPlan::findOrFail($id);
         $mealPlan_delete->delete();
         return redirect()->route('mealplan.index')->with('success', 'Meal Plan is Deleted successfully!');
     }
