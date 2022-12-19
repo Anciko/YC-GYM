@@ -18,7 +18,7 @@
     <!--global css-->
     {{-- <link href={{ asset('css/customer/css/globals.css')}} rel="stylesheet"/> --}}
     <link href={{ asset('css/globals.css')}} rel="stylesheet"/>
-
+    <link href={{ asset('css/aos.css')}} rel="stylesheet"/>
     <link href={{ asset('css/home.css')}} rel="stylesheet"/>
      <!--customer registeration-->
     <link href={{ asset('css/customer/css/customerRegisteration.css')}} rel="stylesheet"/>
@@ -56,6 +56,7 @@
 
 
         <script src="{{asset('js/theme.js')}}"></script>
+        <script src="{{asset('js/aos.js')}}"></script>
 
         <div class="nav-overlay">
         </div>

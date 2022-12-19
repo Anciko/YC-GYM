@@ -1275,8 +1275,13 @@ transition: max-height 0.6s ease-out;
 
 
     .close-image {
-    text-decoration:none;float:right;font-size:40px;font-weight:bold;color:white;
-    margin-top: 100px;
+    text-decoration:none;
+
+    font-size:40px;
+    font-weight:bold;
+    color:white;
+    /* margin-top: 100px; */
+    cursor: pointer;
     }
     .container1 {
     width:200px;
@@ -1291,7 +1296,58 @@ transition: max-height 0.6s ease-out;
     }
 
     .delete-image{
-        text-decoration:none;float:right;font-size:40px;font-weight:bold;color:white;
-        margin-top: 150px;
+        text-decoration:none;
+
+        font-size:40px;
+        font-weight:bold;
+        color:white;
+
 
     }
+
+    .view-media-modal-btns{
+        display: flex;
+        flex-direction: column;
+        margin-top: 100px;
+        float: right;
+        margin-right: 20px;
+    }
+
+
+ /* prepoader */
+ .preloader{
+    position: fixed;
+    left:0;
+    top:0;
+    height: 100%;
+    width:100%;
+    background-color:#fff;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* opacity: 1; */
+
+}
+.preloader.fade-out{
+    opacity: 0;
+    transition: opacity 1s ease;
+}
+.preloader div{
+    height: 40px;
+    width: 40px;
+    border-radius: 50%;
+    border-left:4px solid black;
+    border-right:4px solid black;
+    border-top:4px solid transparent;
+    border-bottom:4px solid transparent;
+    animation: preloader 1s linear infinite;
+}
+@keyframes preloader{
+    0%{
+        transform : rotate(0);
+    }
+    100%{
+        transform: rotate(360deg);
+    }
+}

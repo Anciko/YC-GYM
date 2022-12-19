@@ -20,7 +20,9 @@ use App\Events\MakeAgoraCall;
 use App\Events\MessageDelete;
 use App\Models\UserReactPost;
 use App\Models\UserSavedPost;
+use App\Events\GroupAudioCall;
 use App\Events\GroupVideoCall;
+use App\Events\DeclineCallUser;
 use App\Models\ChatGroupMember;
 use App\Models\ChatGroupMessage;
 use App\Events\MakeAgoraAudioCall;
@@ -1442,7 +1444,7 @@ class SocialMediaController extends Controller
                         left join users on users.id = user
                         left join profiles on users.profile_id = profiles.id
                         order by chats.created_at desc");
-                // dd($messages);
+
                 $groups_all = DB::table('chat_group_members')
                     ->select('group_id')
                     ->groupBy('group_id')
@@ -1533,9 +1535,9 @@ class SocialMediaController extends Controller
             env('PUSHER_APP_ID'),
             $options
         );
-         $pusher->trigger('chatting.'.auth()->user()->id.'.'.$to_user_id, 'chatting-event', ['message'=>$message]);
-         $pusher->trigger('chatting.' . $to_user_id . '.' . auth()->user()->id, 'chatting-event', ['message' => $message]);
-       // broadcast(new Chatting($message, $request->sender));
+        // $pusher->trigger('chatting.'.auth()->user()->id.'.'.$to_user_id, 'chatting-event', ['message'=>$message]);
+        // $pusher->trigger('chatting.' . $to_user_id . '.' . auth()->user()->id, 'chatting-event', ['message' => $message]);
+         broadcast(new Chatting($message, $request->sender));
 
         $user_id = auth()->user()->id;
         $messages = DB::select("SELECT users.id as id,users.name,profiles.profile_image,chats.text,chats.created_at as date
@@ -2490,7 +2492,7 @@ class SocialMediaController extends Controller
         );
         $user_id = auth()->user()->id;
         $group_message = ChatGroupMember::select('member_id')->where('group_id', $group_id)
-        ->where('member_id','!=',$user_id)->get();
+        ->get();
         for ($i = 0; count($group_message) > $i; $i++) {
         $user_id_to = $group_message[$i]['member_id'];
         $messages = DB::select("SELECT users.id as id,users.name,profiles.profile_image,chats.text,chats.created_at as date
@@ -2752,12 +2754,40 @@ class SocialMediaController extends Controller
 
         $token = RtcTokenBuilder::buildTokenWithUserAccount($appID, $appCertificate, $channelName, $user, $role, $privilegeExpiredTs);
 
-          // $data['userToCall'] = $request->user_to_call;
-          $data['channelName'] = $request->channel_name;
-          $data['groupId'] = $request->group_id;
-          // $data['from'] = Auth::id();
-          // dd($data);
-          broadcast(new GroupVideoCall($data['groupId'],$data))->toOthers();
+        $members = ChatGroupMember::where('group_id', $request->group_id)->where('member_id','!=',auth()->user()->id)->get();
+        $data['channelName'] = $channelName;
+
+        foreach ($members as $member) {
+            $data['memberId'] = $member->member_id;
+            broadcast(new GroupVideoCall($data['memberId'], $data))->toOthers();
+        }
+        return response()->json([
+            'data' => $token
+        ]);
+    }
+
+    public function gp_audio_token(Request $request)
+    {
+        $appID = env('AGORA_APP_ID');
+        $appCertificate = env('AGORA_APP_CERTIFICATE');
+        $channelName = $request->channelName;
+        $user = Auth::user()->name;
+        $role = RtcTokenBuilder::RoleAttendee;
+        $expireTimeInSeconds = 3600;
+        $currentTimestamp = now()->getTimestamp();
+        $privilegeExpiredTs = $currentTimestamp + $expireTimeInSeconds;
+
+        $token = RtcTokenBuilder::buildTokenWithUserAccount($appID, $appCertificate, $channelName, $user, $role, $privilegeExpiredTs);
+
+        $members = ChatGroupMember::where('group_id', $request->group_id)->where('member_id','!=',auth()->user()->id)->get();
+        $group_name = ChatGroup::select('group_name')->where('id',$request->group_id)->first();
+        $data['channelName'] = $channelName;
+        $data['groupName'] = $group_name;
+
+        foreach ($members as $member) {
+            $data['memberId'] = $member->member_id;
+            broadcast(new GroupAudioCall($data['memberId'], $data))->toOthers();
+        }
         return response()->json([
             'data' => $token
         ]);
@@ -2779,5 +2809,10 @@ class SocialMediaController extends Controller
         return response()->json([
             'data' => $token
         ]);
+    }
+
+    public function declineCallUser(Request $request) {
+        $data['userFromCall'] = $request->user_from_call;
+        broadcast(new DeclineCallUser($data))->toOthers();
     }
 }

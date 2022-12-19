@@ -19,12 +19,12 @@ class GroupAudioCall implements ShouldBroadcast
      *
      * @return void
      */
-    public $group_id;
+    public $member_id;
     public $data;
 
-    public function __construct($group_id, $data)
+    public function __construct($member_id, $data)
     {
-        $this->group_id = $group_id;
+        $this->member_id = $member_id;
         $this->data = $data;
     }
 
@@ -35,6 +35,11 @@ class GroupAudioCall implements ShouldBroadcast
      */
     public function broadcastOn()
     {
-        return new Channel("groupCalling.{$this->group_id}");
+        return new Channel("groupCalling.{$this->member_id}");
+    }
+
+    public function broadcastAs()
+    {
+        return 'GroupAudioCall';
     }
 }
