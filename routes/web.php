@@ -33,7 +33,7 @@ use App\Http\Controllers\Admin\RequestAcceptDeclineController;
 use App\Http\Controllers\Trainer\TrainerManagementConntroller;
 use App\Http\Controllers\Customer\CustomerManagementController;
 use App\Http\Controllers\Customer\Customer_TrainingCenterController;
-
+use App\Http\Controllers\ShopController;
 
 Route::group(['middleware' => 'prevent-back-history'], function () {
     Route::get('/locale/{lange}', [HomeController::class, 'lang'])->name('locale');
@@ -70,6 +70,10 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
 
         //Social Media
         // Route::get('/socialmedia_profile/{id}', [SocialmediaController::class, 'socialmedia_profile'])->name('socialmedia.profile');
+
+        Route::get('/shop', [ShopController::class, 'index'])->name('shop');
+        Route::post('/shop/payment', [ShopController::class, 'payment'])->name('shoppayment');
+
         Route::get('/socialmedia', [SocialmediaController::class, 'index'])->name('socialmedia');
         Route::post('/socialmedia', [SocialmediaController::class, 'post_store'])->name('post.store');
 
