@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateShopMembersTable extends Migration
+class CreateShopmemberHistoriesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,13 +13,11 @@ class CreateShopMembersTable extends Migration
      */
     public function up()
     {
-        Schema::create('shop_members', function (Blueprint $table) {
+        Schema::create('shopmember_histories', function (Blueprint $table) {
             $table->id();
-            $table->string('member_type');
-            $table->string('duration')->default(0);
-            $table->integer('price')->default(0);
-            $table->text('pros')->nullable();
-            $table->text('cons')->nullable();
+            $table->foreignId('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->string('shopmember_type_id');
+            $table->date('date');
             $table->timestamps();
         });
     }
@@ -31,6 +29,6 @@ class CreateShopMembersTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('shop_members');
+        Schema::dropIfExists('shopmember_histories');
     }
 }
