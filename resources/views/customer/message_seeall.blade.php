@@ -185,6 +185,9 @@
                     var social_media = "{{ route('socialmedia.profile', [':id']) }}";
                     social_media = social_media.replace(':id',id);
 
+                    var group_detail = "{{ route('socialmedia.group.detail', [':id']) }}";
+                    group_detail = group_detail.replace(':id',id);
+
                     if(res.data[i].is_group == 0){
                         htmlView += `
                             <div class="social-media-allchats-message-row-container">
@@ -220,7 +223,7 @@
 
                         </div>
                     </div>`
-                    
+
                     } else {
                         htmlView += `
                             <div class="social-media-allchats-message-row-container">
@@ -238,12 +241,12 @@
                         <div class="social-media-allchats-actions-container">
                             <iconify-icon icon="mdi:dots-vertical" class="social-media-allchats-actions-toggle"></iconify-icon>
                             <div class="social-media-allchats-actions-box">
-                                <div  data-id=` + res.data[i].from_id + ` class="converstion_delete"
+                                <div  data-id=` + res.data[i].from_id + ` class="leave_group"
                                 id= `+ res.data[i].to_id + `>
                                     <iconify-icon icon="tabler:trash" class="social-media-allchats-action-icon"></iconify-icon>
                                     <span>Leave</span>
                                 </div>
-                                <a>
+                                <a  href=` + group_detail + `>
                                     <iconify-icon icon="material-symbols:person" class="social-media-allchats-action-icon"></iconify-icon>
                                     Detail
                                 </a>

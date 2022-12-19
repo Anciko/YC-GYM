@@ -1533,8 +1533,8 @@ class SocialMediaController extends Controller
             env('PUSHER_APP_ID'),
             $options
         );
-        // $pusher->trigger('chatting.'.auth()->user()->id.'.'.$to_user_id, 'chatting-event', ['message'=>$message]);
-        $pusher->trigger('chatting.' . $to_user_id . '.' . auth()->user()->id, 'chatting-event', ['message' => $message]);
+         $pusher->trigger('chatting.'.auth()->user()->id.'.'.$to_user_id, 'chatting-event', ['message'=>$message]);
+         $pusher->trigger('chatting.' . $to_user_id . '.' . auth()->user()->id, 'chatting-event', ['message' => $message]);
        // broadcast(new Chatting($message, $request->sender));
 
         $user_id = auth()->user()->id;
@@ -2279,7 +2279,7 @@ class SocialMediaController extends Controller
             );
 
             $group_message = ChatGroupMember::select('member_id')->where('group_id', $request->id)
-            ->where('member_id','!=',auth()->user->id)->get();
+            ->where('member_id','!=',auth()->user()->id)->get();
             for ($i = 0; count($group_message) > $i; $i++)
             {
             $user_id_to = $group_message[$i]['member_id'];
@@ -2351,7 +2351,7 @@ class SocialMediaController extends Controller
                         $merged[$key]['owner_id'] = $owner->group_owner_id;
                 }
             }
-            $pusher->trigger('all_message.' .  $user_id_to , 'all', $merged);
+            $pusher->trigger('all_message.'.$user_id_to , 'all', $merged);
         }
         $group_member_delete = ChatGroupMember::where('group_id', $request->id);
         $group_member_delete->delete();
