@@ -15,7 +15,11 @@ class CreateShopMembersTable extends Migration
     {
         Schema::create('shop_members', function (Blueprint $table) {
             $table->id();
-            $table->integer('user_id');
+            $table->string('member_type');
+            $table->string('duration')->default(0);
+            $table->integer('price')->default(0);
+            $table->text('pros')->nullable();
+            $table->text('cons')->nullable();
             $table->timestamps();
         });
     }
