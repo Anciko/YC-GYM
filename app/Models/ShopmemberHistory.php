@@ -8,4 +8,6 @@ use Illuminate\Database\Eloquent\Model;
 class ShopmemberHistory extends Model
 {
     use HasFactory;
+
+    protected $fillable = ['user_id', 'shopmember_type_id', 'date'];
 }

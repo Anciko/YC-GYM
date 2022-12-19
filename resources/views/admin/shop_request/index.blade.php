@@ -15,6 +15,8 @@
                         <th>ID</th>
                         <th>Shop Name</th>
                         <th>Request Type Level</th>
+                        <th>Duration &#40;Month&#41;</th>
+                        <th>Price</th>
                         <th>Action</th>
                     </tr>
                 </thead>
@@ -47,8 +49,16 @@
                         name: 'name'
                     },
                     {
-                        data: 'shopmember_type',
-                        name: 'shopmember_type'
+                        data: 'member_type',
+                        name: 'member_type'
+                    },
+                    {
+                        data: 'duration',
+                        name: 'duration'
+                    },
+                    {
+                        data: 'price',
+                        name: 'price'
                     },
                     {
                         data: 'action',
@@ -77,31 +87,30 @@
             @endif
 
 
-            // $(document).on('click', '.delete-btn', function(e) {
-            //     e.preventDefault();
-            //     var id = $(this).data('id');
+            $(document).on('click', '.delete-btn', function(e) {
+                e.preventDefault();
+                var id = $(this).data('id');
 
-            //     swal({
-            //             text: "Are you sure decline for member request?",
-            //             buttons: true,
-            //             dangerMode: true,
-            //         })
-            //         .then((willDelete) => {
-            //             if (willDelete) {
-            //                 $.ajax({
-            //                     method: "GET",
-            //                     url: `request/member/decline/${id}`
-            //                 }).done(function(res) {
-            //                     Toast.fire({
-            //                         icon: 'success',
-            //                         title: 'Deleted'
-            //                     })
-            //                     table.ajax.reload();
-            //                     console.log("deleted");
-            //                 })
-            //             }
-            //         });
-            // })
+                swal({
+                        text: "Are you sure decline for shop member request?",
+                        buttons: true,
+                        dangerMode: true,
+                    })
+                    .then((willDelete) => {
+                        if (willDelete) {
+                            $.ajax({
+                                method: "GET",
+                                url: `/admin/shop/request/decline/${id}`
+                            }).done(function(res) {
+                                Toast.fire({
+                                    icon: 'success',
+                                    title: 'Decline Success'
+                                })
+                                table.ajax.reload();
+                            })
+                        }
+                    });
+            })
         });
     </script>
 @endpush

@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Yajra\Datatables\Datatables;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use App\Models\ShopMember;
 use App\Models\ShopmemberHistory;
 
 class ShopRequestController extends Controller
@@ -19,7 +20,8 @@ class ShopRequestController extends Controller
 
     public function ssd()
     {
-        $shop_request =  DB::table('users')->select('id', 'name', 'shopmember_type')->where('shop_request', 1)->get();
+        $shop_request =  DB::table('users')->select('users.id as user_id', 'users.name', 'shop_members.id', 'shop_members.member_type', 'shop_members.price', 'shop_members.duration')->where('shop_request', 1)
+            ->join('shop_members', 'shop_members.id', 'users.shopmember_type_id')->get();
 
         return Datatables::of($shop_request)
             ->addIndexColumn()
@@ -28,15 +30,15 @@ class ShopRequestController extends Controller
                 $delete_icon = '';
                 $detail_icon = '';
 
-                $detail_icon = '<a href=" ' . route('payment.detail', $each->id) . ' " class="text-warning mx-1 mt-1" title="payment">
+                $detail_icon = '<a href=" ' . route('payment.detail', $each->user_id) . ' " class="text-warning mx-1 mt-1" title="payment">
                                         <i class="fa-solid fa-circle-info fa-xl"></i>
-                              </a>';
+                              </a>';  
 
-                $edit_icon = '<a href=" ' . route('admin.shop_request.accept', $each->id) . ' " class="mx-1 btn btn-sm btn-success">
+                $edit_icon = '<a href=" ' . route('admin.shop_request.accept', $each->user_id) . ' " class="mx-1 btn btn-sm btn-success">
                                     Accept
                               </a>';
 
-                $delete_icon = '<a href=" ' . route('admin.shop_request.decline', $each->id) . ' " class="mx-1 btn btn-sm delete-btn btn-danger" data-id="' . $each->id . '" >
+                $delete_icon = '<a href=" ' . route('admin.shop_request.decline', $each->user_id) . ' " class="mx-1 btn btn-sm delete-btn btn-danger" data-id="' . $each->user_id . '" >
                                     Decline
                                 </a>';
 
@@ -53,10 +55,23 @@ class ShopRequestController extends Controller
 
         $date  = Carbon::Now()->toDateString();
 
+        $checkmember = User::select('users.id as user_id', 'shop_members.*')->where('users.id', $id)->join('shop_members', 'shop_members.id', 'users.shopmember_type_id')->first();
+
         ShopmemberHistory::create([
-            'user_id'=>$id,
-            'shopmember_type_id'=>1,
-            'date'=> $date
+            'user_id' => $checkmember->user_id,
+            'shopmember_type_id' => $checkmember->id,
+            'date' => $date
         ]);
+
+        return back();
+    }
+
+    public function request_decline($id)
+    {
+
+        $user = User::findOrFail($id);
+        $user->shop_request = 0;
+        $user->update();
+        return back()->with('success', 'Declined');
     }
 }
