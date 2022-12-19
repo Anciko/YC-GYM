@@ -9,7 +9,7 @@ use Yajra\Datatables\Datatables;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CreateTrainerRequest;
 use App\Http\Requests\CreateShopMemberRequest;
-
+use App\Http\Requests\UpdateShopMemberRequest;
 
 class ShopMemberController extends Controller
 {
@@ -37,14 +37,14 @@ class ShopMemberController extends Controller
                 $detail_icon = '';
                 $delete_icon = '';
 
-                $edit_icon = '<a href=" ' . route('trainer.edit', $each->id) . ' " class="text-warning mx-1 " title="edit">
+                $edit_icon = '<a href=" ' . route('shop-member.edit', $each->id) . ' " class="text-warning mx-1 " title="edit">
                                     <i class="fa-solid fa-edit fa-xl"></i>
                               </a>';
-                $detail_icon = '<a href=" ' . route('trainer.show', $each->id) . ' " class="text-info mx-1" title="detail">
+                $detail_icon = '<a href=" ' . route('shop-member.show', $each->id) . ' " class="text-info mx-1" title="detail">
                                     <i class="fa-solid fa-circle-info fa-xl"></i>
                                 </a>';
 
-                $delete_icon = '<a href=" ' . route('trainer.destroy', $each->id) . ' " class="text-danger mx-1              delete-btn" title="delete"  data-id="' . $each->id . '" >
+                $delete_icon = '<a href=" ' . route('shop-member.destroy', $each->id) . ' " class="text-danger mx-1              delete-btn" title="delete"  data-id="' . $each->id . '" >
                                     <i class="fa-solid fa-trash fa-xl"></i>
                                 </a>';
 
@@ -92,8 +92,8 @@ class ShopMemberController extends Controller
      */
     public function show($id)
     {
-        $user = User::findOrFail($id);
-        return view('admin.trainers.show', compact(''));
+        // $user = User::findOrFail($id);
+        // return view('admin.trainers.show', compact(''));
     }
 
     /**
@@ -104,11 +104,8 @@ class ShopMemberController extends Controller
      */
     public function edit($id)
     {
-        $trainer = User::findOrFail($id);
-
-        $roles = Role::all();
-        $old_roles = $trainer->roles->pluck('id')->toArray();
-        return view('admin.trainers.edit', compact('trainer', 'roles', 'old_roles'));
+        $shop_member = ShopMember::findOrFail($id);
+        return view('admin.shop_member.edit', compact('shop_member'));
     }
 
     /**
@@ -118,19 +115,18 @@ class ShopMemberController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdateTrainerRequest $request, $id)
+    public function update(UpdateShopMemberRequest $request, $id)
     {
-        $trainer = User::findOrFail($id);
-        $trainer->name = $request->name;
-        $trainer->phone = $request->phone;
-        $trainer->training_type = $request->training_type;
-        $trainer->address = $request->address;
+        $shop_member = ShopMember::findOrFail($id);
+        $shop_member->member_type = $request->member_type;
+        $shop_member->duration = $request->duration;
+        $shop_member->price = $request->price;
+        $shop_member->pros = $request->pros;
+        $shop_member->cons = $request->cons;
 
-        $trainer->password = $request->password == null ? $trainer->password  : Hash::make($request->password);
+        $shop_member->update();
 
-        $trainer->update();
-        $trainer->syncRoles($request->role);
-        return redirect()->route('trainer.index')->with('success', 'Trainer is updated successfully!');
+        return redirect()->route('shop-member.index')->with('success', 'New Shop Member is updated successfully!');
     }
 
     /**
@@ -141,8 +137,9 @@ class ShopMemberController extends Controller
      */
     public function destroy($id)
     {
-        $trainer = User::findOrFail($id);
-        $trainer->delete();
+
+        $shop_member = ShopMember::findOrFail($id);
+        $shop_member->delete();
 
         return 'success';
     }
