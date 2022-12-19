@@ -245,7 +245,7 @@
                     <p><span>{{$total_comments}}</span> Comments</p>
                     </a>
                 </div>
-            </div>
+            </div> 
         </div>
         @endforeach
 
