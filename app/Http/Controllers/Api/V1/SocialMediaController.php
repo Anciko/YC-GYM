@@ -1444,7 +1444,7 @@ class SocialMediaController extends Controller
                         left join users on users.id = user
                         left join profiles on users.profile_id = profiles.id
                         order by chats.created_at desc");
-       
+
                 $groups_all = DB::table('chat_group_members')
                     ->select('group_id')
                     ->groupBy('group_id')
@@ -1537,7 +1537,7 @@ class SocialMediaController extends Controller
         );
         // $pusher->trigger('chatting.'.auth()->user()->id.'.'.$to_user_id, 'chatting-event', ['message'=>$message]);
         // $pusher->trigger('chatting.' . $to_user_id . '.' . auth()->user()->id, 'chatting-event', ['message' => $message]);
-       broadcast(new Chatting($message, $request->sender));
+         broadcast(new Chatting($message, $request->sender));
 
         $user_id = auth()->user()->id;
         $messages = DB::select("SELECT users.id as id,users.name,profiles.profile_image,chats.text,chats.created_at as date
@@ -1673,6 +1673,17 @@ class SocialMediaController extends Controller
                             $merged_to[$key]['owner_id'] = $owner->group_owner_id;
                            }
                     }
+
+        $arr_six = array_reverse($merged);
+        $arr_six = array_slice($arr_six, -6);
+        $arr_six = array_reverse($arr_six);
+        $arr_six_to = array_reverse($merged_to);
+        $arr_six_to = array_slice($arr_six_to, -6);
+        $arr_six_to = array_reverse($arr_six_to);
+
+        $pusher->trigger('chat_message.' . $user_id, 'chat', $arr_six);
+        $pusher->trigger('chat_message.' . $to_user_id, 'chat', $arr_six_to);
+
         $pusher->trigger('all_message.'.$to_user_id , 'all', $merged_to);
         $pusher->trigger('all_message.'.$user_id , 'all', $merged);
         return response()->json([
@@ -2095,8 +2106,7 @@ class SocialMediaController extends Controller
         $chat_message->text = $message;
         $chat_message->save();
 
-        $group_message = ChatGroupMember::select('member_id')->where('group_id', $group->id)
-        ->where('member_id','!=',$groupOwner)->get();
+        $group_message = ChatGroupMember::select('member_id')->where('group_id', $group->id)->get();
         for ($i = 0; count($group_message) > $i; $i++)
         {
         $user_id_to = $group_message[$i]['member_id'];
@@ -2123,8 +2133,6 @@ class SocialMediaController extends Controller
                 left join profiles on users.profile_id = profiles.id
                 order by chats.created_at desc");
         // dd($messages);
-
-
         $groups = DB::table('chat_group_members')
             ->select('group_id')
             ->groupBy('group_id')
@@ -2168,6 +2176,12 @@ class SocialMediaController extends Controller
                     $merged[$key]['owner_id'] = $owner->group_owner_id;
             }
         }
+
+        $arr_six = array_reverse($merged);
+        $arr_six = array_slice($arr_six, -6);
+        $arr_six = array_reverse($arr_six);
+
+        $pusher->trigger('chat_message.' . $user_id_to, 'chat', $arr_six);
         $pusher->trigger('all_message.'.$user_id_to , 'all', $merged);
     }
         return response()->json([
@@ -2281,7 +2295,7 @@ class SocialMediaController extends Controller
             );
 
             $group_message = ChatGroupMember::select('member_id')->where('group_id', $request->id)
-            ->where('member_id','!=',auth()->user->id)->get();
+            ->where('member_id','!=',auth()->user()->id)->get();
             for ($i = 0; count($group_message) > $i; $i++)
             {
             $user_id_to = $group_message[$i]['member_id'];
@@ -2353,7 +2367,7 @@ class SocialMediaController extends Controller
                         $merged[$key]['owner_id'] = $owner->group_owner_id;
                 }
             }
-            $pusher->trigger('all_message.' .  $user_id_to , 'all', $merged);
+            $pusher->trigger('all_message.'.$user_id_to , 'all', $merged);
         }
         $group_member_delete = ChatGroupMember::where('group_id', $request->id);
         $group_member_delete->delete();

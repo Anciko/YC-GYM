@@ -66,6 +66,9 @@ class CreateUsersTable extends Migration
             $table->integer('chat_id')->default(0);
             $table->integer('message_id')->default(0);
 
+            $table->integer('shop_request')->default(0);
+            $table->integer('shopmember_type_id')->default(0);
+
             $table->rememberToken();
             $table->timestamps();
         });
