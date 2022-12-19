@@ -100,10 +100,6 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
 
         Route::post('/agora/token',  [VideoController::class, 'token']);
 
-
-
-
-
         Route::post('/socialmedia/group/create', [SocialmediaController::class, 'group_create'])->name('socialmedia.group.create');
         Route::get('/socialmedia/group/{id}', [SocialmediaController::class, 'group'])->name('socialmedia.group');
         Route::post('/socialmedia/group/{id}/addmember', [SocialmediaController::class, 'addmember'])->name('socialmedia.group.addmember');
