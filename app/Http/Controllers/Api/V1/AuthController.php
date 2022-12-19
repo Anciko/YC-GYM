@@ -344,37 +344,16 @@ class AuthController extends Controller
 
         $payment->save();
 
-
         $user = User::findOrFail($auth_user->id);
-        $user->active_status = 1;
-        $user->request_type = $request->member_id;
-        $user->save();
-
-        ///////
-
-        // if ($user->member_type != "Free") {
-        //     $user->members()->attach(['from_member_id' => $user->request_type, 'to_member_id' => $request->member_id, 'member_type_level' => $user->membertype_level]);
-
-
-        //     $member = Member::findOrFail($request->member_id);
-        //     $user->member_type = $member->member_type;
-
-        //     $user->syncRoles($member->member_type);
-        //     $user->save();
-        // }
-
-        // if ($user->member_type == "Free") {
-        //     $user->members()->attach(['to_member_id' => $request->member_id, 'member_type_level' => $request->member_type_level]);
-
-        //     $member = Member::findOrFail($request->member_id);
-        //     $user->membertype_level = $request->member_type_level;
-        //     $user->member_type = $member->member_type;
-        //     $user->syncRoles($member->member_type);
-        //     $user->save();
-        // }
-
-        //////
-
+        if($request->shopmember_type_id==0 || $request->shopmember_type_id==null){
+            $user->active_status = 1;
+            $user->request_type = $request->member_id;
+        }else{
+            $user->shopmember_type_id= $request->shopmember_type_id;
+            $user->shop_request=1;
+        }
+        $user->update();
+        
         return response()->json([
             'message' => 'success'
         ]);
@@ -403,44 +382,19 @@ class AuthController extends Controller
             $file
         );
 
-
         $payment->photo = $image_name;
         $payment->save();
 
-
         $user = User::findOrFail($auth_user->id);
-        $user->active_status = 1;
-        $user->request_type = $request->member_id;
-        $user->save();
-        ///////
+        if($request->shopmember_type_id==0 || $request->shopmember_type_id==null){
+            $user->active_status = 1;
+            $user->request_type = $request->member_id;
+        }else{
+            $user->shopmember_type_id= $request->shopmember_type_id;
+            $user->shop_request=1;
+        }
 
-        // if ($user->member_type != "Free") {
-        //     $user->members()->attach(['from_member_id' => $user->request_type, 'to_member_id' => $request->member_id, 'member_type_level' => $user->membertype_level]);
-
-
-        //     $member = Member::findOrFail($request->member_id);
-        //     $user->member_type = $member->member_type;
-
-        //     $user->syncRoles($member->member_type);
-        //     $user->save();
-        // }
-
-
-
-        // if ($user->member_type == "Free") {
-        //     $user->members()->attach(['to_member_id' => $request->member_id, 'member_type_level' => $request->member_type_level]);
-
-        //     $member = Member::findOrFail($request->member_id);
-        //     $user->membertype_level = $request->member_type_level;
-        //     $user->member_type = $member->member_type;
-        //     $user->syncRoles($member->member_type);
-        //     $user->save();
-        // }
-
-
-
-        //////
-
+        $user->update();
         return response()->json([
             'message' => 'success'
         ]);
