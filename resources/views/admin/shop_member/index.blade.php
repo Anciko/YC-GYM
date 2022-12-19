@@ -26,6 +26,7 @@
 
 @section('shopmember-active', 'active')
 @section('content')
+
     <div class="col-md-11 mx-auto">
         <div class="d-flex justify-content-between mb-3">
             <h2 class="text-center mb-0">All Shop Member Plans</h2>
@@ -127,6 +128,7 @@
             $(document).on('click', '.delete-btn', function(e) {
                 e.preventDefault();
                 var id = $(this).data('id');
+                alert(id);
 
                 swal({
                         text: "Are you sure you want to delete?",
@@ -137,7 +139,7 @@
                         if (willDelete) {
                             $.ajax({
                                 method: "DELETE",
-                                url: `admin/shop-member/${id}`
+                                url: `/admin/shop-member/${id}`
                             }).done(function(res) {
                                 Toast.fire({
                                     icon: 'success',

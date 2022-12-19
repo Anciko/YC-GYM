@@ -221,7 +221,6 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
             Route::put('/profile/{id}/update', [AdminController::class, 'updateAdminProfile'])->name('admin-update');
 
             // Ban Words
-
             Route::get('/banwords', [BanWordsController::class, 'index'])->name('banwords.index');
             Route::get('/banwords/edit/{id}', [BanWordsController::class, 'edit'])->name('banwords.edit');
             Route::post('/banwords/update/{id}', [BanWordsController::class, 'update'])->name('banwords.update');
