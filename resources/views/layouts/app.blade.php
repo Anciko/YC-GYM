@@ -139,7 +139,17 @@
 
                     </li>
 
+                    <li class="sidebar-item @yield('shop_request-active')">
 
+                        <a class="sidebar-link" href="{{ route('admin.shop_request') }}">
+
+                            <i class="fa-solid fa-money-bill-transfer"></i> <span
+
+                                class="align-middle">Shop Request</span>
+
+                        </a>
+
+                    </li>
 
                     <li class="sidebar-item @yield('transction-active')">
 

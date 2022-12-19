@@ -31,6 +31,7 @@ use App\Http\Controllers\Customer\CustomerLoginController;
 use App\Http\Controllers\Customer\RegisterPaymentController;
 use App\Http\Controllers\Customer\CustomerRegisterController;
 use App\Http\Controllers\Admin\RequestAcceptDeclineController;
+use App\Http\Controllers\Admin\ShopRequestController;
 use App\Http\Controllers\Trainer\TrainerManagementConntroller;
 use App\Http\Controllers\Customer\CustomerManagementController;
 use App\Http\Controllers\Customer\Customer_TrainingCenterController;
@@ -329,6 +330,12 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
 
             //report
             Route::resource('report', ReportController::class);
+
+            //shop request
+            Route::get('shop/request', [ShopRequestController::class, 'index'])->name('admin.shop_request');
+            Route::get('shop/request/accept/{id}', [ShopRequestController::class, 'request_accept'])->name('admin.shop_request.accept');
+            Route::get('shop/request/decline/{id}', [ShopRequestController::class, 'request_decline'])->name('admin.shop_request.decline');
+            Route::get('request/shop/datatable/ssd', [ShopRequestController::class, 'ssd']);
         });
     }); //admin prefix
 
