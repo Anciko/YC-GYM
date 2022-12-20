@@ -131,6 +131,9 @@ class SocialMediaController extends Controller
 
             foreach ($posts as $key => $value) {
                 $posts[$key]['is_save'] = 0;
+                $posts[$key]['is_like'] = 0;
+                $posts[$key]['like_count'] = 0;
+                $posts[$key]['comment_count'] = 0;
                 // dd($value->id);
                 foreach ($saved_post as $saved_key => $save_value) {
 

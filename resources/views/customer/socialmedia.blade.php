@@ -75,12 +75,7 @@
 
 <div class="social-media-right-container">
     <div class="social-media-posts-parent-container">
-
-        {{-- <div class="se-pre-con">
-            <div></div>
-        </div> --}}
-        <!-- preloader end -->
-
+        <div class="infinite-scroll">
         @foreach ($posts as $post)
         <div class="social-media-post-container">
             <div class="social-media-post-header">
@@ -245,19 +240,38 @@
                     <p><span>{{$total_comments}}</span> Comments</p>
                     </a>
                 </div>
-            </div> 
+            </div>
         </div>
         @endforeach
+    </div>
 
     </div>
 </div>
 
 @endsection
-@push('scripts')
-<script>
 
+@push('scripts')
+
+<script type="text/javascript">
+    $('ul.pagination').hide();
+    $(function() {
+        $('.infinite-scroll').jscroll({
+            autoTrigger: true,
+            // loadingHtml: '<img class="center-block" src="/images/loading.gif" alt="Loading..." />', // MAKE SURE THAT YOU PUT THE CORRECT IMG PATH
+            padding: 0,
+            nextSelector: '.pagination li.active + li a',
+            contentSelector: 'div.infinite-scroll',
+            callback: function() {
+                $('ul.pagination').remove();
+            }
+        });
+    });
+</script>
+    <script>
 
     $(document).ready(function() {
+
+
         $('#other_msg').hide();
         $('#report_submit').attr("class",'btn btn-primary disabled')
         console.log($("input[name='report_msg']:checked").val());

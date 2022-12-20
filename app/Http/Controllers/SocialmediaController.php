@@ -31,7 +31,7 @@ use RealRashid\SweetAlert\Facades\Alert;
 
 class SocialmediaController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         $user = auth()->user();
         $user_id = $user->id;
@@ -62,6 +62,12 @@ class SocialmediaController extends Controller
                 ->with('user')
                 ->paginate(30);
         }
+
+    	if ($request->ajax()) {
+    		$view = view('data',compact(' '))->render();
+            return response()->json(['html'=>$view]);
+        }
+
         return view('customer.socialmedia', compact('posts'));
     }
     public function latest_messages()
