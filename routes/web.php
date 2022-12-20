@@ -74,7 +74,9 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
         // Route::get('/socialmedia_profile/{id}', [SocialmediaController::class, 'socialmedia_profile'])->name('socialmedia.profile');
 
         Route::get('/shop', [ShopController::class, 'index'])->name('shop');
+        Route::get('/shop/request', [ShopController::class, 'shoprequest'])->name('shoprequest');
         Route::post('/shop/payment', [ShopController::class, 'payment'])->name('shoppayment');
+        Route::post('/shop/post/store', [ShopController::class, 'shoppost_store'])->name('shoppost.store');
 
         Route::get('/socialmedia', [SocialmediaController::class, 'index'])->name('socialmedia');
         Route::post('/socialmedia', [SocialmediaController::class, 'post_store'])->name('post.store');

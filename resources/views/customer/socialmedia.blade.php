@@ -75,12 +75,6 @@
 
 <div class="social-media-right-container">
     <div class="social-media-posts-parent-container">
-
-        {{-- <div class="se-pre-con">
-            <div></div>
-        </div> --}}
-        <!-- preloader end -->
-
         @foreach ($posts as $post)
         <div class="social-media-post-container">
             <div class="social-media-post-header">
@@ -188,7 +182,6 @@
 
                     <div id="thumbnail" class="img-slider-thumbnails">
                         <ul>
-                            {{-- <li class="active"><img src="https://40.media.tumblr.com/tumblr_m92vwz7XLZ1qf4jqio1_540.jpg" alt="" /></li> --}}
                             <?php foreach (json_decode($post->media)as $m){?>
                                 @if (pathinfo($m, PATHINFO_EXTENSION) == 'mp4')
                                 <li>
@@ -254,8 +247,9 @@
 
 @endsection
 @push('scripts')
-<script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jscroll/2.4.1/jquery.jscroll.min.js"></script>
 
+<script>
 
     $(document).ready(function() {
         $('#other_msg').hide();

@@ -96,7 +96,7 @@
 }
 
 .shop-left-friends-rows-container{
-    
+
 }
 
 .shop-left-friends-row{
@@ -138,7 +138,7 @@
     margin-bottom: 20px;
     text-decoration: none;
 
-   
+
 }
 
 .shop-left-messages-row img{
@@ -184,7 +184,7 @@
     margin-bottom: 20px;
     text-decoration: none;
 
-   
+
 }
 
 .shop-left-gpmessages-row img{
@@ -234,7 +234,7 @@
     /* justify-content:center; */
     margin-top: 20px;
 }
-  
+
   .preview{
     border:none;
     width:100px;
@@ -242,14 +242,14 @@
     border: none;
     object-fit: cover;
   }
-  
+
   .selectImage{
     /* width:35%; */
     display: flex;
     align-items: center;
     justify-content: space-between;
   }
-  
+
   #myfile{
     /* width: 25%; */
     /* border:none; */
@@ -416,9 +416,9 @@
     display: flex;
     align-items: center;
     gap: 0 5px;
-    
+
 }
- 
+
 .shop-post-like-container p, .shop-post-comment-container p{
     margin-bottom: 0;
     font-size: 14px;
@@ -521,7 +521,7 @@ ul{
 	top: 0;
 	left: 100%;
   	width: 100%;
-  	height:100%; 
+  	height:100%;
 }
 #image-slider ul li img {
 	width: 100%;
@@ -543,13 +543,13 @@ ul{
 }
 #thumbnail {
 	cursor: default;
-	
+
 	height: auto;
-	display: table;	
+	display: table;
 	/* width: 100%; */
     margin: auto;
     margin-top: 5px;
-   
+
 }
 #thumbnail ul {
 	width: 100%;
@@ -567,12 +567,12 @@ ul{
 	min-width: 1px;
     width: 70px;
     height: 70px;
-}																
+}
 #thumbnail li img{
 	padding: 0;
 	float: left;
 	margin: 0px 1.5px;
-	
+
     width: 100%;
     height: 100%;
     object-fit: cover;
@@ -581,16 +581,16 @@ ul{
 	padding: 0;
 	float: left;
 	margin: 0px 1.5px;
-	
+
     width: 100%;
     height: 100%;
     object-fit: cover;
-    
+
 }
 #thumbnail li:first-child img{
 	margin-right:0px;
   	margin-left:0px;
-}	
+}
 
 .post-actions-container{
     background-color: white;
@@ -629,7 +629,7 @@ ul{
 
 .shop-left-container-trigger{
     display: none;
-    
+
 }
 
 .shop-left-container-trigger p{
@@ -649,7 +649,7 @@ ul{
     width: 100%;
     height: 140px;
     position: relative;
-    
+
 }
 
 .shop-profile-bgimg-container > img{
@@ -945,7 +945,7 @@ ul{
     border-radius: 50%;
     object-fit: cover;
 }
- 
+
 .shop-allchats-message-row > p{
     max-width: 300px;
     white-space: nowrap;
@@ -1130,7 +1130,7 @@ ul{
     align-items: center;
     /* gap: 0 50px; */
     justify-content: space-around;
-   
+
 }
 
 .shop-noti-likes-tab, .shop-noti-requests-tab{
@@ -1349,7 +1349,7 @@ ul{
 }
 
 .shop-all-comments{
-    
+
 }
 
 .shop-comment-container{
@@ -1497,7 +1497,7 @@ ul{
 
 .shop-member-plan h1{
     text-align: center;
-    
+
     margin-bottom: 5px;
     font-size: 25px;
     color: var(--customer-text-color);
@@ -1631,6 +1631,95 @@ ul{
 
 }
 
+.shop-main-shops-container{
+    height: calc(100% - 40px);
+    overflow-y: scroll;
+    /* padding-top: 10px; */
+    margin-top: 20px;
+    text-decoration: none;
+}
+
+.shop-main-shop-container:hover{
+    background-color: var(--customer-primary-color);
+}
+
+.shop-main-shop-container:hover p, .shop-main-shop-container:hover span,.shop-main-shop-container:hover .shop-main-shop-icon{
+    color: white;
+}
+
+
+
+.shop-main-shop-container{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 10px;
+    border-radius: 5px;
+    border: 1px solid var(--customer-primary-color);
+    text-decoration: none;
+    margin-bottom: 10px;
+    gap: 0 5px;
+}
+
+.shop-main-shop-details-container{
+    display: flex;
+    align-items: center;
+    gap: 0 5px;
+}
+
+.shop-main-shop-details-container p{
+    margin-bottom: 0;
+    color: var(--customer-text-color);
+}
+
+.shop-main-shop-details-container img{
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.shop-main-shop-name{
+    line-height: 20px;
+}
+
+.shop-main-shop-name span{
+    font-size: 10px;
+    color: var(--customer-text-color);
+    display: block;
+    width: 100px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+.shop-main-shop-name p{
+    width: 200px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    color: var(--customer-text-color);
+}
+
+.shop-noofposts-container{
+    text-align: center;
+}
+
+.shop-noofposts-container p{
+    font-size: 10px;
+    margin-bottom: 0;
+    color: var(--customer-text-color);
+}
+.shop-noofposts-container span{
+    font-size: 16px;
+    color: var(--customer-text-color);
+    font-weight: 600;
+}
+
+.shop-main-shop-icon{
+    font-size: 30px;
+    color: var(--customer-text-color);
+}
+
 @media screen and (max-width:1000px){
 
     .shop-left-container-trigger{
@@ -1684,7 +1773,7 @@ ul{
     .shop-right-container{
         margin:auto;
         max-width: 600px;
-        height: 840px;
+        /* height: 840px; */
     }
 
     .shop-profile-username{
@@ -1757,7 +1846,7 @@ ul{
         grid-template-columns: repeat(4,1fr);
     }
 
-    
+
 
     .shop-allchats-message-row{
         flex-wrap: wrap;
@@ -1801,7 +1890,7 @@ ul{
         font-size: 25px;
     }
 
-    
+
     .shop-request-row{
         margin-bottom: 30px;
     }
@@ -1831,6 +1920,19 @@ ul{
         height: 300px;
     }
 
+    .shop-main-shop-container{
+        padding: 20px 5px;
+    }
+
+    .shop-main-shop-name p{
+        width: 150px;
+        font-size: 14px;
+    }
+
+    .shop-main-shop-icon{
+        font-size: 20px;
+    }
+
 }
 
 @media screen and (max-width:500px){
@@ -1849,6 +1951,10 @@ ul{
 
     .shop-allchats-message-row > p{
         max-width: 200px;
+    }
+
+    .shop-main-shop-name p{
+        width: 100px;
     }
 }
 

@@ -42,7 +42,6 @@ class RegisterPaymentController extends Controller
 
     // public function test()
     // {
-
     //     $banking_info = BankingInfo::all();
     //     return view('customer.payment_test',compact('banking_info'));
     // }

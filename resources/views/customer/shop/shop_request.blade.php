@@ -3,7 +3,7 @@
 @section('content')
 @include('sweetalert::alert')
 
-    <a href="#" class="customer-shop-member-request-btn customer-primary-btn margin-top">
+    <a href="{{route('shop')}}" class="customer-shop-member-request-btn customer-primary-btn margin-top">
 
         Back To Shop Page
     </a>
@@ -95,7 +95,7 @@
 
                 <p>Successfully bought a shop on YC Fitness Shop pro. </p>
                 <h3>You will get a notification 24hrs later when your YC shop is ready.</h3>
-                <a href="/" class="customer-primary-btn">Back To Shop Page</a>
+                <a href="{{route('shop')}}" class="customer-primary-btn">Back To Shop Page</a>
             </div>
         @else
             <div class="shop-member-plans-title">

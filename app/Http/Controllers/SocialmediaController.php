@@ -64,6 +64,7 @@ class SocialmediaController extends Controller
         }
         return view('customer.socialmedia', compact('posts'));
     }
+
     public function latest_messages()
     {
         $user_id = auth()->user()->id;
