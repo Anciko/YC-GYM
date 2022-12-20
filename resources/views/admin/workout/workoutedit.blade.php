@@ -100,6 +100,14 @@
                         </select>
                         <label for="floatingInput">Select Workout Place</label>
                 </div>
+                <div class="row g-2 mb-3">
+                    <div class="col-md-6">
+                        <input type="number" name="estimateTime" class="form-control" placeholder="Estimate time (minutes)" value="{{$data->estimate_time}}">
+                    </div>
+                    <div class="col-md-6">
+                        <input type="number" name="sets" class="form-control" placeholder="Sets" value="{{$data->sets}}">
+                    </div>
+                </div>
           </div>
 
 

@@ -33,7 +33,9 @@ class WorkoutRequest extends FormRequest
             'workoutlevel' => 'required',
             'gendertype' => 'required',
             'image' => 'required|mimes:jpg,png,jpeg,gif',
-            'video' => 'required|mimes:mp4,mov,webm'
+            'video' => 'required|mimes:mp4,mov,webm',
+            'estimateTime' => 'required',
+            'sets' => 'required'
         ];
     }
 }
