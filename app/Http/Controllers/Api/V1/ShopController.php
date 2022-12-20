@@ -90,15 +90,25 @@ class ShopController extends Controller
             }
         }
 
+        if($user->shop_post_count == 0){
+            return response()->json([
+                'message' => 'cannot post',
+            ]);
+        }
+
         $post->user_id = $user->id;
         $post->caption = $caption;
         $post->save();
 
+        $user = User::find(auth()->user()->id);
+        $user->shop_post_count = $user->shop_post_count - 1;
+        $user->update();
+
         $id = $post->id;
 
-        $post_one = ShopPost::select('users.name', 'profiles.profile_image', 'posts.*')
-            ->where('posts.id', $id)
-            ->leftJoin('users', 'users.id', 'posts.user_id')
+        $post_one = ShopPost::select('users.name', 'profiles.profile_image', 'shop_posts.*')
+            ->where('shop_posts.id', $id)
+            ->leftJoin('users', 'users.id', 'shop_posts.user_id')
             ->leftJoin('profiles', 'users.profile_id', 'profiles.id')
             ->first();
 
