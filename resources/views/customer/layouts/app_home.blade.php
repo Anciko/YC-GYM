@@ -45,6 +45,7 @@
   </head>
   <body class="customer-loggedin-bg">
     <!-- <div class="customer-registeration-bgimg"> -->
+        
         <script>
             const theme = localStorage.getItem('theme') || 'light';
             document.documentElement.setAttribute('data-theme', theme);

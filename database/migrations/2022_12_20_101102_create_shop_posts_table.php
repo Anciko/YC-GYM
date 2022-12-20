@@ -15,11 +15,9 @@ class CreateShopPostsTable extends Migration
     {
         Schema::create('shop_posts', function (Blueprint $table) {
             $table->id();
-            $table->integer('shop_member_id');
-            $table->integer('ban_word_id');
-            $table->longText('caption');
-            $table->string('photos');
-            $table->integer('viewers');
+            $table->integer('user_id');
+            $table->string('caption')->nullable();
+            $table->longText('media')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });

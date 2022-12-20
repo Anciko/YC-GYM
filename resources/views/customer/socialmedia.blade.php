@@ -75,7 +75,6 @@
 
 <div class="social-media-right-container">
     <div class="social-media-posts-parent-container">
-        <div class="infinite-scroll">
         @foreach ($posts as $post)
         <div class="social-media-post-container">
             <div class="social-media-post-header">
@@ -183,7 +182,6 @@
 
                     <div id="thumbnail" class="img-slider-thumbnails">
                         <ul>
-                            {{-- <li class="active"><img src="https://40.media.tumblr.com/tumblr_m92vwz7XLZ1qf4jqio1_540.jpg" alt="" /></li> --}}
                             <?php foreach (json_decode($post->media)as $m){?>
                                 @if (pathinfo($m, PATHINFO_EXTENSION) == 'mp4')
                                 <li>
@@ -249,25 +247,8 @@
 </div>
 
 @endsection
-
 @push('scripts')
-
-<script type="text/javascript">
-    $('ul.pagination').hide();
-    $(function() {
-        $('.infinite-scroll').jscroll({
-            autoTrigger: true,
-            // loadingHtml: '<img class="center-block" src="/images/loading.gif" alt="Loading..." />', // MAKE SURE THAT YOU PUT THE CORRECT IMG PATH
-            padding: 0,
-            nextSelector: '.pagination li.active + li a',
-            contentSelector: 'div.infinite-scroll',
-            callback: function() {
-                $('ul.pagination').remove();
-            }
-        });
-    });
-</script>
-    <script>
+<script>
 
     $(document).ready(function() {
 
