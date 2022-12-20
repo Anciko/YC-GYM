@@ -1686,7 +1686,7 @@ ul{
     gap: 10px;
     flex-wrap: wrap;
     margin-top: 20px;
-    height:460px;
+    height:calc(100% - 80px);
     overflow-y: scroll;
 }
 
