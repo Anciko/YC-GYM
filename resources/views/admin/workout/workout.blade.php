@@ -41,7 +41,8 @@
                             <p class="card-text mb-1"><b>Member Type :</b> {{$workout->member_type}}</p>
                             <p class="card-text mb-1"><b>Place :</b> {{$workout->place}}</p>
                             <p class="card-text mb-1"><b>Burn Calories :</b> {{$workout->calories}} Calories</p>
-                            {{-- <p class="card-text mb-3"><b>Video Duration :</b> {{$workout->time}} Minutes</p> --}}
+                            <p class="card-text mb-1"><b>Estimate Time :</b> {{$workout->estimate_time}} minutes</p>
+                            <p class="card-text mb-1"><b>Sets :</b> {{$workout->sets}} times</p>
                             <a href="{{route('workoutedit',[$workout->id])}}" class="btn btn-sm btn-primary">Edit</a>
                             <a href="{{route('workoutdelete',[$workout->id])}}" class="btn btn-sm btn-danger ms-2">Delete</a>
                         </div>
