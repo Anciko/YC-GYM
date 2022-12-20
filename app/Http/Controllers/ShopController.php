@@ -16,7 +16,21 @@ class ShopController extends Controller
 {
     public function index()
     {
-        return view('customer.shop.shop');
+        $shops=User::where('shopmember_type_id','!=',0)
+                    ->where('shop_request',2)
+                    ->with('shopposts')
+                    ->get();
+        return view('customer.shop.shop',compact('shops'));
+    }
+
+    public function shoppost($id)
+    {
+        $user=User::where('id',$id)
+                    ->where('shopmember_type_id','!=',0)
+                    ->where('shop_request',2)
+                    ->with('shopposts')
+                    ->first();
+        return view('customer.shop.shop_post',compact('user'));
     }
 
     public function shoprequest()
@@ -43,6 +57,98 @@ class ShopController extends Controller
 
             return view('customer.payment',compact('banking_info','member'));
         }
+    }
+
+    public function shoppost_edit(Request $request, $id)
+    {
+        $post = ShopPost::find($id);
+        if ($post) {
+            return response()->json([
+                'status' => 200,
+                'post' => $post,
+            ]);
+        } else {
+            return response()->json([
+                'status' => 404,
+                'message' => 'Data Not Found',
+            ]);
+        }
+    }
+
+    public function shoppost_update(Request $request)
+    {
+        $input = $request->all();
+
+        $edit_post = ShopPost::findOrFail($input['edit_post_id']);
+        $caption = $input['caption'];
+
+        $banwords = DB::table('ban_words')->select('ban_word_english', 'ban_word_myanmar', 'ban_word_myanglish')->get();
+
+        if ($caption) {
+            foreach ($banwords as $b) {
+                $e_banword = $b->ban_word_english;
+                $m_banword = $b->ban_word_myanmar;
+                $em_banword = $b->ban_word_myanglish;
+
+                if (str_contains($caption, $e_banword)) {
+                    // Alert::warning('Warning', 'Ban Ban Ban');
+                    //return redirect()->back();
+                    return response()->json([
+                        'ban' => 'You used our banned words!',
+                    ]);
+                } elseif (str_contains($caption, $m_banword)) {
+                    return response()->json([
+                        'ban' => 'You used our banned words!',
+                    ]);
+                } elseif (str_contains($caption, $em_banword)) {
+                    return response()->json([
+                        'ban' => 'You used our banned words!',
+                    ]);
+                }
+            }
+        }
+
+        if ($input['totalImages'] != 0 && $input['oldimg'] == null) {
+            $images = $input['editPostInput'];
+            foreach ($images as $file) {
+                $extension = $file->extension();
+                $name = rand() . "." . $extension;
+                $file->storeAs('/public/post/', $name);
+                $imgData[] = $name;
+                $edit_post->media = json_encode($imgData);
+            }
+        } elseif ($input['oldimg'] != null && $input['totalImages'] == 0) {
+
+            $imgData = $input['oldimg'];
+
+            $myArray = explode(',', $imgData);
+
+            $edit_post->media = json_encode($myArray);
+        } elseif ($input['oldimg'] == null && $input['totalImages'] == 0) {
+            $edit_post->media = null;
+        } else {
+            $oldimgData = $input['oldimg'];
+            $myArray_data = explode(',', $oldimgData);
+            $old_images = $myArray_data;
+
+            $images = $input['editPostInput'];
+
+            foreach ($images as $file) {
+                $extension = $file->extension();
+                $name = rand() . "." . $extension;
+                $file->storeAs('/public/post/', $name);
+                $imgData[] = $name;
+                $new_images = $imgData;
+            }
+            $result = array_merge($old_images, $new_images);
+            $edit_post->media = json_encode($result);
+        }
+        $edit_post->caption = $caption;
+        $edit_post->update();
+
+        return response()->json([
+            'success' => 'Post Updated successfully!'
+        ]);
     }
 
     public function shoppost_store(Request $request)
@@ -111,5 +217,21 @@ class ShopController extends Controller
         ]);
         // Alert::success('Success', 'Post Created Successfully');
         // return redirect()->back();
+    }
+
+    public function shoppost_destroy($id)
+    {
+        $post=ShopPost::find($id);
+
+        if ($post != null) {
+            $post->delete();
+            return response()->json([
+                'success' => 'Post deleted successfully!'
+            ]);
+        }else{
+
+        }
+
+
     }
 }

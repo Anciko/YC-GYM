@@ -45,7 +45,7 @@
   </head>
   <body class="customer-loggedin-bg">
     <!-- <div class="customer-registeration-bgimg"> -->
-        
+
         <script>
             const theme = localStorage.getItem('theme') || 'light';
             document.documentElement.setAttribute('data-theme', theme);
@@ -1019,7 +1019,8 @@
                                     $(".editpost-photo-video-imgpreview-container").append(html);
 
                                 }else{
-                                    var html = "<div class='addpost-preview'><iconify-icon icon='akar-icons:cross' data-file='" + f + "' class='delete-preview-db-icon'></iconify-icon><img src='storage/post/"+f+"' data-file='" + f + "' class='selFile' title='Click to remove'></div>";
+                                    var html = "<div class='addpost-preview'><iconify-icon icon='akar-icons:cross' data-file='" + f + "' class='delete-preview-db-icon'></iconify-icon>\
+                                        <img src='storage/post/"+f+"' data-file='" + f + "' class='selFile' title='Click to remove'></div>";
                                     $(".editpost-photo-video-imgpreview-container").append(html);
                                 }
 
@@ -1269,6 +1270,7 @@
         }
         $(this).parent().remove();
     }
+
     function removeFileFromEditInput(e) {
         var file = $(this).data("file");
         var names = [];
