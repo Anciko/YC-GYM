@@ -13,7 +13,7 @@ class UpdateShopMemberRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -23,8 +23,14 @@ class UpdateShopMemberRequest extends FormRequest
      */
     public function rules()
     {
+        $id = $this->route('shop-member');
         return [
-            //
+            // 'phone' => "required|unique:users,phone,$id",
+            'member_type' => "required",
+            'duration' => 'required',
+            'price' => 'required',
+            'pros' => 'required',
+            'cons' => 'required'
         ];
     }
 }

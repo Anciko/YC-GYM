@@ -23,6 +23,10 @@ class CreateUsersTable extends Migration
             $table->string('member_type');
             $table->integer('request_type');
             $table->string('membertype_level');
+
+            $table->integer('shopmember_type_id')->default(0);
+            $table->integer('shop_request')->default(0);
+
             $table->string('member_code')->nullable();
             $table->boolean('ingroup')->default(0);
             $table->integer('height')->default(0);
@@ -61,10 +65,6 @@ class CreateUsersTable extends Migration
             $table->integer('cover_id')->nullable();
             $table->integer('chat_id')->default(0);
             $table->integer('message_id')->default(0);
-
-            $table->integer('shop_request')->default(0);
-            $table->integer('shopmember_type_id')->default(0);
-
             $table->rememberToken();
             $table->timestamps();
         });

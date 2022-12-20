@@ -35,6 +35,7 @@ use App\Http\Controllers\Admin\ShopRequestController;
 use App\Http\Controllers\Trainer\TrainerManagementConntroller;
 use App\Http\Controllers\Customer\CustomerManagementController;
 use App\Http\Controllers\Customer\Customer_TrainingCenterController;
+use App\Http\Controllers\ShopController;
 
 Route::group(['middleware' => 'prevent-back-history'], function () {
     Route::get('/locale/{lange}', [HomeController::class, 'lang'])->name('locale');
@@ -71,6 +72,12 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
 
         //Social Media
         // Route::get('/socialmedia_profile/{id}', [SocialmediaController::class, 'socialmedia_profile'])->name('socialmedia.profile');
+
+        Route::get('/shop', [ShopController::class, 'index'])->name('shop');
+        Route::get('/shop/request', [ShopController::class, 'shoprequest'])->name('shoprequest');
+        Route::post('/shop/payment', [ShopController::class, 'payment'])->name('shoppayment');
+        Route::post('/shop/post/store', [ShopController::class, 'shoppost_store'])->name('shoppost.store');
+
         Route::get('/socialmedia', [SocialmediaController::class, 'index'])->name('socialmedia');
         Route::post('/socialmedia', [SocialmediaController::class, 'post_store'])->name('post.store');
 
@@ -100,7 +107,6 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
         Route::post('/agora/call-audio-user',  [VideoController::class, 'callAudioUser'])->name('socialmedia.videocall');
 
         Route::post('/agora/token',  [VideoController::class, 'token']);
-
 
         Route::post('/socialmedia/group/create', [SocialmediaController::class, 'group_create'])->name('socialmedia.group.create');
         Route::get('/socialmedia/group/{id}', [SocialmediaController::class, 'group'])->name('socialmedia.group');
@@ -222,7 +228,6 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
             Route::put('/profile/{id}/update', [AdminController::class, 'updateAdminProfile'])->name('admin-update');
 
             // Ban Words
-
             Route::get('/banwords', [BanWordsController::class, 'index'])->name('banwords.index');
             Route::get('/banwords/edit/{id}', [BanWordsController::class, 'edit'])->name('banwords.edit');
             Route::post('/banwords/update/{id}', [BanWordsController::class, 'update'])->name('banwords.update');

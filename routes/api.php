@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\V1\SocialMediaController;
 use App\Http\Controllers\Api\V1\TrainingGroupController;
 use App\Http\Controllers\Trainer\TrainerGroupController;
 use App\Http\Controllers\Api\V1\CustomerProfileController;
+use App\Http\Controllers\Api\V1\ShopController;
 use App\Http\Controllers\Api\V1\TrainingManagementController;
 use App\Http\Controllers\Trainer\TrainerManagementConntroller;
 
@@ -210,6 +211,10 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::post('socialmedia/call_accept',[SocialmediaController::class,'accept_call']);
 
     Route::get('user/list', [SocialmediaController::class, 'user_list']);
+    //shop
+    Route::get('shop/member/plans/list', [ShopController::class, 'shop_member_plan_list']);
+    Route::post('shop/post/store', [ShopController::class, 'shop_post_store']);
+
 });
 
 Route::get('test', [AuthController::class, 'test']);
