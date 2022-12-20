@@ -32,9 +32,9 @@ class ShopRequestController extends Controller
 
                 $detail_icon = '<a href=" ' . route('payment.detail', $each->user_id) . ' " class="text-warning mx-1 mt-1" title="payment">
                                         <i class="fa-solid fa-circle-info fa-xl"></i>
-                              </a>';  
+                              </a>';
 
-                $edit_icon = '<a href=" ' . route('admin.shop_request.accept', $each->user_id) . ' " class="mx-1 btn btn-sm btn-success">
+                $edit_icon = '<a href=" ' . route('admin.shop_request.accept', $each->user_id) . ' " class="mx-1 btn btn-sm btn-success accept-btn" data-id="' . $each->user_id . '">
                                     Accept
                               </a>';
 
@@ -49,8 +49,12 @@ class ShopRequestController extends Controller
 
     public function request_accept($id)
     {
+
+        $check_user = User::select('users.*', 'shop_members.id as shopmemberId', 'shop_members.member_type', 'shop_members.post_count')->where('users.id', $id)->join('shop_members', 'shop_members.id', 'users.shopmember_type_id')->first();
+
         $user = User::findOrFail($id);
         $user->shop_request = 2;
+        $user->shop_post_count = $check_user->post_count;
         $user->save();
 
         $date  = Carbon::Now()->toDateString();
@@ -62,6 +66,8 @@ class ShopRequestController extends Controller
             'shopmember_type_id' => $checkmember->id,
             'date' => $date
         ]);
+
+
 
         return back();
     }

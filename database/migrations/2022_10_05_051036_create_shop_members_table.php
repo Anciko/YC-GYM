@@ -20,6 +20,7 @@ class CreateShopMembersTable extends Migration
             $table->integer('price')->default(0);
             $table->text('pros')->nullable();
             $table->text('cons')->nullable();
+            $table->integer('post_count');
             $table->timestamps();
         });
     }
