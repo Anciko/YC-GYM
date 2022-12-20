@@ -366,10 +366,6 @@
 
         var sendMessage = document.querySelector('.group-chat-send-form-submit-btn')
 
-        // var groupChatImgInput = document.querySelector('#groupChatImg');
-
-        // const groupChatImgPreview = document.querySelector('.groupChatImg');
-        // const cancelBtn = document.querySelector(".group-chat-img-cancel");
         const emojibutton = document.querySelector('.emoji-trigger');
         var recieveUser = document.getElementById('recieveUser');
 
@@ -671,41 +667,36 @@
                                         '.')
                                     .pop() === 'gif') {
                                     return `
-                                                                                    <div class="modal fade" id="exampleModalToggle${data.message.id}${key}" aria-hidden="true"
-                                                                                        aria-labelledby="exampleModalToggleLabel" tabindex="-1">
-                                                                                        <div class="modal-dialog modal-dialog-centered">
-                                                                                            <div class="modal-content">
-                                                                                                <div class="modal-header">
-                                                                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                                                                        aria-label="Close"></button>
-                                                                                                </div>
-                                                                                                <div class="modal-body">
-                                                                                                    <img src="{{ asset('/storage/customer_message_media/${imageArr[key]}') }}"
-                                                                                                        alt="test" class="w-100">
-                                                                                                </div>
-                                                                                            </div>
-                                                                                        </div>
-                                                                                    </div>
+                                            <div class="modal fade" id="exampleModalToggle${data.message.id}${key}" aria-hidden="true"
+                                                aria-labelledby="exampleModalToggleLabel" tabindex="-1">
+                                                <div class="modal-dialog modal-dialog-centered">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                                aria-label="Close"></button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <img src="{{ asset('/storage/customer_message_media/${imageArr[key]}') }}"
+                                                                alt="test" class="w-100">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
 
-                                                                                <a data-bs-toggle="modal" href="#exampleModalToggle${data.message.id}${key}" role="button">
-                                                                                    <img src="{{ asset('storage/customer_message_media/${imageArr[key]}') }}">
-                                                                                </a>`
+                                        <a data-bs-toggle="modal" href="#exampleModalToggle${data.message.id}${key}" role="button">
+                                            <img src="{{ asset('storage/customer_message_media/${imageArr[key]}') }}">
+                                        </a>`
 
 
                                         } else if (imageArr[key].split('.').pop() === 'mp4' || imageArr[key].split('.')
                                             .pop() ===
                                             'mov' || imageArr[key].split('.').pop() === 'webm') {
-                                                return ` < video width = "100%"
-                                height = "100%"
-                                controls >
-                                    <
-                                    source src = "{{ asset('storage/customer_message_media/${imageArr[key]}') }}"
-                                type = "video/mp4" >
-                                    <
-                                    /video>`
+                                                return ` <video width = "100%" height = "100%" controls >
+                                    <source src = "{{ asset('storage/customer_message_media/${imageArr[key]}') }}" type = "video/mp4">
+                                    </video>`
                         }
                     }).join('')
-            } < /div>`;
+            } </div>`;
 
                 if (receive_user_img != null) {
                     messageContainer.innerHTML += `<div class="group-chat-receiver-container" data-messageId="${data.message.id}">
@@ -746,24 +737,24 @@
                                 'jpg' || imageArr[key].split('.').pop() === 'jpeg' || imageArr[key].split('.')
                                 .pop() === 'gif') {
                                     return `<div class="modal fade" id="exampleModalToggle${data.message.id}${key}" aria-hidden="true"
-                                                                                                                                    aria-labelledby="exampleModalToggleLabel" tabindex="-1">
-                                                                                                                                    <div class="modal-dialog modal-dialog-centered">
-                                                                                                                                        <div class="modal-content">
-                                                                                                                                            <div class="modal-header">
-                                                                                                                                                <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                                                                                                                    aria-label="Close"></button>
-                                                                                                                                            </div>
-                                                                                                                                            <div class="modal-body">
-                                                                                                                                                <img src="{{ asset('/storage/customer_message_media/${imageArr[key]}') }}"
-                                                                                                                                                    alt="test" class="w-100">
-                                                                                                                                            </div>
-                                                                                                                                        </div>
-                                                                                                                                    </div>
-                                                                                                                            </div>
+                                                                    aria-labelledby="exampleModalToggleLabel" tabindex="-1">
+                                                                    <div class="modal-dialog modal-dialog-centered">
+                                                                        <div class="modal-content">
+                                                                            <div class="modal-header">
+                                                                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                                                    aria-label="Close"></button>
+                                                                            </div>
+                                                                            <div class="modal-body">
+                                                                                <img src="{{ asset('/storage/customer_message_media/${imageArr[key]}') }}"
+                                                                                    alt="test" class="w-100">
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                            </div>
 
-                                                                                                                    <a data-bs-toggle="modal" href="#exampleModalToggle${data.message.id}${key}" role="button">
-                                                                                                                        <img src="{{ asset('storage/customer_message_media/${imageArr[key]}') }}">
-                                                                                                                    </a>`
+                                                    <a data-bs-toggle="modal" href="#exampleModalToggle${data.message.id}${key}" role="button">
+                                                        <img src="{{ asset('storage/customer_message_media/${imageArr[key]}') }}">
+                                                    </a>`
 
 
 
@@ -772,18 +763,13 @@
                                 .pop() ===
                                 'mov' || imageArr[key].split('.').pop() === 'webm') {
 
-                                return ` < video width = "100%"
-                    height = "100%"
-                    controls >
-                        <
-                        source src = "{{ asset('storage/customer_message_media/${imageArr[key]}') }}"
-                    type = "video/mp4" >
-                        <
-                        /video>`
+                                return ` <video width = "100%" height = "100%"controls>
+                        <source src = "{{ asset('storage/customer_message_media/${imageArr[key]}') }}" type = "video/mp4">
+                        </video>`
 
             }
         }).join('')
-    } < /div>`
+    } </div>`
 
         if (sender_user_img != null) {
             messageContainer.innerHTML += `
@@ -914,41 +900,36 @@
                                             .pop() === 'gif') {
 
                                                         return `<div class="modal fade" id="exampleModalToggle${data.message.id}${key}" aria-hidden="true"
-                                                                                                                                    aria-labelledby="exampleModalToggleLabel" tabindex="-1">
-                                                                                                                                    <div class="modal-dialog modal-dialog-centered">
-                                                                                                                                        <div class="modal-content">
-                                                                                                                                            <div class="modal-header">
-                                                                                                                                                <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                                                                                                                    aria-label="Close"></button>
-                                                                                                                                            </div>
-                                                                                                                                            <div class="modal-body">
-                                                                                                                                                <img src="{{ asset('/storage/customer_message_media/${imageArr[key]}') }}"
-                                                                                                                                                    alt="test" class="w-100">
-                                                                                                                                            </div>
-                                                                                                                                        </div>
-                                                                                                                                    </div>
-                                                                                                                                </div>
+                                                                    aria-labelledby="exampleModalToggleLabel" tabindex="-1">
+                                                                    <div class="modal-dialog modal-dialog-centered">
+                                                                        <div class="modal-content">
+                                                                            <div class="modal-header">
+                                                                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                                                    aria-label="Close"></button>
+                                                                            </div>
+                                                                            <div class="modal-body">
+                                                                                <img src="{{ asset('/storage/customer_message_media/${imageArr[key]}') }}"
+                                                                                    alt="test" class="w-100">
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
 
-                                                                                                                                <a data-bs-toggle="modal" href="#exampleModalToggle${data.message.id}${key}" role="button">
-                                                                                                                                    <img src="{{ asset('storage/customer_message_media/${imageArr[key]}') }}">
-                                                                                                                                </a>`;
+                                                                <a data-bs-toggle="modal" href="#exampleModalToggle${data.message.id}${key}" role="button">
+                                                                    <img src="{{ asset('storage/customer_message_media/${imageArr[key]}') }}">
+                                                                </a>`;
 
 
                                         } else if (imageArr[key].split('.').pop() === 'mp4' || imageArr[key].split('.')
                                             .pop() ===
                                             'mov' || imageArr[key].split('.').pop() === 'webm') {
-                                                    return ` < video width = "100%"
-                                height = "100%"
-                                controls >
-                                    <
-                                    source src = "{{ asset('storage/customer_message_media/${imageArr[key]}') }}"
-                                type = "video/mp4" >
-                                    <
-                                    /video>`
+                                                    return ` <video width = "100%" height = "100%" controls>
+                                    <source src = "{{ asset('storage/customer_message_media/${imageArr[key]}') }}" type = "video/mp4">
+                                    </video>`
 
                         }
                     }).join('')
-            } < /div>`;
+            } </div>`;
 
                 if (receive_user_img != null) {
                     messageContainer.innerHTML += `<div class="group-chat-receiver-container" data-messageId="${data.message.id}">
@@ -1008,41 +989,36 @@
                                             'jpg' || imageArr[key].split('.').pop() === 'jpeg' || imageArr[key].split('.')
                                             .pop() === 'gif') {
                                                 return `<div class="modal fade" id="exampleModalToggle${data.message.id}${key}" aria-hidden="true"
-                                                                                                                                            aria-labelledby="exampleModalToggleLabel" tabindex="-1">
-                                                                                                                                            <div class="modal-dialog modal-dialog-centered">
-                                                                                                                                                <div class="modal-content">
-                                                                                                                                                    <div class="modal-header">
-                                                                                                                                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                                                                                                                            aria-label="Close"></button>
-                                                                                                                                                    </div>
-                                                                                                                                                    <div class="modal-body">
-                                                                                                                                                        <img src="{{ asset('/storage/customer_message_media/${imageArr[key]}') }}"
-                                                                                                                                                            alt="test" class="w-100">
-                                                                                                                                                    </div>
-                                                                                                                                                </div>
-                                                                                                                                            </div>
-                                                                                                                                        </div>
+                                                            aria-labelledby="exampleModalToggleLabel" tabindex="-1">
+                                                            <div class="modal-dialog modal-dialog-centered">
+                                                                <div class="modal-content">
+                                                                    <div class="modal-header">
+                                                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                                            aria-label="Close"></button>
+                                                                    </div>
+                                                                    <div class="modal-body">
+                                                                        <img src="{{ asset('/storage/customer_message_media/${imageArr[key]}') }}"
+                                                                            alt="test" class="w-100">
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
 
-                                                                                                                                <a data-bs-toggle="modal" href="#exampleModalToggle${data.message.id}${key}" role="button">
-                                                                                                                                    <img src="{{ asset('storage/customer_message_media/${imageArr[key]}') }}">
-                                                                                                                                </a>`
+                                                <a data-bs-toggle="modal" href="#exampleModalToggle${data.message.id}${key}" role="button">
+                                                    <img src="{{ asset('storage/customer_message_media/${imageArr[key]}') }}">
+                                                </a>`
 
 
                                             } else if (imageArr[key].split('.').pop() === 'mp4' || imageArr[key].split('.')
                                                 .pop() ===
                                                 'mov' || imageArr[key].split('.').pop() === 'webm') {
-                                                    return ` < video width = "100%"
-                    height = "100%"
-                    controls >
-                        <
-                        source src = "{{ asset('storage/customer_message_media/${imageArr[key]}') }}"
-                    type = "video/mp4" >
-                        <
-                        /video>`
+                                                    return `<video width = "100%" height = "100%" controls>
+                        <source src = "{{ asset('storage/customer_message_media/${imageArr[key]}') }}"type = "video/mp4">
+                        </video>`
 
             }
         }).join('')
-    } < /div>`;
+    } </div>`;
 
         if (receive_user_img != null) {
             messageContainer.innerHTML += `<div class="group-chat-receiver-container" data-messageId="${data.message.id}">
