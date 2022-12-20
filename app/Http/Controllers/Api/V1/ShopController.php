@@ -20,6 +20,25 @@ class ShopController extends Controller
         ]);
     }
 
+    public function shop_list()
+    {
+        $shop_list = User::select('users.id','users.name','profiles.profile_image')
+        ->leftJoin('profiles','users.profile_id','profiles.id')
+        ->where('shop_request',2)
+        ->get();
+        $total_count = ShopPost::select("user_id",DB::raw("Count('id') as total_count"))->groupBy('user_id')->get();
+        foreach($shop_list as $key=>$value){
+            $shop_list[$key]['total_post'] = 0;
+            foreach($total_count as $count){
+                if($count['user_id'] == $value['id']){
+                    $shop_list[$key]['total_post'] = $count['total_count'];
+                }
+            }
+        }
+        return response()->json([
+            'data' => $shop_list
+        ]);
+    }
     public function shop_post_store(Request $request)
     {
         $input = $request->all();
@@ -121,5 +140,138 @@ class ShopController extends Controller
         return response()->json([
             'data' => $post_one
         ]);
+    }
+
+
+    public function shop_post_save(Request $request)
+    {
+        $post_id = $request['post_id'];
+        $user = auth()->user();
+        $user_save_post = new UserSavedPost();
+
+        $already_save = $user->user_saved_posts()->where('post_id', $post_id)->first();
+
+        if ($already_save) {
+            $already_save->delete();
+            $user_save_post->update();
+            $id = $request['post_id'];
+            $auth = auth()->user()->id;
+            $saved_post = UserSavedPost::select('posts.*')->leftJoin('posts', 'posts.id', 'user_saved_posts.post_id')
+                ->where('user_saved_posts.post_id', $id)
+                ->where('user_saved_posts.user_id', $auth)
+                ->first();
+            //  dd($saved_post);
+            $post = Post::select('users.name', 'profiles.profile_image', 'posts.*')
+                ->where('posts.id', $id)
+                ->leftJoin('users', 'users.id', 'posts.user_id')
+                ->leftJoin('profiles', 'users.profile_id', 'profiles.id')
+                ->first();
+
+            $liked_post = UserReactPost::select('posts.*')->leftJoin('posts', 'posts.id', 'user_react_posts.post_id')
+                ->where('user_react_posts.post_id', $id)
+                ->where('user_react_posts.user_id', $auth)
+                ->first();
+
+            $liked_post_count = DB::select("SELECT COUNT(post_id) as like_count, post_id FROM user_react_posts WHERE post_id = $id");
+
+            $comment_post_count = DB::select("SELECT COUNT(post_id) as comment_count, post_id FROM comments WHERE post_id = $id");
+            foreach ($post as $key => $value) {
+                $post['is_save'] = 0;
+                $post['is_like'] = 0;
+                $post['like_count'] = 0;
+                $post['comment_count'] = 0;
+                if (empty($saved_post)) {
+                    $post['is_save'] = 0;
+                } else {
+                    $post['is_save'] = 1;
+                }
+                if (!empty($liked_post)) {
+                    $post['is_like'] = 1;
+                } else {
+                    $post['like_count'] = 0;
+                }
+                if (!empty($liked_post_count)) {
+                    foreach ($liked_post_count as $like_count) {
+                        $post['like_count'] = $like_count->like_count;
+                    }
+                } else {
+                    $post['like_count'] = 0;
+                }
+
+                if (!empty($comment_post_count)) {
+                    foreach ($comment_post_count as $comment_count) {
+                        $post['comment_count'] = $comment_count->comment_count;
+                    }
+                } else {
+                    $post['comment_count'] = 0;
+                }
+            }
+
+            return response()->json([
+                'data' => $post,
+            ]);
+        } else {
+            $user_save_post->user_id = $user->id;
+            $user_save_post->post_id = $post_id;
+            $user_save_post->saved_status = 1;
+            $user_save_post->save();
+
+            $id = $request['post_id'];
+            $auth = auth()->user()->id;
+            $saved_post = UserSavedPost::select('posts.*')->leftJoin('posts', 'posts.id', 'user_saved_posts.post_id')
+                ->where('user_saved_posts.post_id', $id)
+                ->where('user_saved_posts.user_id', $auth)
+                ->first();
+            //  dd($saved_post);
+            $post = Post::select('users.name', 'profiles.profile_image', 'posts.*')
+                ->where('posts.id', $id)
+                ->leftJoin('users', 'users.id', 'posts.user_id')
+                ->leftJoin('profiles', 'users.profile_id', 'profiles.id')
+                ->first();
+
+            $liked_post = UserReactPost::select('posts.*')->leftJoin('posts', 'posts.id', 'user_react_posts.post_id')
+                ->where('user_react_posts.post_id', $id)
+                ->where('user_react_posts.user_id', $auth)
+                ->first();
+
+            $liked_post_count = DB::select("SELECT COUNT(post_id) as like_count, post_id FROM user_react_posts WHERE post_id = $id");
+
+            $comment_post_count = DB::select("SELECT COUNT(post_id) as comment_count, post_id FROM comments WHERE post_id = $id");
+            foreach ($post as $key => $value) {
+                $post['is_save'] = 0;
+                $post['is_like'] = 0;
+                $post['like_count'] = 0;
+                $post['comment_count'] = 0;
+                if (empty($saved_post)) {
+                    $post['is_save'] = 0;
+                } else {
+                    $post['is_save'] = 1;
+                }
+                if (!empty($liked_post)) {
+                    $post['is_like'] = 1;
+                } else {
+                    $post['like_count'] = 0;
+                }
+                if (!empty($liked_post_count)) {
+                    foreach ($liked_post_count as $like_count) {
+                        $post['like_count'] = $like_count->like_count;
+                    }
+                } else {
+                    $post['like_count'] = 0;
+                }
+
+                if (!empty($comment_post_count)) {
+                    foreach ($comment_post_count as $comment_count) {
+                        $post['comment_count'] = $comment_count->comment_count;
+                    }
+                } else {
+                    $post['comment_count'] = 0;
+                }
+            }
+
+            return response()->json([
+                'data' => $post,
+            ]);
+        }
     }
 }
