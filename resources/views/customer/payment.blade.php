@@ -80,13 +80,13 @@
                 <div class="customer-screenshot-upload-btn">
                     <iconify-icon icon="akar-icons:circle-plus" class="customer-screenshot-upload-btn-icon"></iconify-icon>
                     <p>Photo</p>
-                    <input type="file" id="wavepayImg" name="image" required>
+                    <input type="file" id="kpayImg" name="image" required>
                 </div>
 
                 <button class="customer-transaction-clear-btn" type="button" onclick="clearTransactionImg()">Clear</button>
 
                 </span>
-                <img class="preview wavepayImg">
+                <img class="preview kpayImg">
             </div>
 
             <div class="customer-transaction-admin-details">
@@ -172,13 +172,13 @@
                     <div class="customer-screenshot-upload-btn">
                         <iconify-icon icon="akar-icons:circle-plus" class="customer-screenshot-upload-btn-icon"></iconify-icon>
                         <p>Photo</p>
-                        <input type="file" id="wavepayImg" name="image" required>
+                        <input type="file" id="cbpayImg" name="image" required>
                     </div>
 
                     <button class="customer-transaction-clear-btn" type="button" onclick="clearTransactionImg()">Clear</button>
 
                     </span>
-                    <img class="preview wavepayImg">
+                    <img class="preview cbpayImg">
                 </div>
 
                 <div class="customer-transaction-admin-details">
@@ -354,13 +354,13 @@
                     <div class="customer-screenshot-upload-btn">
                         <iconify-icon icon="akar-icons:circle-plus" class="customer-screenshot-upload-btn-icon"></iconify-icon>
                         <p>Photo</p>
-                        <input type="file" id="wavepayImg" name="image" required>
+                        <input type="file" id="ayapayImg" name="image" required>
                     </div>
 
                     <button class="customer-transaction-clear-btn" type="button" onclick="clearTransactionImg()">Clear</button>
 
                     </span>
-                    <img class="preview wavepayImg">
+                    <img class="preview ayapayImg">
                 </div>
 
                 <div class="customer-transaction-admin-details">

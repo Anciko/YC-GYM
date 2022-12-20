@@ -690,7 +690,7 @@ ul{
 .add-friend-btn{
     display: flex;
     align-items: center;
-    margin-left: auto;
+    /* margin-left: auto; */
     /* margin-right: 20px; */
     margin-top: 10px;
     font-size: 14px;
@@ -1997,4 +1997,3 @@ ul{
     }
 }
 
-        
