@@ -13,4 +13,9 @@ class ShopPost extends Model
     {
         return $this->belongsTo(User::class);
     }
+    
+    public function user_saved_posts()
+    {
+        return $this->hasMany(UserSavedPost::class, 'post_id', 'id');
+    }
 }

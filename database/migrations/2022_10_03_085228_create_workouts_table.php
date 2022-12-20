@@ -27,6 +27,8 @@ class CreateWorkoutsTable extends Migration
             $table->string('day');
             $table->string('image');
             $table->string('video');
+            $table->integer('estimate_time');
+            $table->integer('sets');
             $table->timestamps();
         });
     }
