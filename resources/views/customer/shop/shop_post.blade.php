@@ -26,10 +26,24 @@
                     <iconify-icon icon="bi:three-dots-vertical" class="shop-post-header-icon"></iconify-icon>
 
                     <div class="post-actions-container" >
-                        <div class="post-action">
+                        <a href="#" style="text-decoration:none" class="post_save" id="{{$shpost->id}}">
+                            <div class="post-action">
+                                <iconify-icon icon="bi:save" class="post-action-icon"></iconify-icon>
+                                @php
+                                    $already_save=auth()->user()->user_saved_shopposts->where('post_id',$shpost->id)->first();
+                                @endphp
+
+                                @if ($already_save)
+                                    <p class="save">Unsave</p>
+                                @else
+                                    <p class="save">Save</p>
+                                    @endif
+                            </div>
+                        </a>
+                        {{-- <div class="post-action">
                             <iconify-icon icon="bi:save" class="post-action-icon"></iconify-icon>
                             <p>Save</p>
-                        </div>
+                        </div> --}}
                     @if ($shpost->user_id == auth()->user()->id)
 
                         <a id="edit_post" data-id="{{$shpost->id}}" data-bs-toggle="modal" >

@@ -361,6 +361,45 @@
 
             })
 
+            $('.post_save').click(function(e){
+                e.preventDefault();
+                $('.post-actions-container').hide();
+                var post_id=$(this).attr('id');
+                var add_url = "{{ route('shoppost.save', [':post_id']) }}";
+                add_url = add_url.replace(':post_id', post_id);
+                        $.ajax({
+                            method: "GET",
+                            url: add_url,
+                            data:{
+                                    post_id : post_id
+                                },
+                                success: function(data) {
+                                    // window.location.reload();
+                                    if(data.save){
+                                        Swal.fire({
+                                            text: data.save,
+                                            timerProgressBar: true,
+                                            timer: 5000,
+                                            icon: 'success',
+                                        }).then((result) => {
+                                            e.target.querySelector(".save").innerHTML = `Unsave`;
+                                        })
+                                    }else{
+                                        Swal.fire({
+                                                text: data.unsave,
+                                                timerProgressBar: true,
+                                                timer: 5000,
+                                                icon: 'success',
+                                            }).then((result) => {
+                                                e.target.querySelector(".save").innerHTML = `Save`;
+
+                                            })
+                                    }
+
+                                }
+                        })
+            })
+
             $(document).on('click', '#delete_post', function(e){
                 e.preventDefault();
                 var id = $(this).data('id');
