@@ -2,14 +2,16 @@
 
 namespace App\Http\Controllers\Admin;
 
+use Carbon\Carbon;
 use App\Models\User;
 use App\Models\Member;
+use App\Models\ShopMember;
 use Illuminate\Http\Request;
 use App\Models\MemberHistory;
+use App\Models\ShopmemberHistory;
 use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Role;
 use App\Http\Controllers\Controller;
-use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 
 class RequestAcceptDeclineController extends Controller
@@ -27,8 +29,10 @@ class RequestAcceptDeclineController extends Controller
         $member_history = MemberHistory::where('user_id',$id)->first();
         $member = Member::findOrFail($u->request_type);
         $date  = Carbon::Now()->toDateString();
-        // dd($date);
-        // try {
+
+        $shop_member = ShopMember::where('member_type','level3')->first();
+        $date  = Carbon::Now()->toDateString();
+
             if($member_history != null && $member_history->user_id == $id){
 
                 $member_history->create([
@@ -37,15 +41,34 @@ class RequestAcceptDeclineController extends Controller
                     'member_type_level'=>$member_history->member_type_level,
                     'date'=> $date
                 ]);
-                $u->active_status=2;
-                $u->member_type = $member->member_type;
-                $role=Role::findOrFail($member->role_id);
-                $u->syncRoles($role->name);
-                $u->update();
-                return back()->with('success','Upgraded Success');
+
+                if($member->member_type == "Ruby" || $member->member_type == "Ruby Premium"){
+                    $u->shopmember_type_id = $shop_member->id;
+                    $u->shop_request = 2;
+                    $u->active_status=2;
+                    $u->member_type = $member->member_type;
+                    $role=Role::findOrFail($member->role_id);
+                    $u->syncRoles($role->name);
+                    $u->update();
+
+                    ShopmemberHistory::create([
+                        'user_id' => $id,
+                        'shopmember_type_id' => $shop_member->id,
+                        'date' => $date
+                    ]);
+
+                    return back()->with('success','Upgraded Success');
+                }else{
+                    $u->active_status=2;
+                    $u->member_type = $member->member_type;
+                    $role=Role::findOrFail($member->role_id);
+                    $u->syncRoles($role->name);
+                    $u->update();
+                    return back()->with('success','Upgraded Success');
+                }
             }
             else{
-                // dd($member);
+
                 $current_date = Carbon::now()->toDateString();
                $member_role = Member::where('id',$member->id)->first();
                $role=Role::findOrFail($member_role->role_id);
@@ -58,9 +81,6 @@ class RequestAcceptDeclineController extends Controller
                $u->members()->attach($u->request_type, ['member_type_level' => $u->membertype_level,'date'=>$current_date]);
                return back()->with('success','Accepted');
            }
-        // } catch (\Throwable $th) {
-        //    return back()->with(['usernotfound'=>'User accepted fail.']);
-        // }
     }
 
     public function decline($id){
