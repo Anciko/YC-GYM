@@ -29,6 +29,14 @@ class ShopMemberController extends Controller
 
         return Datatables::of($shop_members)
             ->addIndexColumn()
+            ->editColumn('duration', function($each) {
+                if($each->duration == 1) {
+                    return $each->duration . " month";
+                }else {
+                    return $each->duration . " months";
+                }
+
+            })
             ->editColumn('updated_at', function ($each) {
                 return Carbon::parse($each->updated_at)->format("Y-m-d H:i:s");
             })
@@ -77,6 +85,7 @@ class ShopMemberController extends Controller
         $shop_member->duration = $request->duration;
         $shop_member->price = $request->price;
         $shop_member->cons = $request->cons;
+        $shop_member->post_count = $request->count;
         $shop_member->pros = $request->pros;
 
         $shop_member->save();
@@ -121,6 +130,7 @@ class ShopMemberController extends Controller
         $shop_member->member_type = $request->member_type;
         $shop_member->duration = $request->duration;
         $shop_member->price = $request->price;
+        $shop_member->post_count = $request->count;
         $shop_member->pros = $request->pros;
         $shop_member->cons = $request->cons;
 

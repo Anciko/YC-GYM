@@ -20,7 +20,11 @@
                 </div>
                 <div class="mt-4">
                     <label for="price">Price</label>
-                    <input type="text" class="form-control" name="price">
+                    <input type="number" class="form-control" name="price">
+                </div>
+                <div class="mt-4">
+                    <label for="count">Count</label>
+                    <input type="number" class="form-control" name="count">
                 </div>
 
                 <div class="mt-4">

@@ -20,9 +20,12 @@
                 </div>
                 <div class="mt-4">
                     <label for="price">Price</label>
-                    <input type="text" class="form-control" name="price" value="{{ $shop_member->price }}">
+                    <input type="number" class="form-control" name="price" value="{{ $shop_member->price }}">
                 </div>
-
+                <div class="mt-4">
+                    <label for="count">Count</label>
+                    <input type="number" class="form-control" name="count" value="{{ $shop_member->post_count }}">
+                </div>
                 <div class="mt-4">
                     <label for="pros">Pros</label>
                     <textarea class="form-control" name="pros" id="" cols="30" rows="5">{{ $shop_member->pros }}</textarea>
