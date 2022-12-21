@@ -55,7 +55,7 @@ class SocialMediaController extends Controller
             }
             $posts = Post::select('users.name', 'profiles.profile_image', 'posts.*')
                 ->whereIn('posts.user_id', $n)
-                ->where('posts.shop_stats',0)
+                ->where('posts.shop_status',0)
                 ->leftJoin('users', 'users.id', 'posts.user_id')
                 ->leftJoin('profiles', 'users.profile_id', 'profiles.id')
                 ->orderBy('posts.created_at', 'DESC')

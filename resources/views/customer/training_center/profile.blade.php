@@ -2124,6 +2124,267 @@
             })
         }
 
+        function shop_all_posts(){
+
+        var url="{{route('all.post')}}"
+        $.ajax({
+        method: "GET",
+        url:url,
+        dataType: "json",
+        success: function (data) {
+
+        console.log(data.posts,'all posts')
+        var save_posts=data.posts;
+
+            var auth_user={{auth()->user()->id}};
+
+            let htmlView = '';
+            if(save_posts.length <= 0){
+                htmlView+= `No data found.`;
+            }else{
+                for(let i=0;i<save_posts.length;i++){
+                    htmlView += `<div class="customer-post-container">
+                                <div class="customer-post-header">
+                                    <div class="customer-post-name-container">`
+
+                    if(save_posts[i].profile_image===null){
+                        htmlView +=`<img class="nav-profile-img" src="{{asset('img/customer/imgs/user_default.jpg')}}"/>`
+
+                    }else{
+                        htmlView +=`<img class="nav-profile-img" src="{{asset('storage/post/`+save_posts[i].profile_image+`')}}"/>`
+                    }
+                    htmlView +=`<div class="customer-post-name">
+                                            <p>`+save_posts[i].name+`</p>
+                                            <span>`+save_posts[i].date+`</span>
+                                        </div>
+                                        </div>
+                                        <iconify-icon icon="bi:three-dots-vertical" class="customer-post-header-icon"></iconify-icon>
+                                        <div class="post-actions-container">
+                                        <a style="text-decoration:none" class="post_save" id=`+save_posts[i].id+`>
+                                            <div class="post-action">
+                                                <iconify-icon icon="bi:save" class="post-action-icon"></iconify-icon>`
+                    if(save_posts[i].already_saved==1){
+                        htmlView +=`<p class="save">Unsave</p>`
+                    }else{
+                        htmlView +=`<p class="save">Save</p>`
+                    }
+
+
+                    htmlView +=`</div>
+                                        </a>`
+                                        if(auth_user==save_posts[i].user_id){
+                                        htmlView +=`<a id="edit_post" data-id="`+save_posts[i].id+`" data-bs-toggle="modal" >
+                                                        <div class="post-action">
+                                                            <iconify-icon icon="material-symbols:edit" class="post-action-icon"></iconify-icon>
+                                                            <p>Edit</p>
+                                                        </div>
+                                                    </a>
+                                                    <a id="delete_post" data-id="`+save_posts[i].id+`">
+                                                        <div class="post-action">
+                                                        <iconify-icon icon="material-symbols:delete-forever-outline-rounded" class="post-action-icon"></iconify-icon>
+                                                        <p>Delete</p>
+                                                        </div>
+                                                    </a>`
+                                        }else{
+                                            htmlView +=``
+                                        }
+                                        htmlView += `</div>
+                                                    </div>
+                                                    <div class="customer-content-container">
+                                                    `
+                                        if(save_posts[i].media===null){
+                                            htmlView +=`<p>`+save_posts[i].caption+`</p>`
+                                        }else{
+
+                                        var caption =save_posts[i].caption ? save_posts[i].caption : '';
+                                            htmlView +=`<p>`+caption+`</p>
+                                                            <div class="customer-media-container">
+                                                                `
+                                        var imageFile = save_posts[i].media
+                                        var imageArr = jQuery.parseJSON(imageFile);
+
+                                        $.each(imageArr,function(key,val){
+                                            var extension = val.substr( (val.lastIndexOf('.') +1) );
+
+                                            switch(extension) {
+                                                    case 'jpg':
+                                                    case 'png':
+                                                    case 'gif':
+                                                    case 'jpeg':
+                                                    htmlView += ` <div class="customer-media">
+                                                            <img src="{{asset('storage/post/`+val+`') }}">
+                                                            </div>`
+                                                    break;
+                                                    case 'mp4':
+                                                    htmlView += ` <div class="customer-media">
+                                                            <video controls>
+                                                            <source src="{{asset('storage/post/`+val+`') }}">
+                                                            </video>
+                                                            </div>`
+                                                    break;
+
+                                                }
+                                        });
+                                            htmlView +=  `
+                                                        </div>
+                                                        <div id="slider-wrapper" class="social-media-media-slider">
+                                                            <iconify-icon icon="akar-icons:cross" class="slider-close-icon"></iconify-icon>
+
+                                                            <div id="image-slider" class="image-slider">
+                                                                <ul class="ul-image-slider">`
+                                        $.each(imageArr,function(k,v){
+                                            var exten = v.substr( (v.lastIndexOf('.') +1) );
+                                            switch(exten) {
+                                                    case 'jpg':
+                                                    case 'png':
+                                                    case 'gif':
+                                                    case 'jpeg':
+                                                    htmlView += `<li>
+                                                            <img src="{{asset('storage/post/`+v+`') }}" alt="" />
+                                                        </li>`
+                                                    break;
+                                                    case 'mp4':
+                                                    htmlView += `<li><video controls>
+                                                                <source src="{{asset('storage/post/`+v+`') }}">
+                                                                </video> </li>`
+                                                    break;
+                                                        }
+
+                                        });
+                                            htmlView += `</ul>
+                                                            </div>
+                                                            <div id="thumbnail" class="img-slider-thumbnails">
+                                                                <ul>`
+                                        $.each(imageArr,function(k,v){
+                                            var exten = v.substr( (v.lastIndexOf('.') +1) );
+                                            switch(exten) {
+                                                    case 'jpg':
+                                                    case 'png':
+                                                    case 'gif':
+                                                    case 'jpeg':
+                                                    htmlView += `<li>
+                                                            <img src="{{asset('storage/post/`+v+`') }}" alt="" />
+                                                        </li>`
+                                                    break;
+                                                    case 'mp4':
+                                                    htmlView += `<li><video controls>
+                                                                <source src="{{asset('storage/post/`+v+`') }}">
+                                                                </video> </li>`
+                                                    break;
+                                                        }
+                                        });
+
+                                            htmlView += `</ul></div></div></div>`
+                                        }
+                                        htmlView += ` <div class="customer-post-footer-container">
+                                                        <div class="customer-post-like-container">
+                                                        <a class="like" id="`+save_posts[i].post_id+`">`
+                                        if(save_posts[i].isLike==0){
+                                            htmlView+=`
+                                            <iconify-icon icon="mdi:cards-heart-outline" class="like-icon"></iconify-icon>`
+
+                                        }else{
+                                            htmlView+=`
+                                            <iconify-icon icon="mdi:cards-heart" style="color: red;" class="like-icon already-liked"></iconify-icon>`
+                                        }
+                                            htmlView +=`</a>
+                                                        <p>
+                                                            <span class="total_likes">
+                                                                `+save_posts[i].total_likes+`
+                                                            </span>
+                                                            <a class="viewlikes" id="">Likes</a>
+                                                        </p>
+                                                        </div>
+                                                        <div class="customer-post-comment-container">
+                                                            <a class="viewcomments" id = "`+save_posts[i].post_id+`">
+                                                                <iconify-icon icon="bi:chat-right" class="comment-icon"></iconify-icon>
+                                                                <p id="`+save_posts[i].post_id+`"><span>`+save_posts[i].total_comments+`</span> Comments</p>
+                                                            </a>
+                                                        </div>
+                                                        </div>
+                                                            `
+                                        htmlView+=`</div>
+                                                    </div>`
+
+                }
+            }
+
+            $('.customer-all-posts-container').html(htmlView);
+            $('.social-media-media-slider').hide();
+            //image slider start
+                    console.log($(".image-slider"))
+
+            $.each($(".ul-image-slider"),function(){
+                console.log($(this).children('li').length)
+
+                $(this).children('li:first').addClass("active-img")
+            })
+
+            $.each($(".img-slider-thumbnails ul"),function(){
+                console.log($(this).children('li').length)
+
+                $(this).children('li:first').addClass("active")
+            })
+
+
+
+
+            $(document).on('click','.img-slider-thumbnails li',function(){
+
+                var thisIndex = $(this).index()
+                // console.log(thisIndex,$(this).siblings("li.active").index())
+                if($(this).siblings(".active").index() === -1){
+                    return
+                }
+
+
+                if(thisIndex < $(this).siblings(".active").index()){
+                    prevImage(thisIndex, $(this).parents(".img-slider-thumbnails").prev("#image-slider"));
+                }else if(thisIndex > $(this).siblings(".active").index()){
+                    nextImage(thisIndex, $(this).parents(".img-slider-thumbnails").prev("#image-slider"));
+                }
+
+
+                $(this).siblings('.active').removeClass('active');
+                $(this).addClass('active');
+
+                });
+
+
+
+            var width = $('#image-slider').width();
+            console.log(width)
+
+            function nextImage(newIndex, parent){
+                parent.find('li').eq(newIndex).addClass('next-img').css('left', width).animate({left: 0},600);
+                parent.find('li.active-img').removeClass('active-img').css('left', '0').animate({left: '-100%'},600);
+                parent.find('li.next-img').attr('class', 'active-img');
+            }
+            function prevImage(newIndex, parent){
+                parent.find('li').eq(newIndex).addClass('next-img').css('left', -width).animate({left: 0},600);
+                parent.find('li.active-img').removeClass('active-img').css('left', '0').animate({left: '100%'},600);
+                parent.find('li.next-img').attr('class', 'active-img');
+            }
+
+            /* Thumbails */
+            // var ThumbailsWidth = ($('#image-slider').width() - 18.5)/7;
+            // $('#thumbnail li').find('img').css('width', ThumbailsWidth);
+
+            $('.social-media-media-slider').hide()
+
+            $(document).on('click','.customer-media-container',function(){
+                $(this).siblings(".social-media-media-slider").show()
+                $(this).hide()
+            })
+
+            $(document).on('click','.slider-close-icon',function(){
+                $(this).closest('.social-media-media-slider').hide()
+                $(this).closest('.social-media-media-slider').siblings('.customer-media-container').show()
+            })
+            //image slider end
+        }
+        })
+        }
 
         $(document).on('click', '.post_save', function(e) {
             $('.post-actions-container').hide();
