@@ -999,6 +999,7 @@ class SocialMediaController extends Controller
             ]);
         }
     }
+
     public function saved_post()
     {
         $posts = UserSavedPost::select('users.name', 'profiles.profile_image', 'posts.*')
