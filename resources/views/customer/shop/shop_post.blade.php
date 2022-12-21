@@ -303,7 +303,7 @@
                                         }
                                         htmlView += ` <div class="shop-post-footer-container">
                                                         <div class="shop-post-like-container">
-                                                        <a class="like" id="`+posts[i].post_id+`">`
+                                                        <a class="like" id="`+posts[i].post_id+`" style="text-decoration:none">`
                                         if(posts[i].isLike==0){
                                             htmlView+=`
                                             <iconify-icon icon="mdi:cards-heart-outline" class="like-icon"></iconify-icon>`
@@ -312,16 +312,19 @@
                                             htmlView+=`
                                             <iconify-icon icon="mdi:cards-heart" style="color: red;" class="like-icon already-liked"></iconify-icon>`
                                         }
+                                        var post_id=posts[i].post_id
+                                        var like_url = "{{ route('social_media_likes', [':post_id']) }}";
+                                        like_url = like_url.replace(':post_id', post_id);
                                             htmlView +=`</a>
                                                         <p>
                                                             <span class="total_likes">
                                                                 `+posts[i].total_likes+`
                                                             </span>
-                                                            <a class="viewlikes" id="">Likes</a>
+                                                            <a href="`+like_url+`">Likes</a>
                                                         </p>
                                                         </div>
                                                         <div class="shop-post-comment-container">
-                                                            <a class="viewcomments" id = "`+posts[i].post_id+`">
+                                                            <a class="viewcomments" id = "`+posts[i].post_id+`" style="text-decoration:none">
                                                                 <iconify-icon icon="bi:chat-right" class="comment-icon"></iconify-icon>
                                                                 <p id="`+posts[i].post_id+`"><span>`+posts[i].total_comments+`</span> Comments</p>
                                                             </a>
@@ -336,6 +339,64 @@
 
             $('.shop-posts-parent-container').html(htmlView)
             $('.shop-media-slider').hide()
+
+            $.each($(".ul-image-slider"),function(){
+                console.log($(this).children('li').length)
+
+                $(this).children('li:first').addClass("active-img")
+            })
+
+            $.each($(".img-slider-thumbnails ul"),function(){
+                console.log($(this).children('li').length)
+
+                $(this).children('li:first').addClass("active")
+            })
+
+            $(document).on('click','.img-slider-thumbnails li',function(){
+                var thisIndex = $(this).index()
+                // console.log(thisIndex,$(this).siblings("li.active").index())
+                if($(this).siblings(".active").index() === -1){
+                    return
+                }
+
+
+                if(thisIndex < $(this).siblings(".active").index()){
+                    prevImage(thisIndex, $(this).parents(".img-slider-thumbnails").prev("#image-slider"));
+                }else if(thisIndex > $(this).siblings(".active").index()){
+                    nextImage(thisIndex, $(this).parents(".img-slider-thumbnails").prev("#image-slider"));
+                }
+
+
+                $(this).siblings('.active').removeClass('active');
+                $(this).addClass('active');
+
+            });
+
+            var width = $('#image-slider').width();
+            console.log(width)
+
+            function nextImage(newIndex, parent){
+                parent.find('li').eq(newIndex).addClass('next-img').css('left', width).animate({left: 0},600);
+                parent.find('li.active-img').removeClass('active-img').css('left', '0').animate({left: '-100%'},600);
+                parent.find('li.next-img').attr('class', 'active-img');
+            }
+            function prevImage(newIndex, parent){
+                parent.find('li').eq(newIndex).addClass('next-img').css('left', -width).animate({left: 0},600);
+                parent.find('li.active-img').removeClass('active-img').css('left', '0').animate({left: '100%'},600);
+                parent.find('li.next-img').attr('class', 'active-img');
+            }
+
+            $('.shop-media-slider').hide()
+
+            $(document).on('click','.shop-media-container',function(){
+                $(this).siblings(".shop-media-slider").show()
+                $(this).hide()
+            })
+
+            $(document).on('click','.slider-close-icon',function(){
+                $(this).closest('.shop-media-slider').hide()
+                $(this).closest('.shop-media-slider').siblings('.shop-media-container').show()
+            })
 
         }
 </script>

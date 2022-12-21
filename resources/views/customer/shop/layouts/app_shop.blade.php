@@ -158,17 +158,17 @@
                         <iconify-icon icon="bi:arrow-left" class="back-btn-icon"></iconify-icon>
                     </a>
 
-                    @if (auth()->user()->shop_request==2)
+                    {{-- @if (auth()->user()->shop_request==2) --}}
                     <button class="social-media-addpost-btn customer-primary-btn margin-top" data-bs-toggle="modal" data-bs-target="#addPostModal">
                         <iconify-icon icon="akar-icons:circle-plus" class="addpost-icon"></iconify-icon>
                         <p>Add Post</p>
                     </button>
-                    @else
+                    {{-- @else --}}
                     <a href="{{route('shoprequest')}}" class="social-media-addpost-btn customer-primary-btn margin-top">
                         <iconify-icon icon="akar-icons:circle-plus" class="addpost-icon"></iconify-icon>
                         <p>Rent a shop</p>
                     </a>
-                    @endif
+                    {{-- @endif --}}
                 </div>
 
                 <div class="social-media-left-container-trigger">
@@ -359,6 +359,41 @@
                     }
                 }
 
+            })
+
+            $(document).on('click', '.like', function(e) {
+                e.preventDefault();
+                $('.staticBackdrop').show();
+                var isLike=e.target.previousElementSibiling == null ? true : false;
+                var post_id=$(this).attr('id');
+                console.log(post_id)
+                var add_url = "{{ route('user.react.post', [':post_id']) }}";
+                add_url = add_url.replace(':post_id', post_id);
+                var that = $(this)
+                $.ajaxSetup({
+                                headers: {
+                                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                                }
+                            });
+                        $.ajax({
+                            method: "POST",
+                            url: add_url,
+                            data:{ isLike : isLike , post_id: post_id },
+                            success:function(data){
+                                that.siblings('p').children('.total_likes').html(data.total_likes)
+
+                                if(that.children('.like-icon').hasClass("already-liked")){
+                                    that.children('.like-icon').attr('style','')
+                                    that.children('.like-icon').attr('class','like-icon')
+                                    that.children(".like-icon").attr('icon','mdi:cards-heart-outline')
+                                }else{
+                                    that.children('.like-icon').attr('style','color : red')
+                                    that.children('.like-icon').attr('class','like-icon already-liked')
+                                    that.children(".like-icon").attr('icon','mdi:cards-heart')
+                                }
+
+                            }
+                        })
             })
 
             $(document).on('click', '.post_save', function(e) {
