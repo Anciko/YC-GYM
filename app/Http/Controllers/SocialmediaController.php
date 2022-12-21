@@ -52,6 +52,7 @@ class SocialmediaController extends Controller
             }
             $posts = Post::whereIn('user_id', $n)
                 ->where('report_status', 0)
+                ->where('shop_status',0)
                 ->orderBy('created_at', 'DESC')
                 ->with('user')
                 ->paginate(30);
@@ -59,6 +60,7 @@ class SocialmediaController extends Controller
             $n = array();
             $posts = Post::where('user_id', $user->id)
                 ->where('report_status', 0)
+                ->where('shop_status',0)
                 ->orderBy('created_at', 'DESC')
                 ->with('user')
                 ->paginate(30);
@@ -234,6 +236,7 @@ class SocialmediaController extends Controller
         $user = User::where('id', $id)->first();
         $posts = Post::where('user_id', $id)
             ->orderBy('created_at', 'DESC')
+            ->where('shop_status',0)
             ->with('user')
             ->paginate(30);
 

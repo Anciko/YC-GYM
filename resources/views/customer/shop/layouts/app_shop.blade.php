@@ -361,7 +361,7 @@
 
             })
 
-            $('.post_save').click(function(e){
+            $(document).on('click', '.post_save', function(e) {
                 e.preventDefault();
                 $('.post-actions-container').hide();
                 var post_id=$(this).attr('id');
@@ -591,31 +591,27 @@
 
             })
 
-            $('.nav-icon').click(function(){
+            $(document).on('click', '.nav-icon', function(e) {
                 $('.notis-box-container').toggle()
             })
 
-            $(function(){
-
-                $('.img-slider-thumbnails li').click(function(){
-                    var thisIndex = $(this).index()
-                    // console.log(thisIndex,$(this).siblings("li.active").index())
-                    if($(this).siblings(".active").index() === -1){
-                        return
-                    }
+            $(document).on('click','.img-slider-thumbnails li',function(){
+                var thisIndex = $(this).index()
+                // console.log(thisIndex,$(this).siblings("li.active").index())
+                if($(this).siblings(".active").index() === -1){
+                    return
+                }
 
 
-                    if(thisIndex < $(this).siblings(".active").index()){
-                        prevImage(thisIndex, $(this).parents(".img-slider-thumbnails").prev("#image-slider"));
-                    }else if(thisIndex > $(this).siblings(".active").index()){
-                        nextImage(thisIndex, $(this).parents(".img-slider-thumbnails").prev("#image-slider"));
-                    }
+                if(thisIndex < $(this).siblings(".active").index()){
+                    prevImage(thisIndex, $(this).parents(".img-slider-thumbnails").prev("#image-slider"));
+                }else if(thisIndex > $(this).siblings(".active").index()){
+                    nextImage(thisIndex, $(this).parents(".img-slider-thumbnails").prev("#image-slider"));
+                }
 
 
-                    $(this).siblings('.active').removeClass('active');
-                    $(this).addClass('active');
-
-                    });
+                $(this).siblings('.active').removeClass('active');
+                $(this).addClass('active');
 
             });
 
@@ -635,8 +631,7 @@
 
             $('.shop-media-slider').hide()
 
-            $(".shop-media-container").click(function(){
-
+            $(document).on('click','.shop-media-container',function(){
                 $(this).siblings(".shop-media-slider").show()
                 $(this).hide()
             })
