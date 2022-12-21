@@ -358,6 +358,65 @@
                 $('.shop-posts-parent-container').html(htmlView)
                 $('.shop-media-slider').hide()
 
+
+                $.each($(".ul-image-slider"),function(){
+                console.log($(this).children('li').length)
+
+                $(this).children('li:first').addClass("active-img")
+            })
+
+            $.each($(".img-slider-thumbnails ul"),function(){
+                console.log($(this).children('li').length)
+
+                $(this).children('li:first').addClass("active")
+            })
+
+            $(document).on('click','.img-slider-thumbnails li',function(){
+                var thisIndex = $(this).index()
+                // console.log(thisIndex,$(this).siblings("li.active").index())
+                if($(this).siblings(".active").index() === -1){
+                    return
+                }
+
+
+                if(thisIndex < $(this).siblings(".active").index()){
+                    prevImage(thisIndex, $(this).parents(".img-slider-thumbnails").prev("#image-slider"));
+                }else if(thisIndex > $(this).siblings(".active").index()){
+                    nextImage(thisIndex, $(this).parents(".img-slider-thumbnails").prev("#image-slider"));
+                }
+
+
+                $(this).siblings('.active').removeClass('active');
+                $(this).addClass('active');
+
+            });
+
+            var width = $('#image-slider').width();
+            console.log(width)
+
+            function nextImage(newIndex, parent){
+                parent.find('li').eq(newIndex).addClass('next-img').css('left', width).animate({left: 0},600);
+                parent.find('li.active-img').removeClass('active-img').css('left', '0').animate({left: '-100%'},600);
+                parent.find('li.next-img').attr('class', 'active-img');
+            }
+            function prevImage(newIndex, parent){
+                parent.find('li').eq(newIndex).addClass('next-img').css('left', -width).animate({left: 0},600);
+                parent.find('li.active-img').removeClass('active-img').css('left', '0').animate({left: '100%'},600);
+                parent.find('li.next-img').attr('class', 'active-img');
+            }
+
+            $('.shop-media-slider').hide()
+
+            $(document).on('click','.shop-media-container',function(){
+                $(this).siblings(".shop-media-slider").show()
+                $(this).hide()
+            })
+
+            $(document).on('click','.slider-close-icon',function(){
+                $(this).closest('.shop-media-slider').hide()
+                $(this).closest('.shop-media-slider').siblings('.shop-media-container').show()
+            })
+
 }
 
     })

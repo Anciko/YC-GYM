@@ -1509,41 +1509,39 @@
          all_posts();
          shop_all_posts();
             $(document).on('click', '.like', function(e) {
-            e.preventDefault();
-            $('.staticBackdrop').show();
-            var isLike=e.target.previousElementSibiling == null ? true : false;
-            var post_id=$(this).attr('id');
-            console.log(post_id)
-            var add_url = "{{ route('user.react.post', [':post_id']) }}";
-            add_url = add_url.replace(':post_id', post_id);
-            var that = $(this)
-            $.ajaxSetup({
-                            headers: {
-                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                e.preventDefault();
+                $('.staticBackdrop').show();
+                var isLike=e.target.previousElementSibiling == null ? true : false;
+                var post_id=$(this).attr('id');
+                console.log(post_id)
+                var add_url = "{{ route('user.react.post', [':post_id']) }}";
+                add_url = add_url.replace(':post_id', post_id);
+                var that = $(this)
+                $.ajaxSetup({
+                                headers: {
+                                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                                }
+                            });
+                        $.ajax({
+                            method: "POST",
+                            url: add_url,
+                            data:{ isLike : isLike , post_id: post_id },
+                            success:function(data){
+                                that.siblings('p').children('.total_likes').html(data.total_likes)
+
+                                if(that.children('.like-icon').hasClass("already-liked")){
+                                    that.children('.like-icon').attr('style','')
+                                    that.children('.like-icon').attr('class','like-icon')
+                                    that.children(".like-icon").attr('icon','mdi:cards-heart-outline')
+                                }else{
+                                    that.children('.like-icon').attr('style','color : red')
+                                    that.children('.like-icon').attr('class','like-icon already-liked')
+                                    that.children(".like-icon").attr('icon','mdi:cards-heart')
+                                }
+
                             }
-                        });
-                    $.ajax({
-                        method: "POST",
-                        url: add_url,
-                        data:{ isLike : isLike , post_id: post_id },
-                        success:function(data){
-                            that.siblings('p').children('.total_likes').html(data.total_likes)
-
-                            if(that.children('.like-icon').hasClass("already-liked")){
-                                that.children('.like-icon').attr('style','')
-                                that.children('.like-icon').attr('class','like-icon')
-                                that.children(".like-icon").attr('icon','mdi:cards-heart-outline')
-                            }else{
-                                that.children('.like-icon').attr('style','color : red')
-                                that.children('.like-icon').attr('class','like-icon already-liked')
-                                that.children(".like-icon").attr('icon','mdi:cards-heart')
-                            }
-
-                        }
-                    })
-
-
-        })
+                        })
+            })
 
         $('.viewlikes').click(function(e){
             viewlikes(e);
