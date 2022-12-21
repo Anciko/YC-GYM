@@ -333,7 +333,7 @@
 
                 }
             }
-            $('.shop-media-slider').hide()
+            $('#slider-wrapper').hide()
             $('.shop-posts-parent-container').html(htmlView);
 
         }
