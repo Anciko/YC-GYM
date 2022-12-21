@@ -3331,7 +3331,6 @@
 
 
 
-
          $(document).on('click','.img-slider-thumbnails li',function(){
 
             var thisIndex = $(this).index()
