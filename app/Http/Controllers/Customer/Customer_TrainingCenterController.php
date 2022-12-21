@@ -304,9 +304,8 @@ class Customer_TrainingCenterController extends Controller
             ]);
     }
 
-    public function shop_all_post(){
-
-        $posts=DB::table('posts')
+    public function shop_all_post(Request $request){
+            $posts=DB::table('posts')
                     ->select('users.name','profiles.profile_image','posts.*','posts.id as post_id','posts.created_at as post_date')
                     ->where('posts.user_id',auth()->user()->id)
                     ->where('posts.report_status',0)
@@ -316,6 +315,20 @@ class Customer_TrainingCenterController extends Controller
                     ->leftJoin('profiles','users.profile_id','profiles.id')
                     ->orderBy('posts.created_at','DESC')
                     ->get();
+            if($request->keyword != null){
+                $posts=DB::table('posts')
+                ->select('users.name','profiles.profile_image','posts.*','posts.id as post_id','posts.created_at as post_date')
+                ->where('posts.user_id',auth()->user()->id)
+                ->where('posts.report_status',0)
+                ->where('posts.shop_status',1)
+                ->where('posts.deleted_at',null)
+                ->leftJoin('users','users.id','posts.user_id')
+                ->leftJoin('profiles','users.profile_id','profiles.id')
+                ->where('posts.caption', 'LIKE', '%' . $request->keyword . '%')
+                ->orderBy('posts.created_at','DESC')
+                ->get();
+            }
+
             foreach($posts as $key=>$value){
 
             $saved=auth()->user()->user_saved_posts->where('post_id',$value->post_id)->first();
