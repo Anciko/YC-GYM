@@ -42,6 +42,7 @@ Route::post('change-password', [AuthController::class, 'passwordChange']);
 
 Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::get('me', [AuthController::class, 'me']);
+    Route::get('get/role', [AuthController::class, 'getRole']);
 
     Route::post('personal-choices', [AuthController::class, 'personalChoices']);
 
