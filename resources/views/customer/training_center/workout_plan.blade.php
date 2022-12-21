@@ -25,12 +25,12 @@
             </div>
             <div class="customer-workout-plan-header-detail-container">
                 <iconify-icon icon="noto:alarm-clock" class="customer-workout-plan-detail-icon"></iconify-icon>
-                <p>Minutes :
-                    @if ($time_sum_home < 60)
+                <p>Minutes : <span>{{$time_sum_home}} Mins</span>
+                    {{-- @if ($time_sum_home < 60)
                     <span>0:{{$sec_home}}</span>
                     @elseif ($time_sum_home >= 60)
                     <span>{{$duration_home}}:{{$sec}}</span>
-                    @endif
+                    @endif --}}
                 </p>
             </div>
         </div>
@@ -106,12 +106,12 @@
             </div>
             <div class="customer-workout-plan-header-detail-container">
                 <iconify-icon icon="noto:alarm-clock" class="customer-workout-plan-detail-icon"></iconify-icon>
-                <p>Minutes :
-                    @if ($time_sum < 60)
+                <p>Minutes : <span>{{$time_sum}} Mins</span>
+                    {{-- @if ($time_sum < 60)
                     <span>0:{{$sec}}</span>
                     @elseif ($time_sum >= 60)
                     <span>{{$duration}}:{{$sec}}</span>
-                    @endif
+                    @endif --}}
                 </p>
             </div>
         </div>

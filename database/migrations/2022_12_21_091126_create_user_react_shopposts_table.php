@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateUserReactedShoppostsTable extends Migration
+class CreateUserReactShoppostsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,11 @@ class CreateUserReactedShoppostsTable extends Migration
      */
     public function up()
     {
-        Schema::create('user_reacted_shopposts', function (Blueprint $table) {
+        Schema::create('user_react_shopposts', function (Blueprint $table) {
             $table->id();
+            $table->integer('user_id');
+            $table->integer('post_id');
+            $table->string('reacted_status');
             $table->timestamps();
         });
     }
@@ -26,6 +29,6 @@ class CreateUserReactedShoppostsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('user_reacted_shopposts');
+        Schema::dropIfExists('user_react_shopposts');
     }
 }
