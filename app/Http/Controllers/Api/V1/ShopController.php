@@ -140,9 +140,9 @@ class ShopController extends Controller
 
         $id = $post->id;
 
-        $post_one = Post::select('users.name', 'profiles.profile_image', 'shop_posts.*')
-            ->where('shop_posts.id', $id)
-            ->leftJoin('users', 'users.id', 'shop_posts.user_id')
+        $post_one = Post::select('users.name', 'profiles.profile_image', 'posts.*')
+            ->where('posts.id', $id)
+            ->leftJoin('users', 'users.id', 'posts.user_id')
             ->leftJoin('profiles', 'users.profile_id', 'profiles.id')
             ->first();
 
