@@ -14,7 +14,7 @@ class ShopPost extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function user_reacted_shopposts()
+    public function user_react_shopposts()
     {
         return $this->hasMany(UserReactShoppost::class, 'post_id', 'id');
     }

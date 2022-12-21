@@ -5,9 +5,10 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class UserReactedShoppost extends Model
+class UserReactShoppost extends Model
 {
     use HasFactory;
+
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id', 'id');
@@ -15,6 +16,6 @@ class UserReactedShoppost extends Model
 
     public function shoppost()
     {
-        return $this->belongsTo(ShopPost::class, 'post_id', 'id');
+        return $this->belongsTo(Shoppost::class, 'post_id', 'id');
     }
 }

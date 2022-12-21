@@ -74,6 +74,7 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
         // Route::get('/socialmedia_profile/{id}', [SocialmediaController::class, 'socialmedia_profile'])->name('socialmedia.profile');
 
         Route::get('/shop', [ShopController::class, 'index'])->name('shop');
+        Route::post('/shop/list', [ShopController::class, 'shop_list'])->name('shop.list');
         Route::get('/shop/request', [ShopController::class, 'shoprequest'])->name('shoprequest');
         Route::post('/shop/payment', [ShopController::class, 'payment'])->name('shoppayment');
         Route::post('/shop/post/store', [ShopController::class, 'shoppost_store'])->name('shoppost.store');
@@ -140,9 +141,14 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
 
         Route::post('customer/profile/image/update', [Customer_TrainingCenterController::class, 'profile_update_profile_img'])->name('customer-profile-img.update');
 
-        Route::get('customer/profile/saved_post', [Customer_TrainingCenterController::class, 'saved_post'])->name('saved.post');
+        Route::get('customer/profile/saved_post', [Customer_TrainingCenterController::class, 'saved_post'])
+        ->name('saved.post');
+        Route::get('customer/profile/shop_saved_post', [Customer_TrainingCenterController::class, 'shop_saved_post'])
+        ->name('shop.saved.post');
 
         Route::get('customer/profile/posts/', [Customer_TrainingCenterController::class, 'all_post'])->name('all.post');
+
+        Route::get('customer/profile/shop_posts/', [Customer_TrainingCenterController::class, 'shop_all_post'])->name('all.shop.post');
 
         Route::get('customer/profile/year/{year}', [Customer_TrainingCenterController::class, 'year_filter'])->name('customer-profile.year');
         Route::get('/home', [App\Http\Controllers\HomeController::class, 'home'])->name('social_media');

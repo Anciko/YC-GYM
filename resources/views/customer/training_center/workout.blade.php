@@ -16,12 +16,12 @@
             </div>
             <div class="customer-workout-plan-header-detail-container">
                 <iconify-icon icon="noto:alarm-clock" class="customer-workout-plan-detail-icon"></iconify-icon>
-                <p>Minutes :
-                    @if ($time_sum < 60)
+                <p>Minutes : <span>{{$t_sum}} Mins</span>
+                    {{-- @if ($time_sum < 60)
                     <span>0:{{$sec}}</span>
                     @else
                     <span>{{$duration}}:{{$t_sum}}</span>
-                    @endif
+                    @endif --}}
             </div>
         </div>
 

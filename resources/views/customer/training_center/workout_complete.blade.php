@@ -18,11 +18,12 @@
             <span>Calories</span>
         </div>
         <div class="customer-workout-completed-detail">
-            @if ($t_sum < 60)
+            {{-- @if ($t_sum < 60)
             <h1>0:{{$sec}}</h1>
             @else
             <h1>{{$duration}}:{{$sec}}</h1>
-            @endif
+            @endif --}}
+            <h1>{{$total_time}}</h1>
             <span>Minutes</span>
         </div>
         <div class="customer-workout-completed-detail">

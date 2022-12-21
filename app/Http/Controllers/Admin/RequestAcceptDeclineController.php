@@ -2,14 +2,16 @@
 
 namespace App\Http\Controllers\Admin;
 
+use Carbon\Carbon;
 use App\Models\User;
 use App\Models\Member;
+use App\Models\ShopMember;
 use Illuminate\Http\Request;
 use App\Models\MemberHistory;
+use App\Models\ShopmemberHistory;
 use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Role;
 use App\Http\Controllers\Controller;
-use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 
 class RequestAcceptDeclineController extends Controller
@@ -18,56 +20,76 @@ class RequestAcceptDeclineController extends Controller
     {
         $this->middleware('auth');
     }
-    public function group(){
+    public function group()
+    {
         dd("dd");
     }
-    public function accept(Request $request, $id){
+    public function accept(Request $request, $id)
+    {
 
-        $u=User::findOrFail($id);
-        $member_history = MemberHistory::where('user_id',$id)->first();
+        $u = User::findOrFail($id);
+        $member_history = MemberHistory::where('user_id', $id)->first();
         $member = Member::findOrFail($u->request_type);
         $date  = Carbon::Now()->toDateString();
-        // dd($date);
-        // try {
-            if($member_history != null && $member_history->user_id == $id){
 
-                $member_history->create([
-                    'user_id'=>$id,
-                    'member_id'=>$member->id,
-                    'member_type_level'=>$member_history->member_type_level,
-                    'date'=> $date
-                ]);
-                $u->active_status=2;
+        $shop_member = ShopMember::where('member_type', 'level3')->first();
+        $date  = Carbon::Now()->toDateString();
+
+        if ($member_history != null && $member_history->user_id == $id) {
+
+            $member_history->create([
+                'user_id' => $id,
+                'member_id' => $member->id,
+                'member_type_level' => $member_history->member_type_level,
+                'date' => $date
+            ]);
+
+            if ($member->member_type == "Ruby" || $member->member_type == "Ruby Premium") {
+                $u->shopmember_type_id = $shop_member->id;
+                $u->shop_request = 2;
+                $u->active_status = 2;
                 $u->member_type = $member->member_type;
-                $role=Role::findOrFail($member->role_id);
+                $role = Role::findOrFail($member->role_id);
                 $u->syncRoles($role->name);
                 $u->update();
-                return back()->with('success','Upgraded Success');
-            }
-            else{
-                // dd($member);
-                $current_date = Carbon::now()->toDateString();
-               $member_role = Member::where('id',$member->id)->first();
-               $role=Role::findOrFail($member_role->role_id);
-               DB::table('model_has_roles')->where('model_id',$id)->delete();
 
-               $u->assignRole($role->name);
-               $u->member_type = $member->member_type;
-               $u->active_status=2;
-               $u->update();
-               $u->members()->attach($u->request_type, ['member_type_level' => $u->membertype_level,'date'=>$current_date]);
-               return back()->with('success','Accepted');
-           }
-        // } catch (\Throwable $th) {
-        //    return back()->with(['usernotfound'=>'User accepted fail.']);
-        // }
+                ShopmemberHistory::create([
+                    'user_id' => $id,
+                    'shopmember_type_id' => $shop_member->id,
+                    'date' => $date
+                ]);
+
+                return back()->with('success', 'Upgraded Success');
+            } else {
+                $u->active_status = 2;
+                $u->member_type = $member->member_type;
+                $role = Role::findOrFail($member->role_id);
+                $u->syncRoles($role->name);
+                $u->update();
+                return back()->with('success', 'Upgraded Success');
+            }
+        } else {
+
+            $current_date = Carbon::now()->toDateString();
+            $member_role = Member::where('id', $member->id)->first();
+            $role = Role::findOrFail($member_role->role_id);
+            DB::table('model_has_roles')->where('model_id', $id)->delete();
+
+            $u->assignRole($role->name);
+            $u->member_type = $member->member_type;
+            $u->active_status = 2;
+            $u->update();
+            $u->members()->attach($u->request_type, ['member_type_level' => $u->membertype_level, 'date' => $current_date]);
+            return back()->with('success', 'Accepted');
+        }
     }
 
-    public function decline($id){
+    public function decline($id)
+    {
         $user = User::findOrFail($id);
-        $user->active_status=0;
+        $user->active_status = 0;
         $user->member_type = 'Free';
         $user->update();
-        return back()->with('success','Declined');
+        return back()->with('success', 'Declined');
     }
 }

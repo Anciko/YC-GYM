@@ -217,10 +217,9 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::get('shop/member/plans/list', [ShopController::class, 'shop_member_plan_list']);
     Route::get('shop/post/list', [ShopController::class, 'shop_list']);
     Route::post('shop/post/store', [ShopController::class, 'shop_post_store']);
-    Route::post('shop/post/edit', [ShopController::class, 'shop_post_edit']);
-    Route::post('shop/post/update', [ShopController::class, 'shop_post_update']);
-    Route::post('shop/post/delete', [ShopController::class, 'Shop_post_destroy']);
-    //Route::post('shop/post/save', [ShopController::class, 'shop_post_save']);
+
+    Route::post('shop/detail', [ShopController::class, 'shop_posts']);
+
 
 });
 
