@@ -7,7 +7,7 @@
     <div class="shop-posts-header-container">
         <p>{{$user->name}}'s Shop</p>
         <div class="shop-search-container">
-            <input type="text" placeholder="Search...">
+            <input type="text" placeholder="Search..." id  = "caption_search">
             <iconify-icon icon="akar-icons:search" class="shop-search-icon"></iconify-icon>
         </div>
     </div>
@@ -155,192 +155,211 @@
             })
 
     $(document).ready(function() {
-        data=@json($posts);
-        all_posts(data)
-    })
+        // data=@json($posts);
+        // all_posts(data)
 
-    function all_posts(data){
+        $('#caption_search').on('keyup', function() {
+                search();
+            });
+            search();
 
-            posts=data
-            auth_user={{auth()->user()->id}}
-            let htmlView = '';
-            if(posts.length <= 0){
-                htmlView+= `No Shop Post found.`;
-            }else{
-                for(let i=0;i<posts.length;i++){
-                    htmlView += `<div class="shop-post-container">
-                                <div class="shop-post-header">
-                                    <div class="shop-post-name-container">`
-
-                    if(posts[i].profile_image===null){
-                        htmlView +=`<img class="nav-profile-img" src="{{asset('img/customer/imgs/user_default.jpg')}}"/>`
-
-                    }else{
-                        htmlView +=`<img class="nav-profile-img" src="{{asset('storage/post/`+posts[i].profile_image+`')}}"/>`
-                    }
-                    htmlView +=`<div class="shop-post-name">
-                                            <p>`+posts[i].name+`</p>
-                                            <span>`+posts[i].date+`</span>
-                                        </div>
-                                        </div>
-                                        <iconify-icon icon="bi:three-dots-vertical" class="shop-post-header-icon"></iconify-icon>
-                                        <div class="post-actions-container">
-                                        <a style="text-decoration:none" class="post_save" id=`+posts[i].id+`>
-                                            <div class="post-action">
-                                                <iconify-icon icon="bi:save" class="post-action-icon"></iconify-icon>`
-                    if(posts[i].already_saved==1){
-                        htmlView +=`<p class="save">Unsave</p>`
-                    }else{
-                        htmlView +=`<p class="save">Save</p>`
-                    }
-
-
-                    htmlView +=`</div>
-                                        </a>`
-                                        if(auth_user==posts[i].user_id){
-                                        htmlView +=`<a id="edit_post" data-id="`+posts[i].id+`" data-bs-toggle="modal" >
-                                                        <div class="post-action">
-                                                            <iconify-icon icon="material-symbols:edit" class="post-action-icon"></iconify-icon>
-                                                            <p>Edit</p>
-                                                        </div>
-                                                    </a>
-                                                    <a id="delete_post" data-id="`+posts[i].id+`">
-                                                        <div class="post-action">
-                                                        <iconify-icon icon="material-symbols:delete-forever-outline-rounded" class="post-action-icon"></iconify-icon>
-                                                        <p>Delete</p>
-                                                        </div>
-                                                    </a>`
-                                        }else{
-                                            htmlView +=``
-                                        }
-                                        htmlView += `</div>
-                                                    </div>
-                                                    <div class="shop-content-container">
-                                                    `
-                                        if(posts[i].media===null){
-                                            htmlView +=`<p>`+posts[i].caption+`</p>`
-                                        }else{
-
-                                        var caption =posts[i].caption ? posts[i].caption : '';
-                                            htmlView +=`<p>`+caption+`</p>
-                                                            <div class="shop-media-container">
-                                                                `
-                                        var imageFile = posts[i].media
-                                        var imageArr = jQuery.parseJSON(imageFile);
-
-                                        $.each(imageArr,function(key,val){
-                                            var extension = val.substr( (val.lastIndexOf('.') +1) );
-
-                                            switch(extension) {
-                                                    case 'jpg':
-                                                    case 'png':
-                                                    case 'gif':
-                                                    case 'jpeg':
-                                                    htmlView += ` <div class="shop-media">
-                                                            <img src="{{asset('storage/post/`+val+`') }}">
-                                                            </div>`
-                                                    break;
-                                                    case 'mp4':
-                                                    htmlView += ` <div class="shop-media">
-                                                            <video controls>
-                                                            <source src="{{asset('storage/post/`+val+`') }}">
-                                                            </video>
-                                                            </div>`
-                                                    break;
-
-                                                }
-                                        });
-                                            htmlView +=  `
-                                                        </div>
-                                                        <div id="slider-wrapper" class="shop-media-slider">
-                                                            <iconify-icon icon="akar-icons:cross" class="slider-close-icon"></iconify-icon>
-
-                                                            <div id="image-slider" class="image-slider">
-                                                                <ul class="ul-image-slider">`
-                                        $.each(imageArr,function(k,v){
-                                            var exten = v.substr( (v.lastIndexOf('.') +1) );
-                                            switch(exten) {
-                                                    case 'jpg':
-                                                    case 'png':
-                                                    case 'gif':
-                                                    case 'jpeg':
-                                                    htmlView += `<li>
-                                                            <img src="{{asset('storage/post/`+v+`') }}" alt="" />
-                                                        </li>`
-                                                    break;
-                                                    case 'mp4':
-                                                    htmlView += `<li><video controls>
-                                                                <source src="{{asset('storage/post/`+v+`') }}">
-                                                                </video> </li>`
-                                                    break;
-                                                        }
-
-                                        });
-                                            htmlView += `</ul>
-                                                            </div>
-                                                            <div id="thumbnail" class="img-slider-thumbnails">
-                                                                <ul>`
-                                        $.each(imageArr,function(k,v){
-                                            var exten = v.substr( (v.lastIndexOf('.') +1) );
-                                            switch(exten) {
-                                                    case 'jpg':
-                                                    case 'png':
-                                                    case 'gif':
-                                                    case 'jpeg':
-                                                    htmlView += `<li>
-                                                            <img src="{{asset('storage/post/`+v+`') }}" alt="" />
-                                                        </li>`
-                                                    break;
-                                                    case 'mp4':
-                                                    htmlView += `<li><video controls>
-                                                                <source src="{{asset('storage/post/`+v+`') }}">
-                                                                </video> </li>`
-                                                    break;
-                                                        }
-                                        });
-
-                                            htmlView += `</ul></div></div></div>`
-                                        }
-                                        htmlView += ` <div class="shop-post-footer-container">
-                                                        <div class="shop-post-like-container">
-                                                        <a class="like" id="`+posts[i].post_id+`" style="text-decoration:none">`
-                                        if(posts[i].isLike==0){
-                                            htmlView+=`
-                                            <iconify-icon icon="mdi:cards-heart-outline" class="like-icon"></iconify-icon>`
-
-                                        }else{
-                                            htmlView+=`
-                                            <iconify-icon icon="mdi:cards-heart" style="color: red;" class="like-icon already-liked"></iconify-icon>`
-                                        }
-                                        var post_id=posts[i].post_id
-                                        var like_url = "{{ route('social_media_likes', [':post_id']) }}";
-                                        like_url = like_url.replace(':post_id', post_id);
-                                            htmlView +=`</a>
-                                                        <p>
-                                                            <span class="total_likes">
-                                                                `+posts[i].total_likes+`
-                                                            </span>
-                                                            <a href="`+like_url+`">Likes</a>
-                                                        </p>
-                                                        </div>
-                                                        <div class="shop-post-comment-container">
-                                                            <a class="viewcomments" id = "`+posts[i].post_id+`" style="text-decoration:none">
-                                                                <iconify-icon icon="bi:chat-right" class="comment-icon"></iconify-icon>
-                                                                <p id="`+posts[i].post_id+`"><span>`+posts[i].total_comments+`</span> Comments</p>
-                                                            </a>
-                                                        </div>
-                                                        </div>
-                                                            `
-                                        htmlView+=`</div>
-                                                    </div>`
-
-                }
+            function search() {
+                var keyword = $('#caption_search').val();
+                var search_url = "{{ route('all.shop.post') }}";
+                $.get(search_url, {
+                        _token: $('meta[name="csrf-token"]').attr('content'),
+                        keyword: keyword
+                    },
+                    function(data) {
+                        all_posts(data.posts);
+                        console.log(data.posts,"data");
+                    });
             }
 
-            $('.shop-posts-parent-container').html(htmlView)
-            $('.shop-media-slider').hide()
+            function all_posts(data){
+                posts=data
+                auth_user={{auth()->user()->id}}
 
-            $.each($(".ul-image-slider"),function(){
+
+                let htmlView = '';
+                if(posts.length <= 0){
+                    htmlView+= `No Shop Post found.`;
+                }else{
+                    for(let i=0;i<posts.length;i++){
+                        post_id = posts[i].id;
+                        var comment_url = "{{ route('post.comment', [':id']) }}";
+                            comment_url = comment_url.replace(':id', post_id);
+                        htmlView += `<div class="shop-post-container">
+                                    <div class="shop-post-header">
+                                        <div class="shop-post-name-container">`
+
+                        if(posts[i].profile_image===null){
+                            htmlView +=`<img class="nav-profile-img" src="{{asset('img/customer/imgs/user_default.jpg')}}"/>`
+
+                        }else{
+                            htmlView +=`<img class="nav-profile-img" src="{{asset('storage/post/`+posts[i].profile_image+`')}}"/>`
+                        }
+                        htmlView +=`<div class="shop-post-name">
+                                                <p>`+posts[i].name+`</p>
+                                                <span>`+posts[i].date+`</span>
+                                            </div>
+                                            </div>
+                                            <iconify-icon icon="bi:three-dots-vertical" class="shop-post-header-icon"></iconify-icon>
+                                            <div class="post-actions-container">
+                                            <a style="text-decoration:none" class="post_save" id=`+posts[i].id+`>
+                                                <div class="post-action">
+                                                    <iconify-icon icon="bi:save" class="post-action-icon"></iconify-icon>`
+                        if(posts[i].already_saved==1){
+                            htmlView +=`<p class="save">Unsave</p>`
+                        }else{
+                            htmlView +=`<p class="save">Save</p>`
+                        }
+                        htmlView +=`</div>
+                                            </a>`
+                                            if(auth_user==posts[i].user_id){
+                                            htmlView +=`<a id="edit_post" data-id="`+posts[i].id+`" data-bs-toggle="modal" >
+                                                            <div class="post-action">
+                                                                <iconify-icon icon="material-symbols:edit" class="post-action-icon"></iconify-icon>
+                                                                <p>Edit</p>
+                                                            </div>
+                                                        </a>
+                                                        <a id="delete_post" data-id="`+posts[i].id+`">
+                                                            <div class="post-action">
+                                                            <iconify-icon icon="material-symbols:delete-forever-outline-rounded" class="post-action-icon"></iconify-icon>
+                                                            <p>Delete</p>
+                                                            </div>
+                                                        </a>`
+                                            }else{
+                                                htmlView +=``
+                                            }
+                                            htmlView += `</div>
+                                                        </div>
+                                                        <div class="shop-content-container">
+                                                        `
+                                            if(posts[i].media===null){
+                                                htmlView +=`<p>`+posts[i].caption+`</p>`
+                                            }else{
+
+                                            var caption =posts[i].caption ? posts[i].caption : '';
+                                                htmlView +=`<p>`+caption+`</p>
+                                                                <div class="shop-media-container">
+                                                                    `
+                                            var imageFile = posts[i].media
+                                            var imageArr = jQuery.parseJSON(imageFile);
+
+                                            $.each(imageArr,function(key,val){
+                                                var extension = val.substr( (val.lastIndexOf('.') +1) );
+
+                                                switch(extension) {
+                                                        case 'jpg':
+                                                        case 'png':
+                                                        case 'gif':
+                                                        case 'jpeg':
+                                                        htmlView += ` <div class="shop-media">
+                                                                <img src="{{asset('storage/post/`+val+`') }}">
+                                                                </div>`
+                                                        break;
+                                                        case 'mp4':
+                                                        htmlView += ` <div class="shop-media">
+                                                                <video controls>
+                                                                <source src="{{asset('storage/post/`+val+`') }}">
+                                                                </video>
+                                                                </div>`
+                                                        break;
+
+                                                    }
+                                            });
+                                                htmlView +=  `
+                                                            </div>
+                                                            <div id="slider-wrapper" class="shop-media-slider">
+                                                                <iconify-icon icon="akar-icons:cross" class="slider-close-icon"></iconify-icon>
+
+                                                                <div id="image-slider" class="image-slider">
+                                                                    <ul class="ul-image-slider">`
+                                            $.each(imageArr,function(k,v){
+                                                var exten = v.substr( (v.lastIndexOf('.') +1) );
+                                                switch(exten) {
+                                                        case 'jpg':
+                                                        case 'png':
+                                                        case 'gif':
+                                                        case 'jpeg':
+                                                        htmlView += `<li>
+                                                                <img src="{{asset('storage/post/`+v+`') }}" alt="" />
+                                                            </li>`
+                                                        break;
+                                                        case 'mp4':
+                                                        htmlView += `<li><video controls>
+                                                                    <source src="{{asset('storage/post/`+v+`') }}">
+                                                                    </video> </li>`
+                                                        break;
+                                                            }
+
+                                            });
+                                                htmlView += `</ul>
+                                                                </div>
+                                                                <div id="thumbnail" class="img-slider-thumbnails">
+                                                                    <ul>`
+                                            $.each(imageArr,function(k,v){
+                                                var exten = v.substr( (v.lastIndexOf('.') +1) );
+                                                switch(exten) {
+                                                        case 'jpg':
+                                                        case 'png':
+                                                        case 'gif':
+                                                        case 'jpeg':
+                                                        htmlView += `<li>
+                                                                <img src="{{asset('storage/post/`+v+`') }}" alt="" />
+                                                            </li>`
+                                                        break;
+                                                        case 'mp4':
+                                                        htmlView += `<li><video controls>
+                                                                    <source src="{{asset('storage/post/`+v+`') }}">
+                                                                    </video> </li>`
+                                                        break;
+                                                            }
+                                            });
+
+                                                htmlView += `</ul></div></div></div>`
+                                            }
+                                            htmlView += ` <div class="shop-post-footer-container">
+                                                            <div class="shop-post-like-container">
+                                                            <a class="like" id="`+posts[i].post_id+`">`
+                                            if(posts[i].isLike==0){
+                                                htmlView+=`
+                                                <iconify-icon icon="mdi:cards-heart-outline" class="like-icon"></iconify-icon>`
+
+                                            }else{
+                                                htmlView+=`
+                                                <iconify-icon icon="mdi:cards-heart" style="color: red;" class="like-icon already-liked"></iconify-icon>`
+                                            }
+                                                htmlView +=`</a>
+                                                            <p>
+                                                                <span class="total_likes">
+                                                                    `+posts[i].total_likes+`
+                                                                </span>
+                                                                <a class="viewlikes" id="">Likes</a>
+                                                            </p>
+                                                            </div>
+
+                                                            <div class="social-media-post-comment-container">
+                                                                <a href = `+comment_url+`>
+                                                                <iconify-icon icon="bi:chat-right" class="comment-icon"></iconify-icon>
+                                                                <p><span>`+posts[i].total_comments+`</span> Comments</p>
+                                                                </a>
+                                                            </div>
+
+                                                            </div>
+                                                                `
+                                            htmlView+=`</div>
+                                                        </div>`
+
+                    }
+                }
+
+                $('.shop-posts-parent-container').html(htmlView)
+                $('.shop-media-slider').hide()
+
+
+                $.each($(".ul-image-slider"),function(){
                 console.log($(this).children('li').length)
 
                 $(this).children('li:first').addClass("active-img")
@@ -398,7 +417,10 @@
                 $(this).closest('.shop-media-slider').siblings('.shop-media-container').show()
             })
 
-        }
+}
+
+    })
+
 </script>
 
 @endpush

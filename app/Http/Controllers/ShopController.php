@@ -26,7 +26,6 @@ class ShopController extends Controller
                     ->where('shop_request',2)
                     ->with('posts')
                     ->get();
-
         return view('customer.shop.shop',compact('shops'));
     }
 
@@ -60,7 +59,7 @@ class ShopController extends Controller
         ]);
     }
 
-    public function shoppost($id)
+    public function  shoppost($id)
     {
         $user=User::where('id',$id)
                     ->where('shopmember_type_id','!=',0)
@@ -261,13 +260,18 @@ class ShopController extends Controller
 
     public function shoppost_store(Request $request)
     {
-        
         $input = $request->all();
         $user = auth()->user();
+        $user_role=$user->getRoleNames()->first();
+
         $useru=User::findOrFail($user->id);
         $post = new Post();
 
-        if($user->shop_post_count==0){
+        $shopmember=ShopMember::findOrFail($user->shopmember_type_id);
+
+        if($user_role== "Ruby" || $user_role=="Ruby Premium" && $shopmember->member_type=="level3"){
+
+        }elseif($user->shop_post_count==0){
             return response()->json([
                 'message' => 'You reached maximum posts!Please upgrade level',
             ]);

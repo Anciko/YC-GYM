@@ -251,8 +251,6 @@
 <script>
 
     $(document).ready(function() {
-
-
         $('#other_msg').hide();
         $('#report_submit').attr("class",'btn btn-primary disabled')
         console.log($("input[name='report_msg']:checked").val());
