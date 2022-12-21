@@ -25,6 +25,34 @@ class ShopController extends Controller
         return view('customer.shop.shop',compact('shops'));
     }
 
+    public function shop_list(Request $request)
+    {
+
+        $shop_list = User::select('users.id','users.name','profiles.profile_image')
+        ->leftJoin('profiles','users.profile_id','profiles.id')
+        ->where('shop_request',2)
+        ->get();
+        if($request->keyword != null){
+            $shop_list = User::select('users.id','users.name','profiles.profile_image')
+            ->leftJoin('profiles','users.profile_id','profiles.id')
+            ->where('shop_request',2)
+            ->where('users.name', 'LIKE', '%' . $request->keyword . '%')
+            ->get();
+        }
+        $total_count = ShopPost::select("user_id",DB::raw("Count('id') as total_count"))->groupBy('user_id')->get();
+        foreach($shop_list as $key=>$value){
+            $shop_list[$key]['total_post'] = 0;
+            foreach($total_count as $count){
+                if($count['user_id'] == $value['id']){
+                    $shop_list[$key]['total_post'] = $count['total_count'];
+                }
+            }
+        }
+        return response()->json([
+            'data' => $shop_list
+        ]);
+    }
+
     public function shoppost($id)
     {
         $user=User::where('id',$id)
