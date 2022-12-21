@@ -63,6 +63,8 @@ class SocialmediaController extends Controller
                 ->with('user')
                 ->paginate(30);
         }
+
+
         return view('customer.socialmedia', compact('posts'));
     }
 

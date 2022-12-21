@@ -482,9 +482,14 @@ height: 70px;
     /* border: 2px solid var(--customer-primary-color); */
 }
 
-.group-chat-sender-text-container img{
+.group-chat-sender-text-container  img{
     /* width: 200px;
     height: auto; */
+}
+
+.group-chat-sender-text-container > a > img{
+    width: 200px;
+    height: auto;
 }
 
 .group-chat-imgs-vids-container{

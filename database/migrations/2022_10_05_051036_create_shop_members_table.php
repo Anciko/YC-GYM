@@ -18,6 +18,7 @@ class CreateShopMembersTable extends Migration
             $table->string('member_type');
             $table->string('duration')->default(0);
             $table->integer('price')->default(0);
+            $table->integer('post_count')->default(0);
             $table->text('pros')->nullable();
             $table->text('cons')->nullable();
             $table->integer('post_count');
