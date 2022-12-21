@@ -13,6 +13,13 @@ use Illuminate\Support\Facades\Storage;
 class ShopController extends Controller
 {
     //
+    public function shop_status(){
+        $user = User::select('shopmember_type_id','shop_request')->where('id',auth()->user()->id)->first();
+        return response()->json([
+            'data' => $user
+        ]);
+    }
+
     public function shop_member_plan_list(){
         $member_plan = ShopMember::get();
         return response()->json([
