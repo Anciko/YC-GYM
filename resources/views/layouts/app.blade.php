@@ -143,7 +143,7 @@
 
                         <a class="sidebar-link" href="{{ route('admin.shop_request') }}">
 
-                            <i class="fa-solid fa-money-bill-transfer"></i> <span
+                            <i class="fa-solid fa-shop"></i> <span
 
                                 class="align-middle">Shop Request</span>
 
@@ -177,7 +177,7 @@
                     <li class="sidebar-item @yield('trainer-active') ">
                         <a class="sidebar-link" href="{{ route('trainer.index') }}">
 
-                            <i class="fa-solid fa-dumbbell align-middle "></i> <span
+                            <i class="fa-solid fa-person fs-4"></i> <span
                                 class="align-middle">Trainers</span>
                         </a>
                     </li>
@@ -185,7 +185,7 @@
                     <li class="sidebar-item @yield('shopmember-active') ">
                         <a class="sidebar-link" href="{{ route('shop-member.index') }}">
 
-                            <i class="fa-solid fa-dumbbell align-middle "></i> <span class="align-middle">Shop
+                            <i class="fa-brands fa-stripe-s"></i> <span class="align-middle">Shop
                                 MemberPlan</span>
                         </a>
                     </li>
