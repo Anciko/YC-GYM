@@ -39,7 +39,10 @@ class ShopController extends Controller
         ->leftJoin('profiles','users.profile_id','profiles.id')
         ->where('shop_request',2)
         ->get();
-        $total_count = ShopPost::select("user_id",DB::raw("Count('id') as total_count"))->groupBy('user_id')->get();
+        $total_count = Post::select("user_id",DB::raw("Count('id') as total_count"))
+                        ->where('shop_status',1)
+                        ->groupBy('user_id')
+                        ->get();
         foreach($shop_list as $key=>$value){
             $shop_list[$key]['total_post'] = 0;
             foreach($total_count as $count){

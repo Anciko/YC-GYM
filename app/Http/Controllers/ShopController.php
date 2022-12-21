@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Post;
 use App\Models\User;
 use App\Models\Member;
 use App\Models\ShopPost;
@@ -39,7 +40,10 @@ class ShopController extends Controller
             ->where('users.name', 'LIKE', '%' . $request->keyword . '%')
             ->get();
         }
-        $total_count = ShopPost::select("user_id",DB::raw("Count('id') as total_count"))->groupBy('user_id')->get();
+        $total_count = Post::select("user_id",DB::raw("Count('id') as total_count"))
+                        ->where('shop_status',1)
+                        ->groupBy('user_id')
+                        ->get();
         foreach($shop_list as $key=>$value){
             $shop_list[$key]['total_post'] = 0;
             foreach($total_count as $count){
