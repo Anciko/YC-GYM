@@ -181,8 +181,6 @@
                             }
                             $('.trainer-group-chat-members-container').html(htmlView);
                         }
-
-
                     }
 
 
