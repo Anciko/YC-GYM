@@ -2688,6 +2688,7 @@
                                         icon: 'success',
                                     }).then((result) => {
                                         saved_posts(e);
+                                        shop_saved_posts(e);
 
                                         e.target.querySelector(".save").innerHTML = `Save`;
 
@@ -2939,7 +2940,9 @@
                                 $('.mentiony-content').empty()
                                 viewcomments()
                                 all_posts()
+                                shop_all_posts()
                                 saved_posts(e)
+                                shop_saved_posts(e)
                             }
 
                         }
@@ -3600,6 +3603,7 @@
                                         all_posts();
                                         shop_all_posts();
                                         saved_posts(e);
+                                        shop_saved_posts(e);
                                     }
                             })
                     }else{
