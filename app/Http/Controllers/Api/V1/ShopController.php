@@ -2,14 +2,18 @@
 
 namespace App\Http\Controllers\Api\V1;
 
+use App\Models\Post;
 use App\Models\User;
 use App\Models\ShopPost;
 use App\Models\ShopMember;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-use App\Http\Controllers\Controller;
-use App\Models\UserReactedShoppost;
+use App\Models\UserReactPost;
+use App\Models\UserSavedPost;
+use App\Models\UserReactShoppost;
 use App\Models\UserSavedShoppost;
+use Illuminate\Support\Facades\DB;
+use App\Models\UserReactedShoppost;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Storage;
 
 class ShopController extends Controller
@@ -35,7 +39,10 @@ class ShopController extends Controller
         ->leftJoin('profiles','users.profile_id','profiles.id')
         ->where('shop_request',2)
         ->get();
-        $total_count = ShopPost::select("user_id",DB::raw("Count('id') as total_count"))->groupBy('user_id')->get();
+        $total_count = Post::select("user_id",DB::raw("Count('id') as total_count"))
+                        ->where('shop_status',1)
+                        ->groupBy('user_id')
+                        ->get();
         foreach($shop_list as $key=>$value){
             $shop_list[$key]['total_post'] = 0;
             foreach($total_count as $count){
@@ -48,11 +55,12 @@ class ShopController extends Controller
             'data' => $shop_list
         ]);
     }
+
     public function shop_post_store(Request $request)
     {
         $input = $request->all();
         $user = auth()->user();
-        $post = new ShopPost();
+        $post = new Post();
         if (empty($input['addPostInput'])  && $input['caption'] != null) {
             $caption = $input['caption'];
         } elseif ($input['caption'] == null) {
@@ -126,6 +134,7 @@ class ShopController extends Controller
 
         $post->user_id = $user->id;
         $post->caption = $caption;
+        $post->shop_status = 1;
         $post->save();
 
         $user = User::find(auth()->user()->id);
@@ -134,9 +143,9 @@ class ShopController extends Controller
 
         $id = $post->id;
 
-        $post_one = ShopPost::select('users.name', 'profiles.profile_image', 'shop_posts.*')
-            ->where('shop_posts.id', $id)
-            ->leftJoin('users', 'users.id', 'shop_posts.user_id')
+        $post_one = Post::select('users.name', 'profiles.profile_image', 'posts.*')
+            ->where('posts.id', $id)
+            ->leftJoin('users', 'users.id', 'posts.user_id')
             ->leftJoin('profiles', 'users.profile_id', 'profiles.id')
             ->first();
 
@@ -151,200 +160,71 @@ class ShopController extends Controller
         ]);
     }
 
-
-    public function one_post(Request $request)
+    public function shop_posts(Request $request)
     {
+        $auth = Auth()->user()->id;
         $id = $request->id;
-        $auth = auth()->user()->id;
-        $saved_post = UserSavedShoppost::select('shop_posts.*')->leftJoin('user_saved_shopposts', 'shop_posts.id', 'user_saved_shopposts.post_id')
-            ->where('user_saved_shopposts.post_id', $id)
-            ->where('user_saved_shopposts.user_id', auth()->user()->id)
-            ->first();
-        //  dd($saved_post);
-        $post = ShopPost::select('users.name', 'profiles.profile_image', 'shop_posts.*')
-            ->where('shop_posts.id', $id)
+        $posts = Post::select('users.name', 'profiles.profile_image', 'posts.*')
+            ->where('posts.user_id', $id)
+            ->where('posts.shop_status', 1)
             ->leftJoin('users', 'users.id', 'posts.user_id')
             ->leftJoin('profiles', 'users.profile_id', 'profiles.id')
-            ->first();
+            ->orderBy('posts.created_at', 'DESC')
+            ->paginate(30);
 
-        $liked_post = UserReactedShoppost::select('shop_posts.*')
-            ->leftJoin('shop_posts', 'shop_posts.id', 'user_reacted_shopposts.post_id')
-            ->where('user_reacted_shopposts.post_id', $id)
-            ->where('user_reacted_shopposts.user_id', auth()->user()->id)
-            ->first();
+        $saved_post = UserSavedPost::select('posts.*')->leftJoin('posts', 'posts.id', 'user_saved_posts.post_id')
+            ->where('user_saved_posts.user_id', $auth)
+            ->get();
 
-        $liked_post_count = DB::select("SELECT COUNT(post_id) as like_count, post_id FROM user_reacted_shopposts WHERE post_id = $id");
+        $liked_post = UserReactPost::select('posts.*')->leftJoin('posts', 'posts.id', 'user_react_posts.post_id')
+            ->where('user_react_posts.user_id', $auth)->get();
+        $liked_post_count = DB::select("SELECT COUNT(post_id) as like_count, post_id FROM user_react_posts GROUP BY post_id");
 
-        // $comment_post_count = DB::select("SELECT COUNT(post_id) as comment_count, post_id FROM comments WHERE post_id = $id");
-        // dd($comment_post_count);
+        $comment_post_count = DB::select("SELECT COUNT(post_id) as comment_count, post_id FROM comments GROUP BY post_id");
         // dd($liked_post);
 
-        foreach ($post as $key => $value) {
-            // dd($post);
-            $post['is_save'] = 0;
-            $post['is_like'] = 0;
-            $post['like_count'] = 0;
-            $post['comment_count'] = 0;
+        foreach ($posts as $key => $value) {
+            $posts[$key]['is_save'] = 0;
+            $posts[$key]['is_like'] = 0;
+            $posts[$key]['like_count'] = 0;
+            $posts[$key]['comment_count'] = 0;
             // dd($value->id);
-            if (empty($saved_post)) {
-                $post['is_save'] = 0;
-            } else {
-                $post['is_save'] = 1;
-            }
-            if (!empty($liked_post)) {
-                $post['is_like'] = 1;
-            } else {
-                $post['like_count'] = 0;
-            }
-            if (!empty($liked_post_count)) {
-                foreach ($liked_post_count as $like_count) {
-                    $post['like_count'] = $like_count->like_count;
-                }
-            } else {
-                $post['like_count'] = 0;
-            }
+            foreach ($saved_post as $saved_key => $save_value) {
 
-            // if (!empty($comment_post_count)) {
-            //     foreach ($comment_post_count as $comment_count) {
-            //         $post['comment_count'] = $comment_count->comment_count;
-            //     }
-            // } else {
-            //     $post['comment_count'] = 0;
-            // }
+                if ($save_value->id === $value->id) {
+                    $posts[$key]['is_save'] = 1;
+                    break;
+                } else {
+                    $posts[$key]['is_save'] = 0;
+                }
+            }
+            foreach ($liked_post as $liked_key => $liked_value) {
+                if ($liked_value->id === $value->id) {
+                    $posts[$key]['is_like'] = 1;
+                    break;
+                } else {
+                    $posts[$key]['is_like'] = 0;
+                }
+            }
+            foreach ($liked_post_count as $like_count) {
+                if ($like_count->post_id === $value->id) {
+                    $posts[$key]['like_count'] = $like_count->like_count;
+                    break;
+                } else {
+                    $posts[$key]['like_count'] = 0;
+                }
+            }
+            foreach ($comment_post_count as $comment_count) {
+                if ($comment_count->post_id === $value->id) {
+                    $posts[$key]['comment_count'] = $comment_count->comment_count;
+                    break;
+                } else {
+                    $posts[$key]['comment_count'] = 0;
+                }
+            }
         }
         return response()->json([
-            'post' => $post
+            'posts' => $posts
         ]);
-    }
-
-    public function shop_post_edit(Request $request)
-    {
-        $post = ShopPost::find($request->id);
-        foreach ($post->media as $media) {
-        }
-        if ($post) {
-
-            return response()->json([
-                'status' => 200,
-                'post' => $post,
-            ]);
-        } else {
-            return response()->json([
-                'status' => 404,
-                'message' => 'Data Not Found',
-            ]);
-        }
-    }
-
-    public function shop_post_update(Request $request)
-    {
-        $input = $request->all();
-        // return $request->all();
-        $edit_post = ShopPost::findOrFail($input['edit_post_id']);
-        $edit_post->caption = $input['caption'];
-
-        if (empty($input['addPostInput'])  && $input['caption'] != null) {
-            $caption = $input['caption'];
-            $updateFilenames = $input['filenames'];
-            $edit_post->media = json_encode($updateFilenames);
-        } elseif ($input['caption'] == null) {
-            $caption = null;
-            if ($input['addPostInput']) {
-
-                $images = $input['addPostInput'];
-
-                $updateFilenames = $input['filenames'];
-                $newFilenames = $input['newFileNames'];
-
-                foreach ($images as $index => $file) {
-
-                    $tmp = base64_decode($file);
-
-                    $file_name = $newFilenames[$index];
-                    Storage::disk('public')->put(
-                        'post/' . $file_name,
-                        $tmp
-                    );
-                    //  $imgData[] = $tmp;
-                    //  $edit_post->media = json_encode($imgData);
-                }
-                $edit_post->media = json_encode($updateFilenames);
-            }
-        } elseif ($input['addPostInput'] == null && $input['caption'] == null) {
-            $caption = $input['caption'];
-            $updateFilenames = $input['filenames'];
-            $edit_post->media = json_encode($updateFilenames);
-        } else {
-            $caption = $input['caption'];
-            $images = $input['addPostInput'];
-            if ($input['addPostInput']) {
-
-                $images = $input['addPostInput'];
-
-                $updateFilenames = $input['filenames'];
-                $newFilenames = $input['newFileNames'];
-
-                foreach ($images as $index => $file) {
-
-                    $tmp = base64_decode($file);
-
-                    $file_name = $newFilenames[$index];
-                    Storage::disk('public')->put(
-                        'post/' . $file_name,
-                        $tmp
-                    );
-                }
-                $edit_post->media = json_encode($updateFilenames);
-            }
-        }
-        $banwords = DB::table('ban_words')->select('ban_word_english', 'ban_word_myanmar', 'ban_word_myanglish')->get();
-
-        foreach ($banwords as $b) {
-            $e_banword = $b->ban_word_english;
-            $m_banword = $b->ban_word_myanmar;
-            $em_banword = $b->ban_word_myanglish;
-
-            if (str_contains($caption, $e_banword)) {
-                return response()->json([
-                    'message' => 'ban',
-                ]);
-            } elseif (str_contains($caption, $m_banword)) {
-                return response()->json([
-                    'message' => 'ban',
-                ]);
-            } elseif (str_contains($caption, $em_banword)) {
-                return response()->json([
-                    'message' => 'ban',
-                ]);
-            }
-        }
-        $edit_post->caption = $caption;
-
-        $edit_post->update();
-
-        $id = $edit_post->id;
-
-
-        return response()->json([
-            'data' => "updated"
-        ]);
-    }
-
-    public function shop_post_destroy(Request $request)
-    {
-        ShopPost::find($request->id)->delete($request->id);
-
-        return response()->json([
-            'success' => 'Post deleted successfully!'
-        ]);
-    }
-
-
-    public function shop_post_save(Request $request)
-    {
-
-            return response()->json([
-                'data' => "ok",
-            ]);
     }
 }

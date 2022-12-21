@@ -43,7 +43,14 @@ class ShopController extends Controller
             ->where('users.name', 'LIKE', '%' . $request->keyword . '%')
             ->get();
         }
+<<<<<<< HEAD
         $total_count = Post::select("user_id",DB::raw("Count('id') as total_count"))->where('posts.shop_status',1)->groupBy('user_id')->get();
+=======
+        $total_count = Post::select("user_id",DB::raw("Count('id') as total_count"))
+                        ->where('shop_status',1)
+                        ->groupBy('user_id')
+                        ->get();
+>>>>>>> 878e1f92e1eba70b1023d4e17b34f9456d0a854b
         foreach($shop_list as $key=>$value){
             $shop_list[$key]['total_post'] = 0;
             foreach($total_count as $count){
