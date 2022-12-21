@@ -5,7 +5,7 @@
 
 <div class="shop-right-container">
     <div class="shop-posts-header-container">
-        <p>{{$user->name}}'s Shop</p>
+        <p>{{$user->id}}'s Shop</p>
         <div class="shop-search-container">
             <input type="text" placeholder="Search..." id  = "caption_search">
             <iconify-icon icon="akar-icons:search" class="shop-search-icon"></iconify-icon>
@@ -165,10 +165,12 @@
 
             function search() {
                 var keyword = $('#caption_search').val();
-                var search_url = "{{ route('all.shop.post') }}";
-                $.get(search_url, {
+                var post_id = {{$user->id}};
+                var search_url = "{{route('all.shop.post.id') }}";
+                $.post(search_url, {
                         _token: $('meta[name="csrf-token"]').attr('content'),
-                        keyword: keyword
+                        keyword: keyword,
+                        post_id:post_id
                     },
                     function(data) {
                         all_posts(data.posts);
