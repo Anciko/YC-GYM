@@ -13,8 +13,13 @@ class ShopPost extends Model
     {
         return $this->belongsTo(User::class);
     }
-    
-    public function user_saved_posts()
+
+    public function user_reacted_shopposts()
+    {
+        return $this->hasMany(UserReactShoppost::class, 'post_id', 'id');
+    }
+
+    public function user_saved_shopposts()
     {
         return $this->hasMany(UserSavedPost::class, 'post_id', 'id');
     }

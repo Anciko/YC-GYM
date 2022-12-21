@@ -43,6 +43,7 @@
                         <th>Member Type</th>
                         <th>Duration</th>
                         <th>Price</th>
+                        <th>Count</th>
                         <th>Pros</th>
                         <th>Cons</th>
                         <th>Updated At</th>
@@ -86,6 +87,10 @@
                     {
                         data: 'price',
                         name: 'price'
+                    },
+                    {
+                        data: 'post_count',
+                        name: 'post_count'
                     },
                     {
                         data: 'pros',

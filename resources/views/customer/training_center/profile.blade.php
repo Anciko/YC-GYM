@@ -373,7 +373,7 @@
     </div>
 
     <div class="customer-profile-shop-container">
-        <h1>Coming Soon...</h1>
+        <h6>Shoppppp</h6>
     </div>
 
     <div class="customer-profile-training-center-container">
