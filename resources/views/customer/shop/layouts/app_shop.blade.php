@@ -595,6 +595,19 @@
                 $('.notis-box-container').toggle()
             })
 
+
+            $.each($(".ul-image-slider"),function(){
+                console.log($(this).children('li').length)
+
+                $(this).children('li:first').addClass("active-img")
+            })
+
+            $.each($(".img-slider-thumbnails ul"),function(){
+                console.log($(this).children('li').length)
+
+                $(this).children('li:first').addClass("active")
+            })
+
             $(document).on('click','.img-slider-thumbnails li',function(){
                 var thisIndex = $(this).index()
                 // console.log(thisIndex,$(this).siblings("li.active").index())
@@ -636,7 +649,7 @@
                 $(this).hide()
             })
 
-            $(".slider-close-icon").click(function(){
+            $(document).on('click','.slider-close-icon',function(){
                 $(this).closest('.shop-media-slider').hide()
                 $(this).closest('.shop-media-slider').siblings('.shop-media-container').show()
             })

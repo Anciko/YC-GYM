@@ -333,8 +333,9 @@
 
                 }
             }
-            $('#slider-wrapper').hide()
-            $('.shop-posts-parent-container').html(htmlView);
+
+            $('.shop-posts-parent-container').html(htmlView)
+            $('.shop-media-slider').hide()
 
         }
 </script>
