@@ -86,7 +86,6 @@
                 })
             @endif
 
-
             $(document).on('click', '.delete-btn', function(e) {
                 e.preventDefault();
                 var id = $(this).data('id');

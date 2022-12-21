@@ -291,19 +291,29 @@
     background-color: var(--customer-primary-color) !important;
 }
 
+.customer-workout-btns-container{
+    width: 250px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: auto;
+}
+
 .customer-workout-pause-btn{
     background-color: transparent;
     border: none;
     margin: 20px 0;
 }
 
-.customer-workout-play-btn{
+.customer-workout-play-btn, .customer-workout-next-btn, .customer-workout-prev-btn{
     background-color: transparent;
     border: none;
     margin: 20px 0;
 }
 
-.customer-workout-pause-icon{
+
+
+.customer-workout-pause-icon, .customer-workout-next-icon, .customer-workout-prev-icon {
     font-size: 60px;
 }
 

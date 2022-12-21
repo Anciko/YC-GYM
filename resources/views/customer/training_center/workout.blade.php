@@ -41,13 +41,22 @@
                 <div></div> -->
             </div>
 
-            <button style="display: none;" class="customer-workout-pause-btn">
-                <iconify-icon icon="ant-design:pause-circle-outlined" class="customer-workout-pause-icon"></iconify-icon>
+            <div class="customer-workout-btns-container">
+                <button class="customer-workout-prev-btn">
+                    <iconify-icon icon="material-symbols:skip-next" rotate="180deg" class="customer-workout-prev-icon"></iconify-icon>
+                </button>
+                <button style="display: none;" class="customer-workout-pause-btn">
+                    <iconify-icon icon="ant-design:pause-circle-outlined" class="customer-workout-pause-icon"></iconify-icon>
+                </button>
+                <button  class="customer-workout-play-btn">
+                    <iconify-icon icon="akar-icons:play" class="customer-workout-play-icon"></iconify-icon>
+                </button>
+                <button class="customer-workout-next-btn">
+                    <iconify-icon icon="material-symbols:skip-next"  class="customer-workout-next-icon"></iconify-icon>
+                </button>
+            </div>
 
-            </button>
-            <button  class="customer-workout-play-btn">
-                <iconify-icon icon="akar-icons:play" class="customer-workout-play-icon"></iconify-icon>
-            </button>
+
 
 
             <h1 class="customer-workout-name"></h1>
@@ -61,6 +70,9 @@
 @endsection
 @push('scripts')
     <script>
+        // $(".customer-workout-next-btn").click(function(){
+        //     console.log("hello")
+        // })
 
         $(document).ready(function(){
 
@@ -138,6 +150,9 @@
         // videoSource[0] = 'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4';
         // videoSource[1] = 'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4';
         let i = 0; // global
+        if(i <= 0){
+            $(".customer-workout-prev-btn").attr("disabled",true)
+        }
         const videoCount = videoSource.length;
         const element = document.getElementById("workoutVideo");
 
@@ -146,12 +161,40 @@
         }
 
 
-        document.getElementById('workoutVideo').addEventListener('ended', myHandler, false);
+        // document.getElementById('workoutVideo').addEventListener('ended', myHandler, false);
+        // document.querySelector('.customer-workout-next-btn').addEventListener('click', myHandler(i+1));
+        $(".customer-workout-next-btn").click(function(){
+            i++
+
+            if(i <= 0){
+                $(".customer-workout-prev-btn").attr("disabled",true)
+            }else{
+                $(".customer-workout-prev-btn").attr("disabled",false)
+            }
+            // console.log($(".customer-workout-prev-btn").attr("disabled"))
+            myHandler()
+
+        })
+
+        $(".customer-workout-prev-btn").click(function(){
+            i--
+            console.log(i)
+            if(i <= 0){
+                $(".customer-workout-prev-btn").attr("disabled",true)
+            }else{
+                $(".customer-workout-prev-btn").attr("disabled",false)
+            }
+
+            // console.log($(".customer-workout-prev-btn").attr("disabled"))
+            myHandler()
+
+        })
 
         videoPlay(0); // load the first video
         // ensureVideoPlays(); // play the video automatically
         function myHandler() {
-            i++;
+            // i++;
+            // console.log(i)
             if (i == videoCount) {
                 console.log(workout_id);
                 Swal.fire({
@@ -172,7 +215,8 @@
                                     }
                                 })
                     //window.location.href = "{{ route('workout_complete',"sum")}}";
-            } else {
+            }
+            else {
                 videoPlay(i);
             }
         }

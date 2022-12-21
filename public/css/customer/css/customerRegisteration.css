@@ -172,6 +172,7 @@ html{
     font-size: 14px;
     color: white;
     margin-right: 20px;
+    word-break: normal;
 }
 
 .customer-form-btn-container{
@@ -276,6 +277,7 @@ input.invalid, select.invalid {
 
 .checkbox-icon, .checkbox-label {
     color: white;
+    word-break: normal;
 }
 
 .checkbox-label{
