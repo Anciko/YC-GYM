@@ -182,6 +182,13 @@ class AuthController extends Controller
         }
     }
 
+    public function getRole(){
+        $user = Auth::user();
+        return response()->json([
+            'user_role' => count($user->roles) < 1 ? 'Free' : $user->roles->pluck('name')[0],
+        ]);
+    }
+
 
     public function checkPhone(Request $request)
     {
