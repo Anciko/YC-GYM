@@ -54,8 +54,24 @@ return[
     'no physical activity at all'=>'No physical activity at all',
     'choose your diet type'=>'Choose your diet type',
     "what's your average night like?"=>"What's your average night like?",
-    "sleep is vary important not only for well-being but also for keeping in shape"=>"Sleep is vary important not only for well-being but also for keeping in shape",
-
+    "sleep is very important not only for well-being but also for keeping in shape"=>"Sleep is very important not only for well-being but also for keeping in shape",
+    "minimal"=>"Minimal",
+    "less than 5 hours"=>"Less than 5 hours",
+    'average'=>'Average',
+    '5 - 6 hours'=>'5 - 6 hours',
+    'good'=>'Good',
+    '7 - 8 hours'=>'7 - 8 hours',
+    'sleep hero'=>'Sleep hero',
+    'more than 8 hours'=>'More than 8 hours',
+    "how's your energy level during the day?"=>"How's your energy level during the day?",
+    'even throughout the day'=>'Even throughout the day',
+    'i feel a dip in energy around lunch time'=> 'I feel a dip in energy around lunch time',
+    'i need a nap after meals'=>'I need a nap after meals',
+    'when was the last time you were at your ideal weight?'=>'When was the last time you were at your ideal weight?',
+    'less than a year ago'=>'Less than a year ago',
+    '1 to 2 years ago'=>'1 to 2 years ago',
+    'more than 3 years ago'=>'More than 3 years ago',
+    'never'=>'Never',
 ]
 
 ?>
