@@ -128,7 +128,6 @@ class SocialMediaController extends Controller
 
             $liked_post_count = DB::select("SELECT COUNT(post_id) as like_count, post_id FROM user_react_posts GROUP BY post_id");
 
-
             $comment_post_count = DB::select("SELECT COUNT(post_id) as comment_count, post_id FROM comments GROUP BY post_id");
 
             foreach ($posts as $key => $value) {
