@@ -57,7 +57,7 @@ class ShopController extends Controller
     {
         $input = $request->all();
         $user = auth()->user();
-        $post = new ShopPost();
+        $post = new Post();
         if (empty($input['addPostInput'])  && $input['caption'] != null) {
             $caption = $input['caption'];
         } elseif ($input['caption'] == null) {
@@ -140,7 +140,7 @@ class ShopController extends Controller
 
         $id = $post->id;
 
-        $post_one = ShopPost::select('users.name', 'profiles.profile_image', 'shop_posts.*')
+        $post_one = Post::select('users.name', 'profiles.profile_image', 'shop_posts.*')
             ->where('shop_posts.id', $id)
             ->leftJoin('users', 'users.id', 'shop_posts.user_id')
             ->leftJoin('profiles', 'users.profile_id', 'profiles.id')
