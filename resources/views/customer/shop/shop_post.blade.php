@@ -5,7 +5,7 @@
 
 <div class="shop-right-container">
     <div class="shop-posts-header-container">
-        <p>{{$user->id}}'s Shop</p>
+        <p>{{$user->name}}'s Shop</p>
         <div class="shop-search-container">
             <input type="text" placeholder="Search..." id  = "caption_search">
             <iconify-icon icon="akar-icons:search" class="shop-search-icon"></iconify-icon>
