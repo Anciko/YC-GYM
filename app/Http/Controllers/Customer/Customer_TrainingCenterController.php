@@ -369,7 +369,8 @@ class Customer_TrainingCenterController extends Controller
         if($request->keyword != null){
             $posts=DB::table('posts')
             ->select('users.name','profiles.profile_image','posts.*','posts.id as post_id','posts.created_at as post_date')
-            ->where('posts.user_id', $user_id)
+            ->where('posts.user_id', $
+            user_id)
             ->where('posts.report_status',0)
             ->where('posts.shop_status',1)
             ->where('posts.deleted_at',null)
