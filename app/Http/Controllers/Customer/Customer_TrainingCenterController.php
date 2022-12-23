@@ -996,7 +996,8 @@ class Customer_TrainingCenterController extends Controller
             ->where('workout_level', $user->membertype_level)
             ->where('day', $current_day)
             ->get();
-        return view('customer.training_center.workout_complete', compact('t_sum', 'sec', 'duration', 'total_calories', 'total_video', 'tc_workouts'));
+
+        return view('customer.training_center.workout_complete', compact('total_time','t_sum', 'sec', 'duration', 'total_calories', 'total_video', 'tc_workouts'));
     }
     public function workout_complete_gym(Request $request, $t_sum, $cal_sum = null, $count_video)
     {
