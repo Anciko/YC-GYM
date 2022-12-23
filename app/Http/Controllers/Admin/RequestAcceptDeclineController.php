@@ -69,8 +69,6 @@ class RequestAcceptDeclineController extends Controller
                 $u->syncRoles($role->name);
                 $u->update();
 
-
-
                 $pusher->trigger('channel-accept.'. $id , 'accept', 'accepted');
                 return back()->with('success', 'Upgraded Success');
             } else {
