@@ -7,12 +7,12 @@
     <div class="shop-posts-header-container">
         <p>{{$user->name}}'s Shop</p>
         <div class="shop-search-container">
-            <input type="text" placeholder="Search...">
+            <input type="text" placeholder="Search..." id  = "caption_search">
             <iconify-icon icon="akar-icons:search" class="shop-search-icon"></iconify-icon>
         </div>
     </div>
-    <div class="shop-posts-parent-container">
-        @forelse ($user->shopposts as $shpost)
+    {{-- <div class="shop-posts-parent-container">
+        @forelse ($user->posts->where('shop_status',1) as $shpost)
             <div class="shop-post-container">
                 <div class="shop-post-header">
                     <div class="shop-post-name-container">
@@ -40,10 +40,6 @@
                                     @endif
                             </div>
                         </a>
-                        {{-- <div class="post-action">
-                            <iconify-icon icon="bi:save" class="post-action-icon"></iconify-icon>
-                            <p>Save</p>
-                        </div> --}}
                     @if ($shpost->user_id == auth()->user()->id)
 
                         <a id="edit_post" data-id="{{$shpost->id}}" data-bs-toggle="modal" >
@@ -59,10 +55,6 @@
                             </div>
                         </a>
                     @else
-                    {{-- <div class="post-action" id="report" data-id="{{$shpost->id}}">
-                        <iconify-icon icon="material-symbols:report-outline" class="post-action-icon"></iconify-icon>
-                        <p>Report</p>
-                    </div> --}}
                     @endif
                     </div>
                 </div>
@@ -150,115 +142,287 @@
         @empty
             <p class="text-secondary p-1">No Shop Post</p>
         @endforelse
-        <div class="shop-post-container">
-            <div class="shop-post-header">
-                <div class="shop-post-name-container">
-                    <img src="../imgs/trainer2.jpg">
-                    <div class="shop-post-name">
-                        <p>User Name</p>
-                        <span>19 Sep 2022, 11:02 AM</span>
-                    </div>
-
-
-                </div>
-
-                <iconify-icon icon="bi:three-dots-vertical" class="shop-post-header-icon"></iconify-icon>
-                <div class="post-actions-container">
-                    <div class="post-action">
-                        <iconify-icon icon="bi:save" class="post-action-icon"></iconify-icon>
-                        <p>Save</p>
-                    </div>
-
-                    {{-- <div class="post-action">
-                        <iconify-icon icon="material-symbols:report-outline" class="post-action-icon"></iconify-icon>
-                        <p>Report</p>
-                    </div> --}}
-                </div>
-            </div>
-
-            <div class="shop-content-container">
-                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Dui hendrerit potenti pellentesque tellus urna bibendum mollis.</p>
-                <div class="shop-media-container">
-                    <div class="shop-media">
-                        <img src="../imgs/trainer3.jpg">
-                    </div>
-                    <div class="shop-media">
-                        <img src="../imgs/trainer3.jpg">
-                    </div>
-                    <div class="shop-media">
-                        <img src="../imgs/trainer3.jpg">
-                    </div>
-                    <div class="shop-media">
-                        <img src="../imgs/trainer3.jpg">
-                    </div>
-                    <div class="shop-media">
-                        <img src="../imgs/trainer3.jpg">
-                    </div>
-                </div>
-
-                <div id="slider-wrapper" class="shop-media-slider">
-                    <iconify-icon icon="akar-icons:cross" class="slider-close-icon"></iconify-icon>
-
-                    <div id="image-slider">
-                        <!-- <iconify-icon icon="dashicons:arrow-left-alt2" class="image-slider-left-icon"></iconify-icon>
-                        <iconify-icon icon="dashicons:arrow-right-alt2" class="image-slider-right-icon"></iconify-icon> -->
-                        <ul>
-                            <li class="active-img">
-                                <img src="https://40.media.tumblr.com/tumblr_m92vwz7XLZ1qf4jqio1_540.jpg" alt="" />
-                            </li>
-                            <li>
-                                <img src="https://36.media.tumblr.com/0eb59d5c5bc5cde7737bb99d527247ca/tumblr_nxi8jzk8OS1rwfs76o1_540.jpg" alt="" />
-                            </li>
-                            <li>
-                                <img src="https://40.media.tumblr.com/d4e261711a84707195d8fb9b0a94dccb/tumblr_o05avp3WSh1rn52wlo1_540.jpg" alt="" />
-                            </li>
-                            <li>
-                                <img src="https://40.media.tumblr.com/817bd6a18d9ca6877c9d5a1b7d33c198/tumblr_mx1cizinbl1qljihqo1_540.jpg" alt="" />
-                            </li>
-                            <li>
-                                <img src="https://40.media.tumblr.com/6fbf40647afad248b55af46361aea7f9/tumblr_nvdl4xGcxB1r3zwc2o1_540.jpg" alt="" />
-                            </li>
-
-                        </ul>
-
-                    </div>
-
-                    <div id="thumbnail" class="img-slider-thumbnails">
-                        <ul>
-                            <li class="active"><img src="https://40.media.tumblr.com/tumblr_m92vwz7XLZ1qf4jqio1_540.jpg" alt="" /></li>
-                            <li><img src="https://36.media.tumblr.com/0eb59d5c5bc5cde7737bb99d527247ca/tumblr_nxi8jzk8OS1rwfs76o1_540.jpg" alt="" /></li>
-                            <li><img src="https://40.media.tumblr.com/d4e261711a84707195d8fb9b0a94dccb/tumblr_o05avp3WSh1rn52wlo1_540.jpg" alt="" /></li>
-                            <li><img src="https://40.media.tumblr.com/817bd6a18d9ca6877c9d5a1b7d33c198/tumblr_mx1cizinbl1qljihqo1_540.jpg" alt="" /></li>
-                            <li><img src="https://40.media.tumblr.com/6fbf40647afad248b55af46361aea7f9/tumblr_nvdl4xGcxB1r3zwc2o1_540.jpg" alt="" /></li>
-
-                        </ul>
-                    </div>
-
-                    <a href="#" class="customer-primary-btn">Message the seller</a>
-
-                </div>
-            </div>
-
-            <div class="shop-post-footer-container">
-                <div class="shop-post-like-container">
-                    <iconify-icon icon="akar-icons:heart" class="like-icon"></iconify-icon>
-                    <p><span>1.1k</span> Likes</p>
-                </div>
-                <div class="shop-post-comment-container">
-                    <iconify-icon icon="bi:chat-right" class="comment-icon"></iconify-icon>
-                    <p><span>50</span> Comments</p>
-                </div>
-            </div>
-        </div>
+    </div> --}}
+    <div class="shop-posts-parent-container">
     </div>
 </div>
 
 @endsection
 @push('scripts')
 <script>
+    $(document).on('click','.shop-post-header-icon',function(){
+                $(this).next().toggle()
+            })
+
     $(document).ready(function() {
+        // data=@json($posts);
+        // all_posts(data)
+
+        $('#caption_search').on('keyup', function() {
+                search();
+            });
+            search();
+
+            function search() {
+                var keyword = $('#caption_search').val();
+                var post_id = {{$user->id}};
+                var search_url = "{{route('all.shop.post.id') }}";
+                $.post(search_url, {
+                        _token: $('meta[name="csrf-token"]').attr('content'),
+                        keyword: keyword,
+                        post_id:post_id
+                    },
+                    function(data) {
+                        all_posts(data.posts);
+                        console.log(data.posts,"data");
+                    });
+            }
+
+            function all_posts(data){
+                posts=data
+                auth_user={{auth()->user()->id}}
+
+
+                let htmlView = '';
+                if(posts.length <= 0){
+                    htmlView+= `No Shop Post found.`;
+                }else{
+                    for(let i=0;i<posts.length;i++){
+                        post_id = posts[i].id;
+                        var comment_url = "{{ route('post.comment', [':id']) }}";
+                            comment_url = comment_url.replace(':id', post_id);
+                        htmlView += `<div class="shop-post-container">
+                                    <div class="shop-post-header">
+                                        <div class="shop-post-name-container">`
+
+                        if(posts[i].profile_image===null){
+                            htmlView +=`<img class="nav-profile-img" src="{{asset('img/customer/imgs/user_default.jpg')}}"/>`
+
+                        }else{
+                            htmlView +=`<img class="nav-profile-img" src="{{asset('storage/post/`+posts[i].profile_image+`')}}"/>`
+                        }
+                        htmlView +=`<div class="shop-post-name">
+                                                <p>`+posts[i].name+`</p>
+                                                <span>`+posts[i].date+`</span>
+                                            </div>
+                                            </div>
+                                            <iconify-icon icon="bi:three-dots-vertical" class="shop-post-header-icon"></iconify-icon>
+                                            <div class="post-actions-container">
+                                            <a style="text-decoration:none" class="post_save" id=`+posts[i].id+`>
+                                                <div class="post-action">
+                                                    <iconify-icon icon="bi:save" class="post-action-icon"></iconify-icon>`
+                        if(posts[i].already_saved==1){
+                            htmlView +=`<p class="save">Unsave</p>`
+                        }else{
+                            htmlView +=`<p class="save">Save</p>`
+                        }
+                        htmlView +=`</div>
+                                            </a>`
+                                            if(auth_user==posts[i].user_id){
+                                            htmlView +=`<a id="edit_post" data-id="`+posts[i].id+`" data-bs-toggle="modal" >
+                                                            <div class="post-action">
+                                                                <iconify-icon icon="material-symbols:edit" class="post-action-icon"></iconify-icon>
+                                                                <p>Edit</p>
+                                                            </div>
+                                                        </a>
+                                                        <a id="delete_post" data-id="`+posts[i].id+`">
+                                                            <div class="post-action">
+                                                            <iconify-icon icon="material-symbols:delete-forever-outline-rounded" class="post-action-icon"></iconify-icon>
+                                                            <p>Delete</p>
+                                                            </div>
+                                                        </a>`
+                                            }else{
+                                                htmlView +=``
+                                            }
+                                            htmlView += `</div>
+                                                        </div>
+                                                        <div class="shop-content-container">
+                                                        `
+                                            if(posts[i].media===null){
+                                                htmlView +=`<p>`+posts[i].caption+`</p>`
+                                            }else{
+
+                                            var caption =posts[i].caption ? posts[i].caption : '';
+                                                htmlView +=`<p>`+caption+`</p>
+                                                                <div class="shop-media-container">
+                                                                    `
+                                            var imageFile = posts[i].media
+                                            var imageArr = jQuery.parseJSON(imageFile);
+
+                                            $.each(imageArr,function(key,val){
+                                                var extension = val.substr( (val.lastIndexOf('.') +1) );
+
+                                                switch(extension) {
+                                                        case 'jpg':
+                                                        case 'png':
+                                                        case 'gif':
+                                                        case 'jpeg':
+                                                        htmlView += ` <div class="shop-media">
+                                                                <img src="{{asset('storage/post/`+val+`') }}">
+                                                                </div>`
+                                                        break;
+                                                        case 'mp4':
+                                                        htmlView += ` <div class="shop-media">
+                                                                <video controls>
+                                                                <source src="{{asset('storage/post/`+val+`') }}">
+                                                                </video>
+                                                                </div>`
+                                                        break;
+
+                                                    }
+                                            });
+                                                htmlView +=  `
+                                                            </div>
+                                                            <div id="slider-wrapper" class="shop-media-slider">
+                                                                <iconify-icon icon="akar-icons:cross" class="slider-close-icon"></iconify-icon>
+
+                                                                <div id="image-slider" class="image-slider">
+                                                                    <ul class="ul-image-slider">`
+                                            $.each(imageArr,function(k,v){
+                                                var exten = v.substr( (v.lastIndexOf('.') +1) );
+                                                switch(exten) {
+                                                        case 'jpg':
+                                                        case 'png':
+                                                        case 'gif':
+                                                        case 'jpeg':
+                                                        htmlView += `<li>
+                                                                <img src="{{asset('storage/post/`+v+`') }}" alt="" />
+                                                            </li>`
+                                                        break;
+                                                        case 'mp4':
+                                                        htmlView += `<li><video controls>
+                                                                    <source src="{{asset('storage/post/`+v+`') }}">
+                                                                    </video> </li>`
+                                                        break;
+                                                            }
+
+                                            });
+                                                htmlView += `</ul>
+                                                                </div>
+                                                                <div id="thumbnail" class="img-slider-thumbnails">
+                                                                    <ul>`
+                                            $.each(imageArr,function(k,v){
+                                                var exten = v.substr( (v.lastIndexOf('.') +1) );
+                                                switch(exten) {
+                                                        case 'jpg':
+                                                        case 'png':
+                                                        case 'gif':
+                                                        case 'jpeg':
+                                                        htmlView += `<li>
+                                                                <img src="{{asset('storage/post/`+v+`') }}" alt="" />
+                                                            </li>`
+                                                        break;
+                                                        case 'mp4':
+                                                        htmlView += `<li><video controls>
+                                                                    <source src="{{asset('storage/post/`+v+`') }}">
+                                                                    </video> </li>`
+                                                        break;
+                                                            }
+                                            });
+
+                                                htmlView += `</ul></div></div></div>`
+                                            }
+                                            htmlView += ` <div class="shop-post-footer-container">
+                                                            <div class="shop-post-like-container">
+                                                            <a class="like" id="`+posts[i].post_id+`">`
+                                            if(posts[i].isLike==0){
+                                                htmlView+=`
+                                                <iconify-icon icon="mdi:cards-heart-outline" class="like-icon"></iconify-icon>`
+
+                                            }else{
+                                                htmlView+=`
+                                                <iconify-icon icon="mdi:cards-heart" style="color: red;" class="like-icon already-liked"></iconify-icon>`
+                                            }
+                                                htmlView +=`</a>
+                                                            <p>
+                                                                <span class="total_likes">
+                                                                    `+posts[i].total_likes+`
+                                                                </span>
+                                                                <a class="viewlikes" id="">Likes</a>
+                                                            </p>
+                                                            </div>
+
+                                                            <div class="social-media-post-comment-container">
+                                                                <a href = `+comment_url+`>
+                                                                <iconify-icon icon="bi:chat-right" class="comment-icon"></iconify-icon>
+                                                                <p><span>`+posts[i].total_comments+`</span> Comments</p>
+                                                                </a>
+                                                            </div>
+
+                                                            </div>
+                                                                `
+                                            htmlView+=`</div>
+                                                        </div>`
+
+                    }
+                }
+
+                $('.shop-posts-parent-container').html(htmlView)
+                $('.shop-media-slider').hide()
+
+
+                $.each($(".ul-image-slider"),function(){
+                console.log($(this).children('li').length)
+
+                $(this).children('li:first').addClass("active-img")
+            })
+
+            $.each($(".img-slider-thumbnails ul"),function(){
+                console.log($(this).children('li').length)
+
+                $(this).children('li:first').addClass("active")
+            })
+
+            $(document).on('click','.img-slider-thumbnails li',function(){
+                var thisIndex = $(this).index()
+                // console.log(thisIndex,$(this).siblings("li.active").index())
+                if($(this).siblings(".active").index() === -1){
+                    return
+                }
+
+
+                if(thisIndex < $(this).siblings(".active").index()){
+                    prevImage(thisIndex, $(this).parents(".img-slider-thumbnails").prev("#image-slider"));
+                }else if(thisIndex > $(this).siblings(".active").index()){
+                    nextImage(thisIndex, $(this).parents(".img-slider-thumbnails").prev("#image-slider"));
+                }
+
+
+                $(this).siblings('.active').removeClass('active');
+                $(this).addClass('active');
+
+            });
+
+            var width = $('#image-slider').width();
+            console.log(width)
+
+            function nextImage(newIndex, parent){
+                parent.find('li').eq(newIndex).addClass('next-img').css('left', width).animate({left: 0},600);
+                parent.find('li.active-img').removeClass('active-img').css('left', '0').animate({left: '-100%'},600);
+                parent.find('li.next-img').attr('class', 'active-img');
+            }
+            function prevImage(newIndex, parent){
+                parent.find('li').eq(newIndex).addClass('next-img').css('left', -width).animate({left: 0},600);
+                parent.find('li.active-img').removeClass('active-img').css('left', '0').animate({left: '100%'},600);
+                parent.find('li.next-img').attr('class', 'active-img');
+            }
+
+            $('.shop-media-slider').hide()
+
+            $(document).on('click','.shop-media-container',function(){
+                $(this).siblings(".shop-media-slider").show()
+                $(this).hide()
+            })
+
+            $(document).on('click','.slider-close-icon',function(){
+                $(this).closest('.shop-media-slider').hide()
+                $(this).closest('.shop-media-slider').siblings('.shop-media-container').show()
+            })
+
+}
 
     })
+
 </script>
 
 @endpush

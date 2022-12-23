@@ -141,9 +141,18 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
 
         Route::post('customer/profile/image/update', [Customer_TrainingCenterController::class, 'profile_update_profile_img'])->name('customer-profile-img.update');
 
-        Route::get('customer/profile/saved_post', [Customer_TrainingCenterController::class, 'saved_post'])->name('saved.post');
+        Route::get('customer/profile/saved_post', [Customer_TrainingCenterController::class, 'saved_post'])
+        ->name('saved.post');
+        Route::get('customer/profile/shop_saved_post', [Customer_TrainingCenterController::class, 'shop_saved_post'])
+        ->name('shop.saved.post');
 
         Route::get('customer/profile/posts/', [Customer_TrainingCenterController::class, 'all_post'])->name('all.post');
+
+        Route::get('customer/profile/shop_posts/', [Customer_TrainingCenterController::class, 'shop_all_post'])
+        ->name('all.shop.post');
+
+        Route::post('customer/profile/shop_posts/id', [Customer_TrainingCenterController::class, 'shop_all_post_id'])
+        ->name('all.shop.post.id');
 
         Route::get('customer/profile/year/{year}', [Customer_TrainingCenterController::class, 'year_filter'])->name('customer-profile.year');
         Route::get('/home', [App\Http\Controllers\HomeController::class, 'home'])->name('social_media');

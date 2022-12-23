@@ -158,17 +158,17 @@
                         <iconify-icon icon="bi:arrow-left" class="back-btn-icon"></iconify-icon>
                     </a>
 
-                    @if (auth()->user()->shop_request==2)
+                    {{-- @if (auth()->user()->shop_request==2) --}}
                     <button class="social-media-addpost-btn customer-primary-btn margin-top" data-bs-toggle="modal" data-bs-target="#addPostModal">
                         <iconify-icon icon="akar-icons:circle-plus" class="addpost-icon"></iconify-icon>
                         <p>Add Post</p>
                     </button>
-                    @else
+                    {{-- @else --}}
                     <a href="{{route('shoprequest')}}" class="social-media-addpost-btn customer-primary-btn margin-top">
                         <iconify-icon icon="akar-icons:circle-plus" class="addpost-icon"></iconify-icon>
                         <p>Rent a shop</p>
                     </a>
-                    @endif
+                    {{-- @endif --}}
                 </div>
 
                 <div class="social-media-left-container-trigger">
@@ -243,6 +243,10 @@
                             </a>
                         </div>
 
+                        <div class="social-media-left-searched-items-container">
+
+                        </div>
+
                     </div>
 
                     @yield('content')
@@ -283,6 +287,364 @@
     <script src="{{asset('js/customer/jquery.mentiony.js')}}"></script>
 
     <script>
+        $(".cancel").hide();
+        $( ".social-media-left-search-container input" ).focus(function() {
+            // alert( "Handler for .focus() called." );
+            $( ".social-media-left-infos-container" ).hide()
+            $(".social-media-left-searched-items-container").show()
+            $(".cancel").show();
+        });
+
+        $(document).on('click', '.cancel', function(e) {
+            // alert( "Handler for .focus() called." );
+            $( ".social-media-left-infos-container" ).show()
+            $(".social-media-left-searched-items-container").hide()
+            $(".cancel").hide()
+            $('.social-media-left-search-container input').val('')
+        });
+
+        $('.social-media-left-search-container input').on('keyup', function(){
+                            search();
+                    });
+
+                        function search(){
+
+                            var keyword = $('#search').val();
+                            //console.log(keyword);
+                            var search_url = "{{ route('search_users') }}";
+                            $.post(search_url,
+                            {
+                                _token: $('meta[name="csrf-token"]').attr('content'),
+                                keyword:keyword
+                            },
+                            function(data){
+                                table_post_row(data);
+                                console.log(data);
+                            });
+                        }
+                        // table row with ajax
+                        function table_post_row(res){
+                        var auth_id = {{auth()->user()->id}}
+                        let htmlView = '';
+                            if(res.users.length <= 0){
+                                htmlView+= `
+                                No data found.
+                                `;
+                            }
+                            else if(res.friends.length <= 0 && res.users.length != 0){
+                                console.log("myself");
+                                for(let i = 0; i < res.users.length; i++){
+                                id = res.users[i].id;
+                                var url = "{{ route('socialmedia.profile', [':id']) }}";
+                                url = url.replace(':id',id);
+                                if(res.users[i].id === auth_id){
+                                    htmlView += `
+                                            <div class="social-media-left-searched-item">
+                                            <a href=`+url+` class = "profiles">
+                                                <p>`+res.users[i].name+`</p>
+                                            </a>
+                                            </div>
+                                    `
+                                }
+                                else{
+                                    console.log("no friends");
+                                    htmlView += `
+                                            <div class="social-media-left-searched-item">
+                                            <a href=`+url+` class = "profiles">
+                                                <p>`+res.users[i].name+`</p>
+                                            </a>
+                                            <a href="?id=` + res.users[i].id+`"  id = "AddFriend"><iconify-icon icon="bi:person-add" class="search-item-icon"></iconify-icon></a>
+                                            </div>
+                                    `
+                                }
+                                }
+                            }
+                            else{
+                                for(let i = 0; i < res.users.length; i++){
+                                    var status = ''
+                                for(let f = 0; f < res.friends.length; f++){
+                                    id = res.users[i].id;
+                                    var url = "{{ route('socialmedia.profile', [':id']) }}";
+                                    url = url.replace(':id',id);
+                                    console.log(auth_id)
+
+                                    if(res.users[i].id === res.friends[f].receiver_id &&
+                                    res.friends[f].sender_id === auth_id &&
+                                    res.friends[f].friend_status === 1 ){
+                                        console.log(res.users[i].name,'sender request')
+                                        status = 'sender request'
+                                        break
+                                        // return
+                                        // htmlView += `
+                                        //     <a href=`+url+` class = "profiles">
+                                        //         <p>`+res.users[i].name+`</p>
+                                        //     </a>
+                                        //     <a href="?id=` + res.users[i].id+`" class="customer-secondary-btn cancel-request-btn"
+                                        //     id = "cancelRequest">Cancel Request</a>
+                                        //     `
+                                    }
+                                    else if(
+                                    res.users[i].id === res.friends[f].sender_id &&
+                                    res.friends[f].receiver_id === auth_id &&
+                                    res.friends[f].friend_status === 1
+                                    ){
+                                        console.log(res.users[i].name,'receiver request')
+                                        status = 'receiver request'
+                                        break
+                                        // return
+                                        // htmlView += `
+                                        //     <a href=`+url+` class = "profiles">
+                                        //         <p>`+res.users[i].name+`</p>
+                                        //     </a>
+                                        //     <a href="?id=` + res.users[i].id+`" class="customer-secondary-btn cancel-request-btn"
+                                        //     id = "cancelRequest">Response</a>
+                                        //     `
+                                    }
+                                    else if (res.users[i].id === auth_id){
+                                        console.log(res.users[i].name,'profile')
+                                        status = "profile"
+                                        break
+                                        // return
+                                        // htmlView += `
+                                        //     <a href=`+url+` class = "profiles">
+                                        //         <p>`+res.users[i].name+`</p>
+                                        //     </a>
+                                        //     <a href=`+url+` class="customer-secondary-btn "
+                                        //     >View Profile</a>
+                                        //     `
+                                    }
+                                    else if (res.users[i].id === res.friends[f].receiver_id &&
+                                    res.friends[f].sender_id === auth_id &&
+                                    res.friends[f].friend_status === 2
+                                    ){
+                                        console.log(res.users[i].name,'sender view profile')
+                                        status = "sender view profile"
+                                        break
+                                        // return
+                                        // htmlView += `
+                                        //     <a href= `+url+` class = "profiles">
+                                        //         <p>`+res.users[i].name+`</p>
+                                        //     </a>
+                                        //     <a href="?id=` + res.users[i].id+`" class="customer-secondary-btn add-friend-btn">Friend</a>
+                                        //     `
+                                    }
+                                    else if (
+                                    res.users[i].id === res.friends[f].sender_id &&
+                                    res.friends[f].receiver_id === auth_id &&
+                                    res.friends[f].friend_status === 2
+                                    ){
+                                        console.log(res.users[i].name,'receiver view profile')
+                                        status = "receiver view profile"
+                                        break
+                                        // return
+                                        // htmlView += `
+                                        //     <a href= `+url+` class = "profiles">
+                                        //         <p>`+res.users[i].name+`</p>
+                                        //     </a>
+                                        //     <a href="?id=` + res.users[i].id+`" class="customer-secondary-btn add-friend-btn">Friend</a>
+                                        //   `
+                                    }
+                                    else{
+                                        status="add fri"
+                                        console.log(res.users[i].name,'add fri')
+                                    //     htmlView += `
+                                    //         <a href=`+url+` class = "profiles">
+                                    //             <p>`+res.users[i].name+`</p>
+                                    //         </a>
+                                    //         <a href="?id=` + res.users[i].id+`" class="customer-secondary-btn add-friend-btn" id = "AddFriend">Add</a>
+                                    // `
+                                    }
+
+                            }
+
+                            if(status === 'sender request'){
+                                htmlView += `
+                                            <div class="social-media-left-searched-item">
+                                            <a href=`+url+` class = "profiles">
+                                                <p>`+res.users[i].name+`</p>
+                                            </a>
+                                            <a href="?id=` + res.users[i].id+`" class="cancel-request-btn"
+                                            id = "cancelRequest"><iconify-icon icon="material-symbols:cancel-schedule-send-outline" class="search-item-icon"></iconify-icon></a>
+                                            </div>
+                                            `
+                            }
+
+                            else if(status === 'receiver request'){
+                               htmlView += `
+                                            <div class="social-media-left-searched-item">
+                                            <a href=`+url+` class = "profiles">
+                                                <p>`+res.users[i].name+`</p>
+                                            </a>
+                                            <a href=`+url+`><iconify-icon icon="mdi:account-question-outline" class="search-item-icon"></iconify-icon></a>
+                                            </div>
+                                            `
+                            }
+
+                            else if(status === "profile"){
+                                 htmlView += `
+                                            <div class="social-media-left-searched-item">
+                                            <a href=`+url+` class = "profiles">
+                                                <p>`+res.users[i].name+`</p>
+                                            </a>
+                                            </div>
+                                            `
+                            }
+
+                            else if(status === "sender view profile"){
+                                htmlView += `
+                                            <div class="social-media-left-searched-item">
+                                            <a href= `+url+` class = "profiles">
+                                                <p>`+res.users[i].name+`</p>
+                                            </a>
+                                            <a href=`+url+` ><iconify-icon icon="ion:people-sharp" class="search-item-icon"></iconify-icon></a>
+                                            </div>
+                                          `
+                            }
+                            else if(status === "receiver view profile"){
+                                htmlView += `
+                                            <div class="social-media-left-searched-item">
+                                            <a href= `+url+` class = "profiles">
+                                                <p>`+res.users[i].name+`</p>
+                                            </a>
+                                            <a href=`+url+`><iconify-icon icon="ion:people-sharp" class="search-item-icon"></iconify-icon></a>
+                                            </div>
+                                          `
+                            }
+                            else{
+                                    htmlView += `
+                                            <div class="social-media-left-searched-item">
+                                            <a href=`+url+` class = "profiles">
+                                                <p>`+res.users[i].name+`</p>
+                                            </a>
+                                            <a href="?id=` + res.users[i].id+`"  id = "AddFriend"><iconify-icon icon="bi:person-add" class="search-item-icon"></iconify-icon></a>
+                                            </div>
+                                    `
+                            }
+                            }
+                            }
+                            $('.social-media-left-searched-items-container').html(htmlView);
+                        }
+
+                var user_id = {{auth()->user()->id}};
+                console.log(user_id);
+                var pusher = new Pusher('{{env("MIX_PUSHER_APP_KEY")}}', {
+                cluster: '{{env("PUSHER_APP_CLUSTER")}}',
+                encrypted: true
+                });
+                var channel = pusher.subscribe('friend_request.'+user_id);
+                channel.bind('friendRequest', function(data) {
+                console.log(data , "ted");
+                 document.getElementById("testing").text = data
+                $.notify(data, "success",{ position:"left" });
+                });
+
+
+                var channel = pusher.subscribe('chat_message.'+user_id);
+                channel.bind('chat', function(data) {
+
+                let htmlView = '';
+                for (let i = 0; i < data.length; i++) {
+                var id =  data[i].id;
+                var url = "{{ route('message.chat', ':id') }}";
+                url = url.replace(':id', id);
+                var group_url = "{{ route('socialmedia.group', ':id') }}";
+                group_url = group_url.replace(':id', id);
+
+                if(data[i].is_group == 0){
+                    if(data[i].profile_image!=null){
+                        htmlView += `<a href=`+url+` class="social-media-left-messages-row">
+                                            <img  class="nav-profile-img" src="{{asset('storage/post/`+data[i].profile_image+`')}}"/>
+                                        <p>
+                                            ` + data[i].name + `<br>
+                                            <span>` + data[i].text + ` </span>
+                                        </p>
+                                    </a>
+                            `
+                    }else{
+                        htmlView += `<a href=`+url+` class="social-media-left-messages-row">
+                                            <img  class="nav-profile-img" src="{{asset('img/customer/imgs/user_default.jpg')}}" />
+                                        <p>
+                                            ` + data[i].name + `<br>
+                                            <span>` + data[i].text + ` </span>
+                                        </p>
+                                    </a>
+                            `
+                    }
+
+                }
+                else{
+                    htmlView += `
+                                    <a href=`+group_url+` class="social-media-left-messages-row">
+                                            <img  class="nav-profile-img" src="{{asset('img/customer/imgs/group_default.png')}}" />
+                                        <p>
+                                            ` + data[i].name + `<br>
+                                            <span>` + data[i].text + ` </span>
+                                        </p>
+                                    </a>
+                            `
+                }
+            }
+            $('.social-media-left-messages-rows-container').html(htmlView);
+                });
+
+                    table()
+            function table(){
+                // alert("send");
+                let htmlView = '';
+                var latest_messages=@json($latest_messages);
+                console.log(latest_messages,'latest msg')
+                if (latest_messages.length <= 0) {
+                    htmlView += `
+                        No Messages.
+                        `;
+                }
+                for (let i = 0; i < latest_messages.length; i++) {
+                var id =  latest_messages[i].id;
+                var url = "{{ route('message.chat', ':id') }}";
+                url = url.replace(':id', id);
+
+                var group_url = "{{ route('socialmedia.group', ':id') }}";
+                group_url = group_url.replace(':id', id);
+                if(latest_messages[i].is_group == 0){
+
+                    if(latest_messages[i].profile_image===null){
+                        htmlView += `
+                                    <a href=`+url+` class="social-media-left-messages-row">
+                                            <img  class="nav-profile-img" src="{{asset('img/customer/imgs/user_default.jpg')}}"/>
+                                        <p>
+                                            ` + latest_messages[i].name + `<br>
+                                            <span>` + latest_messages[i].text + ` </span>
+                                        </p>
+                                    </a>
+                            `
+                    }else{
+                        htmlView += `
+                                    <a href=`+url+` class="social-media-left-messages-row">
+                                            <img  class="nav-profile-img" src="{{asset('storage/post/`+latest_messages[i].profile_image+`')}}"/>
+                                        <p>
+                                            ` + latest_messages[i].name + `<br>
+                                            <span>` + latest_messages[i].text + ` </span>
+                                        </p>
+                                    </a>
+                            `
+                    }
+
+                }
+                else{
+                    htmlView += `
+                                    <a href=`+group_url+` class="social-media-left-messages-row">
+                                            <img  class="nav-profile-img" src="{{asset('img/customer/imgs/group_default.png')}}"/>
+                                        <p>
+                                            ` + latest_messages[i].name + `<br>
+                                            <span>` + latest_messages[i].text + ` </span>
+                                        </p>
+                                    </a>
+                            `
+                }
+
+            }
+            $('.social-media-left-messages-rows-container').html(htmlView);
+        }
         $(document).ready(function() {
 
             $('#form').submit(function(e){
@@ -361,7 +723,42 @@
 
             })
 
-            $('.post_save').click(function(e){
+            $(document).on('click', '.like', function(e) {
+                e.preventDefault();
+                $('.staticBackdrop').show();
+                var isLike=e.target.previousElementSibiling == null ? true : false;
+                var post_id=$(this).attr('id');
+                console.log(post_id)
+                var add_url = "{{ route('user.react.post', [':post_id']) }}";
+                add_url = add_url.replace(':post_id', post_id);
+                var that = $(this)
+                $.ajaxSetup({
+                                headers: {
+                                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                                }
+                            });
+                        $.ajax({
+                            method: "POST",
+                            url: add_url,
+                            data:{ isLike : isLike , post_id: post_id },
+                            success:function(data){
+                                that.siblings('p').children('.total_likes').html(data.total_likes)
+
+                                if(that.children('.like-icon').hasClass("already-liked")){
+                                    that.children('.like-icon').attr('style','')
+                                    that.children('.like-icon').attr('class','like-icon')
+                                    that.children(".like-icon").attr('icon','mdi:cards-heart-outline')
+                                }else{
+                                    that.children('.like-icon').attr('style','color : red')
+                                    that.children('.like-icon').attr('class','like-icon already-liked')
+                                    that.children(".like-icon").attr('icon','mdi:cards-heart')
+                                }
+
+                            }
+                        })
+            })
+
+            $(document).on('click', '.post_save', function(e) {
                 e.preventDefault();
                 $('.post-actions-container').hide();
                 var post_id=$(this).attr('id');
@@ -591,31 +988,40 @@
 
             })
 
-            $('.nav-icon').click(function(){
+            $(document).on('click', '.nav-icon', function(e) {
                 $('.notis-box-container').toggle()
             })
 
-            $(function(){
 
-                $('.img-slider-thumbnails li').click(function(){
-                    var thisIndex = $(this).index()
-                    // console.log(thisIndex,$(this).siblings("li.active").index())
-                    if($(this).siblings(".active").index() === -1){
-                        return
-                    }
+            $.each($(".ul-image-slider"),function(){
+                console.log($(this).children('li').length)
+
+                $(this).children('li:first').addClass("active-img")
+            })
+
+            $.each($(".img-slider-thumbnails ul"),function(){
+                console.log($(this).children('li').length)
+
+                $(this).children('li:first').addClass("active")
+            })
+
+            $(document).on('click','.img-slider-thumbnails li',function(){
+                var thisIndex = $(this).index()
+                // console.log(thisIndex,$(this).siblings("li.active").index())
+                if($(this).siblings(".active").index() === -1){
+                    return
+                }
 
 
-                    if(thisIndex < $(this).siblings(".active").index()){
-                        prevImage(thisIndex, $(this).parents(".img-slider-thumbnails").prev("#image-slider"));
-                    }else if(thisIndex > $(this).siblings(".active").index()){
-                        nextImage(thisIndex, $(this).parents(".img-slider-thumbnails").prev("#image-slider"));
-                    }
+                if(thisIndex < $(this).siblings(".active").index()){
+                    prevImage(thisIndex, $(this).parents(".img-slider-thumbnails").prev("#image-slider"));
+                }else if(thisIndex > $(this).siblings(".active").index()){
+                    nextImage(thisIndex, $(this).parents(".img-slider-thumbnails").prev("#image-slider"));
+                }
 
 
-                    $(this).siblings('.active').removeClass('active');
-                    $(this).addClass('active');
-
-                    });
+                $(this).siblings('.active').removeClass('active');
+                $(this).addClass('active');
 
             });
 
@@ -635,13 +1041,12 @@
 
             $('.shop-media-slider').hide()
 
-            $(".shop-media-container").click(function(){
-
+            $(document).on('click','.shop-media-container',function(){
                 $(this).siblings(".shop-media-slider").show()
                 $(this).hide()
             })
 
-            $(".slider-close-icon").click(function(){
+            $(document).on('click','.slider-close-icon',function(){
                 $(this).closest('.shop-media-slider').hide()
                 $(this).closest('.shop-media-slider').siblings('.shop-media-container').show()
             })

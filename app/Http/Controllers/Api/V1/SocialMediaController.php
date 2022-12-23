@@ -55,6 +55,7 @@ class SocialMediaController extends Controller
             }
             $posts = Post::select('users.name', 'profiles.profile_image', 'posts.*')
                 ->whereIn('posts.user_id', $n)
+                ->where('posts.shop_status',0)
                 ->leftJoin('users', 'users.id', 'posts.user_id')
                 ->leftJoin('profiles', 'users.profile_id', 'profiles.id')
                 ->orderBy('posts.created_at', 'DESC')
@@ -112,6 +113,7 @@ class SocialMediaController extends Controller
         } else {
             $posts = Post::select('users.name', 'profiles.profile_image', 'posts.*')
                 ->where('posts.user_id', $user->id)
+                ->where('posts.shop_status', 0)
                 ->leftJoin('users', 'users.id', 'posts.user_id')
                 ->leftJoin('profiles', 'users.profile_id', 'profiles.id')
                 ->orderBy('posts.created_at', 'DESC')
@@ -125,7 +127,6 @@ class SocialMediaController extends Controller
                 ->where('user_react_posts.user_id', $user_id)->get();
 
             $liked_post_count = DB::select("SELECT COUNT(post_id) as like_count, post_id FROM user_react_posts GROUP BY post_id");
-
 
             $comment_post_count = DB::select("SELECT COUNT(post_id) as comment_count, post_id FROM comments GROUP BY post_id");
 
