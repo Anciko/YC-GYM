@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use App\Models\ShopMember;
 use App\Models\ShopmemberHistory;
+use SebastianBergmann\Type\NullType;
 
 class ShopRequestController extends Controller
 {
@@ -52,14 +53,9 @@ class ShopRequestController extends Controller
 
         $check_user = User::select('users.*', 'shop_members.id as shopmemberId', 'shop_members.member_type', 'shop_members.post_count')->where('users.id', $id)->join('shop_members', 'shop_members.id', 'users.shopmember_type_id')->first();
 
-        $user = User::findOrFail($id);
-        $user->shop_request = 2;
-        $user->shop_post_count = $check_user->post_count;
-        $user->save();
+        $checkmember = User::select('users.id as user_id', 'shop_members.*')->where('users.id', $id)->join('shop_members', 'shop_members.id', 'users.shopmember_type_id')->first();
 
         $date  = Carbon::Now()->toDateString();
-
-        $checkmember = User::select('users.id as user_id', 'shop_members.*')->where('users.id', $id)->join('shop_members', 'shop_members.id', 'users.shopmember_type_id')->first();
 
         ShopmemberHistory::create([
             'user_id' => $checkmember->user_id,
@@ -67,7 +63,10 @@ class ShopRequestController extends Controller
             'date' => $date
         ]);
 
-
+        $user = User::findOrFail($id);
+        $user->shop_request = 0;
+        $user->shop_post_count = $check_user->post_count;
+        $user->save();
 
         return back();
     }

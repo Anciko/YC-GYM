@@ -16,6 +16,7 @@ class RegisterPaymentController extends Controller
     //
     public function payment(Request $request)
     {
+
         $request_type=auth()->user()->request_type;
         $member=Member::findOrFail($request_type);
         $banking_info = BankingInfo::all();
@@ -25,7 +26,6 @@ class RegisterPaymentController extends Controller
 
     public function changeStatusAndType($id)
     {
-
         $banking_info = BankingInfo::all();
 
         $member = Member::findOrFail($id);
@@ -47,6 +47,7 @@ class RegisterPaymentController extends Controller
     // }
     public function ewallet_store(Request $request)
     {
+        //dd($request->all());
         $this->validate($request,[
             'account_name'=> 'required|regex:/^[\pL\s\-]+$/u',
             'payment_name' => 'required',
@@ -54,7 +55,6 @@ class RegisterPaymentController extends Controller
             'amount'=> 'required',
             'image' => 'required',
         ]);
-        //dd($request->all());
         $user = auth()->user();
 
         $user = User::findOrFail($user->id);
@@ -63,6 +63,8 @@ class RegisterPaymentController extends Controller
         }else{
             $user->shop_request=1;
         }
+
+
 
         $user->update();
          // Store Image

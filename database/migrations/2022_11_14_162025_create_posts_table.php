@@ -21,6 +21,7 @@ class CreatePostsTable extends Migration
             $table->boolean('favourite_status');
             $table->integer('viewers')->default(0);
             $table->integer('report_status')->default(0);
+            $table->integer('shop_status')->default(0);
             $table->softDeletes();
             $table->timestamps();
         });
