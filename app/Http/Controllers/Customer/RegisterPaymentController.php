@@ -47,7 +47,7 @@ class RegisterPaymentController extends Controller
     // }
     public function ewallet_store(Request $request)
     {
-        //dd($request->all());
+        // dd($request->member_type);
         $this->validate($request,[
             'account_name'=> 'required|regex:/^[\pL\s\-]+$/u',
             'payment_name' => 'required',
@@ -58,13 +58,17 @@ class RegisterPaymentController extends Controller
         $user = auth()->user();
 
         $user = User::findOrFail($user->id);
-        if($user->shopmember_type_id==0 || $user->shopmember_type_id==null){
-            $user->active_status = 1;
-        }else{
+
+        if($request->member_type=='level1' ||$request->member_type=='level2' ||$request->member_type=='level3'){
             $user->shop_request=1;
+        }else{
+            $user->active_status = 1;
         }
-
-
+        // if($user->shopmember_type_id==0 || $user->shopmember_type_id==null){
+        //     $user->active_status = 1;
+        // }else{
+        //     $user->shop_request=1;
+        // }
 
         $user->update();
          // Store Image
