@@ -1543,7 +1543,7 @@
                         })
             })
 
-        $('.viewlikes').click(function(e){
+        $(document).on('click', '.viewlikes', function(e) {
             viewlikes(e);
         })
 
@@ -1556,6 +1556,7 @@
             $(".social-media-all-likes-container").empty();
             $('#staticBackdrop').modal('show');
             var post_id=e.target.id;
+            console.log(post_id,'post id');
             var add_url = "{{ route('profile.likes.view', [':post_id']) }}";
             add_url = add_url.replace(':post_id', post_id);
 
@@ -1779,7 +1780,7 @@
                                                                         <span class="total_likes">
                                                                             `+save_posts[i].total_likes+`
                                                                         </span>
-                                                                        <a class="viewlikes" id="">Likes</a>
+                                                                        <a class="viewlikes" id="`+save_posts[i].post_id+`">Likes</a>
                                                                     </p>
                                                                     </div>
                                                                     <div class="customer-post-comment-container">
@@ -2035,7 +2036,7 @@
                                                                         <span class="total_likes">
                                                                             `+save_posts[i].total_likes+`
                                                                         </span>
-                                                                        <a class="viewlikes" id="">Likes</a>
+                                                                        <a class="viewlikes" id="`+save_posts[i].post_id+`">Likes</a>
                                                                     </p>
                                                                     </div>
                                                                     <div class="customer-post-comment-container">
@@ -2297,7 +2298,7 @@
                                                                         <span class="total_likes">
                                                                             `+save_posts[i].total_likes+`
                                                                         </span>
-                                                                        <a class="viewlikes" id="">Likes</a>
+                                                                        <a class="viewlikes" id="`+save_posts[i].post_id+`">Likes</a>
                                                                     </p>
                                                                     </div>
                                                                     <div class="customer-post-comment-container">
@@ -2558,7 +2559,7 @@
                                                             <span class="total_likes">
                                                                 `+save_posts[i].total_likes+`
                                                             </span>
-                                                            <a class="viewlikes" id="">Likes</a>
+                                                            <a class="viewlikes" id="`+save_posts[i].post_id+`">Likes</a>
                                                         </p>
                                                         </div>
                                                         <div class="customer-post-comment-container">
