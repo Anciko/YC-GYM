@@ -31,6 +31,7 @@ class RequestAcceptDeclineController extends Controller
         $u = User::findOrFail($id);
         $member_history = MemberHistory::where('user_id', $id)->first();
         $member = Member::findOrFail($u->request_type);
+
         $date  = Carbon::Now()->toDateString();
 
         $shop_member = ShopMember::where('member_type', 'level3')->first();
@@ -67,7 +68,7 @@ class RequestAcceptDeclineController extends Controller
                 $u->member_type = $member->member_type;
                 $role = Role::findOrFail($member->role_id);
                 $u->syncRoles($role->name);
-                $u->update();
+                $u->save();
 
 
 
@@ -79,7 +80,7 @@ class RequestAcceptDeclineController extends Controller
                 $u->member_type = $member->member_type;
                 $role = Role::findOrFail($member->role_id);
                 $u->syncRoles($role->name);
-                $u->update();
+                $u->save();
                 $pusher->trigger('channel-accept.'. $id , 'accept', 'accepted');
                 return back()->with('success', 'Upgraded Success');
             }
@@ -94,7 +95,7 @@ class RequestAcceptDeclineController extends Controller
             $u->member_type = $member->member_type;
             $u->active_status = 2;
             $u->request_type = 0;
-            $u->update();
+            $u->save();
             $u->members()->attach($u->request_type, ['member_type_level' => $u->membertype_level, 'date' => $current_date]);
             $pusher->trigger('channel-accept.'. $id , 'accept', 'accepted');
             return back()->with('success', 'Accepted');
