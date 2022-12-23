@@ -45,19 +45,23 @@ class RequestAcceptDeclineController extends Controller
             ]);
 
             if ($member->member_type == "Ruby" || $member->member_type == "Ruby Premium") {
-                $u->shopmember_type_id = $shop_member->id;
-                $u->shop_request = 2;
-                $u->active_status = 2;
-                $u->member_type = $member->member_type;
-                $role = Role::findOrFail($member->role_id);
-                $u->syncRoles($role->name);
-                $u->update();
 
                 ShopmemberHistory::create([
                     'user_id' => $id,
                     'shopmember_type_id' => $shop_member->id,
                     'date' => $date
                 ]);
+
+                $u->shopmember_type_id = $shop_member->id;
+                $u->shop_request = 0;
+                $u->active_status = 2;
+                $u->request_type = 0;
+                $u->member_type = $member->member_type;
+                $role = Role::findOrFail($member->role_id);
+                $u->syncRoles($role->name);
+                $u->update();
+
+
 
                 return back()->with('success', 'Upgraded Success');
             } else {
