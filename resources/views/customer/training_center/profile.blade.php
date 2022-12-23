@@ -3614,7 +3614,6 @@
 
         $(document).on('click','#edit_post',function(e){
             e.preventDefault();
-            $('.customer-post-header-icon').toggle()
             $(".editpost-photo-video-imgpreview-container").empty();
 
             dtEdit.clearData()
