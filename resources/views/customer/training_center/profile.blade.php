@@ -902,7 +902,7 @@
                                     </div>
                                 </div>
                             </div>`
-                            ))}
+                            )).join('')}
                         `)
 
                         }
@@ -1081,7 +1081,7 @@
                                     <td>${item.fat}</td>
                                     <td>${item.serving}</td>
                                 </tr>`
-                                ))}
+                                )).join('')}
                             </tbody>
                             <tr class="meal-table-total">
                                 <td>Total</td>
@@ -1121,7 +1121,7 @@
                                     <td>${item.fat}</td>
                                     <td>${item.serving}</td>
                                 </tr>`
-                                ))}
+                                )).join('')}
                             </tbody>
                             <tr class="meal-table-total">
                                 <td>Total</td>
@@ -1161,7 +1161,7 @@
                                     <td>${item.fat}</td>
                                     <td>${item.serving}</td>
                                 </tr>
-                                ` ))}
+                                ` )).join('')}
                             </tbody>
                             <tr class="meal-table-total">
                                 <td>Total</td>
@@ -1201,7 +1201,7 @@
                                     <td>${item.fat}</td>
                                     <td>${item.serving}</td>
                                 </tr>`
-                                ))}
+                                )).join('')}
                             </tbody>
                             <tr class="meal-table-total">
                                 <td>Total</td>
@@ -1315,7 +1315,7 @@
                                 </div>
                             </div>
                         </div>`
-                        ))}
+                        )).join('')}
 
 
             `)
@@ -1482,7 +1482,7 @@
                                 </div>
                             </div>
                         </div>`
-                        ))}
+                        )).join('')}
 
 
             `)

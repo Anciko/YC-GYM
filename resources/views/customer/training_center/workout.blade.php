@@ -138,7 +138,7 @@
 
         for(var a = 0;a < videoSource.length;a++){
 
-            videoDuration=@json($tc_workouts)[a].time;
+            videoDuration=@json($tc_workouts)[a].estimate_time;
             calories=@json($tc_workouts)[a].calories;
             t_sum+=videoDuration;
             cal_sum+=calories;
