@@ -25,7 +25,7 @@ class ShopController extends Controller
         $shops=User::where('shopmember_type_id','!=',0)
                     ->where('shop_request',2)
                     ->with('posts')
-                    ->get();
+                    ->first();
         return view('customer.shop.shop',compact('shops'));
     }
 
@@ -106,7 +106,7 @@ class ShopController extends Controller
             $posts[$key]->isLike=$isLike;
             $posts[$key]->already_saved=$already_saved;
             }
-            
+
 
         return view('customer.shop.shop_post',compact('posts','user'));
     }

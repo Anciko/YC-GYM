@@ -56,6 +56,30 @@ class ShopController extends Controller
         ]);
     }
 
+    public function shop_list_one()
+    {
+        $shop_list = User::select('users.id','users.name','profiles.profile_image')
+        ->leftJoin('profiles','users.profile_id','profiles.id')
+        ->where('shop_request',2)
+        ->where('users.id',auth()->user()->id)
+        ->first();
+        $total_count = Post::select("user_id",DB::raw("Count('id') as total_count"))
+                        ->where('shop_status',1)
+                        ->where('user_id',auth()->user()->id)
+                        ->first();
+        foreach($shop_list as $value){
+                if(!empty($total_count)){
+                    $shop_list['total_post'] = $total_count['total_count'];
+                }
+                else{
+                    $shop_list['total_post'] = 0;
+                }
+        }
+        return response()->json([
+            'data' => $shop_list
+        ]);
+    }
+
     public function shop_post_store(Request $request)
     {
         $input = $request->all();

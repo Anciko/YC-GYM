@@ -674,7 +674,7 @@
                                                                 </div>
 
                                                             <a data-bs-toggle="modal" href="#exampleModalToggle${data.message.id}${key}" role="button">
-                                                                <img src="{{ asset('storage/customer_message_media/${imageArr[key]}') }}" title="${key}">
+                                                                <img src="{{ asset('storage/customer_message_media/${imageArr[key]}') }}">
                                                             </a>`
                             } else if (imageArr[key].split('.').pop() === 'mp4' || imageArr[key].split('.')
                                 .pop() ===
@@ -751,7 +751,7 @@
                                                             </div>
 
                                                             <a data-bs-toggle="modal" href="#exampleModalToggle${data.message.id}${key}" role="button">
-                                                                <img src="{{ asset('storage/customer_message_media/${imageArr[key]}') }}" title="${key}">
+                                                                <img src="{{ asset('storage/customer_message_media/${imageArr[key]}') }}">
                                                             </a>
                                                             `
 

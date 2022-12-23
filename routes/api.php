@@ -217,6 +217,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
 
     Route::get('shop/member/plans/list', [ShopController::class, 'shop_member_plan_list']);
     Route::get('shop/post/list', [ShopController::class, 'shop_list']);
+    Route::get('shop/post/list/one', [ShopController::class, 'shop_list_one']);
     Route::post('shop/post/store', [ShopController::class, 'shop_post_store']);
 
     Route::post('shop/detail', [ShopController::class, 'shop_posts']);

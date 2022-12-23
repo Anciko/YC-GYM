@@ -15,6 +15,7 @@ use App\Events\MakeAgoraAudioCall;
 use Illuminate\Support\Facades\Auth;
 use App\Class\AgoraDynamicKey\RtcTokenBuilder;
 
+
 class VideoController extends Controller
 {
     public function callUser(Request $request)
@@ -58,7 +59,7 @@ class VideoController extends Controller
         $data['channelName'] = $request->channel_name;
         $group_name = ChatGroup::select('group_name')->where('id',$request->group_id)->first();
         $data['groupName'] = $group_name;
-        
+
         foreach ($members as $member) {
             $data['memberId'] = $member->member_id;
             broadcast(new GroupAudioCall($data['memberId'], $data))->toOthers();
@@ -83,4 +84,5 @@ class VideoController extends Controller
 
         return $token;
     }
+    
 }
