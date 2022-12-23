@@ -175,7 +175,7 @@
         if(user.workout_level == 'beginner'){
             var select = $("#beginner");
             select.attr('selected',true);
-        }else if(user.workout_level == 'advance'){
+        }else if(user.workout_level == 'advanced'){
             var select = $("#advance");
             select.attr('selected',true);
         }else if(user.workout_level == 'professional'){

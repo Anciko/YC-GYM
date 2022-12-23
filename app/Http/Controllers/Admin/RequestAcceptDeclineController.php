@@ -61,16 +61,14 @@ class RequestAcceptDeclineController extends Controller
                     'date' => $date
                 ]);
 
-                $u->shopmember_type_id = $shop_member->id;
-                $u->shop_request = 0;
+                $u->shopmember_type_id = 0;
+                $u->shop_request = 2;
                 $u->active_status = 2;
                 $u->request_type = 0;
                 $u->member_type = $member->member_type;
                 $role = Role::findOrFail($member->role_id);
                 $u->syncRoles($role->name);
                 $u->save();
-
-
 
                 $pusher->trigger('channel-accept.'. $id , 'accept', 'accepted');
                 return back()->with('success', 'Upgraded Success');
