@@ -129,6 +129,7 @@
         }
         const checkedOnDurationClick = (el,category) => {
             let member = @json($members);
+
             $(".home-price-details-container").empty()
             if(category === 'memberPlanDuration'){
                 var memberPlanDurationCheckboxesList = document.getElementsByName("memberPlanDuration");
