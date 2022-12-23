@@ -412,6 +412,11 @@
     margin-top: 20px;
 }
 
+.shop-post-footer-container a{
+    text-decoration: none;
+    color: var(--customer-text-color);
+}
+
 .shop-post-like-container, .shop-post-comment-container{
     display: flex;
     align-items: center;
