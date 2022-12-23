@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use Carbon\Carbon;
+use Pusher\Pusher;
 use App\Models\User;
 use App\Models\Member;
 use App\Models\ShopMember;
@@ -34,7 +35,14 @@ class RequestAcceptDeclineController extends Controller
 
         $shop_member = ShopMember::where('member_type', 'level3')->first();
         $date  = Carbon::Now()->toDateString();
-
+        $options = array(
+            'cluster' => env('PUSHER_APP_CLUSTER'),
+            'encrypted' => true);
+        $pusher = new Pusher(
+                        env('PUSHER_APP_KEY'),
+                        env('PUSHER_APP_SECRET'),
+                        env('PUSHER_APP_ID'),
+                        $options);
         if ($member_history != null && $member_history->user_id == $id) {
 
             $member_history->create([
@@ -58,7 +66,7 @@ class RequestAcceptDeclineController extends Controller
                     'shopmember_type_id' => $shop_member->id,
                     'date' => $date
                 ]);
-
+                $pusher->trigger('channel-accept.'. $id , 'accept', 'accepted');
                 return back()->with('success', 'Upgraded Success');
             } else {
                 $u->active_status = 2;
@@ -66,6 +74,7 @@ class RequestAcceptDeclineController extends Controller
                 $role = Role::findOrFail($member->role_id);
                 $u->syncRoles($role->name);
                 $u->update();
+                $pusher->trigger('channel-accept.'. $id , 'accept', 'accepted');
                 return back()->with('success', 'Upgraded Success');
             }
         } else {
@@ -80,6 +89,7 @@ class RequestAcceptDeclineController extends Controller
             $u->active_status = 2;
             $u->update();
             $u->members()->attach($u->request_type, ['member_type_level' => $u->membertype_level, 'date' => $current_date]);
+            $pusher->trigger('channel-accept.'. $id , 'accept', 'accepted');
             return back()->with('success', 'Accepted');
         }
     }
