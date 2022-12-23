@@ -58,13 +58,16 @@ class RegisterPaymentController extends Controller
         $user = auth()->user();
 
         $user = User::findOrFail($user->id);
-        if($user->shopmember_type_id==0 || $user->shopmember_type_id==null){
+        if($user->request_type!=0){
             $user->active_status = 1;
-        }else{
-            $user->shop_request=1;
+        }elseif($user->shopmember_type_id !=0){
+            $user->shop_request = 1;
         }
-
-
+        // if($user->shopmember_type_id==0 || $user->shopmember_type_id==null){
+        //     $user->active_status = 1;
+        // }else{
+        //     $user->shop_request=1;
+        // }
 
         $user->update();
          // Store Image
