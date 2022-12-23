@@ -64,7 +64,7 @@ class ShopRequestController extends Controller
         ]);
 
         $user = User::findOrFail($id);
-        $user->shop_request = null;
+        $user->shop_request = 0;
         $user->shop_post_count = $check_user->post_count;
         $user->save();
 
