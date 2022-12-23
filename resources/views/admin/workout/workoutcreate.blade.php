@@ -113,7 +113,7 @@
                                 placeholder="Select workout place" name="workoutplace">
                                 <option value=""></option>
                                 <option value="Gym">Gym</option>
-                                <option value="Homel">Home</option>
+                                <option value="Home">Home</option>
                             </select>
                             <label for="floatingInput">Select Workout Place</label>
                         </div>
