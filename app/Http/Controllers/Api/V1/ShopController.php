@@ -66,14 +66,16 @@ class ShopController extends Controller
         $total_count = Post::select("user_id",DB::raw("Count('id') as total_count"))
                         ->where('shop_status',1)
                         ->where('user_id',auth()->user()->id)
-                        ->first();
-        foreach($shop_list as $value){
+                     ->first();
+        if(!empty($shop_list)){
+            foreach($shop_list as $value){
                 if(!empty($total_count)){
                     $shop_list['total_post'] = $total_count['total_count'];
                 }
                 else{
                     $shop_list['total_post'] = 0;
                 }
+        }
         }
         return response()->json([
             'data' => $shop_list
