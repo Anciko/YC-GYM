@@ -167,12 +167,20 @@
                         <iconify-icon icon="ic:round-upgrade" class="addpost-icon"></iconify-icon>
                         <p>Upgrade</p>
                     </a>
-
                     @elseif (auth()->user()->shop_request==3 && (auth()->user()->shop_post_count!=0))
                     <button class="social-media-addpost-btn customer-primary-btn margin-top" data-bs-toggle="modal" data-bs-target="#addPostModal">
                         <iconify-icon icon="akar-icons:circle-plus" class="addpost-icon"></iconify-icon>
                         <p>Add Post</p>
                     </button>
+                    @elseif (auth()->user()->shopfrom_date==null && auth()->user()->shopto_date==null)
+                    <a href="javascript:void(0)" class="social-media-addpost-btn customer-primary-btn" id="dateexpired">
+                        <iconify-icon icon="akar-icons:circle-plus" class="addpost-icon"></iconify-icon>
+                        <p>Add Post</p>
+                    </a>
+                    <a href="{{route('shoprequest')}}" class="social-media-addpost-btn customer-primary-btn">
+                        <iconify-icon icon="ic:round-upgrade" class="addpost-icon"></iconify-icon>
+                        <p>Upgrade</p>
+                    </a>
                     @else
                     <a href="{{route('shoprequest')}}" class="social-media-addpost-btn customer-primary-btn">
                         <iconify-icon icon="akar-icons:circle-plus" class="addpost-icon"></iconify-icon>
@@ -313,6 +321,17 @@
             $(".cancel").hide()
             $('.social-media-left-search-container input').val('')
         });
+
+        $(document).on('click', '#dateexpired', function(e) {
+            Swal.fire({
+                        text: "Shop level expired.Please upgrade level",
+                        timerProgressBar: true,
+                        timer: 5000,
+                        icon: 'warning',
+                        });
+        });
+
+
 
         $('.social-media-left-search-container input').on('keyup', function(){
                             search();

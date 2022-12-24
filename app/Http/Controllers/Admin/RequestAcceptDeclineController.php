@@ -35,7 +35,6 @@ class RequestAcceptDeclineController extends Controller
         $date  = Carbon::Now()->toDateString();
 
         $shop_member = ShopMember::where('member_type', 'level3')->first();
-        $date  = Carbon::Now()->toDateString();
         $options = array(
             'cluster' => env('PUSHER_APP_CLUSTER'),
             'encrypted' => true);
