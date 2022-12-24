@@ -8,12 +8,14 @@ use App\Models\User;
 use App\Models\Member;
 use App\Models\Comment;
 use App\Models\ShopPost;
+use App\Models\ChatGroup;
 use App\Models\ShopReact;
 use App\Models\ShopMember;
 use App\Models\BankingInfo;
 use Illuminate\Http\Request;
 use App\Models\UserReactPost;
 use App\Models\UserSavedPost;
+use App\Models\ChatGroupMessage;
 use App\Models\UserSavedShoppost;
 use Illuminate\Support\Facades\DB;
 use RealRashid\SweetAlert\Facades\Alert;
@@ -27,6 +29,7 @@ class ShopController extends Controller
                     ->orWhere('shop_request',3)
                     ->with('posts')
                     ->first();
+
         return view('customer.shop.shop',compact('shops'));
     }
 

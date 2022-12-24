@@ -734,9 +734,9 @@
         }
 
         function year_filter(value) {
-
-            console.log(value);
-            var url="profile/year/";
+            var year=value;
+            var url = "{{ route('customer-profile.year', [':year']) }}";
+                url = url.replace(':year', year);
             $.ajax({
                         type: "GET",
                         url: url+value,

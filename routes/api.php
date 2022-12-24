@@ -212,7 +212,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::post('socialmedia/call_accept',[SocialmediaController::class,'accept_call']);
 
     Route::get('user/list', [SocialmediaController::class, 'user_list']);
-    //shop
+    //shop 
     Route::get('shop/status', [ShopController::class, 'shop_status']);
 
     Route::get('shop/member/plans/list', [ShopController::class, 'shop_member_plan_list']);
