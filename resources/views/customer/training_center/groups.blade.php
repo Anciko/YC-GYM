@@ -4,7 +4,7 @@
 <a href="{{route('trainingcenter.member_plan')}}" class="customer-primary-btn margin-top customer-change-member-plan-link">Change Member Plan</a>
 <div class="customer-training-center-header-container">
     {{-- <h1>{{ $group->group->group_name }}</h1> --}}
-    <p>Thursday Sep 22, 2022</p>
+    {{-- <p>Thursday Sep 22, 2022</p> --}}
 </div>
 
 <div class="customer-training-center-plans-container">
