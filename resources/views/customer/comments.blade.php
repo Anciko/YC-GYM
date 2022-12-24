@@ -434,6 +434,7 @@
                 });
                 // console.log(document.body)
                 twemoji.parse(document.querySelector("#emojis"));
+                twemoji.parse(document.querySelector("#edit-emojis"));
 
                 $.each($(".emoji-trigger"), function(index,value){
                     // console.log($(this))

@@ -300,6 +300,8 @@ class SocialmediaController extends Controller
             $auth = Auth()->user()->id;
             $user = User::where('id', $id)->first();
             $posts = Post::where('user_id', $id)
+                ->where('report_status',0)
+                ->where('shop_status',0)
                 ->orderBy('created_at', 'DESC')
                 ->with('user')
                 ->paginate(30);
