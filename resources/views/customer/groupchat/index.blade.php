@@ -3,15 +3,15 @@
 @section('content')
     <div class="customer-training-center-header-container">
         {{-- <h1>{{ $group->group->group_name }}</h1> --}}
-        <p>Thursday Sep 22, 2022</p>
+        <p> Training Group </p>
     </div>
 
     <div class="group-chat-container customer-trainingcenter-group-chat-container">
         <div class="group-chat-header">
             <a href="" class="group-chat-header-name-container" id="view_group_member">
-                <img src="{{ asset('image/default.jpg') }}" />
+                <img src="{{ asset('img/customer/imgs/group_default.png') }}" />
                 <div class="group-chat-header-name-text-container">
-                    {{-- <p>{{ $group->group->group_name }}</p> --}}
+                    <p>{{ $group->group->group_name }}</p>
                     {{-- <span>group member, group member,group member,group member,group member,</span> --}}
                 </div>
             </a>
@@ -48,7 +48,7 @@
                             <span>Group Member</span>
                             <p>{{ $chat->text }}</p>
                         </div>
-                        <img src="{{ asset('image/default.jpg') }}" />
+                        <img src="{{ asset('img/customer/imgs/group_default.png') }}" />
                     </div>
                 @elseif (pathinfo($chat->media, PATHINFO_EXTENSION) == 'mp4' ||
                     pathinfo($chat->media, PATHINFO_EXTENSION) == 'mov' ||
@@ -60,7 +60,7 @@
                                 <source src="{{ asset('storage/trainer_message_media/' . $chat->media) }}" type="video/mp4">
                             </video>
                         </div>
-                        <img src="{{ asset('image/default.jpg') }}" />
+                        <img src="{{ asset('img/customer/imgs/group_default.png') }}" />
                     </div>
                 @elseif (pathinfo($chat->media, PATHINFO_EXTENSION) == 'png' ||
                     pathinfo($chat->media, PATHINFO_EXTENSION) == 'jpg' ||
@@ -72,7 +72,7 @@
                                 <img src="{{ asset('/storage/trainer_message_media/' . $chat->media) }}" alt="">
                             </a>
                         </div>
-                        <img src="{{ asset('image/default.jpg') }}" />
+                        <img src="{{ asset('img/customer/imgs/group_default.png') }}" />
                     </div>
                 @endif
             @endforeach
@@ -89,11 +89,15 @@
                 @forelse ($group_members as $member)
                     <div class="customer-group-chat-member-row">
                         <div class="customer-group-chat-member-name">
-                            <img src="../imgs/avatar.png">
+                            @if ($member->user->profile == null)
+                                <img src="{{asset('img/customer/imgs/user_default.jpg')}}" alt="">
+                            @else
+                                <img src="{{asset('storage/post/'.$member->user->profile->profile_image)}}">
+                            @endif
                             <p>{{ $member->user->name }}</p>
                         </div>
                         <div class="customer-group-chat-member-btns-container">
-                            <a href="#" class="customer-secondary-btn">View Profile</a>
+                            <a href="{{route('socialmedia.profile',$member->user->id)}}" class="customer-secondary-btn">View Profile</a>
                         </div>
                     </div>
                 @empty
@@ -144,7 +148,7 @@
                                 <span>Group Member</span>
                                 <p>${data.message.text}</p>
                             </div>
-                            <img src="{{ asset('image/default.jpg') }}" />
+                            <img src="{{ asset('img/customer/imgs/group_default.png') }}" />
                         </div>`;
                 } else {
                     if (data.message.media.split('.').pop() === 'png' || data.message.media.split('.').pop() ===
@@ -170,7 +174,7 @@
                                     <img src="{{ asset('/storage/trainer_message_media/${data.message.media}') }}">
                                 </a>
                             </div>
-                            <img src="{{ asset('image/default.jpg') }}" />
+                            <img src="{{ asset('img/customer/imgs/group_default.png') }}" />
                         </div>`;
                     } else if (data.message.media.split('.').pop() === 'mp4' || data.message.media.split('.').pop() ===
                         'mov' || data.message.media.split('.').pop() === 'webm') {
@@ -181,7 +185,7 @@
                             <source src="{{ asset('/storage/trainer_message_media/${data.message.media}') }}" type="video/mp4">
                                 </video>
                             </div>
-                            <img src="{{ asset('image/default.jpg') }}" />
+                            <img src="{{ asset('img/customer/imgs/group_default.png') }}" />
                         </div>`;
                     }
                 }
