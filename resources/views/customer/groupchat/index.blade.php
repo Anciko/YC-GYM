@@ -11,7 +11,7 @@
             <a href="" class="group-chat-header-name-container" id="view_group_member">
                 <img src="{{ asset('image/default.jpg') }}" />
                 <div class="group-chat-header-name-text-container">
-                    {{-- <p>{{ $group->group->group_name }}</p> --}}
+                    <p>{{ $group->group->group_name }}</p>
                     {{-- <span>group member, group member,group member,group member,group member,</span> --}}
                 </div>
             </a>

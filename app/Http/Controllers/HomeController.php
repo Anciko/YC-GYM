@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use DatePeriod;
 use DateInterval;
 use Carbon\Carbon;
+use App\Models\Post;
 use App\Models\User;
 use App\Models\Member;
 use Carbon\CarbonPeriod;
@@ -107,8 +108,39 @@ class HomeController extends Controller
             } elseif (Auth::user()->hasRole('Queen')) {
                 return view('admin.home', compact('free_user', 'platinum_user', 'gold_user', 'diamond_user', 'ruby_user', 'rubyp_user','mon','monNum','aa','months_filter','monthCount_filter'));
             } else {
+                $user = auth()->user();
+        $user_id = $user->id;
+        $friends = DB::table('friendships')
+            ->where('friend_status', 2)
+            ->where(function ($query) use ($user_id) {
+                $query->where('sender_id', $user_id)
+                    ->orWhere('receiver_id', $user_id);
+            })
+            ->get(['sender_id', 'receiver_id'])->toArray();
+
+        if (!empty($friends)) {
+            $n = array();
+            foreach ($friends as $friend) {
+                $f = (array)$friend;
+                array_push($n, $f['sender_id'], $f['receiver_id']);
+            }
+            $posts = Post::whereIn('user_id', $n)
+                ->where('report_status', 0)
+                ->where('shop_status',0)
+                ->orderBy('created_at', 'DESC')
+                ->with('user')
+                ->paginate(30);
+        } else {
+            $n = array();
+            $posts = Post::where('user_id', $user->id)
+                ->where('report_status', 0)
+                ->where('shop_status',0)
+                ->orderBy('created_at', 'DESC')
+                ->with('user')
+                ->paginate(30);
+        }
                 $member_plans = Member::where('member_type', '!=', 'Free')->where('member_type', '!=', 'Gym Member')->get();
-                return view('customer.home', compact('member_plans'));
+                return view('customer.socialmedia', compact('member_plans','posts'));
             }
         } else {
             // not logged-in

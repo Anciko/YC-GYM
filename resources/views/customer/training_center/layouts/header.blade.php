@@ -22,18 +22,20 @@
 
         <div class="customer-navlinks-container">
 
-            <a href="{{route('social_media')}}">Home</a>
+            <a href="{{route('socialmedia')}}">Home</a>
             @hasanyrole('System_Admin')
             <a href="{{route('home')}}">Dashboard</a>
             @endhasanyrole
-            <a href="#">Shop</a>
+            <a href="{{route('shop')}}">Shop</a>
             <a href="#">Search</a>
             @auth
             @if ( auth()->user()->request_type ==null && count(auth()->user()->roles)<1)
-            <a href="{{route('customer-personal_infos')}}">Training Center</a>
+                <a href="{{route('customer-personal_infos')}}">Training Center</a>
+
             @elseif(auth()->user()->request_type !=null && auth()->user()->active_status==0)
-            <a href="{{route('customer_payment')}}">Training Center</a>
+                <a href="{{route('customer_payment')}}">Training Center</a>
             @endif
+
             @endauth
             @hasanyrole('Diamond|Platinum|Gym Member')
             <a href="{{route('training_center.index')}}">Training Center</a>

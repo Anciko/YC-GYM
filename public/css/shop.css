@@ -412,6 +412,11 @@
     margin-top: 20px;
 }
 
+.shop-post-footer-container a{
+    text-decoration: none;
+    color: var(--customer-text-color);
+}
+
 .shop-post-like-container, .shop-post-comment-container{
     display: flex;
     align-items: center;
@@ -1759,6 +1764,12 @@ ul{
     word-break: break-word;
 }
 
+.shop-addpost-btns-container{
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
 @media screen and (max-width:1000px){
 
     .shop-left-container-trigger{
@@ -1970,6 +1981,11 @@ ul{
 
     .shop-main-shop-icon{
         font-size: 20px;
+    }
+
+    .shop-addpost-btns-container{
+        flex-direction: column;
+
     }
 
 }

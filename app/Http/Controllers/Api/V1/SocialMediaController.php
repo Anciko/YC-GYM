@@ -1340,7 +1340,7 @@ class SocialMediaController extends Controller
             $latest_group_sms_to =ChatGroupMessage::
                     select('chat_group_messages.group_id as id','chat_groups.group_name as name',
                     'profiles.profile_image','chat_group_messages.text',
-                    DB::raw('DATE_FORMAT(chat_group_messages.created_at, "%Y-%m-%d %H:%m:%s") as date'))
+                    DB::raw('DATE_FORMAT(chat_group_messages.created_at, "%Y-%m-%d %H:%i:%s") as date'))
                     ->leftJoin('chat_groups','chat_groups.id','chat_group_messages.group_id')
                     ->leftJoin('users','users.id','chat_group_messages.sender_id')
                     ->leftJoin('profiles','users.profile_id','profiles.id')
@@ -1468,12 +1468,14 @@ class SocialMediaController extends Controller
                         'chat_groups.group_name as name',
                         'profiles.profile_image',
                         'chat_group_messages.text',
-                        DB::raw('DATE_FORMAT(chat_group_messages.created_at, "%Y-%m-%d %H:%m:%s") as date')
+                        DB::raw('DATE_FORMAT(chat_group_messages.created_at, "%Y-%m-%d %H:%i:%s") as date')
                     )
                     ->leftJoin('chat_groups', 'chat_groups.id', 'chat_group_messages.group_id')
                     ->leftJoin('users', 'users.id', 'chat_group_messages.sender_id')
                     ->leftJoin('profiles', 'users.profile_id', 'profiles.id')
-                    ->whereIn('chat_group_messages.id', $latest_group_message_all)->get()->toArray();
+                    ->whereIn('chat_group_messages.id', $latest_group_message_all)
+                    ->orderBy('chat_group_messages.created_at','DESC')
+                    ->get()->toArray();
                 //   $ids = json_encode($messages);
                 $arr_all = json_decode(json_encode($messages_all), true);
                 foreach ($arr_all as $key => $value) {
@@ -1493,7 +1495,11 @@ class SocialMediaController extends Controller
                             $merged_all[$key]['owner_id'] = $owner->group_owner_id;
                     }
                 }
-                $merged_three = array_slice($merged_all, -6);
+
+
+                $merged_three = array_reverse($merged_all);
+                $merged_three = array_slice($merged_three, -6);
+                $merged_three = array_reverse($merged_three);
 
                 $pusher->trigger('groupChatting.' . $group_message[$i]['member_id'], 'group-chatting-event', ["message" => $message, "senderImg" => $request->senderImg, "senderName" => $request->senderName]);
                 $pusher->trigger('chat_message.' . $group_message[$i]['member_id'], 'chat', $merged_three);
@@ -2734,8 +2740,6 @@ class SocialMediaController extends Controller
             'data' => $token
         ]);
     }
-
-
     public function audio_token(Request $request)
     {
         $appID = env('AGORA_APP_ID');
@@ -2748,7 +2752,7 @@ class SocialMediaController extends Controller
         $privilegeExpiredTs = $currentTimestamp + $expireTimeInSeconds;
 
         $token = RtcTokenBuilder::buildTokenWithUserAccount($appID, $appCertificate, $channelName, $user, $role, $privilegeExpiredTs);
-
+      
         $data['userToCall'] = $request->user_to_call;
         $data['channelName'] = $channelName;
         $data['from'] = Auth::id();

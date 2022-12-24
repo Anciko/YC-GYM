@@ -36,6 +36,7 @@
 
         <form action="{{ route('ewallet_store') }}" method="POST" enctype="multipart/form-data" class="customer-transaction-form">
             @csrf
+            <input type="hidden" name="member_type" value={{$member->member_type}}>
             <div class="customer-transaction-form-img">
                 <img src="{{asset('image/kpay.png')}}"/>
             </div>
@@ -128,6 +129,7 @@
         <div class="modal-body">
             <form action="{{ route('ewallet_store') }}" method="POST" enctype="multipart/form-data" class="customer-transaction-form">
                 @csrf
+                <input type="hidden" name="member_type" value={{$member->member_type}}>
                 <div class="customer-transaction-form-img">
                     <img src="{{asset('image/cbpay.jfif')}}"/>
                 </div>
@@ -219,6 +221,7 @@
         <div class="modal-body">
             <form action="{{ route('ewallet_store') }}" method="POST" enctype="multipart/form-data" class="customer-transaction-form">
                 @csrf
+                <input type="hidden" name="member_type" value={{$member->member_type}}>
                 <div class="customer-transaction-form-img">
                     <img src="{{asset('image/wavepay.jfif')}}"/>
                 </div>
@@ -310,6 +313,7 @@
         <div class="modal-body">
             <form action="{{ route('ewallet_store') }}" method="POST" enctype="multipart/form-data" class="customer-transaction-form">
                 @csrf
+                <input type="hidden" name="member_type" value={{$member->member_type}}>
                 <div class="customer-transaction-form-img">
                     <img src="{{asset('image/ayapay.jfif')}}"/>
                 </div>
@@ -402,6 +406,7 @@
         <div class="modal-body">
             <form action="{{ route('bank_payment_store') }}" method="POST" enctype="multipart/form-data" class="customer-transaction-form">
                 @csrf
+                <input type="hidden" name="member_type" value={{$member->member_type}}>
                 <div class="customer-transaction-form-img">
                     <img src="{{asset('image/kbzbank-removebg-preview.png')}}"/>
                 </div>
@@ -503,6 +508,7 @@
         <div class="modal-body">
             <form action="{{ route('bank_payment_store') }}" method="POST" enctype="multipart/form-data" class="customer-transaction-form">
                 @csrf
+                <input type="hidden" name="member_type" value={{$member->member_type}}>
                 <div class="customer-transaction-form-img">
                     <img src="{{asset('image/cbbank-removebg-preview.png')}}"/>
                 </div>
@@ -588,6 +594,7 @@
         <div class="modal-body">
             <form action="{{ route('bank_payment_store') }}" method="POST" enctype="multipart/form-data" class="customer-transaction-form">
                 @csrf
+                <input type="hidden" name="member_type" value={{$member->member_type}}>
                 <div class="customer-transaction-form-img">
                     <img src="{{asset('image/ayabank-removebg-preview.png')}}"/>
                 </div>
@@ -673,6 +680,7 @@
         <div class="modal-body">
             <form action="{{ route('bank_payment_store') }}" method="POST" enctype="multipart/form-data" class="customer-transaction-form">
                 @csrf
+                <input type="hidden" name="member_type" value={{$member->member_type}}>
                 <div class="customer-transaction-form-img">
                     <img src="{{asset('image/mabbank-removebg-preview.png')}}"/>
                 </div>

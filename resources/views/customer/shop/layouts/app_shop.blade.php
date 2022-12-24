@@ -157,18 +157,29 @@
                     <a class="back-btn" href="javascript:history.back()">
                         <iconify-icon icon="bi:arrow-left" class="back-btn-icon"></iconify-icon>
                     </a>
+                    <div class="shop-addpost-btns-container">
+                    @if (auth()->user()->shop_request==2)
+                    <button class="social-media-addpost-btn customer-primary-btn" data-bs-toggle="modal" data-bs-target="#addPostModal">
+                        <iconify-icon icon="akar-icons:circle-plus" class="addpost-icon"></iconify-icon>
+                        <p>Add Post</p>
+                    </button>
+                    <a href="{{route('shoprequest')}}" class="social-media-addpost-btn customer-primary-btn">
+                        <iconify-icon icon="ic:round-upgrade" class="addpost-icon"></iconify-icon>
+                        <p>Upgrade</p>
+                    </a>
 
-                    {{-- @if (auth()->user()->shop_request==2) --}}
+                    @elseif (auth()->user()->shop_request==3 && (auth()->user()->shop_post_count!=0))
                     <button class="social-media-addpost-btn customer-primary-btn margin-top" data-bs-toggle="modal" data-bs-target="#addPostModal">
                         <iconify-icon icon="akar-icons:circle-plus" class="addpost-icon"></iconify-icon>
                         <p>Add Post</p>
                     </button>
-                    {{-- @else --}}
-                    <a href="{{route('shoprequest')}}" class="social-media-addpost-btn customer-primary-btn margin-top">
+                    @else
+                    <a href="{{route('shoprequest')}}" class="social-media-addpost-btn customer-primary-btn">
                         <iconify-icon icon="akar-icons:circle-plus" class="addpost-icon"></iconify-icon>
                         <p>Rent a shop</p>
                     </a>
-                    {{-- @endif --}}
+                    @endif
+                    </div>
                 </div>
 
                 <div class="social-media-left-container-trigger">
@@ -549,14 +560,14 @@
                 url = url.replace(':id', id);
                 var group_url = "{{ route('socialmedia.group', ':id') }}";
                 group_url = group_url.replace(':id', id);
-
+                text =   data[i].text == null ? "" :  data[i].text;
                 if(data[i].is_group == 0){
                     if(data[i].profile_image!=null){
                         htmlView += `<a href=`+url+` class="social-media-left-messages-row">
                                             <img  class="nav-profile-img" src="{{asset('storage/post/`+data[i].profile_image+`')}}"/>
                                         <p>
                                             ` + data[i].name + `<br>
-                                            <span>` + data[i].text + ` </span>
+                                            <span>` + text + ` </span>
                                         </p>
                                     </a>
                             `
@@ -565,7 +576,7 @@
                                             <img  class="nav-profile-img" src="{{asset('img/customer/imgs/user_default.jpg')}}" />
                                         <p>
                                             ` + data[i].name + `<br>
-                                            <span>` + data[i].text + ` </span>
+                                            <span>` + text + ` </span>
                                         </p>
                                     </a>
                             `
@@ -578,7 +589,7 @@
                                             <img  class="nav-profile-img" src="{{asset('img/customer/imgs/group_default.png')}}" />
                                         <p>
                                             ` + data[i].name + `<br>
-                                            <span>` + data[i].text + ` </span>
+                                            <span>` + text + ` </span>
                                         </p>
                                     </a>
                             `
@@ -605,6 +616,8 @@
 
                 var group_url = "{{ route('socialmedia.group', ':id') }}";
                 group_url = group_url.replace(':id', id);
+
+               text =  latest_messages[i].text == null ? "" : latest_messages[i].text;
                 if(latest_messages[i].is_group == 0){
 
                     if(latest_messages[i].profile_image===null){
@@ -613,7 +626,7 @@
                                             <img  class="nav-profile-img" src="{{asset('img/customer/imgs/user_default.jpg')}}"/>
                                         <p>
                                             ` + latest_messages[i].name + `<br>
-                                            <span>` + latest_messages[i].text + ` </span>
+                                            <span>` + text + ` </span>
                                         </p>
                                     </a>
                             `
@@ -623,7 +636,7 @@
                                             <img  class="nav-profile-img" src="{{asset('storage/post/`+latest_messages[i].profile_image+`')}}"/>
                                         <p>
                                             ` + latest_messages[i].name + `<br>
-                                            <span>` + latest_messages[i].text + ` </span>
+                                            <span>` + text + ` </span>
                                         </p>
                                     </a>
                             `
@@ -636,7 +649,7 @@
                                             <img  class="nav-profile-img" src="{{asset('img/customer/imgs/group_default.png')}}"/>
                                         <p>
                                             ` + latest_messages[i].name + `<br>
-                                            <span>` + latest_messages[i].text + ` </span>
+                                            <span>` + text + ` </span>
                                         </p>
                                     </a>
                             `
