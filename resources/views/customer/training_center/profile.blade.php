@@ -734,12 +734,13 @@
         }
 
         function year_filter(value) {
+           console.log(value,"year")
             var year=value;
             var url = "{{ route('customer-profile.year', [':year']) }}";
                 url = url.replace(':year', year);
             $.ajax({
                         type: "GET",
-                        url: url+value,
+                        url: url,
                         datatype: "json",
                         success: function(data) {
                             var data=data.weight_history;
