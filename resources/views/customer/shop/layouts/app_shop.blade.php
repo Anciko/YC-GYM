@@ -157,27 +157,29 @@
                     <a class="back-btn" href="javascript:history.back()">
                         <iconify-icon icon="bi:arrow-left" class="back-btn-icon"></iconify-icon>
                     </a>
-
+                    <div class="shop-addpost-btns-container">
                     @if (auth()->user()->shop_request==2)
-                    <button class="social-media-addpost-btn customer-primary-btn margin-top" data-bs-toggle="modal" data-bs-target="#addPostModal">
+                    <button class="social-media-addpost-btn customer-primary-btn" data-bs-toggle="modal" data-bs-target="#addPostModal">
                         <iconify-icon icon="akar-icons:circle-plus" class="addpost-icon"></iconify-icon>
                         <p>Add Post</p>
                     </button>
-                    <a href="{{route('shoprequest')}}" class="social-media-addpost-btn customer-primary-btn margin-top">
+                    <a href="{{route('shoprequest')}}" class="social-media-addpost-btn customer-primary-btn">
                         <iconify-icon icon="ic:round-upgrade" class="addpost-icon"></iconify-icon>
                         <p>Upgrade</p>
                     </a>
-                    @elseif (auth()->user()->shop_request==3 && auth()->user()->shop_post_count!=0)
+
+                    @elseif (auth()->user()->shop_request==3 && (auth()->user()->shop_post_count!=0))
                     <button class="social-media-addpost-btn customer-primary-btn margin-top" data-bs-toggle="modal" data-bs-target="#addPostModal">
                         <iconify-icon icon="akar-icons:circle-plus" class="addpost-icon"></iconify-icon>
                         <p>Add Post</p>
                     </button>
                     @else
-                    <a href="{{route('shoprequest')}}" class="social-media-addpost-btn customer-primary-btn margin-top">
+                    <a href="{{route('shoprequest')}}" class="social-media-addpost-btn customer-primary-btn">
                         <iconify-icon icon="akar-icons:circle-plus" class="addpost-icon"></iconify-icon>
                         <p>Rent a shop</p>
                     </a>
                     @endif
+                    </div>
                 </div>
 
                 <div class="social-media-left-container-trigger">
