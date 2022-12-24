@@ -35,10 +35,13 @@ class ShopController extends Controller
 
     public function shop_list()
     {
+
         $shop_list = User::select('users.id','users.name','profiles.profile_image')
         ->leftJoin('profiles','users.profile_id','profiles.id')
         ->where('shop_request',2)
+        ->orWhere('shop_request',3)
         ->get();
+
         $total_count = Post::select("user_id",DB::raw("Count('id') as total_count"))
                         ->where('shop_status',1)
                         ->groupBy('user_id')
@@ -151,8 +154,9 @@ class ShopController extends Controller
                 ]);
             }
         }
-
-        if($user->shop_post_count == 0){
+        $shop_member_level = ShopMember::select('member_type')->where('id',$user->shopmember_type_id)->first();
+        if($user->shop_post_count == 0 AND $shop_member_level != 'level3' AND $user->member_type != 'Ruby Premium' OR
+        $user->member_type != 'Ruby'){
             return response()->json([
                 'message' => 'cannot post',
             ]);
@@ -163,9 +167,12 @@ class ShopController extends Controller
         $post->shop_status = 1;
         $post->save();
 
-        $user = User::find(auth()->user()->id);
-        $user->shop_post_count = $user->shop_post_count - 1;
-        $user->update();
+        if($user->member_type != 'Ruby Premium' OR $user->member_type != 'Ruby' OR $shop_member_level != 'level3'){
+            $user = User::find(auth()->user()->id);
+            $user->shop_post_count = $user->shop_post_count - 1;
+            $user->update();
+        }
+
 
         $id = $post->id;
 

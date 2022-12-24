@@ -30,12 +30,6 @@ class ShopController extends Controller
                     ->with('posts')
                     ->first();
 
-                    $shop_list = User::select('users.id','users.name','profiles.profile_image')
-                    ->leftJoin('profiles','users.profile_id','profiles.id')
-                    ->where('shop_request',2)
-                    ->orWhere('shop_request',3)
-                    ->get();
-                    // dd($shop_list);
         return view('customer.shop.shop',compact('shops'));
     }
 
