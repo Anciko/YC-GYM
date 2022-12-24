@@ -23,7 +23,7 @@ class RequestAcceptDeclineController extends Controller
     }
     public function group()
     {
-        dd("dd");
+       // dd("dd");
     }
     public function accept(Request $request, $id)
     {

@@ -266,68 +266,69 @@ class ShopController extends Controller
         $useru=User::findOrFail($user->id);
         $post = new Post();
 
-        if( $user->shop_request==2){
+        if( $user->shop_request==2 || $user->shop_request==3){
             if($user->shopmember_type_id==null && $user_role== "Ruby" || $user_role=="Ruby Premium"){
-                if ($input['totalImages'] == 0 && $input['caption'] != null) {
-                    $caption = $input['caption'];
-                } elseif ($input['caption'] == null && $input['totalImages'] != 0) {
-                    $caption = null;
-                    $images = $input['addPostInput'];
-                    if ($input['addPostInput']) {
-                        foreach ($images as $file) {
-                            $extension = $file->extension();
-                            $name = rand() . "." . $extension;
-                            $file->storeAs('/public/post/', $name);
-                            $imgData[] = $name;
-                            $post->media = json_encode($imgData);
+                    if ($input['totalImages'] == 0 && $input['caption'] != null) {
+                        $caption = $input['caption'];
+                    } elseif ($input['caption'] == null && $input['totalImages'] != 0) {
+                        $caption = null;
+                        $images = $input['addPostInput'];
+                        if ($input['addPostInput']) {
+                            foreach ($images as $file) {
+                                $extension = $file->extension();
+                                $name = rand() . "." . $extension;
+                                $file->storeAs('/public/post/', $name);
+                                $imgData[] = $name;
+                                $post->media = json_encode($imgData);
+                            }
+                        }
+                    } elseif ($input['totalImages'] != 0 && $input['caption'] != null) {
+                        $caption = $input['caption'];
+                        $images = $input['addPostInput'];
+                        if ($input['addPostInput']) {
+                            foreach ($images as $file) {
+                                $extension = $file->extension();
+                                $name = rand() . "." . $extension;
+                                $file->storeAs('/public/post/', $name);
+                                $imgData[] = $name;
+                                $post->media = json_encode($imgData);
+                            }
                         }
                     }
-                } elseif ($input['totalImages'] != 0 && $input['caption'] != null) {
-                    $caption = $input['caption'];
-                    $images = $input['addPostInput'];
-                    if ($input['addPostInput']) {
-                        foreach ($images as $file) {
-                            $extension = $file->extension();
-                            $name = rand() . "." . $extension;
-                            $file->storeAs('/public/post/', $name);
-                            $imgData[] = $name;
-                            $post->media = json_encode($imgData);
+                    $banwords = DB::table('ban_words')->select('ban_word_english', 'ban_word_myanmar', 'ban_word_myanglish')->get();
+
+                    foreach ($banwords as $b) {
+                        $e_banword = $b->ban_word_english;
+                        $m_banword = $b->ban_word_myanmar;
+                        $em_banword = $b->ban_word_myanglish;
+
+                        if (str_contains($caption, $e_banword)) {
+                            // Alert::warning('Warning', 'Ban Ban Ban');
+                            //return redirect()->back();
+                            return response()->json([
+                                'ban' => 'You used our banned words!',
+                            ]);
+                        } elseif (str_contains($caption, $m_banword)) {
+                            return response()->json([
+                                'ban' => 'You used our banned words!',
+                            ]);
+                        } elseif (str_contains($caption, $em_banword)) {
+                            return response()->json([
+                                'ban' => 'You used our banned words!',
+                            ]);
                         }
                     }
-                }
-                $banwords = DB::table('ban_words')->select('ban_word_english', 'ban_word_myanmar', 'ban_word_myanglish')->get();
 
-                foreach ($banwords as $b) {
-                    $e_banword = $b->ban_word_english;
-                    $m_banword = $b->ban_word_myanmar;
-                    $em_banword = $b->ban_word_myanglish;
-
-                    if (str_contains($caption, $e_banword)) {
-                        // Alert::warning('Warning', 'Ban Ban Ban');
-                        //return redirect()->back();
-                        return response()->json([
-                            'ban' => 'You used our banned words!',
-                        ]);
-                    } elseif (str_contains($caption, $m_banword)) {
-                        return response()->json([
-                            'ban' => 'You used our banned words!',
-                        ]);
-                    } elseif (str_contains($caption, $em_banword)) {
-                        return response()->json([
-                            'ban' => 'You used our banned words!',
-                        ]);
-                    }
-                }
-
-                $post->user_id = $user->id;
-                $post->shop_status =1;
-                $post->caption = $caption;
-                $post->save();
-                return response()->json([
-                    'message' => 'Post Created Successfully',
-                ]);
+                    $post->user_id = $user->id;
+                    $post->shop_status =1;
+                    $post->caption = $caption;
+                    $post->save();
+                    return response()->json([
+                        'message' => 'Post Created Successfully',
+                    ]);
             }elseif($user->shopmember_type_id!=null){
                 $shopmember=ShopMember::findOrFail($user->shopmember_type_id);
+                
                 if($shopmember->member_type=="level3"){
                     if ($input['totalImages'] == 0 && $input['caption'] != null) {
                         $caption = $input['caption'];
