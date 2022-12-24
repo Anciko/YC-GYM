@@ -1484,6 +1484,9 @@
             video_container.innerHTML = "";
             $(".chat-backdrop").hide()
             location.reload(true)
+            axios.post("/agora/decline-call-user", {
+                user_from_call: receiver_user_id
+            });
         }
 
         function handleAudioToggle(e) {
