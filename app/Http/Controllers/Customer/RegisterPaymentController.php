@@ -60,7 +60,11 @@ class RegisterPaymentController extends Controller
         $user = User::findOrFail($user->id);
 
         if($request->member_type=='level1' ||$request->member_type=='level2' ||$request->member_type=='level3'){
-            $user->shop_request=1;
+            if($user->shop_request==2){
+                $user->shop_request=3;
+            }elseif($user->shop_request==0 || $user->shop_request==null){
+                $user->shop_request=1;
+            }
         }else{
             $user->active_status = 1;
         }

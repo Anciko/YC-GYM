@@ -24,6 +24,7 @@ class ShopController extends Controller
     {
         $shops=User::where('shopmember_type_id','!=',0)
                     ->where('shop_request',2)
+                    ->orWhere('shop_request',3)
                     ->with('posts')
                     ->first();
         return view('customer.shop.shop',compact('shops'));
@@ -34,6 +35,7 @@ class ShopController extends Controller
         $shop_list = User::select('users.id','users.name','profiles.profile_image')
         ->leftJoin('profiles','users.profile_id','profiles.id')
         ->where('shop_request',2)
+        ->orWhere('shop_request',3)
         ->get();
         if($request->keyword != null){
             $shop_list = User::select('users.id','users.name','profiles.profile_image')
@@ -120,7 +122,7 @@ class ShopController extends Controller
     public function payment(Request $request)
     {
         $user=auth()->user();
-        if($user->shop_request){
+        if($user->shop_request==1){
             Alert::warning('Warning', 'Already requested!You will get a notification 24hrs later');
             return redirect()->back();
         }else{
