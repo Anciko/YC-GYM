@@ -159,15 +159,17 @@
                     </a>
 
                     {{-- @if (auth()->user()->shop_request==2) --}}
-                    <button class="social-media-addpost-btn customer-primary-btn margin-top" data-bs-toggle="modal" data-bs-target="#addPostModal">
-                        <iconify-icon icon="akar-icons:circle-plus" class="addpost-icon"></iconify-icon>
-                        <p>Add Post</p>
-                    </button>
-                    {{-- @else --}}
-                    <a href="{{route('shoprequest')}}" class="social-media-addpost-btn customer-primary-btn margin-top">
-                        <iconify-icon icon="akar-icons:circle-plus" class="addpost-icon"></iconify-icon>
-                        <p>Rent a shop</p>
-                    </a>
+                    <div class="shop-addpost-btns-container">
+                        <button class="social-media-addpost-btn customer-primary-btn" data-bs-toggle="modal" data-bs-target="#addPostModal">
+                            <iconify-icon icon="akar-icons:circle-plus" class="addpost-icon"></iconify-icon>
+                            <p>Add Post</p>
+                        </button>
+                        {{-- @else --}}
+                        <a href="{{route('shoprequest')}}" class="social-media-addpost-btn customer-primary-btn">
+                            <iconify-icon icon="akar-icons:circle-plus" class="addpost-icon"></iconify-icon>
+                            <p>Rent a shop</p>
+                        </a>
+                    </div>
                     {{-- @endif --}}
                 </div>
 
