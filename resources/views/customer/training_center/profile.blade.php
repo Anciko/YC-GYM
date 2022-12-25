@@ -734,12 +734,13 @@
         }
 
         function year_filter(value) {
-
-            console.log(value);
-            var url="profile/year/";
+           console.log(value,"year")
+            var year=value;
+            var url = "{{ route('customer-profile.year', [':year']) }}";
+                url = url.replace(':year', year);
             $.ajax({
                         type: "GET",
-                        url: url+value,
+                        url: url,
                         datatype: "json",
                         success: function(data) {
                             var data=data.weight_history;
@@ -3058,6 +3059,46 @@
             }
 
         }
+
+        $(document).on('click', '#delete_comment', function(e) {
+                e.preventDefault();
+                Swal.fire({
+                        text: "Are you sure?",
+                        showClass: {
+                                popup: 'animate__animated animate__fadeInDown'
+                            },
+                            hideClass: {
+                                popup: 'animate__animated animate__fadeOutUp'
+                            },
+                        showCancelButton: true,
+                        timerProgressBar: true,
+                        confirmButtonText: 'Yes',
+                        cancelButtonText: 'No',
+
+                        }).then((result) => {
+                        /* Read more about isConfirmed, isDenied below */
+                        if (result.isConfirmed) {
+                            var id = $(this).data('id');
+                             var url = "{{ route('post.comment.delete', [':id']) }}";
+                             url = url.replace(':id', id);
+                             $.ajaxSetup({
+                            headers: {
+                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                            }
+                              });
+                                $.ajax({
+                                    type: "post",
+                                    url: url,
+                                    datatype: "json",
+                                    success: function(data) {
+                                        viewcomments();
+                                    }
+                                })
+
+                        }
+                        })
+                $('.social-media-left-searched-items-container').empty();
+                });
 
         $(document).on('click', '.profile_addfriend', function(e) {
                 e.preventDefault();

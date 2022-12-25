@@ -23,7 +23,7 @@ class RequestAcceptDeclineController extends Controller
     }
     public function group()
     {
-        dd("dd");
+       // dd("dd");
     }
     public function accept(Request $request, $id)
     {
@@ -35,7 +35,6 @@ class RequestAcceptDeclineController extends Controller
         $date  = Carbon::Now()->toDateString();
 
         $shop_member = ShopMember::where('member_type', 'level3')->first();
-        $date  = Carbon::Now()->toDateString();
         $options = array(
             'cluster' => env('PUSHER_APP_CLUSTER'),
             'encrypted' => true);
@@ -64,7 +63,7 @@ class RequestAcceptDeclineController extends Controller
                 $u->shopmember_type_id = 0;
                 $u->shop_request = 2;
                 $u->active_status = 2;
-                $u->request_type = 0;
+                // $u->request_type = 0;
                 $u->shop_post_count = 0;
                 $u->member_type = $member->member_type;
                 $role = Role::findOrFail($member->role_id);

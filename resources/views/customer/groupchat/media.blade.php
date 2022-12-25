@@ -3,7 +3,7 @@
 @section('content')
     <div class="customer-training-center-header-container">
         <h1>{{ $group->group->group_name }}</h1>
-        <p>Thursday Sep 22, 2022</p>
+        <p> Training Group </p>
     </div>
 
     <div class="group-chat-container customer-trainingcenter-group-chat-container">

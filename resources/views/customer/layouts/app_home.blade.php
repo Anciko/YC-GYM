@@ -514,14 +514,14 @@
                 url = url.replace(':id', id);
                 var group_url = "{{ route('socialmedia.group', ':id') }}";
                 group_url = group_url.replace(':id', id);
-
-                if (data[i].is_group == 0) {
-                    if (data[i].profile_image != null) {
-                        htmlView += `<a href=` + url + ` class="social-media-left-messages-row">
-                                            <img  class="nav-profile-img" src="{{ asset('storage/post/`+data[i].profile_image+`') }}"/>
+                text =   data[i].text == null ? "" :  data[i].text;
+                if(data[i].is_group == 0){
+                    if(data[i].profile_image!=null){
+                        htmlView += `<a href=`+url+` class="social-media-left-messages-row">
+                                            <img  class="nav-profile-img" src="{{asset('storage/post/`+data[i].profile_image+`')}}"/>
                                         <p>
                                             ` + data[i].name + `<br>
-                                            <span>` + data[i].text + ` </span>
+                                            <span>` + text + ` </span>
                                         </p>
                                     </a>
                             `
@@ -530,7 +530,7 @@
                                             <img  class="nav-profile-img" src="{{ asset('img/customer/imgs/user_default.jpg') }}" />
                                         <p>
                                             ` + data[i].name + `<br>
-                                            <span>` + data[i].text + ` </span>
+                                            <span>` + text + ` </span>
                                         </p>
                                     </a>
                             `
@@ -542,7 +542,7 @@
                                             <img  class="nav-profile-img" src="{{ asset('img/customer/imgs/group_default.png') }}" />
                                         <p>
                                             ` + data[i].name + `<br>
-                                            <span>` + data[i].text + ` </span>
+                                            <span>` + text + ` </span>
                                         </p>
                                     </a>
                             `
@@ -570,7 +570,8 @@
 
                 var group_url = "{{ route('socialmedia.group', ':id') }}";
                 group_url = group_url.replace(':id', id);
-                if (latest_messages[i].is_group == 0) {
+                text =   latest_messages[i].text == null ? "" :  latest_messages[i].text;
+                if(latest_messages[i].is_group == 0){
 
                     if (latest_messages[i].profile_image === null) {
                         htmlView += `
@@ -578,7 +579,7 @@
                                             <img  class="nav-profile-img" src="{{ asset('img/customer/imgs/user_default.jpg') }}"/>
                                         <p>
                                             ` + latest_messages[i].name + `<br>
-                                            <span>` + latest_messages[i].text + ` </span>
+                                            <span>` + text + ` </span>
                                         </p>
                                     </a>
                             `
@@ -588,7 +589,7 @@
                                             <img  class="nav-profile-img" src="{{ asset('storage/post/`+latest_messages[i].profile_image+`') }}"/>
                                         <p>
                                             ` + latest_messages[i].name + `<br>
-                                            <span>` + latest_messages[i].text + ` </span>
+                                            <span>` + text + ` </span>
                                         </p>
                                     </a>
                             `
@@ -600,7 +601,7 @@
                                             <img  class="nav-profile-img" src="{{ asset('img/customer/imgs/group_default.png') }}"/>
                                         <p>
                                             ` + latest_messages[i].name + `<br>
-                                            <span>` + latest_messages[i].text + ` </span>
+                                            <span>` + text + ` </span>
                                         </p>
                                     </a>
                             `

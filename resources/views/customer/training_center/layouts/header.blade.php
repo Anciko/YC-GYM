@@ -26,7 +26,7 @@
             @hasanyrole('System_Admin')
             <a href="{{route('home')}}">Dashboard</a>
             @endhasanyrole
-            <a href="#">Shop</a>
+            <a href="{{route('shop')}}">Shop</a>
             <a href="#">Search</a>
             @auth
             @if ( auth()->user()->request_type ==null && count(auth()->user()->roles)<1)
