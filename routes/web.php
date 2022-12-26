@@ -165,7 +165,7 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
 
         Route::post('/socialmedia_profile', [SocialmediaController::class, 'social_media_profile'])->name('social_media_profile');
 
-        Route::post('/socialmedia/profile/photos/', [SocialmediaController::class, 'socialmedia_profile_photos'])->name('socialmedia_profile_photos');
+        Route::get('/socialmedia/profile/photos/{id}', [SocialmediaController::class, 'socialmedia_profile_photos'])->name('socialmedia_profile_photos');
 
         Route::post('search_users', [SocialmediaController::class, 'showUser'])->name('search_users');
 

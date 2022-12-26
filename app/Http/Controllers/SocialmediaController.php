@@ -418,9 +418,9 @@ class SocialmediaController extends Controller
         return view('customer.socialmedia_likes', compact('post_likes', 'post'));
     }
 
-    public function socialmedia_profile_photos(Request $request)
+    public function socialmedia_profile_photos(Request $request,$id)
     {
-        $user_id = $request->user_id;
+        $user_id = $id;
 
         $user = User::findOrFail($user_id);
 
