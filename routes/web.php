@@ -165,7 +165,7 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
 
         Route::post('/socialmedia_profile', [SocialmediaController::class, 'social_media_profile'])->name('social_media_profile');
 
-        Route::post('/socialmedia/profile/photos/', [SocialmediaController::class, 'socialmedia_profile_photos'])->name('socialmedia_profile_photos');
+        Route::get('/socialmedia/profile/photos/{id}', [SocialmediaController::class, 'socialmedia_profile_photos'])->name('socialmedia_profile_photos');
 
         Route::post('search_users', [SocialmediaController::class, 'showUser'])->name('search_users');
 
@@ -178,6 +178,7 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
         Route::get('/unfriend/{id}', [SocialmediaController::class, 'unfriend'])->name('unfriend');
 
         Route::post('/socialmedia/user/react/', [SocialmediaController::class, 'user_react_post'])->name('user.react.post');
+        Route::get('/socialmedia/user/view/', [SocialmediaController::class, 'user_view_post'])->name('user.view.post');
 
         Route::get('/cancelRequest/{id}', [SocialmediaController::class, 'cancelRequest'])->name('cancelRequest');
         Route::get('/declineRequest/{id}', [SocialmediaController::class, 'declineRequest'])->name('declineRequest');

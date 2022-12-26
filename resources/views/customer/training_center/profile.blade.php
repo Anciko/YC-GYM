@@ -1790,6 +1790,10 @@
                                                                             <p id="`+save_posts[i].post_id+`"><span>`+save_posts[i].total_comments+`</span> Comments</p>
                                                                         </a>
                                                                     </div>
+                                                                    <div class="customer-post-comment-container">
+                                                                        <iconify-icon icon="ic:outline-remove-red-eye" class="comment-icon"></iconify-icon>
+                                                                        <p><span>`+save_posts[i].viewers+`</span> Views</p>
+                                                                    </div>
                                                                     </div>
                                                                         `
                                                     htmlView+=`</div>
@@ -2307,6 +2311,10 @@
                                                                             <iconify-icon icon="bi:chat-right" class="comment-icon"></iconify-icon>
                                                                             <p id="`+save_posts[i].post_id+`"><span>`+save_posts[i].total_comments+`</span> Comments</p>
                                                                         </a>
+                                                                    </div>
+                                                                    <div class="customer-post-comment-container">
+                                                                        <iconify-icon icon="ic:outline-remove-red-eye" class="comment-icon"></iconify-icon>
+                                                                        <p><span>`+save_posts[i].viewers+`</span> Views</p>
                                                                     </div>
                                                                     </div>
                                                                         `
