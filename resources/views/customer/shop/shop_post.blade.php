@@ -244,7 +244,7 @@
 
                                             var caption =posts[i].caption ? posts[i].caption : '';
                                                 htmlView +=`<p>`+caption+`</p>
-                                                                <div class="shop-media-container">
+                                                                <div class="shop-media-container" data-id="`+posts[i].id+`">
                                                                     `
                                             var imageFile = posts[i].media
                                             var imageArr = jQuery.parseJSON(imageFile);
@@ -348,7 +348,11 @@
                                                                 <p><span>`+posts[i].total_comments+`</span> Comments</p>
                                                                 </a>
                                                             </div>
-
+                                                            <div class="social-media-post-comment-container">
+                                                                <iconify-icon icon="ic:outline-remove-red-eye" class="comment-icon"></iconify-icon>
+                                                                <p><span>`+posts[i].viewers+`</span> Views</p>
+                                                            </div>
+                                                            </div>
                                                             </div>
                                                                 `
                                             htmlView+=`</div>
@@ -412,6 +416,13 @@
             $(document).on('click','.shop-media-container',function(){
                 $(this).siblings(".shop-media-slider").show()
                 $(this).hide()
+                var post_id=$(this).data('id');
+                var add_url = "{{ route('user.view.post') }}";
+                $.ajax({
+                        method: "GET",
+                        url: add_url,
+                        data:{ post_id : post_id}
+                    })
             })
 
             $(document).on('click','.slider-close-icon',function(){

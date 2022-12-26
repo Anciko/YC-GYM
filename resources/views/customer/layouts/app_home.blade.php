@@ -711,7 +711,7 @@
 
             $('.social-media-media-slider').hide()
 
-            $(".social-media-media-container").click(function(e) {
+            $(document).on('click', '.social-media-media-container', function(e) {
                 $(this).siblings(".social-media-media-slider").show()
                 $(this).hide()
                 var post_id=$(this).data('id');

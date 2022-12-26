@@ -164,6 +164,13 @@
                         <p><span>{{$total_comments}}</span> Comments</p>
                     </a>
                 </div>
+                @if($post->media!=null)
+                    <div class="social-media-post-comment-container">
+                        <iconify-icon icon="ic:outline-remove-red-eye" class="comment-icon"></iconify-icon>
+                        <p><span>{{$post->viewers}}</span> Views</p>
+                    </div>
+                @else
+                @endif
             </div>
         </div>
 

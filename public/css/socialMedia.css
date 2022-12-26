@@ -1906,6 +1906,11 @@ ul{
     cursor: pointer;
 }
 
+.social-media-allchats-actions-box a{
+    color: black;
+    text-decoration: none;
+}
+
 .social-media-allchats-actions-box div:hover, .social-media-allchats-actions-box a:hover{
     background-color: var(--customer-primary-color);
 }

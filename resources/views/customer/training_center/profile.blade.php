@@ -1687,7 +1687,7 @@
 
                                                     var caption =save_posts[i].caption ? save_posts[i].caption : '';
                                                         htmlView +=`<p>`+caption+`</p>
-                                                                        <div class="customer-media-container">
+                                                                        <div class="customer-media-container" data-id="`+save_posts[i].post_id+`">
                                                                             `
                                                     var imageFile = save_posts[i].media
                                                     var imageArr = jQuery.parseJSON(imageFile);
@@ -1789,14 +1789,17 @@
                                                                             <iconify-icon icon="bi:chat-right" class="comment-icon"></iconify-icon>
                                                                             <p id="`+save_posts[i].post_id+`"><span>`+save_posts[i].total_comments+`</span> Comments</p>
                                                                         </a>
-                                                                    </div>
-                                                                    <div class="customer-post-comment-container">
-                                                                        <iconify-icon icon="ic:outline-remove-red-eye" class="comment-icon"></iconify-icon>
-                                                                        <p><span>`+save_posts[i].viewers+`</span> Views</p>
-                                                                    </div>
-                                                                    </div>
-                                                                        `
-                                                    htmlView+=`</div>
+                                                                    </div>`
+
+                                                                if(save_posts[i]!=null){
+                                                                    htmlView +=`<div class="customer-post-comment-container">
+                                                                                    <iconify-icon icon="ic:outline-remove-red-eye" class="comment-icon"></iconify-icon>
+                                                                                    <p><span>`+save_posts[i].viewers+`</span> Views</p>
+                                                                                </div>`
+                                                                }else{
+
+                                                                }
+                                                    htmlView+=`</div></div>
                                                                 </div>`
 
                             }
@@ -1865,10 +1868,10 @@
 
                         $('.social-media-media-slider').hide()
 
-                        $(document).on('click','.customer-media-container',function(){
-                            $(this).siblings(".social-media-media-slider").show()
-                            $(this).hide()
-                        })
+                        // $(document).on('click','.customer-media-container',function(){
+                        //     $(this).siblings(".social-media-media-slider").show()
+                        //     $(this).hide()
+                        // })
 
                         $(document).on('click','.slider-close-icon',function(){
                             $(this).closest('.social-media-media-slider').hide()
@@ -1887,8 +1890,6 @@
                     url:url,
                     dataType: "json",
                     success: function (data) {
-
-                    console.log(data.save_posts,'shop saved_posts')
                     var save_posts=data.save_posts;
 
                         var auth_user={{auth()->user()->id}};
@@ -1947,7 +1948,7 @@
 
                                                     var caption =save_posts[i].caption ? save_posts[i].caption : '';
                                                         htmlView +=`<p>`+caption+`</p>
-                                                                        <div class="customer-media-container">
+                                                                        <div class="customer-media-container" data-id="`+save_posts[i].post_id+`">
                                                                             `
                                                     var imageFile = save_posts[i].media
                                                     var imageArr = jQuery.parseJSON(imageFile);
@@ -2049,10 +2050,16 @@
                                                                             <iconify-icon icon="bi:chat-right" class="comment-icon"></iconify-icon>
                                                                             <p id="`+save_posts[i].post_id+`"><span>`+save_posts[i].total_comments+`</span> Comments</p>
                                                                         </a>
-                                                                    </div>
-                                                                    </div>
-                                                                        `
-                                                    htmlView+=`</div>
+                                                                    </div>`
+                                                    if(save_posts[i].media!=null){
+                                                        htmlView+=`<div class="customer-post-comment-container">
+                                                                        <iconify-icon icon="ic:outline-remove-red-eye" class="comment-icon"></iconify-icon>
+                                                                        <p><span>`+save_posts[i].viewers+`</span> Views</p>
+                                                                </div>`
+                                                    }else{
+
+                                                    }
+                                                    htmlView+=`</div></div>
                                                                 </div>`
 
                             }
@@ -2121,10 +2128,10 @@
 
                         $('.social-media-media-slider').hide()
 
-                        $(document).on('click','.customer-media-container',function(){
-                            $(this).siblings(".social-media-media-slider").show()
-                            $(this).hide()
-                        })
+                        // $(document).on('click','.customer-media-container',function(){
+                        //     $(this).siblings(".social-media-media-slider").show()
+                        //     $(this).hide()
+                        // })
 
                         $(document).on('click','.slider-close-icon',function(){
                             $(this).closest('.social-media-media-slider').hide()
@@ -2209,7 +2216,7 @@
 
                                                     var caption =save_posts[i].caption ? save_posts[i].caption : '';
                                                         htmlView +=`<p>`+caption+`</p>
-                                                                        <div class="customer-media-container">
+                                                                        <div class="customer-media-container" data-id="`+save_posts[i].post_id+`">
                                                                             `
                                                     var imageFile = save_posts[i].media
                                                     var imageArr = jQuery.parseJSON(imageFile);
@@ -2311,14 +2318,16 @@
                                                                             <iconify-icon icon="bi:chat-right" class="comment-icon"></iconify-icon>
                                                                             <p id="`+save_posts[i].post_id+`"><span>`+save_posts[i].total_comments+`</span> Comments</p>
                                                                         </a>
-                                                                    </div>
-                                                                    <div class="customer-post-comment-container">
+                                                                    </div>`
+                                                    if(save_posts[i].media!=null){
+                                                        htmlView+=`<div class="customer-post-comment-container">
                                                                         <iconify-icon icon="ic:outline-remove-red-eye" class="comment-icon"></iconify-icon>
                                                                         <p><span>`+save_posts[i].viewers+`</span> Views</p>
-                                                                    </div>
-                                                                    </div>
-                                                                        `
-                                                    htmlView+=`</div>
+                                                                    </div>`
+                                                    }else{
+
+                                                    }
+                                                    htmlView+=`</div></div>
                                                                 </div>`
 
                             }
@@ -2390,6 +2399,13 @@
                         $(document).on('click','.customer-media-container',function(){
                             $(this).siblings(".social-media-media-slider").show()
                             $(this).hide()
+                            var post_id=$(this).data('id');
+                            var add_url = "{{ route('user.view.post') }}";
+                            $.ajax({
+                                    method: "GET",
+                                    url: add_url,
+                                    data:{ post_id : post_id}
+                                })
                         })
 
                         $(document).on('click','.slider-close-icon',function(){
@@ -2474,7 +2490,7 @@
 
                                         var caption =save_posts[i].caption ? save_posts[i].caption : '';
                                             htmlView +=`<p>`+caption+`</p>
-                                                            <div class="customer-media-container">
+                                                            <div class="customer-media-container" data-id="`+save_posts[i].post_id+`" >
                                                                 `
                                         var imageFile = save_posts[i].media
                                         var imageArr = jQuery.parseJSON(imageFile);
@@ -2576,10 +2592,17 @@
                                                                 <iconify-icon icon="bi:chat-right" class="comment-icon"></iconify-icon>
                                                                 <p id="`+save_posts[i].post_id+`"><span>`+save_posts[i].total_comments+`</span> Comments</p>
                                                             </a>
-                                                        </div>
-                                                        </div>
-                                                            `
-                                        htmlView+=`</div>
+                                                        </div>`
+                                            if(save_posts[i].media!=null){
+                                            htmlView+=`<div class="customer-post-comment-container">
+                                                            <iconify-icon icon="ic:outline-remove-red-eye" class="comment-icon"></iconify-icon>
+                                                            <p><span>`+save_posts[i].viewers+`</span> Views</p>
+                                                    </div>`
+                                                    }else{
+                                                        
+                                                    }
+
+                                        htmlView+=`</div></div>
                                                     </div>`
 
                 }
@@ -2648,10 +2671,17 @@
 
             $('.social-media-media-slider').hide()
 
-            $(document).on('click','.customer-media-container',function(){
-                $(this).siblings(".social-media-media-slider").show()
-                $(this).hide()
-            })
+            // $(document).on('click','.customer-media-container',function(){
+            //     $(this).siblings(".social-media-media-slider").show()
+            //     $(this).hide()
+            //     var post_id=$(this).data('id');
+            //     var add_url = "{{ route('user.view.post') }}";
+            //     $.ajax({
+            //             method: "GET",
+            //             url: add_url,
+            //             data:{ post_id : post_id}
+            //         })
+            // })
 
             $(document).on('click','.slider-close-icon',function(){
                 $(this).closest('.social-media-media-slider').hide()
@@ -3422,10 +3452,10 @@
 
         $('.social-media-media-slider').hide()
 
-        $(document).on('click','.customer-media-container',function(){
-            $(this).siblings(".social-media-media-slider").show()
-            $(this).hide()
-        })
+        // $(document).on('click','.customer-media-container',function(){
+        //     $(this).siblings(".social-media-media-slider").show()
+        //     $(this).hide()
+        // })
 
         $(document).on('click','.slider-close-icon',function(){
             $(this).closest('.social-media-media-slider').hide()

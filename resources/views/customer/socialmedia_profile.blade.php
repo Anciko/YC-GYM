@@ -264,7 +264,7 @@
                                     <p>{{$post->caption}}</p>
                                     @else
                                     <p>{{$post->caption}}</p>
-                                    <div class="social-media-media-container">
+                                    <div class="social-media-media-container" data-id="{{$post->id}}">
                                         <?php foreach (json_decode($post->media)as $m){?>
                                         <div class="social-media-media">
                                             @if (pathinfo($m, PATHINFO_EXTENSION) == 'mp4')
@@ -358,10 +358,13 @@
                                             <p><span>{{$total_comments}}</span> Comments</p>
                                         </a>
                                     </div>
+                                    @if($post->media!=null)
                                     <div class="social-media-post-comment-container">
                                         <iconify-icon icon="ic:outline-remove-red-eye" class="comment-icon"></iconify-icon>
                                         <p><span>{{$post->viewers}}</span> Views</p>
                                     </div>
+                                    @else
+                                    @endif
                                 </div>
                             </div>
                             @empty
