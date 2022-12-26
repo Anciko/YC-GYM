@@ -1529,12 +1529,13 @@ class SocialMediaController extends Controller
                 $message->media = json_encode($imgData);
             }
         } else {
-            $message->media = null;
+                $message->media = null;
         }
         $message->from_user_id = auth()->user()->id;
         $message->to_user_id = $to_user_id;
         $message->text = $request->text == null ?  null : $request->text;
         $message->save();
+
 
         $options = array(
             'cluster' => env('PUSHER_APP_CLUSTER'),
@@ -1548,6 +1549,12 @@ class SocialMediaController extends Controller
         );
         // $pusher->trigger('chatting.'.auth()->user()->id.'.'.$to_user_id, 'chatting-event', ['message'=>$message]);
         // $pusher->trigger('chatting.' . $to_user_id . '.' . auth()->user()->id, 'chatting-event', ['message' => $message]);
+        $message_id = $message->id;
+        $message = Chat::select('chats.*','profiles.profile_image')
+                    ->leftJoin('users','users.id','chats.to_user_id')
+                    ->leftJoin('profiles','users.profile_id','profiles.profile_image')
+                    ->where('id',$message_id)
+                    ->first();
          broadcast(new Chatting($message, $request->sender));
 
         $user_id = auth()->user()->id;
@@ -2752,7 +2759,7 @@ class SocialMediaController extends Controller
         $privilegeExpiredTs = $currentTimestamp + $expireTimeInSeconds;
 
         $token = RtcTokenBuilder::buildTokenWithUserAccount($appID, $appCertificate, $channelName, $user, $role, $privilegeExpiredTs);
-      
+
         $data['userToCall'] = $request->user_to_call;
         $data['channelName'] = $channelName;
         $data['from'] = Auth::id();
