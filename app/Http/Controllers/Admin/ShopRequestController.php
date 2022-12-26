@@ -77,6 +77,11 @@ class ShopRequestController extends Controller
         }
         // $user->shopmember_type_id = 0;
 
+        $from_date = Carbon::now();
+        $to_date = Carbon::now()->addMonths($shopmember->duration);
+        $user->shopfrom_date = $from_date;
+        $user->shopto_date = $to_date;
+
         $user->update();
         return back();
     }
