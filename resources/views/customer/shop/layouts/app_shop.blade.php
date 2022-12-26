@@ -306,6 +306,11 @@
     <script src="{{asset('js/customer/jquery.mentiony.js')}}"></script>
 
     <script>
+        $(".social-media-left-container-trigger").click(function(){
+            $('.social-media-left-container').toggleClass("social-media-left-container-open")
+            $('.social-media-overlay').toggle()
+            $(".social-media-left-container-trigger .arrow-icon").toggleClass("rotate-arrow")
+        })
         $(".cancel").hide();
         $( ".social-media-left-search-container input" ).focus(function() {
             // alert( "Handler for .focus() called." );
