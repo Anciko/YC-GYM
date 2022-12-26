@@ -1551,14 +1551,15 @@ class SocialMediaController extends Controller
         // $pusher->trigger('chatting.' . $to_user_id . '.' . auth()->user()->id, 'chatting-event', ['message' => $message]);
         $message_id = $message->id;
         $message = Chat::select('chats.*','profiles.profile_image')
-                    ->leftJoin('users','users.id','chats.to_user_id')
-                    ->leftJoin('profiles','users.profile_id','profiles.profile_image')
-                    ->where('id',$message_id)
+                    ->leftJoin('users','users.id','chats.from_user_id')
+                    ->leftJoin('profiles','users.profile_id','profiles.id')
+                    ->where('chats.id',$message_id)
                     ->first();
          broadcast(new Chatting($message, $request->sender));
 
         $user_id = auth()->user()->id;
-        $messages = DB::select("SELECT users.id as id,users.name,profiles.profile_image,chats.text,chats.created_at as date
+        $messages = DB::select("SELECT users.id as id,users.name,profiles.profile_im
+        age,chats.text,chats.created_at as date
         from
             chats
           join
@@ -2058,6 +2059,18 @@ class SocialMediaController extends Controller
 
         return response()->json([
             'success' => 'Comment deleted successfully!'
+        ]);
+    }
+
+    public function post_viewer(Request $request){
+        $id = $request->id;
+        $post_count = Post::findOrFail($id);
+        if(auth()->user()->id != $post_count->user_id){
+            $post_count->viewers = $post_count->viewers + 1;
+        }
+        $post_count->update();
+        return response()->json([
+            'message' => 'Counted'
         ]);
     }
 
