@@ -156,8 +156,9 @@ class ShopController extends Controller
             }
         }
         $shop_member_level = ShopMember::select('member_type')->where('id',$user->shopmember_type_id)->first();
-        if($user->shop_post_count == 0 AND $shop_member_level != 'level3' AND $user->member_type != 'Ruby Premium' OR
-        $user->member_type != 'Ruby'){
+        if(($user->shop_post_count == 0 AND $shop_member_level != 'level3') OR
+                $user->member_type != 'Ruby Premium' OR
+                $user->member_type != 'Ruby'){
             return response()->json([
                 'message' => 'cannot post',
             ]);
