@@ -203,12 +203,10 @@
 
                         </div>
                     </div>
-                    <form action="{{route('socialmedia_profile_photos')}}" method="POST">
-                        @csrf
-                        <input type="hidden" value={{$user->id}} name="user_id">
-                        <button type="submit" class="social-media-profile-photos-link">Photos</button>
+
+                        <a href="{{route('socialmedia_profile_photos',$user->id)}}" class="social-media-profile-photos-link">Photos</a>
                         {{-- <a href="{{route('socialmedia_profile_photos')}}" class="social-media-profile-photos-link">Photos</a> --}}
-                    </form>
+
                     <div class="social-media-profile-posts-parent-container">
                         <p>Post & Activities</p>
 
@@ -359,6 +357,10 @@
                                             <iconify-icon icon="bi:chat-right" class="comment-icon"></iconify-icon>
                                             <p><span>{{$total_comments}}</span> Comments</p>
                                         </a>
+                                    </div>
+                                    <div class="social-media-post-comment-container">
+                                        <iconify-icon icon="ic:outline-remove-red-eye" class="comment-icon"></iconify-icon>
+                                        <p><span>{{$post->viewers}}</span> Views</p>
                                     </div>
                                 </div>
                             </div>

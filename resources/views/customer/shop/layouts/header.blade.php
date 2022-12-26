@@ -37,7 +37,7 @@
             @hasanyrole('System_Admin')
             <a href="{{route('home')}}">Dashboard</a>
             @endhasanyrole
-            <a href="#">Shop</a>
+            <a href="{{route('shop')}}">Shop</a>
             {{-- <a href="#">Training Center</a> --}}
         </div>
 

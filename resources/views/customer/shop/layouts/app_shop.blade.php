@@ -167,11 +167,20 @@
                         <iconify-icon icon="ic:round-upgrade" class="addpost-icon"></iconify-icon>
                         <p>Upgrade</p>
                     </a>
-                    @elseif (auth()->user()->shop_request==3 && auth()->user()->shop_post_count!=0)
-                    <button class="social-media-addpost-btn customer-primary-btn" data-bs-toggle="modal" data-bs-target="#addPostModal">
+                    @elseif (auth()->user()->shop_request==3 && (auth()->user()->shop_post_count!=0))
+                    <button class="social-media-addpost-btn customer-primary-btn margin-top" data-bs-toggle="modal" data-bs-target="#addPostModal">
                         <iconify-icon icon="akar-icons:circle-plus" class="addpost-icon"></iconify-icon>
                         <p>Add Post</p>
                     </button>
+                    @elseif (auth()->user()->shopfrom_date==null && auth()->user()->shopto_date==null)
+                    <a href="javascript:void(0)" class="social-media-addpost-btn customer-primary-btn" id="dateexpired">
+                        <iconify-icon icon="akar-icons:circle-plus" class="addpost-icon"></iconify-icon>
+                        <p>Add Post</p>
+                    </a>
+                    <a href="{{route('shoprequest')}}" class="social-media-addpost-btn customer-primary-btn">
+                        <iconify-icon icon="ic:round-upgrade" class="addpost-icon"></iconify-icon>
+                        <p>Upgrade</p>
+                    </a>
                     @else
                     <a href="{{route('shoprequest')}}" class="social-media-addpost-btn customer-primary-btn">
                         <iconify-icon icon="akar-icons:circle-plus" class="addpost-icon"></iconify-icon>
@@ -317,6 +326,17 @@
             $(".cancel").hide()
             $('.social-media-left-search-container input').val('')
         });
+
+        $(document).on('click', '#dateexpired', function(e) {
+            Swal.fire({
+                        text: "Shop level expired.Please upgrade level",
+                        timerProgressBar: true,
+                        timer: 5000,
+                        icon: 'warning',
+                        });
+        });
+
+
 
         $('.social-media-left-search-container input').on('keyup', function(){
                             search();
@@ -564,14 +584,14 @@
                 url = url.replace(':id', id);
                 var group_url = "{{ route('socialmedia.group', ':id') }}";
                 group_url = group_url.replace(':id', id);
-
+                text =   data[i].text == null ? "" :  data[i].text;
                 if(data[i].is_group == 0){
                     if(data[i].profile_image!=null){
                         htmlView += `<a href=`+url+` class="social-media-left-messages-row">
                                             <img  class="nav-profile-img" src="{{asset('storage/post/`+data[i].profile_image+`')}}"/>
                                         <p>
                                             ` + data[i].name + `<br>
-                                            <span>` + data[i].text + ` </span>
+                                            <span>` + text + ` </span>
                                         </p>
                                     </a>
                             `
@@ -580,7 +600,7 @@
                                             <img  class="nav-profile-img" src="{{asset('img/customer/imgs/user_default.jpg')}}" />
                                         <p>
                                             ` + data[i].name + `<br>
-                                            <span>` + data[i].text + ` </span>
+                                            <span>` + text + ` </span>
                                         </p>
                                     </a>
                             `
@@ -593,7 +613,7 @@
                                             <img  class="nav-profile-img" src="{{asset('img/customer/imgs/group_default.png')}}" />
                                         <p>
                                             ` + data[i].name + `<br>
-                                            <span>` + data[i].text + ` </span>
+                                            <span>` + text + ` </span>
                                         </p>
                                     </a>
                             `
@@ -620,6 +640,8 @@
 
                 var group_url = "{{ route('socialmedia.group', ':id') }}";
                 group_url = group_url.replace(':id', id);
+
+               text =  latest_messages[i].text == null ? "" : latest_messages[i].text;
                 if(latest_messages[i].is_group == 0){
 
                     if(latest_messages[i].profile_image===null){
@@ -628,7 +650,7 @@
                                             <img  class="nav-profile-img" src="{{asset('img/customer/imgs/user_default.jpg')}}"/>
                                         <p>
                                             ` + latest_messages[i].name + `<br>
-                                            <span>` + latest_messages[i].text + ` </span>
+                                            <span>` + text + ` </span>
                                         </p>
                                     </a>
                             `
@@ -638,7 +660,7 @@
                                             <img  class="nav-profile-img" src="{{asset('storage/post/`+latest_messages[i].profile_image+`')}}"/>
                                         <p>
                                             ` + latest_messages[i].name + `<br>
-                                            <span>` + latest_messages[i].text + ` </span>
+                                            <span>` + text + ` </span>
                                         </p>
                                     </a>
                             `
@@ -651,7 +673,7 @@
                                             <img  class="nav-profile-img" src="{{asset('img/customer/imgs/group_default.png')}}"/>
                                         <p>
                                             ` + latest_messages[i].name + `<br>
-                                            <span>` + latest_messages[i].text + ` </span>
+                                            <span>` + text + ` </span>
                                         </p>
                                     </a>
                             `

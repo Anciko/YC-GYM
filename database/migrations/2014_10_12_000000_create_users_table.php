@@ -27,6 +27,8 @@ class CreateUsersTable extends Migration
             $table->integer('shopmember_type_id')->default(0);
             $table->integer('shop_request')->default(0);
             $table->integer('shop_post_count')->default(0);
+            $table->date('shopfrom_date')->nullable();
+            $table->date('shopto_date')->nullable();
 
             $table->string('member_code')->nullable();
             $table->boolean('ingroup')->default(0);

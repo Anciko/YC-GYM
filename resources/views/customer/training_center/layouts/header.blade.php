@@ -22,12 +22,11 @@
 
         <div class="customer-navlinks-container">
 
-            <a href="{{route('socialmedia')}}">Home</a>
+            <a href="{{route('home')}}">Home</a>
             @hasanyrole('System_Admin')
             <a href="{{route('home')}}">Dashboard</a>
             @endhasanyrole
-            <a href="#">Shop</a>
-            <a href="#">Search</a>
+            <a href="{{route('shop')}}">Shop</a>
             @auth
             @if ( auth()->user()->request_type ==null && count(auth()->user()->roles)<1)
                 <a href="{{route('customer-personal_infos')}}">Training Center</a>

@@ -213,6 +213,16 @@ class SocialmediaController extends Controller
         ]);
     }
 
+    public function user_view_post(Request $request)
+    {
+        $post_id=$request->post_id;
+        $post=Post::findOrFail($post_id);
+        if(auth()->user()->id != $post->user_id){
+            $post->viewers = $post->viewers + 1;
+        }
+        $post->update();
+    }
+
     public function profile_photo_delete(Request $request)
     {
         $user = User::find(auth()->user()->id);
@@ -418,9 +428,9 @@ class SocialmediaController extends Controller
         return view('customer.socialmedia_likes', compact('post_likes', 'post'));
     }
 
-    public function socialmedia_profile_photos(Request $request)
+    public function socialmedia_profile_photos(Request $request,$id)
     {
-        $user_id = $request->user_id;
+        $user_id = $id;
 
         $user = User::findOrFail($user_id);
 
