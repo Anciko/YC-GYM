@@ -32,7 +32,8 @@
 <div class="shop-right-container">
     <div class="shop-posts-header-container">
         <p>{{$user->name}}'s Shop</p>
-        <button type="button" class="shop-rating-btn" data-bs-toggle="modal" data-bs-target="#ratingModal">
+        {{-- <button type="button" class="shop-rating-btn" data-bs-toggle="modal" data-bs-target="#ratingModal"> --}}
+        <button type="button" class="shop-rating-btn" >
             Rate
           </button>
         <div class="shop-search-container">
@@ -67,6 +68,7 @@
                     data:{ rating : rating,post_user:post_user},
                     datatype: "json",
                     success: function(data) {
+                        
                         Swal.fire({
                                     title:'Submitted',
                                     text: data.success,
@@ -82,11 +84,14 @@
     $(document).on('click','.shop-post-header-icon',function(){
                 $(this).next().toggle()
             })
+    $(document).on('click','.shop-rating-btn',function(){
+        $('#ratingModal').modal('show');
+            })
 
     $(document).ready(function() {
         // data=@json($posts);
         // all_posts(data)
-
+        $('#ratingModal').modal('hide');
         $('#caption_search').on('keyup', function() {
                 search();
             });
