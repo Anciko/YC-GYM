@@ -46,14 +46,14 @@
 </div>
 
 <div class="customer-diamond-food-track-header">
-    <h1>Log Everything you eat today</h1>
-    <span>Be honest and track everything. We’ll optimize your program and based on the data</span>
+    <h1>{{__('msg.log everything you eat today')}}</h1>
+    <span>{{__('msg.be honest and track everything. well optimize your program and based on the data')}}</span>
 </div>
 
 <div class="customer-food-tracker-parent-container">
     <div class="customer-food-tracker-container">
         <div class="customer-food-tracker-header">
-            <h1>Breakfast</h1>
+            <h1>{{__('msg.breakfast')}}</h1>
         </div>
         <form>
             <input type="text" id="breakfast" placeholder="Search for food...">
@@ -64,7 +64,7 @@
     </div>
     <div class="customer-food-tracker-container">
         <div class="customer-food-tracker-header">
-            <h1>Lunch</h1>
+            <h1>{{__('msg.lunch')}}</h1>
 
         </div>
         <form>
@@ -76,7 +76,7 @@
     </div>
     <div class="customer-food-tracker-container">
         <div class="customer-food-tracker-header">
-            <h1>Snack</h1>
+            <h1>{{__('msg.snack')}}</h1>
         </div>
         <form>
             <input type="text" id="snack" placeholder="Search for food...">
@@ -87,7 +87,7 @@
     </div>
     <div class="customer-food-tracker-container">
         <div class="customer-food-tracker-header">
-            <h1>Dinner</h1>
+            <h1>{{__('msg.dinner')}}</h1>
             <!-- <p>Total : <span>600cal</span></p> -->
         </div>
         <form>
@@ -104,13 +104,13 @@
 <table class="customer-added-food-list-container">
     <thead>
         <tr>
-            <th>No.</th>
-            <th>Name</th>
-            <th>Cal</th>
-            <th>Carb</th>
-            <th>Protein</th>
-            <th>Fat</th>
-            <th>No. of servings</th>
+            <th>{{__('msg.no.')}}</th>
+            <th>{{__('msg.name')}}</th>
+            <th>{{__('msg.cal')}}</th>
+            <th>{{__('msg.carb')}}</th>
+            <th>{{__("msg.protein")}}</th>
+            <th>{{__('msg.fat')}}</th>
+            <th>{{__('msg.no. of servings')}}</th>
             <th></th>
         </tr>
     </thead>
@@ -122,7 +122,7 @@
 </div>
 
 <button class="customer-addfood-confirm-btn customer-primary-btn save">
-    Save And Continue
+    {{__('msg.save and continue')}}
 </button>
 
   <!-- Option 1: Bootstrap Bundle with Popper -->

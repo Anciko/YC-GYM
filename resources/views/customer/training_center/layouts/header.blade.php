@@ -5,9 +5,10 @@
                 {{-- LOGO --}}
             </div>
             <div class="customer-language-container">
-                <select>
-                    <option value="">Myanmar</option>
-                    <option value="">English</option>
+                <select class="langChange">
+                    <option value="en" {{session()->get('locale') == 'en' ? 'selected' : ''}}>English</option>
+                    <option value="mm" {{session()->get('locale') == 'mm' ? 'selected' : ''}}>Myanmar</option>
+
                 </select>
             </div>
             <div class="theme-contaier">
@@ -22,30 +23,30 @@
 
         <div class="customer-navlinks-container">
 
-            <a href="{{route('home')}}">Home</a>
+            <a href="{{route('home')}}">{{ __('msg.home') }}</a>
             @hasanyrole('System_Admin')
             <a href="{{route('home')}}">Dashboard</a>
             @endhasanyrole
-            <a href="{{route('shop')}}">Shop</a>
+            <a href="{{route('shop')}}">{{__('msg.shop')}}</a>
             @auth
             @if ( auth()->user()->request_type ==null && count(auth()->user()->roles)<1)
-                <a href="{{route('customer-personal_infos')}}">Training Center</a>
+                <a href="{{route('customer-personal_infos')}}">{{__('msg.training center')}}</a>
 
             @elseif(auth()->user()->request_type !=null && auth()->user()->active_status==0)
-                <a href="{{route('customer_payment')}}">Training Center</a>
+                <a href="{{route('customer_payment')}}">{{__('msg.training center')}}</a>
             @endif
 
             @endauth
             @hasanyrole('Diamond|Platinum|Gym Member')
-            <a href="{{route('training_center.index')}}">Training Center</a>
+            <a href="{{route('training_center.index')}}">{{__('msg.training center')}}</a>
             @endhasanyrole
 
             @hasanyrole('Gold|Ruby|Ruby Premium')
-            <a href="{{route('groups')}}">Training Center</a>
+            <a href="{{route('groups')}}">{{__('msg.training center')}}</a>
             @endhasanyrole
 
             @hasanyrole('Trainer')
-            <a href="{{route('trainer')}}">Training Center</a>
+            <a href="{{route('trainer')}}">{{__('msg.training center')}}</a>
             @endhasanyrole
             @auth
             <div class="customer-dropdown-container">
@@ -63,10 +64,10 @@
                         {{-- <p class="customer-dropdown-name">{{auth()->user()->name}}</p> --}}
                     </a>
                     <ul class="customer-dropdown-menu">
-                        <li><a href="{{route('customer-profile')}}">Profile</a></li>
+                        <li><a href="{{route('customer-profile')}}">{{__('msg.profile')}}</a></li>
                         <li><form class="dropdown-item" id="logout-form" action="{{ route('logout') }}" method="POST">
                             @csrf
-                            <button class="customer-primary-btn customer-login-btn" type="submit">Logout</button>
+                            <button class="customer-primary-btn customer-login-btn" type="submit">{{__('msg.log out')}}</button>
                         </form></li>
 
                     </ul>

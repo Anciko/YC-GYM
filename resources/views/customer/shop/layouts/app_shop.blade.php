@@ -63,12 +63,12 @@
             <div class="modal-dialog modal-dialog-centered">
               <div class="modal-content">
                 <div class="modal-header">
-                  <h1 class="modal-title fs-5" id="exampleModalLabel">Create A Shop Post</h1>
+                  <h1 class="modal-title fs-5" id="exampleModalLabel">{{__('msg.create a post')}}</h1>
                   <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <form class="modal-body" id="form" enctype= multipart/form-data>
                   <div class="addpost-caption">
-                    <p>Post Caption</p>
+                    <p>{{__('msg.post caption')}}</p>
                     <textarea placeholder="Caption goes here..." name="caption" id="addPostCaption" class="addpost-caption-input"></textarea>
                   </div>
 
@@ -78,7 +78,7 @@
 
                         <div class="addpost-photovideo-btn">
                             <iconify-icon icon="akar-icons:circle-plus" class="addpst-photovideo-btn-icon"></iconify-icon>
-                            <p>Photo/Video</p>
+                            <p>{{__('msg.photo/video')}}</p>
                             <input type="file" id="addPostInput" name="addPostInput[]" multiple enctype="multipart/form-data">
                         </div>
 
@@ -91,7 +91,7 @@
 
 
                     </div>
-                    <button type="submit" class="customer-primary-btn addpost-submit-btn">Post</button>
+                    <button type="submit" class="customer-primary-btn addpost-submit-btn">{{__('msg.post')}}</button>
                 </form>
 
               </div>
@@ -102,7 +102,7 @@
             <div class="modal-dialog modal-dialog-centered">
               <div class="modal-content">
                 <div class="modal-header">
-                  <h1 class="modal-title fs-5" id="exampleModalLabel">Edit Post</h1>
+                  <h1 class="modal-title fs-5" id="exampleModalLabel">{{__('msg.edit post')}}</h1>
                   <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <form class="modal-body" id="edit_form" enctype= multipart/form-data>
@@ -114,7 +114,7 @@
                     <input type="hidden" id="edit_post_id">
 
                   <div class="addpost-caption">
-                    <p>Post Caption</p>
+                    <p>{{__('msg.post caption')}}</p>
                     <textarea placeholder="Caption goes here..." name="caption" id="editPostCaption" class="addpost-caption-input"></textarea>
                   </div>
 
@@ -124,7 +124,7 @@
 
                         <div class="addpost-photovideo-btn">
                             <iconify-icon icon="akar-icons:circle-plus" class="addpst-photovideo-btn-icon"></iconify-icon>
-                            <p>Photo/Video</p>
+                            <p>{{__('msg.photo/video')}}</p>
                             <input type="file" id="editPostInput" name="editPostInput[]" multiple enctype="multipart/form-data">
                         </div>
 
@@ -139,7 +139,7 @@
                     </div>
                     {{-- <input type="submit" class="customer-primary-btn addpost-submit-btn" value="Update"> --}}
                     {{-- <button type="button" class="customer-primary-btn addpost-submit-btn "  id="editpost-submit-btn">Update</button> --}}
-                    <button type="submit" class="customer-primary-btn addpost-submit-btn">Post</button>
+                    <button type="submit" class="customer-primary-btn addpost-submit-btn">{{__('msg.post')}}</button>
                 </form>
 
               </div>
@@ -150,7 +150,10 @@
 
         <div class="nav-overlay">
         </div>
-
+            @php
+                $date=Carbon\Carbon::now()->format('Y-m-d');
+                $user=auth()->user();
+            @endphp
             <div class="customer-main-content-container">
                 <div class="social-media-header-btns-container margin-top">
                     {{-- <a class="back-btn" href="{{route("socialmedia")}}"> --}}
@@ -161,37 +164,37 @@
                     @if (auth()->user()->shop_request==2)
                     <button class="social-media-addpost-btn customer-primary-btn" data-bs-toggle="modal" data-bs-target="#addPostModal">
                         <iconify-icon icon="akar-icons:circle-plus" class="addpost-icon"></iconify-icon>
-                        <p>Add Post</p>
+                        <p>{{__('msg.add post')}}</p>
                     </button>
                     <a href="{{route('shoprequest')}}" class="social-media-addpost-btn customer-primary-btn">
                         <iconify-icon icon="ic:round-upgrade" class="addpost-icon"></iconify-icon>
-                        <p>Upgrade</p>
+                        <p>{{__('msg.upgrade')}}</p>
                     </a>
                     @elseif (auth()->user()->shop_request==3 && (auth()->user()->shop_post_count!=0))
                     <button class="social-media-addpost-btn customer-primary-btn" data-bs-toggle="modal" data-bs-target="#addPostModal">
                         <iconify-icon icon="akar-icons:circle-plus" class="addpost-icon"></iconify-icon>
-                        <p>Add Post</p>
+                        <p>{{__('msg.add post')}}</p>
                     </button>
                     @elseif (auth()->user()->shopfrom_date==null && auth()->user()->shopto_date==null)
                     <a href="javascript:void(0)" class="social-media-addpost-btn customer-primary-btn" id="dateexpired">
                         <iconify-icon icon="akar-icons:circle-plus" class="addpost-icon"></iconify-icon>
-                        <p>Add Post</p>
+                        <p>{{__('msg.add post')}}</p>
                     </a>
                     <a href="{{route('shoprequest')}}" class="social-media-addpost-btn customer-primary-btn">
                         <iconify-icon icon="ic:round-upgrade" class="addpost-icon"></iconify-icon>
-                        <p>Upgrade</p>
+                        <p>{{__('msg.upgrade')}}</p>
                     </a>
                     @else
                     <a href="{{route('shoprequest')}}" class="social-media-addpost-btn customer-primary-btn">
                         <iconify-icon icon="akar-icons:circle-plus" class="addpost-icon"></iconify-icon>
-                        <p>Rent a shop</p>
+                        <p>{{__('msg.rent a shop')}}</p>
                     </a>
                     @endif
                     </div>
                 </div>
 
                 <div class="social-media-left-container-trigger">
-                    Friends
+                    {{__('msg.friends')}}
                     <iconify-icon icon="bi:arrow-right" class="arrow-icon"></iconify-icon>
                 </div>
 
@@ -205,14 +208,14 @@
                                 <iconify-icon icon="akar-icons:search" class="search-icon"></iconify-icon>
                             </div>
                             <div class="cancel">
-                            <p class="customer-secondary-btn cancel" >Cancel</p>
+                            <p class="customer-secondary-btn cancel" >{{__('msg.cancel')}}</p>
                             </div>
                         </div>
                         <div class="social-media-left-infos-container">
                             <div class="social-media-left-friends-container">
                                 <div class="social-media-left-container-header">
-                                    <p>Friends</p>
-                                    <a href="{{route('friendsList',auth()->user()->id)}}">See All <iconify-icon icon="bi:arrow-right" class="arrow-icon"></iconify-icon></a>
+                                    <p>{{__('msg.friends')}}</p>
+                                    <a href="{{route('friendsList',auth()->user()->id)}}">{{__('msg.see all')}} <iconify-icon icon="bi:arrow-right" class="arrow-icon"></iconify-icon></a>
                                 </div>
                                 <div class="social-media-left-friends-rows-container">
 
@@ -240,8 +243,8 @@
 
                             <div class="social-media-left-messages-container">
                                 <div class="social-media-left-container-header">
-                                    <p id = "messages">Messages</p>
-                                    <a href="{{route('message.seeall')}}">See All <iconify-icon icon="bi:arrow-right" class="arrow-icon"></iconify-icon></a>
+                                    <p id = "messages">{{__('msg.messages')}}</p>
+                                    <a href="{{route('message.seeall')}}">{{__('msg.see all')}} <iconify-icon icon="bi:arrow-right" class="arrow-icon"></iconify-icon></a>
                                 </div>
 
                                 <div class="social-media-left-messages-rows-container">
@@ -253,11 +256,11 @@
 
                         <div class="shop-left-searched-items-container">
                             <a href="#" class="shop-searched-item">
-                                <p>Name</p>
+                                <p>{{__('msg.name')}}</p>
                                 <iconify-icon icon="bi:arrow-right-short" class="arrow-icon"></iconify-icon>
                             </a>
                             <a href="#" class="shop-searched-item">
-                                <p>Name</p>
+                                <p>{{__('msg.name')}}</p>
                                 <iconify-icon icon="bi:arrow-right-short" class="arrow-icon"></iconify-icon>
                             </a>
                         </div>
@@ -335,6 +338,15 @@
                         icon: 'warning',
                         });
         });
+        $(document).on('click', '#postcount', function(e) {
+            Swal.fire({
+                        text: "You reached post limit.Please Upgrade Level",
+                        timerProgressBar: true,
+                        timer: 5000,
+                        icon: 'warning',
+                        });
+        });
+
 
 
 

@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
   <head>
     <!-- Required meta tags -->
     <meta charset="utf-8">
@@ -58,7 +58,12 @@
     <!--nav bar-->
     <script src={{asset('js/navBar.js')}}></script>
 
-
+    <script>
+        var url = "{{route('langChange')}}"
+        $('.langChange').change(function(){
+            window.location.href = url + "?lang="+$(this).val()
+        })
+    </script>
 
     @stack('scripts')
 
