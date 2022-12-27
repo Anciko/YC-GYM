@@ -2682,7 +2682,7 @@
                 }
             }
 
-            $('.customer-profile-shop-container_data').html(htmlView);
+            $('.customer-profile-shop-container_data1').html(htmlView);
             $('.social-media-media-slider').hide();
             //image slider start
                     console.log($(".image-slider"))
