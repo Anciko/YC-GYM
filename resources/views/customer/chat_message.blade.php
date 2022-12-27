@@ -314,10 +314,6 @@
 
         </div>
 
-        <!-- Incoming Call  -->
-
-
-        <!-- End of Incoming Call  -->
 
         <div id="incomingCallContainer">
 
@@ -693,17 +689,12 @@
                                         } else if (imageArr[key].split('.').pop() === 'mp4' || imageArr[key].split('.')
                                             .pop() ===
                                             'mov' || imageArr[key].split('.').pop() === 'webm') {
-                                                return ` < video width = "100%"
-                                height = "100%"
-                                controls >
-                                    <
-                                    source src = "{{ asset('storage/customer_message_media/${imageArr[key]}') }}"
-                                type = "video/mp4" >
-                                    <
-                                    /video>`
+                                                return `<video width = "100%" height = "100%" controls>
+                                    <source src = "{{ asset('storage/customer_message_media/${imageArr[key]}') }}" type = "video/mp4">
+                                    </video>`
                         }
                     }).join('')
-            } < /div>`;
+            } </div>`;
 
                 if (receive_user_img != null) {
                     messageContainer.innerHTML += `<div class="group-chat-receiver-container" data-messageId="${data.message.id}">
@@ -770,18 +761,13 @@
                                 .pop() ===
                                 'mov' || imageArr[key].split('.').pop() === 'webm') {
 
-                                return ` < video width = "100%"
-                    height = "100%"
-                    controls >
-                        <
-                        source src = "{{ asset('storage/customer_message_media/${imageArr[key]}') }}"
-                    type = "video/mp4" >
-                        <
-                        /video>`
+                                return `<video width = "100%" height = "100%" controls>
+                        <source src = "{{ asset('storage/customer_message_media/${imageArr[key]}') }}" type = "video/mp4">
+                        </video>`
 
             }
         }).join('')
-    } < /div>`
+    } </div>`
 
         if (sender_user_img != null) {
             messageContainer.innerHTML += `
@@ -935,18 +921,13 @@
                                         } else if (imageArr[key].split('.').pop() === 'mp4' || imageArr[key].split('.')
                                             .pop() ===
                                             'mov' || imageArr[key].split('.').pop() === 'webm') {
-                                                    return ` < video width = "100%"
-                                height = "100%"
-                                controls >
-                                    <
-                                    source src = "{{ asset('storage/customer_message_media/${imageArr[key]}') }}"
-                                type = "video/mp4" >
-                                    <
-                                    /video>`
+                                                    return `<video width = "100%" height = "100%" controls>
+                                    <source src = "{{ asset('storage/customer_message_media/${imageArr[key]}') }}" type = "video/mp4">
+                                    </video>`
 
                         }
                     }).join('')
-            } < /div>`;
+            } </div>`;
 
                 if (receive_user_img != null) {
                     messageContainer.innerHTML += `<div class="group-chat-receiver-container" data-messageId="${data.message.id}">
@@ -1029,18 +1010,13 @@
                                             } else if (imageArr[key].split('.').pop() === 'mp4' || imageArr[key].split('.')
                                                 .pop() ===
                                                 'mov' || imageArr[key].split('.').pop() === 'webm') {
-                                                    return ` < video width = "100%"
-                    height = "100%"
-                    controls >
-                        <
-                        source src = "{{ asset('storage/customer_message_media/${imageArr[key]}') }}"
-                    type = "video/mp4" >
-                        <
-                        /video>`
+                                                    return `<video width = "100%" height = "100%" controls>
+                        <source src = "{{ asset('storage/customer_message_media/${imageArr[key]}') }}" type = "video/mp4">
+                        </video>`
 
             }
         }).join('')
-    } < /div>`;
+    } </div>`;
 
         if (receive_user_img != null) {
             messageContainer.innerHTML += `<div class="group-chat-receiver-container" data-messageId="${data.message.id}">
@@ -1117,11 +1093,8 @@
         let receiver_user_name = @json($receiver_user->name);
 
 
-
         let incoming_call = document.getElementById('incoming_call')
         let incomingCallContainer = document.querySelector('#incomingCallContainer')
-
-        let friends = @json($friends);
 
         if (voice_receive_user_img == null) {
             profile = `img/customer/imgs/user_default.jpg`
@@ -1129,374 +1102,6 @@
             var image = @json($receiver_user->user_profile?->profile_image);
             profile = `storage/post/${image}`
         }
-
-        Echo.channel('agora-videocall')
-            .listen(".MakeAgoraCall", ({
-                data
-            }) => {
-                console.log('listening-------------------------', data);
-                receiver_user_id = parseInt(data.userToCall)
-                if (parseInt(data.userToCall) === parseInt(authuserId)) {
-
-
-
-                    incomingCall = true
-
-
-                    // console.log('incomingcaller', incomingCaller);
-
-                    console.log('llllllrweer', incomingCall);
-
-                    console.log('incoming audio calll checkkkkk', incomingAudioCall);
-                    if (incomingCall) {
-                        $(".chat-backdrop").show();
-
-                        incomingCallContainer.innerHTML = `<div class="row my-5" id="incoming_call">
-
-                                <div class="card shadow p-4 col-12">
-                                    <p>
-                                        Calling from ${receiveruser_name}
-                                    </p>
-                                    <div class="d-flex justify-content-center gap-3">
-                                        <button type="button" class="btn btn-sm btn-danger"  id="" onclick="declineCall()">
-                                            Decline
-                                        </button>
-                                        <button type="button" class="btn btn-sm btn-success ml-5" onclick="acceptCall()">
-                                            Accept
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>`;
-
-
-                    }
-                    agoraChannel = data.channelName
-                }
-            }).listen(".MakeAgoraAudioCall", ({
-                data
-            }) => {
-                console.log('listening-------------------------', data);
-                receiver_user_id = parseInt(data.userToCall)
-                if (parseInt(data.userToCall) === parseInt(authuserId)) {
-
-
-                    incomingCall = true
-                    incomingAudioCall = true
-
-                    if (incomingCall) {
-                        $(".chat-backdrop").show();
-                        if (incomingAudioCall) {
-                            incomingCallContainer.innerHTML = `<div class="row my-5" id="incoming_call">
-
-                                <div class="card shadow p-4 col-12">
-                                    <p>
-                                       Calling from ${receiveruser_name}
-                                    </p>
-                                    <div class="d-flex justify-content-center gap-3">
-                                        <button type="button" class="btn btn-sm btn-danger"  id="" onclick="declineCall()">
-                                            Decline
-                                        </button>
-                                        <button type="button" class="btn btn-sm btn-success ml-5" onclick="acceptCall()">
-                                            Accept
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>`;
-
-                        }
-
-
-                    }
-                    agoraChannel = data.channelName
-                }
-            }).listen(".DeclineCallUser", ({
-                data
-            }) => {
-                if (parseInt(data.userFromCall) == parseInt(authuserId)) {
-                    video_container.innerHTML = "";
-                    $(".chat-backdrop").hide();
-                    location.reload(true)
-                }
-            })
-
-
-
-        async function placeCall(id, call_name) {
-            // console.log(id, call_name);
-            try {
-                const channelName = `${authuser}_${call_name}`;
-                const tokenRes = await generateToken(channelName)
-
-                console.log(tokenRes.data);
-                console.log(tokenRes, "call Token")
-                axios.post("/agora/call-user", {
-                    user_to_call: id,
-                    username: authuser,
-                    channel_name: channelName,
-                });
-                initializeAgora()
-                joinRoom(tokenRes.data, channelName)
-                callPlaced = true
-
-                videoCallEvent = true;
-
-                // if(callPlaced){
-                //     video_container.classList.remove('hide')
-                // }
-            } catch (error) {
-                console.log("No internet connection");
-            }
-        }
-
-        async function placeCallAudio(id, call_name) {
-            try {
-                const channelName = `${authuser}_${call_name}`;
-                const tokenRes = await generateToken(channelName);
-
-                console.log(tokenRes.data);
-
-                axios.post("/agora/call-audio-user", {
-                    user_to_call: id,
-                    username: authuser,
-                    channel_name: channelName,
-                });
-                initializeAgora()
-                joinRoom(tokenRes.data, channelName)
-                callPlaced = true;
-                incomingAudioCall = true;
-
-                audioCallEvent = true;
-                // if(callPlaced){
-                //     video_container.classList.remove('hide')
-                // }
-            } catch (error) {
-                console.log(error);
-            }
-        }
-
-
-        function generateToken(channelName) {
-            return axios.post("/agora/token", {
-                channelName,
-            });
-        }
-
-        function initializeAgora() {
-            client = AgoraRTC.createClient({
-                mode: "rtc",
-                codec: "h264"
-            });
-            client.init(
-                agora_id,
-                () => {
-                    console.log("AgoraRTC client initialized");
-                },
-                (err) => {
-                    console.log("AgoraRTC client init failed", err);
-                }
-            );
-        }
-
-        async function acceptCall() {
-            console.log('call accept');
-            initializeAgora();
-            const tokenRes = await generateToken(agoraChannel);
-            joinRoom(tokenRes.data, agoraChannel);
-            incomingCall = false;
-            callPlaced = true;
-            videoCallEvent = true;
-            incomingCallContainer.innerHTML = ""
-            console.log(tokenRes, "accept")
-        }
-
-
-
-        async function joinRoom(token, channel) {
-            console.log(token, channel);
-            client.join(
-                token,
-                channel,
-                authuser,
-                (uid) => {
-                    console.log("User " + uid + " join channel successfully");
-                    callPlaced = true
-
-                    console.log("incoming audio call lay pr", incomingAudioCall);
-
-                    if (callPlaced) {
-                        // parent.document.body.classList.add('backdrop')
-                        $("#video-main-container").show()
-                        $(".chat-backdrop").show();
-                        if (incomingAudioCall) {
-                            video_container.innerHTML += `
-                                                    <div id="audio-container">
-                                                       <div id="local-audio"></div>
-                                                        <div id="remote-audio"></div>
-                                                    <div class="text-center ">
-                                                        <p class="text-black">Audio call with ${receiver_user_name}</p>
-                                                    </div>
-                                                    <div class="action-btns">
-                                                        <button type="button" class="btn btn-info p-2 me-3" id="muteAudio" onclick="handleAudioToggle(this)">
-                                                            <i class="fa-solid fa-microphone-slash" style="width:30px"></i>
-                                                        </button>
-                                                        <button type="button" class="btn btn-danger p-2" onclick="endCall()">
-                                                            <i class="fa-solid fa-phone-slash" style="width:30px"></i>
-                                                        </button>
-                                                    </div></div>
-                                        `;
-
-                            createAudioLocalStream();
-                            initializedAgoraListeners();
-                        } else {
-                            video_container.innerHTML += `
-                                                    <div id="video-container">
-                                                        <div id="local-video"></div>
-                                                    <div id="remote-video"></div>
-                                                    <div class="action-btns">
-                                                        <button type="button" class="btn btn-info p-2" id="muteAudio" onclick="handleAudioToggle(this)">
-                                                            <i class="fa-solid fa-microphone-slash" style="width:30px"></i>
-                                                        </button>
-                                                        <button type="button" class="btn btn-primary mx-4 p-2" id="muteVideo" onclick="handleVideoToggle(this)">
-                                                            <i class="fa-solid fa-video-slash" style="width:30px"></i>
-                                                        </button>
-                                                        <button type="button" class="btn btn-danger p-2" onclick="endCall()">
-                                                            <i class="fa-solid fa-phone-slash" style="width:30px"></i>
-                                                        </button>
-                                                    </div></div>
-                                        `;
-                            createLocalStream();
-                            initializedAgoraListeners();
-                        }
-
-                    }
-
-                },
-                (err) => {
-                    console.log("Join channel failed", err);
-                }
-            );
-        }
-
-        function initializedAgoraListeners() {
-            //   Register event listeners
-            client.on("stream-published", function(evt) {
-                console.log("Publish local stream successfully");
-                console.log(evt);
-            });
-            //subscribe remote stream
-            client.on("stream-added", ({
-                stream
-            }) => {
-                console.log("New stream added: " + stream.getId());
-                client.subscribe(stream, function(err) {
-                    console.log("Subscribe stream failed", err);
-                });
-            });
-            client.on("stream-subscribed", (evt) => {
-                // Attach remote stream to the remote-video div
-                // evt.stream.play("remote-video");
-                //     client.publish(evt.stream);
-                if (videoCallEvent) {
-                    evt.stream.play("remote-video");
-                    client.publish(evt.stream);
-                }
-
-                if (audioCallEvent) {
-                    evt.stream.play("remote-audio");
-                    client.publish(evt.stream);
-                }
-
-
-
-            });
-            client.on("stream-removed", ({
-                stream
-            }) => {
-                console.log(String(stream.getId()));
-                stream.close();
-            });
-            client.on("peer-online", (evt) => {
-                console.log("peer-online", evt.uid);
-            });
-            client.on("peer-leave", (evt) => {
-                var uid = evt.uid;
-                var reason = evt.reason;
-                console.log("remote user left ", uid, "reason: ", reason);
-            });
-            client.on("stream-unpublished", (evt) => {
-                console.log(evt);
-            });
-        }
-
-
-        function createLocalStream() {
-            localStream = AgoraRTC.createStream({
-                audio: true,
-                video: true,
-            });
-            // Initialize the local stream
-            localStream.init(
-                () => {
-                    // Play the local stream
-                    localStream.play("local-video");
-                    // Publish the local stream
-                    client.publish(localStream, (data) => {
-                        console.log("publish local stream", data);
-                    });
-                },
-                (err) => {
-                    console.log(err);
-                }
-            );
-        }
-
-        function createAudioLocalStream() {
-            localStream = AgoraRTC.createStream({
-                audio: true,
-                video: false,
-            });
-            // Initialize the local stream
-            localStream.init(
-                () => {
-                    // Play the local stream
-                    localStream.play("local-audio");
-                    // Publish the local stream
-                    client.publish(localStream, (data) => {
-                        console.log("publish local stream", data);
-                    });
-                },
-                (err) => {
-                    console.log(err);
-                }
-            );
-        }
-
-
-
-        function handleAudioToggle(e) {
-            if (mutedAudio) {
-                localStream.unmuteAudio();
-                mutedAudio = false;
-                e.innerHTML = `<i class="fa-solid fa-microphone-slash" style="width:30px"></i>`;
-            } else {
-                localStream.muteAudio();
-                mutedAudio = true;
-                e.innerHTML = `<i class="fa-solid fa-microphone" style="width:30px"></i>`;
-            }
-        }
-
-        function handleVideoToggle(e) {
-            if (mutedVideo) {
-                localStream.unmuteVideo();
-                mutedVideo = false;
-                e.innerHTML = ` <i class="fa-solid fa-video-slash" style="width:30px"></i>`;
-            } else {
-                localStream.muteVideo();
-                mutedVideo = true;
-                e.innerHTML = `<i class="fa-solid fa-video" style="width:30px"></i>`;
-            }
-        }
-
 
     </script>
 @endpush
