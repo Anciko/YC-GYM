@@ -44,6 +44,25 @@ class ShopController extends Controller
         ->orWhere('shop_request',3)
         ->get();
 
+        $rating = DB::table('shop_ratings')
+        ->select('shop_id', DB::raw('count(*) as rating'))
+        ->groupBy('shop_id')
+        ->get()->toArray();
+        $sum = DB::table('shop_ratings')
+                ->select('shop_id', DB::raw('SUM(rating) as sum'))
+                ->groupBy('shop_id')
+                ->get();
+        foreach($rating as $key=>$total){
+        $rating[$key]->Avg_rating = 0;
+        foreach($sum as $value){
+            $int = intval($value->sum);
+            if($total->shop_id == $value->shop_id){
+                $result =   $int / $total->rating;
+                $rating[$key]->Avg_rating = $result;
+            }
+        }
+        }
+
         $total_count = Post::select("user_id",DB::raw("Count('id') as total_count"))
                         ->where('shop_status',1)
                         ->groupBy('user_id')
@@ -56,6 +75,15 @@ class ShopController extends Controller
                 }
             }
         }
+        foreach($shop_list as $key=>$value){
+            $shop_list[$key]['avg_rating'] = 0;
+            foreach($rating as $rat){
+                if($rat->shop_id == $value->id){
+                    $shop_list[$key]['avg_rating'] = $rat->Avg_rating;
+                }
+            }
+        }
+
         return response()->json([
             'data' => $shop_list
         ]);

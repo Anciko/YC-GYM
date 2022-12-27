@@ -24,6 +24,8 @@ use App\Models\UserSavedPost;
 use App\Models\ChatGroupMember;
 use App\Models\ChatGroupMessage;
 use App\Models\ShopPost;
+use App\Models\ShopRating;
+use App\Models\ShopReact;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
@@ -65,6 +67,9 @@ class SocialmediaController extends Controller
                 ->with('user')
                 ->paginate(30);
         }
+
+
+
 
 
         return view('customer.socialmedia', compact('posts'));
