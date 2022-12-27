@@ -1769,7 +1769,7 @@
                                                                     <div class="customer-post-like-container">
                                                                     <a class="like" id="`+save_posts[i].post_id+`">`
                                                     if(save_posts[i].isLike==0){
-                                                        htmlView+=`
+                                                        htmlView +=`
                                                         <iconify-icon icon="mdi:cards-heart-outline" class="like-icon"></iconify-icon>`
 
                                                     }else{
@@ -1781,20 +1781,39 @@
                                                                         <span class="total_likes">
                                                                             `+save_posts[i].total_likes+`
                                                                         </span>
-                                                                        <a class="viewlikes" id="`+save_posts[i].post_id+`">Likes</a>
+                                                                        <a class="viewlikes" id="`+save_posts[i].post_id+`">`
+                                                                    if(save_posts[i].total_likes >1 ){
+                                                                        htmlView+=`Likes`
+                                                                    }else{
+                                                                        htmlView+=`Like`
+                                                                    }
+                                                                    console.log(save_posts[i].total_comments,'first cmt');
+                                                        htmlView +=`</a>
                                                                     </p>
                                                                     </div>
                                                                     <div class="customer-post-comment-container">
                                                                         <a class="viewcomments" id = "`+save_posts[i].post_id+`">
                                                                             <iconify-icon icon="bi:chat-right" class="comment-icon"></iconify-icon>
-                                                                            <p id="`+save_posts[i].post_id+`"><span>`+save_posts[i].total_comments+`</span> Comments</p>
-                                                                        </a>
-                                                                    </div>`
+                                                                            <p id="`+save_posts[i].post_id+`"><span>`+save_posts[i].total_comments+`</span>`
+                                                                            if(save_posts[i].total_comments > 1){
+                                                                                htmlView+=`Comments`
+                                                                            }else{
+                                                                                htmlView+=`Comment`
+                                                                            }
+                                                                            htmlView +=`</p>
+                                                                                        </a>
+                                                                                    </div>`
 
-                                                                if(save_posts[i]!=null){
+                                                                if(save_posts[i].media!=null){
                                                                     htmlView +=`<div class="customer-post-comment-container">
                                                                                     <iconify-icon icon="ic:outline-remove-red-eye" class="comment-icon"></iconify-icon>
-                                                                                    <p><span>`+save_posts[i].viewers+`</span> Views</p>
+                                                                                    <p><span>`+save_posts[i].viewers+`</span>`
+                                                                    if(save_posts[i].viewers > 1){
+                                                                        htmlView +=` Views`
+                                                                    }else{
+                                                                        htmlView +=` View`
+                                                                    }
+                                                                      htmlView+=`</p>
                                                                                 </div>`
                                                                 }else{
 
@@ -2038,23 +2057,41 @@
                                                         <iconify-icon icon="mdi:cards-heart" style="color: red;" class="like-icon already-liked"></iconify-icon>`
                                                     }
                                                         htmlView +=`</a>
-                                                                    <p>
+                                                                        <p>
                                                                         <span class="total_likes">
                                                                             `+save_posts[i].total_likes+`
                                                                         </span>
-                                                                        <a class="viewlikes" id="`+save_posts[i].post_id+`">Likes</a>
+                                                                        <a class="viewlikes" id="`+save_posts[i].post_id+`">`
+                                                                    if(save_posts[i].total_likes >1 ){
+                                                                        htmlView+=`Likes`
+                                                                    }else{
+                                                                        htmlView+=`Like`
+                                                                    }
+                                                        htmlView +=`</a>
                                                                     </p>
                                                                     </div>
                                                                     <div class="customer-post-comment-container">
                                                                         <a class="viewcomments" id = "`+save_posts[i].post_id+`">
                                                                             <iconify-icon icon="bi:chat-right" class="comment-icon"></iconify-icon>
-                                                                            <p id="`+save_posts[i].post_id+`"><span>`+save_posts[i].total_comments+`</span> Comments</p>
+                                                                            <p id="`+save_posts[i].post_id+`"><span>`+save_posts[i].total_comments+`</span>`
+                                                                            if(save_posts[i].total_comments > 1){
+                                                                                htmlView+=`Comments`
+                                                                            }else{
+                                                                                htmlView+=`Comment`
+                                                                            }
+                                                                            htmlView +=`</p>
                                                                         </a>
                                                                     </div>`
                                                     if(save_posts[i].media!=null){
                                                         htmlView+=`<div class="customer-post-comment-container">
                                                                         <iconify-icon icon="ic:outline-remove-red-eye" class="comment-icon"></iconify-icon>
-                                                                        <p><span>`+save_posts[i].viewers+`</span> Views</p>
+                                                                        <p><span>`+save_posts[i].viewers+`</span>`
+                                                                    if(save_posts[i].viewers > 1){
+                                                                        htmlView +=` Views`
+                                                                    }else{
+                                                                        htmlView +=` View`
+                                                                    }
+                                                                      htmlView+=`</p>
                                                                 </div>`
                                                     }else{
 
@@ -2310,19 +2347,37 @@
                                                                         <span class="total_likes">
                                                                             `+save_posts[i].total_likes+`
                                                                         </span>
-                                                                        <a class="viewlikes" id="`+save_posts[i].post_id+`">Likes</a>
+                                                                        <a class="viewlikes" id="`+save_posts[i].post_id+`">`
+                                                                    if(save_posts[i].total_likes >1 ){
+                                                                        htmlView+=`Likes`
+                                                                    }else{
+                                                                        htmlView+=`Like`
+                                                                    }
+                                                        htmlView +=`</a>
                                                                     </p>
                                                                     </div>
                                                                     <div class="customer-post-comment-container">
                                                                         <a class="viewcomments" id = "`+save_posts[i].post_id+`">
                                                                             <iconify-icon icon="bi:chat-right" class="comment-icon"></iconify-icon>
-                                                                            <p id="`+save_posts[i].post_id+`"><span>`+save_posts[i].total_comments+`</span> Comments</p>
+                                                                            <p id="`+save_posts[i].post_id+`"><span>`+save_posts[i].total_comments+`</span>`
+                                                                            if(save_posts[i].total_comments > 1){
+                                                                                htmlView+=`Comments`
+                                                                            }else{
+                                                                                htmlView+=`Comment`
+                                                                            }
+                                                                            htmlView +=`</p>
                                                                         </a>
                                                                     </div>`
                                                     if(save_posts[i].media!=null){
                                                         htmlView+=`<div class="customer-post-comment-container">
                                                                         <iconify-icon icon="ic:outline-remove-red-eye" class="comment-icon"></iconify-icon>
-                                                                        <p><span>`+save_posts[i].viewers+`</span> Views</p>
+                                                                        <p><span>`+save_posts[i].viewers+`</span>`
+                                                                    if(save_posts[i].viewers > 1){
+                                                                        htmlView +=` Views`
+                                                                    }else{
+                                                                        htmlView +=` View`
+                                                                    }
+                                                                      htmlView+=`</p>
                                                                     </div>`
                                                     }else{
 
@@ -2581,25 +2636,44 @@
                                         }
                                             htmlView +=`</a>
                                                         <p>
-                                                            <span class="total_likes">
-                                                                `+save_posts[i].total_likes+`
-                                                            </span>
-                                                            <a class="viewlikes" id="`+save_posts[i].post_id+`">Likes</a>
-                                                        </p>
+                                                        <span class="total_likes">
+                                                            `+save_posts[i].total_likes+`
+                                                        </span>
+                                                        <a class="viewlikes" id="`+save_posts[i].post_id+`">`
+                                                    if(save_posts[i].total_likes >1 ){
+                                                        htmlView+=`Likes`
+                                                    }else{
+                                                        htmlView+=`Like`
+                                                    }
+
+                                        htmlView +=`</a>
+                                                    </p>
                                                         </div>
                                                         <div class="customer-post-comment-container">
                                                             <a class="viewcomments" id = "`+save_posts[i].post_id+`">
                                                                 <iconify-icon icon="bi:chat-right" class="comment-icon"></iconify-icon>
-                                                                <p id="`+save_posts[i].post_id+`"><span>`+save_posts[i].total_comments+`</span> Comments</p>
+                                                                <p id="`+save_posts[i].post_id+`"><span>`+save_posts[i].total_comments+`</span>`
+                                                                if(save_posts[i].total_comments > 1){
+                                                                    htmlView+=`Comments`
+                                                                }else{
+                                                                    htmlView+=`Comment`
+                                                                }
+                                                                htmlView +=`</p>
                                                             </a>
                                                         </div>`
                                             if(save_posts[i].media!=null){
                                             htmlView+=`<div class="customer-post-comment-container">
                                                             <iconify-icon icon="ic:outline-remove-red-eye" class="comment-icon"></iconify-icon>
-                                                            <p><span>`+save_posts[i].viewers+`</span> Views</p>
+                                                            <p><span>`+save_posts[i].viewers+`</span>`
+                                                                    if(save_posts[i].viewers > 1){
+                                                                        htmlView +=` Views`
+                                                                    }else{
+                                                                        htmlView +=` View`
+                                                                    }
+                                                                      htmlView+=`</p>
                                                     </div>`
                                                     }else{
-                                                        
+
                                                     }
 
                                         htmlView+=`</div></div>

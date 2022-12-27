@@ -156,18 +156,36 @@
                     @endif
 
                     </a>
-                    <p><span class="total_likes">{{$post_likes->count()}}</span> Likes</p>
+                    <p><span class="total_likes">{{$post_likes->count()}}</span>
+                        @if ($post_likes->count()>1)
+                        Likes
+                        @else
+                        Like
+                        @endif
+                    </p>
                 </div>
                 <div class="social-media-post-comment-container">
                     <a href = "{{route('post.comment',$post->id)}}">
                         <iconify-icon icon="bi:chat-right" class="comment-icon"></iconify-icon>
-                        <p><span>{{$total_comments}}</span> Comments</p>
+                        <p><span>{{$total_comments}}</span>
+                            @if ($total_comments>1)
+                            Comments
+                            @else
+                            Comment
+                            @endif
+                        </p>
                     </a>
                 </div>
                 @if($post->media!=null)
                     <div class="social-media-post-comment-container">
                         <iconify-icon icon="ic:outline-remove-red-eye" class="comment-icon"></iconify-icon>
-                        <p><span>{{$post->viewers}}</span> Views</p>
+                        <p><span>{{$post->viewers}}</span>
+                            @if ($post->viewers>1)
+                            Views
+                            @else
+                            View
+                            @endif
+                        </p>
                     </div>
                 @else
                 @endif
