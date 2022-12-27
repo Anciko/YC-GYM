@@ -11,6 +11,7 @@ use App\Models\ShopPost;
 use App\Models\ChatGroup;
 use App\Models\ShopReact;
 use App\Models\ShopMember;
+use App\Models\ShopRating;
 use App\Models\BankingInfo;
 use Illuminate\Http\Request;
 use App\Models\UserReactPost;
@@ -331,7 +332,7 @@ class ShopController extends Controller
                     ]);
             }elseif($user->shopmember_type_id!=null){
                 $shopmember=ShopMember::findOrFail($user->shopmember_type_id);
-                
+
                 if($shopmember->member_type=="level3"){
                     if ($input['totalImages'] == 0 && $input['caption'] != null) {
                         $caption = $input['caption'];
@@ -486,5 +487,24 @@ class ShopController extends Controller
         }
 
 
+    }
+
+    public function shop_rating(Request $request){
+        $user_id = auth()->user()->id;
+        $shop_id = $request->shop_id;
+        $shop_rating = ShopRating::where('user_id', $user_id)->where('shop_id',$shop_id)->first();
+        if($shop_rating){
+            DB::table('shop_ratings')->where('user_id', $user_id)->where('shop_id',$shop_id)->update(['rating' => $request->rating]);
+        }
+        else{
+            $shop_rating = new ShopRating();
+            $shop_rating->user_id = $user_id;
+            $shop_rating->shop_id = $shop_id;
+            $shop_rating->rating = $request->rating;
+            $shop_rating->save();
+        }
+        return response()->json([
+            'success' => 'rated'
+        ]);
     }
 }
