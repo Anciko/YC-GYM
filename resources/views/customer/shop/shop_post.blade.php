@@ -21,7 +21,7 @@
                     <input type="radio" id="rating-0" name="rating" value="0" class="star-cb-clear" /><label for="rating-0">0</label>
                   </span>
                 </fieldset>
-                <button type="button" class="rating-submit-btn">Rate</button>
+                {{-- <button type="button" class="rating-submit-btn">Rate</button> --}}
             </form>
 
         </div>
@@ -40,138 +40,6 @@
             <iconify-icon icon="akar-icons:search" class="shop-search-icon"></iconify-icon>
         </div>
     </div>
-    {{-- <div class="shop-posts-parent-container">
-        @forelse ($user->posts->where('shop_status',1) as $shpost)
-            <div class="shop-post-container">
-                <div class="shop-post-header">
-                    <div class="shop-post-name-container">
-                        <img src="../imgs/trainer2.jpg">
-                        <div class="shop-post-name">
-                            <p>{{$shpost->user->name}}</p>
-                            <span>{{ \Carbon\Carbon::parse($shpost->created_at)->format('d M Y , g:i A')}}</span>
-                        </div>
-                    </div>
-
-                    <iconify-icon icon="bi:three-dots-vertical" class="shop-post-header-icon"></iconify-icon>
-
-                    <div class="post-actions-container" >
-                        <a href="#" style="text-decoration:none" class="post_save" id="{{$shpost->id}}">
-                            <div class="post-action">
-                                <iconify-icon icon="bi:save" class="post-action-icon"></iconify-icon>
-                                @php
-                                    $already_save=auth()->user()->user_saved_shopposts->where('post_id',$shpost->id)->first();
-                                @endphp
-
-                                @if ($already_save)
-                                    <p class="save">Unsave</p>
-                                @else
-                                    <p class="save">Save</p>
-                                    @endif
-                            </div>
-                        </a>
-                    @if ($shpost->user_id == auth()->user()->id)
-
-                        <a id="edit_post" data-id="{{$shpost->id}}" data-bs-toggle="modal" >
-                            <div class="post-action">
-                                <iconify-icon icon="material-symbols:edit" class="post-action-icon"></iconify-icon>
-                                <p>Edit</p>
-                            </div>
-                        </a>
-                        <a id="delete_post" data-id="{{$shpost->id}}">
-                            <div class="post-action">
-                            <iconify-icon icon="material-symbols:delete-forever-outline-rounded" class="post-action-icon"></iconify-icon>
-                            <p>Delete</p>
-                            </div>
-                        </a>
-                    @else
-                    @endif
-                    </div>
-                </div>
-
-                <div class="shop-content-container">
-                    @if ($shpost->media==null)
-                    <p>{{$shpost->caption}}</p>
-                    @else
-                    <p>{{$shpost->caption}}</p>
-                    <div class="shop-media-container">
-                        <?php foreach (json_decode($shpost->media)as $m){?>
-                        <div class="shop-media">
-                            @if (pathinfo($m, PATHINFO_EXTENSION) == 'mp4')
-                                <video controls>
-                                    <source src="{{asset('storage/post/'.$m) }}">
-                                </video>
-                            @else
-                                <img src="{{asset('storage/post/'.$m) }}">
-                            @endif
-                        </div>
-                        <?php }?>
-                    </div>
-
-                    <div id="slider-wrapper" class="shop-media-slider">
-                        <iconify-icon icon="akar-icons:cross" class="slider-close-icon"></iconify-icon>
-
-                        <div id="image-slider" class="image-slider">
-                            <ul class="ul-image-slider">
-
-                                <?php foreach (json_decode($shpost->media)as $m){?>
-                                    @if (pathinfo($m, PATHINFO_EXTENSION) == 'mp4')
-                                    <li>
-                                        <video controls>
-                                            <source src="{{asset('storage/post/'.$m) }}">
-                                        </video>
-                                    </li>
-                                    @else
-                                        <li>
-                                            <img src="{{asset('storage/post/'.$m) }}" alt="" />
-                                        </li>
-                                    @endif
-
-                                <?php }?>
-                            </ul>
-
-                        </div>
-
-                        <div id="thumbnail" class="img-slider-thumbnails">
-                            <ul>
-                                <?php foreach (json_decode($shpost->media)as $m){?>
-                                    @if (pathinfo($m, PATHINFO_EXTENSION) == 'mp4')
-                                    <li>
-                                        <video>
-                                            <source src="{{asset('storage/post/'.$m) }}">
-                                        </video>
-                                    </li>
-                                    @else
-                                        <li>
-                                            <img src="{{asset('storage/post/'.$m) }}" alt="" />
-                                        </li>
-                                    @endif
-
-                                <?php }?>
-
-                            </ul>
-                        </div>
-                        <a href="#" class="customer-primary-btn">Message the seller</a>
-
-                    </div>
-
-                    @endif
-                </div>
-
-                <div class="shop-post-footer-container">
-                    <div class="shop-post-like-container">
-                        <iconify-icon icon="akar-icons:heart" class="like-icon"></iconify-icon>
-                        <p><span>1.1k</span> Likes</p>
-                    </div>
-                    <div class="shop-post-comment-container">
-                        <iconify-icon icon="bi:chat-right" class="comment-icon"></iconify-icon>
-                        <p><span>50</span> Comments</p>
-                    </div>
-                </div>
-            </div>
-        @empty
-            <p class="text-secondary p-1">No Shop Post</p>
-        @endforelse
-    </div> --}}
     <div class="shop-posts-parent-container">
     </div>
 </div>
@@ -181,10 +49,35 @@
 <script>
     //rating start
     $('input[name="rating"]').change(function () {
+        $('#ratingModal').modal('hide');
         var me = $(this);
-        // log.html(me.attr('value'));
         console.log(me.attr('value'))
+        var rating=me.attr('value')
+        var post_user=@json($user->id);
+        console.log(post_user)
+        var url="{{route('shop_rating')}}";
+        $.ajaxSetup({
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        }
+                    });
+        $.ajax({
+                    type: "POST",
+                    url: url,
+                    data:{ rating : rating,post_user:post_user},
+                    datatype: "json",
+                    success: function(data) {
+                        Swal.fire({
+                                    title:'Submitted',
+                                    text: data.success,
+                                    timerProgressBar: true,
+                                    timer: 5000,
+                                    icon: 'success',
+                                })
+                    }
+        })
     });
+
     //rating end
     $(document).on('click','.shop-post-header-icon',function(){
                 $(this).next().toggle()
@@ -459,7 +352,6 @@
             });
 
             var width = $('#image-slider').width();
-            console.log(width)
 
             function nextImage(newIndex, parent){
                 parent.find('li').eq(newIndex).addClass('next-img').css('left', width).animate({left: 0},600);
