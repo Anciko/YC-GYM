@@ -223,6 +223,8 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::post('shop/post/store', [ShopController::class, 'shop_post_store']);
 
     Route::post('shop/detail', [ShopController::class, 'shop_posts']);
+
+    Route::post('shop/rating', [ShopController::class, 'shop_posts']);
 });
 
 Route::get('test', [AuthController::class, 'test']);
