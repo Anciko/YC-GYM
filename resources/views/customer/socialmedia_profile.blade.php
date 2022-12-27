@@ -203,12 +203,10 @@
 
                         </div>
                     </div>
-                    <form action="{{route('socialmedia_profile_photos')}}" method="POST">
-                        @csrf
-                        <input type="hidden" value={{$user->id}} name="user_id">
-                        <button type="submit" class="social-media-profile-photos-link">Photos</button>
+
+                        <a href="{{route('socialmedia_profile_photos',$user->id)}}" class="social-media-profile-photos-link">Photos</a>
                         {{-- <a href="{{route('socialmedia_profile_photos')}}" class="social-media-profile-photos-link">Photos</a> --}}
-                    </form>
+
                     <div class="social-media-profile-posts-parent-container">
                         <p>Post & Activities</p>
 
@@ -266,7 +264,7 @@
                                     <p>{{$post->caption}}</p>
                                     @else
                                     <p>{{$post->caption}}</p>
-                                    <div class="social-media-media-container">
+                                    <div class="social-media-media-container" data-id="{{$post->id}}">
                                         <?php foreach (json_decode($post->media)as $m){?>
                                         <div class="social-media-media">
                                             @if (pathinfo($m, PATHINFO_EXTENSION) == 'mp4')
@@ -351,15 +349,40 @@
 
                                         </a>
                                         <p><span class="total_likes">{{$total_likes}}</span>
-                                            <a href="{{route('social_media_likes',$post->id)}}">Likes</a>
+                                            <a href="{{route('social_media_likes',$post->id)}}">
+                                                @if ($total_likes>1)
+                                                Likes
+                                                @else
+                                                Like
+                                                @endif
+                                            </a>
                                         </p>
                                     </div>
                                     <div class="social-media-post-comment-container">
                                         <a href = "{{route('post.comment',$post->id)}}">
                                             <iconify-icon icon="bi:chat-right" class="comment-icon"></iconify-icon>
-                                            <p><span>{{$total_comments}}</span> Comments</p>
+                                            <p><span>{{$total_comments}}</span>
+                                                @if ($total_comments>1)
+                                                Comments
+                                                @else
+                                                Comment
+                                                @endif
+                                            </p>
                                         </a>
                                     </div>
+                                    @if($post->media!=null)
+                                    <div class="social-media-post-comment-container">
+                                        <iconify-icon icon="ic:outline-remove-red-eye" class="comment-icon"></iconify-icon>
+                                        <p><span>{{$post->viewers}}</span>
+                                            @if ($post->viewers>1)
+                                            Views
+                                            @else
+                                            View
+                                            @endif
+                                        </p>
+                                    </div>
+                                    @else
+                                    @endif
                                 </div>
                             </div>
                             @empty

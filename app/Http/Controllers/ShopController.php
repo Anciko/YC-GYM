@@ -11,6 +11,7 @@ use App\Models\ShopPost;
 use App\Models\ChatGroup;
 use App\Models\ShopReact;
 use App\Models\ShopMember;
+use App\Models\ShopRating;
 use App\Models\BankingInfo;
 use Illuminate\Http\Request;
 use App\Models\UserReactPost;
@@ -40,13 +41,26 @@ class ShopController extends Controller
         ->where('shop_request',2)
         ->orWhere('shop_request',3)
         ->get();
-        if($request->keyword != null){
-            $shop_list = User::select('users.id','users.name','profiles.profile_image')
-            ->leftJoin('profiles','users.profile_id','profiles.id')
-            ->where('shop_request',2)
-            ->where('users.name', 'LIKE', '%' . $request->keyword . '%')
-            ->get();
+
+        $rating = DB::table('shop_ratings')
+        ->select('shop_id', DB::raw('count(*) as rating'))
+        ->groupBy('shop_id')
+        ->get()->toArray();
+        $sum = DB::table('shop_ratings')
+                ->select('shop_id', DB::raw('SUM(rating) as sum'))
+                ->groupBy('shop_id')
+                ->get();
+        foreach($rating as $key=>$total){
+        $rating[$key]->Avg_rating = 0;
+        foreach($sum as $value){
+            $int = intval($value->sum);
+            if($total->shop_id == $value->shop_id){
+                $result =   $int / $total->rating;
+                $rating[$key]->Avg_rating = $result;
+            }
         }
+        }
+
         $total_count = Post::select("user_id",DB::raw("Count('id') as total_count"))
                         ->where('shop_status',1)
                         ->groupBy('user_id')
@@ -59,6 +73,15 @@ class ShopController extends Controller
                 }
             }
         }
+        foreach($shop_list as $key=>$value){
+            $shop_list[$key]['avg_rating'] = 0;
+            foreach($rating as $rat){
+                if($rat->shop_id == $value->id){
+                    $shop_list[$key]['avg_rating'] = $rat->Avg_rating;
+                }
+            }
+        }
+
         return response()->json([
             'data' => $shop_list
         ]);
@@ -331,7 +354,7 @@ class ShopController extends Controller
                     ]);
             }elseif($user->shopmember_type_id!=null){
                 $shopmember=ShopMember::findOrFail($user->shopmember_type_id);
-                
+
                 if($shopmember->member_type=="level3"){
                     if ($input['totalImages'] == 0 && $input['caption'] != null) {
                         $caption = $input['caption'];
@@ -486,5 +509,28 @@ class ShopController extends Controller
         }
 
 
+    }
+
+    public function shop_rating(Request $request){
+        // dd($request->all());
+        $rating=$request->rating;
+        $user_id = auth()->user()->id;
+        $shop_id = $request->post_user;
+        $shop_rating = ShopRating::where('user_id', $user_id)->where('shop_id',$shop_id)->first();
+        if($shop_rating->shop_id != auth()->user()->id){
+        if($shop_rating){
+            DB::table('shop_ratings')->where('user_id', $user_id)->where('shop_id',$shop_id)->update(['rating' => $request->rating]);
+        }
+        else{
+            $shop_rating = new ShopRating();
+            $shop_rating->user_id = $user_id;
+            $shop_rating->shop_id = $shop_id;
+            $shop_rating->rating = $request->rating;
+            $shop_rating->save();
+        }
+    }
+        return response()->json([
+            'success' => 'Thanks for your feedback.'
+        ]);
     }
 }

@@ -2,147 +2,44 @@
 
 @section('content')
 @include('sweetalert::alert')
+<div class="modal fade" id="ratingModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Rate this shop</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <form>
+                <fieldset>
+                  <span class="star-cb-group">
+                    <input type="radio" id="rating-5" name="rating" value="5" /><label for="rating-5">5</label>
+                    <input type="radio" id="rating-4" name="rating" value="4"  /><label for="rating-4">4</label>
+                    <input type="radio" id="rating-3" name="rating" value="3" /><label for="rating-3">3</label>
+                    <input type="radio" id="rating-2" name="rating" value="2" /><label for="rating-2">2</label>
+                    <input type="radio" id="rating-1" name="rating" value="1" /><label for="rating-1">1</label>
+                    <input type="radio" id="rating-0" name="rating" value="0" class="star-cb-clear" /><label for="rating-0">0</label>
+                  </span>
+                </fieldset>
+                {{-- <button type="button" class="rating-submit-btn">Rate</button> --}}
+            </form>
+
+        </div>
+      </div>
+    </div>
+  </div>
 
 <div class="shop-right-container">
     <div class="shop-posts-header-container">
         <p>{{$user->name}}'s Shop</p>
+        <button type="button" class="shop-rating-btn customer-primary-btn" data-bs-toggle="modal" data-bs-target="#ratingModal">
+            Rate
+          </button>
         <div class="shop-search-container">
             <input type="text" placeholder="Search..." id  = "caption_search">
             <iconify-icon icon="akar-icons:search" class="shop-search-icon"></iconify-icon>
         </div>
     </div>
-    {{-- <div class="shop-posts-parent-container">
-        @forelse ($user->posts->where('shop_status',1) as $shpost)
-            <div class="shop-post-container">
-                <div class="shop-post-header">
-                    <div class="shop-post-name-container">
-                        <img src="../imgs/trainer2.jpg">
-                        <div class="shop-post-name">
-                            <p>{{$shpost->user->name}}</p>
-                            <span>{{ \Carbon\Carbon::parse($shpost->created_at)->format('d M Y , g:i A')}}</span>
-                        </div>
-                    </div>
-
-                    <iconify-icon icon="bi:three-dots-vertical" class="shop-post-header-icon"></iconify-icon>
-
-                    <div class="post-actions-container" >
-                        <a href="#" style="text-decoration:none" class="post_save" id="{{$shpost->id}}">
-                            <div class="post-action">
-                                <iconify-icon icon="bi:save" class="post-action-icon"></iconify-icon>
-                                @php
-                                    $already_save=auth()->user()->user_saved_shopposts->where('post_id',$shpost->id)->first();
-                                @endphp
-
-                                @if ($already_save)
-                                    <p class="save">Unsave</p>
-                                @else
-                                    <p class="save">Save</p>
-                                    @endif
-                            </div>
-                        </a>
-                    @if ($shpost->user_id == auth()->user()->id)
-
-                        <a id="edit_post" data-id="{{$shpost->id}}" data-bs-toggle="modal" >
-                            <div class="post-action">
-                                <iconify-icon icon="material-symbols:edit" class="post-action-icon"></iconify-icon>
-                                <p>Edit</p>
-                            </div>
-                        </a>
-                        <a id="delete_post" data-id="{{$shpost->id}}">
-                            <div class="post-action">
-                            <iconify-icon icon="material-symbols:delete-forever-outline-rounded" class="post-action-icon"></iconify-icon>
-                            <p>Delete</p>
-                            </div>
-                        </a>
-                    @else
-                    @endif
-                    </div>
-                </div>
-
-                <div class="shop-content-container">
-                    @if ($shpost->media==null)
-                    <p>{{$shpost->caption}}</p>
-                    @else
-                    <p>{{$shpost->caption}}</p>
-                    <div class="shop-media-container">
-                        <?php foreach (json_decode($shpost->media)as $m){?>
-                        <div class="shop-media">
-                            @if (pathinfo($m, PATHINFO_EXTENSION) == 'mp4')
-                                <video controls>
-                                    <source src="{{asset('storage/post/'.$m) }}">
-                                </video>
-                            @else
-                                <img src="{{asset('storage/post/'.$m) }}">
-                            @endif
-                        </div>
-                        <?php }?>
-                    </div>
-
-                    <div id="slider-wrapper" class="shop-media-slider">
-                        <iconify-icon icon="akar-icons:cross" class="slider-close-icon"></iconify-icon>
-
-                        <div id="image-slider" class="image-slider">
-                            <ul class="ul-image-slider">
-
-                                <?php foreach (json_decode($shpost->media)as $m){?>
-                                    @if (pathinfo($m, PATHINFO_EXTENSION) == 'mp4')
-                                    <li>
-                                        <video controls>
-                                            <source src="{{asset('storage/post/'.$m) }}">
-                                        </video>
-                                    </li>
-                                    @else
-                                        <li>
-                                            <img src="{{asset('storage/post/'.$m) }}" alt="" />
-                                        </li>
-                                    @endif
-
-                                <?php }?>
-                            </ul>
-
-                        </div>
-
-                        <div id="thumbnail" class="img-slider-thumbnails">
-                            <ul>
-                                <?php foreach (json_decode($shpost->media)as $m){?>
-                                    @if (pathinfo($m, PATHINFO_EXTENSION) == 'mp4')
-                                    <li>
-                                        <video>
-                                            <source src="{{asset('storage/post/'.$m) }}">
-                                        </video>
-                                    </li>
-                                    @else
-                                        <li>
-                                            <img src="{{asset('storage/post/'.$m) }}" alt="" />
-                                        </li>
-                                    @endif
-
-                                <?php }?>
-
-                            </ul>
-                        </div>
-                        <a href="#" class="customer-primary-btn">Message the seller</a>
-
-                    </div>
-
-                    @endif
-                </div>
-
-                <div class="shop-post-footer-container">
-                    <div class="shop-post-like-container">
-                        <iconify-icon icon="akar-icons:heart" class="like-icon"></iconify-icon>
-                        <p><span>1.1k</span> Likes</p>
-                    </div>
-                    <div class="shop-post-comment-container">
-                        <iconify-icon icon="bi:chat-right" class="comment-icon"></iconify-icon>
-                        <p><span>50</span> Comments</p>
-                    </div>
-                </div>
-            </div>
-        @empty
-            <p class="text-secondary p-1">No Shop Post</p>
-        @endforelse
-    </div> --}}
     <div class="shop-posts-parent-container">
     </div>
 </div>
@@ -150,14 +47,50 @@
 @endsection
 @push('scripts')
 <script>
+    //rating start
+    $('input[name="rating"]').change(function () {
+        $('#ratingModal').modal('hide');
+        var me = $(this);
+        console.log(me.attr('value'))
+        var rating=me.attr('value')
+        var post_user=@json($user->id);
+        console.log(post_user)
+        var url="{{route('shop_rating')}}";
+        $.ajaxSetup({
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        }
+                    });
+        $.ajax({
+                    type: "POST",
+                    url: url,
+                    data:{ rating : rating,post_user:post_user},
+                    datatype: "json",
+                    success: function(data) {
+
+                        Swal.fire({
+                                    title:'Submitted',
+                                    text: data.success,
+                                    timerProgressBar: true,
+                                    timer: 5000,
+                                    icon: 'success',
+                                })
+                    }
+        })
+    });
+
+    //rating end
     $(document).on('click','.shop-post-header-icon',function(){
                 $(this).next().toggle()
+            })
+    $(document).on('click','.shop-rating-btn',function(){
+        $('#ratingModal').modal('show');
             })
 
     $(document).ready(function() {
         // data=@json($posts);
         // all_posts(data)
-
+        $('#ratingModal').modal('hide');
         $('#caption_search').on('keyup', function() {
                 search();
             });
@@ -244,7 +177,7 @@
 
                                             var caption =posts[i].caption ? posts[i].caption : '';
                                                 htmlView +=`<p>`+caption+`</p>
-                                                                <div class="shop-media-container">
+                                                                <div class="shop-media-container" data-id="`+posts[i].id+`">
                                                                     `
                                             var imageFile = posts[i].media
                                             var imageArr = jQuery.parseJSON(imageFile);
@@ -325,6 +258,9 @@
                                             htmlView += ` <div class="shop-post-footer-container">
                                                             <div class="shop-post-like-container">
                                                             <a class="like" id="`+posts[i].post_id+`">`
+                                            var likeurl = "{{ route('social_media_likes', [':post_id']) }}"
+                                            likeurl = likeurl.replace(':post_id', posts[i].post_id)
+
                                             if(posts[i].isLike==0){
                                                 htmlView+=`
                                                 <iconify-icon icon="mdi:cards-heart-outline" class="like-icon"></iconify-icon>`
@@ -333,25 +269,51 @@
                                                 htmlView+=`
                                                 <iconify-icon icon="mdi:cards-heart" style="color: red;" class="like-icon already-liked"></iconify-icon>`
                                             }
+
                                                 htmlView +=`</a>
                                                             <p>
                                                                 <span class="total_likes">
                                                                     `+posts[i].total_likes+`
                                                                 </span>
-                                                                <a class="viewlikes" id="">Likes</a>
+                                                                <a href="`+likeurl+`">`
+                                                    if(posts[i].total_likes >1){
+                                                        htmlView+=`Likes`
+                                                    }else{
+                                                        htmlView+=`Like`
+                                                    }
+                                                htmlView+=`</a>
                                                             </p>
                                                             </div>
 
                                                             <div class="social-media-post-comment-container">
                                                                 <a href = `+comment_url+`>
                                                                 <iconify-icon icon="bi:chat-right" class="comment-icon"></iconify-icon>
-                                                                <p><span>`+posts[i].total_comments+`</span> Comments</p>
+                                                                <p><span>`+posts[i].total_comments+`</span>`
+                                                    if(posts[i].total_comments >1){
+                                                        htmlView+=` Comments`
+                                                    }else{
+                                                        htmlView+=` Comment`
+                                                    }
+                                                    htmlView+=`</p>
                                                                 </a>
-                                                            </div>
+                                                            </div>`
+                                                if(posts[i].media!=null){
+                                                    htmlView+=`<div class="social-media-post-comment-container">
+                                                                <iconify-icon icon="ic:outline-remove-red-eye" class="comment-icon"></iconify-icon>
+                                                                <p><span>`+posts[i].viewers+`</span>`
+                                                    if(posts[i].viewers >1){
+                                                        htmlView+=` Views`
+                                                    }else{
+                                                        htmlView+=` View`
+                                                    }
+                                                    htmlView+=`</p>
+                                                            </div>`
+                                                }else{
 
-                                                            </div>
-                                                                `
+                                                }
+
                                             htmlView+=`</div>
+                                                            </div></div>
                                                         </div>`
 
                     }
@@ -394,7 +356,6 @@
             });
 
             var width = $('#image-slider').width();
-            console.log(width)
 
             function nextImage(newIndex, parent){
                 parent.find('li').eq(newIndex).addClass('next-img').css('left', width).animate({left: 0},600);
@@ -412,6 +373,13 @@
             $(document).on('click','.shop-media-container',function(){
                 $(this).siblings(".shop-media-slider").show()
                 $(this).hide()
+                var post_id=$(this).data('id');
+                var add_url = "{{ route('user.view.post') }}";
+                $.ajax({
+                        method: "GET",
+                        url: add_url,
+                        data:{ post_id : post_id}
+                    })
             })
 
             $(document).on('click','.slider-close-icon',function(){

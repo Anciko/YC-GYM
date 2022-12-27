@@ -137,12 +137,12 @@
                     @endif
                 </div>
             </div>
-            <div class="social-media-content-container">
+            <div class="social-media-content-container" >
                 @if ($post->media==null)
                 <p>{{$post->caption}}</p>
                 @else
                 <p>{{$post->caption}}</p>
-                <div class="social-media-media-container">
+                <div class="social-media-media-container" data-id="{{$post->id}}">
                     <?php foreach (json_decode($post->media)as $m){?>
                     <div class="social-media-media">
                         @if (pathinfo($m, PATHINFO_EXTENSION) == 'mp4')
@@ -229,15 +229,41 @@
                         <span class="total_likes">
                         {{$total_likes}}
                         </span>
-                        <a href="{{route('social_media_likes',$post->id)}}">Likes</a>
+                        <a href="{{route('social_media_likes',$post->id)}}">
+                            @if ($total_likes>1)
+                            Likes
+                            @else
+                            Like
+                            @endif
+                        </a>
                     </p>
                 </div>
                 <div class="social-media-post-comment-container">
                     <a href = "{{route('post.comment',$post->id)}}">
                     <iconify-icon icon="bi:chat-right" class="comment-icon"></iconify-icon>
-                    <p><span>{{$total_comments}}</span> Comments</p>
+                    <p><span>{{$total_comments}}</span>
+                        @if ($total_comments>1)
+                        Comments
+                        @else
+                        Comment
+                        @endif
+                    </p>
                     </a>
                 </div>
+                @if($post->media!=null)
+                    <div class="social-media-post-comment-container">
+                        <iconify-icon icon="ic:outline-remove-red-eye" class="comment-icon"></iconify-icon>
+                        <p><span>{{$post->viewers}}</span>
+                            @if ($post->viewers>1)
+                            Views
+                            @else
+                            View
+                            @endif
+                        </p>
+                    </div>
+                @else
+                @endif
+
             </div>
         </div>
         @endforeach

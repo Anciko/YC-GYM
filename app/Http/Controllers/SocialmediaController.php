@@ -24,6 +24,8 @@ use App\Models\UserSavedPost;
 use App\Models\ChatGroupMember;
 use App\Models\ChatGroupMessage;
 use App\Models\ShopPost;
+use App\Models\ShopRating;
+use App\Models\ShopReact;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
@@ -65,6 +67,9 @@ class SocialmediaController extends Controller
                 ->with('user')
                 ->paginate(30);
         }
+
+
+
 
 
         return view('customer.socialmedia', compact('posts'));
@@ -211,6 +216,16 @@ class SocialmediaController extends Controller
         return response()->json([
             'total_likes' => $total_likes,
         ]);
+    }
+
+    public function user_view_post(Request $request)
+    {
+        $post_id=$request->post_id;
+        $post=Post::findOrFail($post_id);
+        if(auth()->user()->id != $post->user_id){
+            $post->viewers = $post->viewers + 1;
+        }
+        $post->update();
     }
 
     public function profile_photo_delete(Request $request)
@@ -418,9 +433,9 @@ class SocialmediaController extends Controller
         return view('customer.socialmedia_likes', compact('post_likes', 'post'));
     }
 
-    public function socialmedia_profile_photos(Request $request)
+    public function socialmedia_profile_photos(Request $request,$id)
     {
-        $user_id = $request->user_id;
+        $user_id = $id;
 
         $user = User::findOrFail($user_id);
 

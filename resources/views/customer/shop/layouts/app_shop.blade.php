@@ -168,7 +168,7 @@
                         <p>Upgrade</p>
                     </a>
                     @elseif (auth()->user()->shop_request==3 && (auth()->user()->shop_post_count!=0))
-                    <button class="social-media-addpost-btn customer-primary-btn margin-top" data-bs-toggle="modal" data-bs-target="#addPostModal">
+                    <button class="social-media-addpost-btn customer-primary-btn" data-bs-toggle="modal" data-bs-target="#addPostModal">
                         <iconify-icon icon="akar-icons:circle-plus" class="addpost-icon"></iconify-icon>
                         <p>Add Post</p>
                     </button>
@@ -306,6 +306,11 @@
     <script src="{{asset('js/customer/jquery.mentiony.js')}}"></script>
 
     <script>
+        $(".social-media-left-container-trigger").click(function(){
+            $('.social-media-left-container').toggleClass("social-media-left-container-open")
+            $('.social-media-overlay').toggle()
+            $(".social-media-left-container-trigger .arrow-icon").toggleClass("rotate-arrow")
+        })
         $(".cancel").hide();
         $( ".social-media-left-search-container input" ).focus(function() {
             // alert( "Handler for .focus() called." );

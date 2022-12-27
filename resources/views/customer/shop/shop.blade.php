@@ -10,24 +10,7 @@
     </div>
 
     <div  class="shop-main-shops-container">
-        {{-- @forelse ($shops as $shop)
-            <a  href = {{route('shoppost',$shop->id)}} class="shop-main-shop-container">
-                <div class="shop-main-shop-details-container">
-                    <img src="https://www.hussle.com/blog/wp-content/uploads/2020/12/Gym-structure-1080x675.png">
-                    <div class="shop-main-shop-name">
-                        <p>{{$shop->name}}'s Shop</p>
-                    </div>
-                </div>
-                <div class="shop-noofposts-container">
-                    <p>Number of posts</p>
-                    <span>10</span>
-                </div>
 
-                <iconify-icon icon="material-symbols:arrow-forward-ios-rounded" class="shop-main-shop-icon"></iconify-icon>
-            </a>
-        @empty
-        <p class="text-secondary p-1">No Shop Post</p>
-        @endforelse --}}
     </div>
 </div>
 @endsection
@@ -72,16 +55,40 @@
                               <div class="shop-main-shop-name">
                                   <p>`+res.data[i].name+`'s Shop</p>
                               </div>
-                          </div>
+                            </div>
+                            <div class="shop-main-shop-rating-container">
+                                <p>`+res.data[i].avg_rating+`</p>
+                                <div class="stars-outer">
+                                    <i class="far fa-star"></i>
+                                    <i class="far fa-star"></i>
+                                    <i class="far fa-star"></i>
+                                    <i class="far fa-star"></i>
+                                    <i class="far fa-star"></i>
+                                    <div class="stars-inner" data-rating=`+res.data[i].avg_rating+`>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                    </div>
+                                </div>
+                            </div>
+
                           <div class="shop-noofposts-container">
                               <p>Number of posts</p>
                               <span>`+res.data[i].total_post+`</span>
                           </div>
-                          <iconify-icon icon="material-symbols:arrow-forward-ios-rounded" class="shop-main-shop-icon"></iconify-icon>
                       </a>
                       `
               }
               $('.shop-main-shops-container').html(htmlView);
+
+              const totalStar = 5
+              $.each($(".stars-inner"), function(){
+                const starPercentage = ($(this).data('rating') / totalStar) * 100;
+                console.log($(this))
+                $(this).width(`${starPercentage}%`)
+              })
           }
       });
 </script>

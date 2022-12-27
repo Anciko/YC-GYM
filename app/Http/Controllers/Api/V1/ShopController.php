@@ -14,6 +14,8 @@ use App\Models\UserSavedShoppost;
 use Illuminate\Support\Facades\DB;
 use App\Models\UserReactedShoppost;
 use App\Http\Controllers\Controller;
+use App\Models\ShopRating;
+use App\Models\ShopReact;
 use Illuminate\Support\Facades\Storage;
 
 class ShopController extends Controller
@@ -42,6 +44,25 @@ class ShopController extends Controller
         ->orWhere('shop_request',3)
         ->get();
 
+        $rating = DB::table('shop_ratings')
+        ->select('shop_id', DB::raw('count(*) as rating'))
+        ->groupBy('shop_id')
+        ->get()->toArray();
+        $sum = DB::table('shop_ratings')
+                ->select('shop_id', DB::raw('SUM(rating) as sum'))
+                ->groupBy('shop_id')
+                ->get();
+        foreach($rating as $key=>$total){
+        $rating[$key]->Avg_rating = 0;
+        foreach($sum as $value){
+            $int = intval($value->sum);
+            if($total->shop_id == $value->shop_id){
+                $result =   $int / $total->rating;
+                $rating[$key]->Avg_rating = $result;
+            }
+        }
+        }
+
         $total_count = Post::select("user_id",DB::raw("Count('id') as total_count"))
                         ->where('shop_status',1)
                         ->groupBy('user_id')
@@ -54,6 +75,15 @@ class ShopController extends Controller
                 }
             }
         }
+        foreach($shop_list as $key=>$value){
+            $shop_list[$key]['avg_rating'] = 0;
+            foreach($rating as $rat){
+                if($rat->shop_id == $value->id){
+                    $shop_list[$key]['avg_rating'] = $rat->Avg_rating;
+                }
+            }
+        }
+
         return response()->json([
             'data' => $shop_list
         ]);
@@ -64,6 +94,7 @@ class ShopController extends Controller
         $shop_list = User::select('users.id','users.name','profiles.profile_image')
         ->leftJoin('profiles','users.profile_id','profiles.id')
         ->where('shop_request',2)
+        ->orWhere('shop_request',3)
         ->where('users.id',auth()->user()->id)
         ->first();
         $total_count = Post::select("user_id",DB::raw("Count('id') as total_count"))
@@ -155,8 +186,9 @@ class ShopController extends Controller
             }
         }
         $shop_member_level = ShopMember::select('member_type')->where('id',$user->shopmember_type_id)->first();
-        if($user->shop_post_count == 0 AND $shop_member_level != 'level3' AND $user->member_type != 'Ruby Premium' OR
-        $user->member_type != 'Ruby'){
+        if(($user->shop_post_count == 0 AND $shop_member_level != 'level3') OR
+           ($user->shop_post_count == 0 AND $user->member_type != 'Ruby Premium') OR
+           ($user->shop_post_count == 0 AND $user->member_type != 'Ruby')){
             return response()->json([
                 'message' => 'cannot post',
             ]);
@@ -258,6 +290,27 @@ class ShopController extends Controller
         }
         return response()->json([
             'posts' => $posts
+        ]);
+    }
+
+    public function shop_rating(Request $request){
+        $user_id = auth()->user()->id;
+        $shop_id = $request->shop_id;
+        $shop_rating = ShopRating::where('user_id', $user_id)->where('shop_id',$shop_id)->first();
+        if($shop_rating->shop_id != auth()->user()->id){
+            if($shop_rating){
+                DB::table('shop_ratings')->where('user_id', $user_id)->where('shop_id',$shop_id)->update(['rating' => $request->rating]);
+            }
+            else{
+                $shop_rating = new ShopRating();
+                $shop_rating->user_id = $user_id;
+                $shop_rating->shop_id = $shop_id;
+                $shop_rating->rating = $request->rating;
+                $shop_rating->save();
+            }
+        }
+        return response()->json([
+            'success' => 'rated'
         ]);
     }
 }

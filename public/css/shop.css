@@ -1762,6 +1762,7 @@ ul{
     font-size: 14px;
     font-weight: 600;
     word-break: break-word;
+    color: var(--customer-text-color);
 }
 
 .shop-addpost-btns-container{
@@ -1769,6 +1770,121 @@ ul{
     align-items: center;
     gap: 5px;
 }
+
+.star-cb-group{
+
+    unicode-bidi: bidi-override;
+    direction: rtl;
+    /* margin: auto; */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* .star-cb-group *{
+    font-size: 1rem;
+} */
+
+.star-cb-group > input {
+    display: none;
+}
+.star-cb-group > input + label {
+/* only enough room for the star */
+display: inline-block;
+/* overflow: hidden; */
+text-indent: 9999px;
+width: 40px;
+white-space: nowrap;
+cursor: pointer;
+/* font-size: 1rem; */
+}
+.star-cb-group > input + label:before {
+    display: inline-block;
+    text-indent: -9999px;
+    content: '\2606';
+    color: #e52;
+    font-size:40px;
+}
+
+/* .star-cb-group > input:checked ~ label:before,
+.star-cb-group > input + label:hover ~ label:before,
+.star-cb-group > input + label:hover:before {
+content: '\2605';
+color: #e52;
+text-shadow: 0 0 1px #333;
+} */
+
+.star-cb-group > input:checked ~ label:before{
+    content: '\2605';
+color: #e52;
+text-shadow: 0 0 1px #333;
+}
+
+
+/* the hidden clearer */
+.star-cb-group > .star-cb-clear + label {
+    text-indent: -9999px;
+    width: .5em;
+    margin-left: -.5em;
+}
+.star-cb-group > .star-cb-clear + label:before {
+    width: .5em;
+}
+
+/* .star-cb-group:hover > input + label:before {
+    content: '\2606';
+    color: #888;
+    text-shadow: none;
+} */
+/* .star-cb-group:hover > input + label:hover ~ label:before,
+.star-cb-group:hover > input + label:hover:before {
+    content: '\2605';
+    color: #e52;
+    text-shadow: 0 0 1px #333;
+} */
+
+.shop-rating-btn{
+    font-size: 14px;
+}
+
+.stars-outer {
+    display: inline-block;
+    position: relative;
+    font-family: FontAwesome;
+    width: fit-content;
+    font-size: 0px;
+  }
+  .fa-star{
+    font-size: 16px;
+  }
+.stars-outer::before {
+/* content: "\f006 \f006 \f006 \f006 \f006"; */
+}
+.stars-inner {
+position: absolute;
+top: 0;
+left: 0;
+white-space: nowrap;
+overflow: hidden;
+width: 0;
+}
+.stars-inner::before {
+/* content: "\f004 \f004 \f004 \f004 \f004"; */
+color: #f8ce0b;
+}
+.shop-main-shop-rating-container{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: var(--customer-text-color);
+}
+
+.shop-main-shop-rating-container p{
+    margin-bottom: 0;
+}
+
+
+
 
 @media screen and (max-width:1000px){
 
@@ -2010,6 +2126,11 @@ ul{
 
     .shop-main-shop-name p{
         width: 100px;
+    }
+
+    .shop-main-shop-container{
+        flex-direction: column;
+        gap: 10px 0;
     }
 }
 

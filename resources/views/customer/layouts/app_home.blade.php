@@ -711,10 +711,17 @@
 
             $('.social-media-media-slider').hide()
 
-            $(".social-media-media-container").click(function() {
-
+            $(document).on('click', '.social-media-media-container', function(e) {
                 $(this).siblings(".social-media-media-slider").show()
                 $(this).hide()
+                var post_id=$(this).data('id');
+                var add_url = "{{ route('user.view.post') }}";
+                $.ajax({
+                        method: "GET",
+                        url: add_url,
+                        data:{ post_id : post_id}
+                    })
+
             })
 
             $(".slider-close-icon").click(function() {

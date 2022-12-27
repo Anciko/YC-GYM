@@ -200,6 +200,8 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::post('post/like/list', [SocialmediaController::class, 'social_media_likes']);
     Route::post('post/comment/list', [SocialmediaController::class, 'comment_list']);
 
+    Route::post('post/viewer/count', [SocialmediaController::class, 'post_viewer']);
+
     Route::post('socialmedia/report',[SocialmediaController::class,'post_report']);
 
     Route::post('socialmedia/video_call',[SocialmediaController::class,'video_token']);
@@ -212,7 +214,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::post('socialmedia/call_accept',[SocialmediaController::class,'accept_call']);
 
     Route::get('user/list', [SocialmediaController::class, 'user_list']);
-    //shop 
+    //shop
     Route::get('shop/status', [ShopController::class, 'shop_status']);
 
     Route::get('shop/member/plans/list', [ShopController::class, 'shop_member_plan_list']);
@@ -222,7 +224,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
 
     Route::post('shop/detail', [ShopController::class, 'shop_posts']);
 
-
+    Route::post('shop/rating', [ShopController::class, 'shop_rating']);
 });
 
 Route::get('test', [AuthController::class, 'test']);
