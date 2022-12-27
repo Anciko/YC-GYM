@@ -1762,6 +1762,7 @@ ul{
     font-size: 14px;
     font-weight: 600;
     word-break: break-word;
+    color: var(--customer-text-color);
 }
 
 .shop-addpost-btns-container{
@@ -1845,6 +1846,39 @@ text-shadow: 0 0 1px #333;
 .shop-rating-btn{
     font-size: 14px;
 }
+
+.stars-outer {
+    display: inline-block;
+    position: relative;
+    font-family: FontAwesome;
+    width: 106px;
+  }
+.stars-outer::before {
+/* content: "\f006 \f006 \f006 \f006 \f006"; */
+}
+.stars-inner {
+position: absolute;
+top: 0;
+left: 0;
+white-space: nowrap;
+overflow: hidden;
+width: 0;
+}
+.stars-inner::before {
+/* content: "\f004 \f004 \f004 \f004 \f004"; */
+color: #f8ce0b;
+}
+.shop-main-shop-rating-container{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: var(--customer-text-color);
+}
+
+.shop-main-shop-rating-container p{
+    margin-bottom: 0;
+}
+
 
 
 
@@ -2088,6 +2122,11 @@ text-shadow: 0 0 1px #333;
 
     .shop-main-shop-name p{
         width: 100px;
+    }
+
+    .shop-main-shop-container{
+        flex-direction: column;
+        gap: 10px 0;
     }
 }
 
