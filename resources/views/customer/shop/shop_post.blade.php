@@ -325,6 +325,9 @@
                                             htmlView += ` <div class="shop-post-footer-container">
                                                             <div class="shop-post-like-container">
                                                             <a class="like" id="`+posts[i].post_id+`">`
+                                            var likeurl = "{{ route('social_media_likes', [':post_id']) }}"
+                                            likeurl = likeurl.replace(':post_id', posts[i].post_id)
+
                                             if(posts[i].isLike==0){
                                                 htmlView+=`
                                                 <iconify-icon icon="mdi:cards-heart-outline" class="like-icon"></iconify-icon>`
@@ -333,29 +336,51 @@
                                                 htmlView+=`
                                                 <iconify-icon icon="mdi:cards-heart" style="color: red;" class="like-icon already-liked"></iconify-icon>`
                                             }
+
                                                 htmlView +=`</a>
                                                             <p>
                                                                 <span class="total_likes">
                                                                     `+posts[i].total_likes+`
                                                                 </span>
-                                                                <a class="viewlikes" id="">Likes</a>
+                                                                <a href="`+likeurl+`">`
+                                                    if(posts[i].total_likes >1){
+                                                        htmlView+=`Likes`
+                                                    }else{
+                                                        htmlView+=`Like`
+                                                    }
+                                                htmlView+=`</a>
                                                             </p>
                                                             </div>
 
                                                             <div class="social-media-post-comment-container">
                                                                 <a href = `+comment_url+`>
                                                                 <iconify-icon icon="bi:chat-right" class="comment-icon"></iconify-icon>
-                                                                <p><span>`+posts[i].total_comments+`</span> Comments</p>
+                                                                <p><span>`+posts[i].total_comments+`</span>`
+                                                    if(posts[i].total_comments >1){
+                                                        htmlView+=` Comments`
+                                                    }else{
+                                                        htmlView+=` Comment`
+                                                    }
+                                                    htmlView+=`</p>
                                                                 </a>
-                                                            </div>
-                                                            <div class="social-media-post-comment-container">
+                                                            </div>`
+                                                if(posts[i].media!=null){
+                                                    htmlView+=`<div class="social-media-post-comment-container">
                                                                 <iconify-icon icon="ic:outline-remove-red-eye" class="comment-icon"></iconify-icon>
-                                                                <p><span>`+posts[i].viewers+`</span> Views</p>
-                                                            </div>
-                                                            </div>
-                                                            </div>
-                                                                `
+                                                                <p><span>`+posts[i].viewers+`</span>`
+                                                    if(posts[i].viewers >1){
+                                                        htmlView+=` Views`
+                                                    }else{
+                                                        htmlView+=` View`
+                                                    }
+                                                    htmlView+=`</p>
+                                                            </div>`
+                                                }else{
+
+                                                }
+
                                             htmlView+=`</div>
+                                                            </div></div>
                                                         </div>`
 
                     }
