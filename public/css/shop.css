@@ -1805,10 +1805,16 @@ cursor: pointer;
     font-size:40px;
 }
 
-.star-cb-group > input:checked ~ label:before,
+/* .star-cb-group > input:checked ~ label:before,
 .star-cb-group > input + label:hover ~ label:before,
 .star-cb-group > input + label:hover:before {
 content: '\2605';
+color: #e52;
+text-shadow: 0 0 1px #333;
+} */
+
+.star-cb-group > input:checked ~ label:before{
+    content: '\2605';
 color: #e52;
 text-shadow: 0 0 1px #333;
 }
@@ -1824,16 +1830,20 @@ text-shadow: 0 0 1px #333;
     width: .5em;
 }
 
-.star-cb-group:hover > input + label:before {
+/* .star-cb-group:hover > input + label:before {
     content: '\2606';
     color: #888;
     text-shadow: none;
-}
-.star-cb-group:hover > input + label:hover ~ label:before,
+} */
+/* .star-cb-group:hover > input + label:hover ~ label:before,
 .star-cb-group:hover > input + label:hover:before {
     content: '\2605';
     color: #e52;
     text-shadow: 0 0 1px #333;
+} */
+
+.shop-rating-btn{
+    font-size: 14px;
 }
 
 

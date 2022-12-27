@@ -32,7 +32,7 @@
 <div class="shop-right-container">
     <div class="shop-posts-header-container">
         <p>{{$user->name}}'s Shop</p>
-        <button type="button" class="shop-rating-btn" data-bs-toggle="modal" data-bs-target="#ratingModal">
+        <button type="button" class="shop-rating-btn customer-primary-btn" data-bs-toggle="modal" data-bs-target="#ratingModal">
             Rate
           </button>
         <div class="shop-search-container">
