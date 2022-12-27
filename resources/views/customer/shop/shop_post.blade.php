@@ -2,10 +2,39 @@
 
 @section('content')
 @include('sweetalert::alert')
+<div class="modal fade" id="ratingModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Rate this shop</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <form>
+                <fieldset>
+                  <span class="star-cb-group">
+                    <input type="radio" id="rating-5" name="rating" value="5" /><label for="rating-5">5</label>
+                    <input type="radio" id="rating-4" name="rating" value="4"  /><label for="rating-4">4</label>
+                    <input type="radio" id="rating-3" name="rating" value="3" /><label for="rating-3">3</label>
+                    <input type="radio" id="rating-2" name="rating" value="2" /><label for="rating-2">2</label>
+                    <input type="radio" id="rating-1" name="rating" value="1" /><label for="rating-1">1</label>
+                    <input type="radio" id="rating-0" name="rating" value="0" class="star-cb-clear" /><label for="rating-0">0</label>
+                  </span>
+                </fieldset>
+                <button type="button" class="rating-submit-btn">Rate</button>
+            </form>
+
+        </div>
+      </div>
+    </div>
+  </div>
 
 <div class="shop-right-container">
     <div class="shop-posts-header-container">
         <p>{{$user->name}}'s Shop</p>
+        <button type="button" class="shop-rating-btn" data-bs-toggle="modal" data-bs-target="#ratingModal">
+            Rate
+          </button>
         <div class="shop-search-container">
             <input type="text" placeholder="Search..." id  = "caption_search">
             <iconify-icon icon="akar-icons:search" class="shop-search-icon"></iconify-icon>
@@ -150,6 +179,13 @@
 @endsection
 @push('scripts')
 <script>
+    //rating start
+    $('input[name="rating"]').change(function () {
+        var me = $(this);
+        // log.html(me.attr('value'));
+        console.log(me.attr('value'))
+    });
+    //rating end
     $(document).on('click','.shop-post-header-icon',function(){
                 $(this).next().toggle()
             })
