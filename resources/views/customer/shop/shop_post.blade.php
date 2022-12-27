@@ -32,7 +32,8 @@
 <div class="shop-right-container">
     <div class="shop-posts-header-container">
         <p>{{$user->name}}'s Shop</p>
-        <button type="button" class="shop-rating-btn customer-primary-btn" data-bs-toggle="modal" data-bs-target="#ratingModal">
+        <button type="button" class="shop-rating-btn customer-primary-btn" >
+        {{-- <button type="button" class="shop-rating-btn customer-primary-btn" data-bs-toggle="modal" data-bs-target="#ratingModal"> --}}
             Rate
           </button>
         <div class="shop-search-container">
@@ -68,13 +69,23 @@
                     datatype: "json",
                     success: function(data) {
 
-                        Swal.fire({
+                        if(data.message==200){
+                            Swal.fire({
                                     title:'Submitted',
-                                    text: data.success,
+                                    text: 'Thanks for your feedback.',
                                     timerProgressBar: true,
                                     timer: 5000,
                                     icon: 'success',
                                 })
+                        }else{
+                            Swal.fire({
+                                    text: 'Cannot rate self shop.',
+                                    timerProgressBar: true,
+                                    timer: 5000,
+                                    icon: 'warning',
+                                })
+                        }
+
                     }
         })
     });
