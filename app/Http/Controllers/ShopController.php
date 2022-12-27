@@ -517,6 +517,7 @@ class ShopController extends Controller
         $user_id = auth()->user()->id;
         $shop_id = $request->post_user;
         $shop_rating = ShopRating::where('user_id', $user_id)->where('shop_id',$shop_id)->first();
+        if($shop_rating->shop_id != auth()->user()->id){
         if($shop_rating){
             DB::table('shop_ratings')->where('user_id', $user_id)->where('shop_id',$shop_id)->update(['rating' => $request->rating]);
         }
@@ -527,6 +528,7 @@ class ShopController extends Controller
             $shop_rating->rating = $request->rating;
             $shop_rating->save();
         }
+    }
         return response()->json([
             'success' => 'Thanks for your feedback.'
         ]);
