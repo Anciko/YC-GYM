@@ -13,6 +13,7 @@ use App\Models\WeightHistory;
 use App\Models\PersonalChoice;
 use Spatie\Permission\Models\Role;
 use App\Http\Controllers\Controller;
+use App\Models\ShopPost;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
@@ -397,10 +398,16 @@ class AuthController extends Controller
             $user->active_status = 1;
             $user->request_type = $request->member_id;
         }else{
-            $user->shopmember_type_id= $request->shopmember_type_id;
-            $user->shop_request=1;
-        }
+            if($user->shop_request == 2){
+                $user->shopmember_type_id= $request->shopmember_type_id;
+                $user->shop_request=3;
+            }
+            else{
+                $user->shopmember_type_id= $request->shopmember_type_id;
+                $user->shop_request=1;
+            }
 
+        }
         $user->update();
         return response()->json([
             'message' => 'success'
