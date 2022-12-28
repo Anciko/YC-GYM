@@ -1192,6 +1192,7 @@
                             var filesdb = data.post.media ? JSON.parse(data.post.media) : [];
                             console.log(data.post.media,'media');
                             console.log(data.imageData,'image data');
+                            var imageDataDb = data.imageData
                             // var filesAmount=files.length;
                             var storedFilesdb = filesdb;
                             // console.log(storedFilesdb)
@@ -1226,8 +1227,12 @@
                             $("body").on("click", ".delete-preview-db-icon", removeFiledb);
 
                             function removeFiledb() {
+                                console.log(imageDataDb)
                                 var file = $(this).data('file')
                                 storedFilesdb = storedFilesdb.filter((item) => {
+                                    return file !== item
+                                })
+                                imageDataDb = imageDataDb.filter((item) => {
                                     return file !== item
                                 })
 
@@ -1241,6 +1246,20 @@
                             $('#edit_form').submit(function(e) {
                                 e.preventDefault();
                                 $('#editPostModal').modal('hide');
+
+                                var totalSize = 0;
+
+                                $("#editPostInput").each(function() {
+                                    for (var i = 0; i < this.files.length; i++) {
+                                    totalSize += this.files[i].size;
+                                    }
+                                });
+
+
+
+                                var valid = totalSize <= 157286400;
+
+                                console.log(valid)
 
 
 
