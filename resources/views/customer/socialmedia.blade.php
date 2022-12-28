@@ -8,7 +8,7 @@
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="reportLabel">Report</h5>
+          <h5 class="modal-title" id="reportLabel">{{__('msg.report')}}</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
@@ -109,9 +109,9 @@
                             @endphp
 
                             @if ($already_save)
-                                <p class="save">Unsave</p>
+                                <p class="save">{{__('msg.unsave')}}</p>
                             @else
-                                <p class="save">Save</p>
+                                <p class="save">{{__('msg.save')}}</p>
                                 @endif
                         </div>
                     </a>
@@ -120,19 +120,19 @@
                         <a id="edit_post" data-id="{{$post->id}}" data-bs-toggle="modal" >
                             <div class="post-action">
                                 <iconify-icon icon="material-symbols:edit" class="post-action-icon"></iconify-icon>
-                                <p>Edit</p>
+                                <p>{{__('msg.edit')}}</p>
                             </div>
                         </a>
                         <a id="delete_post" data-id="{{$post->id}}">
                             <div class="post-action">
                             <iconify-icon icon="material-symbols:delete-forever-outline-rounded" class="post-action-icon"></iconify-icon>
-                            <p>Delete</p>
+                            <p>{{__('msg.delete')}}</p>
                             </div>
                         </a>
                     @else
                     <div class="post-action" id="report" data-id="{{$post->id}}">
                         <iconify-icon icon="material-symbols:report-outline" class="post-action-icon"></iconify-icon>
-                        <p>Report</p>
+                        <p>{{__('msg.report')}}</p>
                     </div>
                     @endif
                 </div>

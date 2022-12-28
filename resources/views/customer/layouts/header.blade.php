@@ -9,9 +9,9 @@
             </div>
             <div class="customer-language-container">
 
-                <select>
-                    <option value=""><a href={{route('locale','en')}}>English</a></option>
-                    <option value=""><a href={{route('locale','mm')}}>Myanmar</a></option>
+                <select class="langChange">
+                    <option value="en" {{session()->get('locale') == 'en' ? 'selected' : ''}}>English</option>
+                    <option value="mm" {{session()->get('locale') == 'mm' ? 'selected' : ''}}>Myanmar</option>
 
                 </select>
                 {{-- <a href={{route('locale','en')}}>English</a>
@@ -29,15 +29,15 @@
         </div>
         <div class="customer-navlinks-container">
             @guest
-            <a href="{{route('home')}}">{{__('msg.home')}}</a>
+            <a href="{{route('home')}}">{{ __('msg.home1')}}</a>
             @endguest
             @auth
-            <a href="{{route('social_media')}}">{{__('msg.home')}}</a>
+            <a href="{{route('social_media')}}">{{__('msg.home1')}}</a>
             @endauth
             @hasanyrole('System_Admin')
             <a href="{{route('home')}}">Dashboard</a>
             @endhasanyrole
-            <a href="{{route('shop')}}">Shop</a>
+            <a href="{{route('shop')}}">{{__('msg.shop')}}</a>
             {{-- <a href="#">Training Center</a> --}}
         </div>
 
@@ -49,13 +49,13 @@
 
         <div class="customer-nav-btns-container">
             @guest
-          <a href="{{route('login')}}" class="customer-primary-btn customer-login-btn">Log In</a>
-          <a href="{{route('customer_register')}}" class="customer-secondary-btn customer-signup-btn">Sign Up</a>
+          <a href="{{route('login')}}" class="customer-primary-btn customer-login-btn">{{__('msg.log in')}}</a>
+          <a href="{{route('customer_register')}}" class="customer-secondary-btn customer-signup-btn">{{__('msg.sign up')}}</a>
           @endguest
           @auth
           <form id="logout-form" action="{{ route('logout') }}" method="POST">
             @csrf
-            <button class="customer-primary-btn customer-login-btn" type="submit">Logout</button>
+            <button class="customer-primary-btn customer-login-btn" type="submit">{{__('msg.log out')}}</button>
         </form>
         @endauth
         </div>

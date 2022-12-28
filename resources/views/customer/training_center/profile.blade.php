@@ -12,7 +12,7 @@
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
         <div class="modal-header">
-          <h1 class="modal-title fs-5" id="exampleModalLabel">Edit Post</h1>
+          <h1 class="modal-title fs-5" id="exampleModalLabel">{{__('msg.edit post')}}</h1>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <form class="modal-body" id="edit_form" enctype= multipart/form-data>
@@ -24,7 +24,7 @@
             <input type="hidden" id="edit_post_id">
 
           <div class="addpost-caption">
-            <p>Post Caption</p>
+            <p>{{__('msg.post caption')}}</p>
             <textarea placeholder="Caption goes here..." name="caption" id="editPostCaption" class="addpost-caption-input"></textarea>
           </div>
 
@@ -34,11 +34,11 @@
 
                 <div class="addpost-photovideo-btn">
                     <iconify-icon icon="akar-icons:circle-plus" class="addpst-photovideo-btn-icon"></iconify-icon>
-                    <p>Photo/Video</p>
+                    <p>{{__('msg.photo/video')}}</p>
                     <input type="file" id="editPostInput" name="editPostInput[]" multiple enctype="multipart/form-data">
                 </div>
 
-                <button class="addpost-photovideo-clear-btn" type="button" onclick="clearEditPost()">Clear</button>
+                <button class="addpost-photovideo-clear-btn" type="button" onclick="clearEditPost()">{{__('msg.clear')}}</button>
 
             </span>
 
@@ -49,7 +49,7 @@
             </div>
             {{-- <input type="submit" class="customer-primary-btn addpost-submit-btn" value="Update"> --}}
             {{-- <button type="button" class="customer-primary-btn addpost-submit-btn "  id="editpost-submit-btn">Update</button> --}}
-            <button type="submit" class="customer-primary-btn addpost-submit-btn">Post</button>
+            <button type="submit" class="customer-primary-btn addpost-submit-btn">{{__('msg.post')}}</button>
         </form>
 
       </div>
@@ -170,9 +170,9 @@
             <form method="POST" action="{{route('customer-profile-cover.update')}}" enctype="multipart/form-data">
                 @csrf
                 @method('POST')
-                <button type="submit" class="customer-primary-btn">Confirm</button>
+                <button type="submit" class="customer-primary-btn">{{__('msg.confirm')}}</button>
 
-            <button type="button" class="customer-secondary-btn customer-cover-change-cancel-btn">Cancel</button>
+            <button type="button" class="customer-secondary-btn customer-cover-change-cancel-btn">{{__('msg.cancel')}}</button>
         </div>
             <label class="customer-cover-img-change-btn">
                 <input type="file" class="customer-cover-img-change-input" name="cover">
@@ -196,8 +196,8 @@
                         </label>
                     </div>
                     <div class="customer-profile-change-btns-container">
-                        <button type="submit" class="customer-primary-btn">Confirm</button>
-                        <button type="button" class="customer-secondary-btn customer-profile-change-cancel-btn">Cancel</button>
+                        <button type="submit" class="customer-primary-btn">{{__('msg.confirm')}}</button>
+                        <button type="button" class="customer-secondary-btn customer-profile-change-cancel-btn">{{__('msg.cancel')}}</button>
                     </div>
                 </form>
                 <form class="" method="POST" action="{{route('customer-profile-name.update')}}">
@@ -211,8 +211,8 @@
                     <iconify-icon icon="cil:pen" class="change-name-icon" id="name_edit_pen"></iconify-icon>
 
                     <div class="customer-change-name-btns-container">
-                        <button type="submit" class="customer-primary-btn customer-name-calculate-btn">Save</button>
-                        <button type="button" class="customer-secondary-btn customer-name-calculate-btn" id="customer_name_cancel">Cancel</button>
+                        <button type="submit" class="customer-primary-btn customer-name-calculate-btn">{{__("msg.save")}}</button>
+                        <button type="button" class="customer-secondary-btn customer-name-calculate-btn" id="customer_name_cancel">{{__('msg.cancel')}}</button>
                     </div>
                 </div>
                 </form>
@@ -225,7 +225,7 @@
         @method('POST')
         <div class="customer-bio-text">
             @if (auth()->user()->bio==null)
-                <p class="text-secondary" >No Bio Here</p>
+                <p class="text-secondary" ></p>
             @else
             <p>{{auth()->user()->bio}}</p>
             @endif
@@ -233,23 +233,23 @@
             <iconify-icon icon="cil:pen" class="customer-bio-change-icon" id={{auth()->user()->id}}></iconify-icon>
         </div>
         <div class="customer-bio-btns-container">
-            <button type="submit" class="customer-primary-btn">Confirm</button>
-            <button type="button" class="customer-secondary-btn customer-bio-change-cancel-btn">Cancel</button>
+            <button type="submit" class="customer-primary-btn">{{__('msg.confirm')}}</button>
+            <button type="button" class="customer-secondary-btn customer-bio-change-cancel-btn">{{__('msg.cancel')}}</button>
         </div>
     </form>
 
     <div class="customer-profile-tabs-container">
         <div class="customer-profile-training-center-tab">
             <iconify-icon icon="fa-solid:dumbbell" class="customer-profile-tab-icon"></iconify-icon>
-            <p>Training Center</p>
+            <p>{{__("msg.training center")}}</p>
         </div>
         <div class="customer-profile-socialmedia-tab">
             <iconify-icon icon="bi:chat-heart" class="customer-profile-tab-icon"></iconify-icon>
-            <p>Social Media</p>
+            <p>{{__('msg.social media')}}</p>
         </div>
         <div class="customer-profile-shop-tab">
             <iconify-icon icon="lucide:shopping-cart" class="customer-profile-tab-icon"></iconify-icon>
-            <p>Shop</p>
+            <p>{{__('msg.shop')}}</p>
         </div>
     </div>
     <div class="customer-profile-socialmedia-container">
@@ -257,12 +257,12 @@
             <div class="customer-profile-friends-parent-container">
                 <div class="customer-profile-friends-header">
                     @if (count($user_friends)>1)
-                    <p>{{count($user_friends)}} Friends</p>
+                    <p>{{count($user_friends)}} {{__('msg.friends')}}</p>
                     @else
-                    <p>{{count($user_friends)}} Friend</p>
+                    <p>{{count($user_friends)}} {{__('msg.friend')}}</p>
                     @endif
                     <span class="customer-profile-see-all-fris-btn">
-                        See All
+                        {{ __('msg.friends')}}
                         <iconify-icon icon="bi:arrow-right" class="arrow-icon"></iconify-icon>
                     </span>
                 </div>
@@ -294,15 +294,15 @@
                     @endforelse
                 </div>
 
-                <p href="#" class="social-media-profile-photos-link">Photos</p>
+                <p href="#" class="social-media-profile-photos-link">{{__('msg.photos')}}</p>
             </div>
 
             <div class="customer-profile-posts-parent-container">
                 <div class="customer-profile-posts-header">
-                    <p>Post & Activities</p>
+                    <p>{{__("msg.post & activities")}}</p>
                     <select class="customer-profile-selector">
-                        <option value="all">All</option>
-                        <option value="saved" class="saved_post_selectbox">Saved</option>
+                        <option value="all">{{__("msg.all")}}</option>
+                        <option value="saved" class="saved_post_selectbox">{{__("msg.save")}}</option>
                     </select>
                 </div>
                 <div class="customer-all-posts-container">
@@ -317,11 +317,11 @@
         <div class="customer-profile-social-media-photoes-container">
             <p class="customer-profile-social-media-photoes-back">
                 <iconify-icon icon="material-symbols:arrow-back"></iconify-icon>
-                Go Back
+                {{__("msg.go back")}}
             </p>
             <div class="social-media-photos-tabs-container">
-                <p class="social-media-photos-tab social-media-profiles-tab">Profile Photos</p>
-                <p class="social-media-photos-tab social-media-covers-tab">Cover Photos</p>
+                <p class="social-media-photos-tab social-media-profiles-tab">{{__("msg.profile photos")}}</p>
+                <p class="social-media-photos-tab social-media-covers-tab">{{__("msg.cover photos")}}</p>
             </div>
 
             <div class="social-media-photos-container social-media-profiles-container">
@@ -359,7 +359,7 @@
         <div class="customer-profile-social-media-fris-container">
             <p class="customer-profile-social-media-photoes-back">
                 <iconify-icon icon="material-symbols:arrow-back"></iconify-icon>
-                Go Back</p>
+                {{__("msg.go back")}}</p>
             <div class="social-media-fris-search">
                 <input type="text" placeholder="Search your friends">
                 <iconify-icon icon="akar-icons:search" class="search-icon"></iconify-icon>
@@ -373,7 +373,7 @@
     </div>
     <div class="customer-profile-shop-container">
         <div class="customer-profile-posts-header">
-            <p>Shop & Activities</p>
+            <p>{{__("msg.shop & activities")}}/p>
             <select class="customer-shop-profile-selector">
                 <option value="shop-all">All</option>
                 <option value="shop-saved" class="saved_post_selectbox">Saved</option>
@@ -402,7 +402,7 @@
                 @csrf
                 @method('POST')
             <div class="customer-profile-personaldetails-parent-container">
-                <h1>Your Profile</h1>
+                <h1>{{__('msg.your profile')}}</h1>
                 <div style="float:right;padding-right:40px">
                     <iconify-icon icon="cil:pen" class="change-name-icon" id="pen1"></iconify-icon>
                 </div>
@@ -410,7 +410,7 @@
                 <div class="customer-profile-personaldetails-grid">
                     <div class="customer-profile-personaldetails-left">
                         <div class="customer-profile-personaldetail-container">
-                            <p>Age:</p>
+                            <p>{{__('msg.age')}}:</p>
                             <div>
                                 <input type="number" value="{{auth()->user()->age}}" readonly="readonly" class="age" name="age">
                                 <span style = "visibility: hidden;">in</span>
@@ -422,7 +422,7 @@
                             $height_in=$height%12;
                             ?>
                         <div class="customer-profile-personaldetail-container customer-profile-personaldetail-height-container">
-                            <p>Height:</p>
+                            <p>{{__("msg.height")}}:</p>
                             <select name="height_ft" class="height_ft">
                                 <option value="3" {{"3" == $height_ft ? 'selected' : ''}}>3</option>
                                 <option value="4" {{"4" == $height_ft ? 'selected' : ''}}>4</option>
@@ -448,7 +448,7 @@
                         </div>
 
                         <div class="customer-profile-personaldetail-container">
-                            <p>Weight:</p>
+                            <p>{{__('msg.weight')}}:</p>
                             <div>
                                 <input type="number" value="{{auth()->user()->weight}}" class="weight" name="weight" readonly>
                                 <span>lb</span>
@@ -456,7 +456,7 @@
 
                         </div>
                         <div class="customer-profile-personaldetail-container">
-                            <p>Neck:</p>
+                            <p>{{__('msg.neck')}}:</p>
                             <div>
                                 <input type="number" value="{{auth()->user()->neck}}" class="neck" name="neck" readonly>
                                 <span>in</span>
@@ -465,7 +465,7 @@
                     </div>
                     <div class="customer-profile-personaldetails-right">
                         <div class="customer-profile-personaldetail-container">
-                            <p>Waist:</p>
+                            <p>{{__('msg.waist')}}:</p>
                             <div>
                                 <input type="number" value="{{auth()->user()->waist}}" name="waist" class="waist" readonly>
                                 <span>in</span>
@@ -481,7 +481,7 @@
                         </div>
 
                         <div class="customer-profile-personaldetail-container">
-                            <p>Shoulders:</p>
+                            <p>{{__("msg.shoulders")}}:</p>
                             <div>
                                 <input type="number"  value="{{auth()->user()->shoulders}}" name="shoulders" class="shoulders" readonly>
                                 <span>in</span>
@@ -552,13 +552,13 @@
             <div class="customer-profile-trackers-parent-container">
                 <div class="customer-profile-trackers-headers-container">
                     <div class="customer-profile-tracker-header" id="workout">
-                        Workout
+                        {{__('msg.work out')}}
                     </div>
                     <div class="customer-profile-tracker-header" id="meal">
-                        Meal
+                        {{__('msg.meal')}}
                     </div>
                     <div class="customer-profile-tracker-header" id="water">
-                        Water
+                        {{__('msg.water')}}
                     </div>
                 </div>
 
@@ -568,24 +568,24 @@
 
                     <form class="customer-profile-days-container customer-profile-workout-days-container">
                         <div class="customer-profile-days-btn" id="workout-today">
-                            Today
+                            {{__('msg.today')}}
                         </div>
                         <div class="customer-profile-days-btn" id = "workout-7days">
-                            Last 7 Days
+                           {{__('msg.last 7 days')}}
                         </div>
 
                         <div class="customer-profile-fromto-inputs-container">
                             <div class="customer-profile-from">
-                                <p>From:</p>
+                                <p>{{__('msg.from')}}:</p>
                                 <input type="date" id="from_date">
                             </div>
                             <div class="customer-profile-to">
-                                <p>To:</p>
+                                <p>{{__('msg.to')}}:</p>
                                 <input type="date" id="to_date">
                             </div>
                         </div>
 
-                        <button type="button" class="customer-profile-workout-filter-btn">Filter</button>
+                        <button type="button" class="customer-profile-workout-filter-btn">{{__("msg.filter")}}</button>
                     </form>
 
                     <div class="customer-profile-workout-list-parent-container">
@@ -596,10 +596,10 @@
                 <div class="customer-profile-tracker-meal-container">
                     <div class="customer-profile-days-container">
                         <div class="customer-profile-days-btn" id="meal-today">
-                            Today
+                            {{__('msg.today')}}
                         </div>
                         <div class="customer-profile-days-btn" id = "meal-7days">
-                            Last 7 Days
+                            {{__('msg.last 7 days')}}
                         </div>
                     </div>
 
@@ -625,10 +625,10 @@
                 <div class="customer-profile-tracker-water-container">
                     <div class="customer-profile-days-container">
                         <div class="customer-profile-days-btn" id="water-today">
-                            Today
+                            {{__('msg.today')}}
                         </div>
                         <div class="customer-profile-days-btn" id = "water-7days">
-                            Last 7 Days
+                            {{__('msg.last 7 days')}}
                         </div>
                     </div>
 
@@ -2682,7 +2682,7 @@
                 }
             }
 
-            $('.customer-profile-shop-container_data').html(htmlView);
+            $('.customer-profile-shop-container_data1').html(htmlView);
             $('.social-media-media-slider').hide();
             //image slider start
                     console.log($(".image-slider"))

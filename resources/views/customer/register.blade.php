@@ -9,7 +9,7 @@
     <!--personal infos-->
     <div class="cutomer-registeration-form tab">
         <p class="customer-registeration-form-header">
-            Personal Informations
+            {{__('msg.personal informations')}}
         </p>
         <input  type="text" value="{{ old('name') }}" class="customer-registeration-input @error('name') is-invalid @enderror" placeholder="Name" name="name">
         @error('name')
@@ -43,7 +43,7 @@
 
         <div class="customer-form-btn-container">
           <button class="customer-registeration-next-btn customer-primary-btn" type="submit">
-            <p>Sign Up</p>
+            <p>{{__('msg.sign up')}}</p>
           </button>
         </div>
 

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+
 use DatePeriod;
 use DateInterval;
 use Carbon\Carbon;
@@ -16,7 +17,9 @@ use App\Models\MemberHistory;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Redirect;
 use PhpOffice\PhpSpreadsheet\Calculation\DateTimeExcel\Month;
 
 class HomeController extends Controller
@@ -49,10 +52,10 @@ class HomeController extends Controller
         $user->members()->attach($request->member_id, ['member_type_level' => $user_member_type_level]);
     }
 
-    public function lang($locale)
+    public function lang(Request $request)
     {
-        App::setLocale($locale);
-        Session::put("locale", $locale);
+        App::setLocale($request->lang);
+        session()->put('locale',$request->lang);
         return redirect()->back();
     }
 
