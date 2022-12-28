@@ -140,6 +140,24 @@
                         </div>
                     </div>
 
+                    <div class="form-floating mb-3">
+                        <select class="form-select" aria-label="Default select example" placeholder="Select Categories"
+                            name="category">
+                            <option value=""></option>
+                            <option value="category1">Category 1</option>
+                            <option value="category2">Category 2</option>
+                            <option value="category3">Category 3</option>
+                            <option value="category4">Category 4</option>
+                            <option value="category5">Category 5</option>
+                            <option value="category6">Category 6</option>
+                            <option value="category7">Category 7</option>
+                            <option value="category8">Category 8</option>
+                            <option value="category9">Category 9</option>
+                            <option value="category10">Category 10</option>
+                        </select>
+                        <label for="floatingInput">Select Categories</label>
+                    </div>
+
 
                     <div class="referee-remark-input-btns-container">
                         <button type="submit" class="btn btn-primary">Create</button>
