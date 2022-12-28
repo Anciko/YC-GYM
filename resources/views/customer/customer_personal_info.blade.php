@@ -29,7 +29,7 @@
 
 <section class="training-center-testimonials-section">
     <div class="section-header">
-        <p>Our Testimonials</p>
+        <p>{{__('msg.our testimonials')}}</p>
         <div class="section-header-underline">
 
         </div>
@@ -60,7 +60,7 @@
 
 <section class="training-center-plans-section">
     <div class="section-header">
-        <p>Pricing Details</p>
+        <p>{{__('msg.pricing details')}}</p>
         <div class="section-header-underline">
 
         </div>
@@ -71,7 +71,7 @@
         <div class="member-plan-duration-container">
             <label>
                 <input type="checkbox" name = "memberPlanDuration" class=" customer-member-plan-duration-checkbox-input"  onclick="checkedOnDurationClick(this,'memberPlanDuration')" value="{{$duration->duration}}"/>
-                <p class="customer-member-plan-duration-checkbox-title">{{$duration->duration}} month</p>
+                <p class="customer-member-plan-duration-checkbox-title">{{$duration->duration}} {{__('msg.month')}}</p>
             </label>
         </div>
         {{-- <div class="member-plan-duration-container">

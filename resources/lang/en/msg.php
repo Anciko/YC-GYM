@@ -1,6 +1,11 @@
 <?php
 return[
     'home1'=>'Home',
+    'inches' => 'Inches',
+    'feet' => 'Feet',
+    "ectomorph"=>"Ectomorph",
+    "mesomorph"=>"Mesomorph",
+    "endomorph"=>"Endomorph",
     'log in'=>'Log In',
     'log out'=>'Log Out',
     'profile'=>'Profile',

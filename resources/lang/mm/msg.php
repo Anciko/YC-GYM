@@ -1,6 +1,11 @@
 <?php
 return[
     'home1'=>'ပင်မ',
+    'inches' => 'လက်မ',
+    'feet' => 'ပေ',
+    "ectomorph"=>"ကိုယ်ခန္ဓာ ၁",
+    "mesomorph"=>"ကိုယ်ခန္ဓာ ၂",
+    "endomorph"=>"ကိုယ်ခန္ဓာ ၃",
     'log in'=>'ဝင်မည်',
     'log out'=>'ထွက်မည်',
     'profile'=>'ပရိုဖိုင်',
@@ -194,7 +199,7 @@ return[
     'invest your products with yc fitness shop'=>'သင်၏ပစ္စည်းများကို YC စျေးဆိုင်တွက်ရင်းနှီးမြုပ်နှံပါ',
     'can upload 10 posts per month'=>'၁လအတွင်း၁၀ပို့စ်တင်နိုင်သည်',
     'mmk'=>'မြန်မာကျပ်',
-    'month'=>'တစ်လ',
+    'month'=>'လ',
     'upgrade'=>'မြှင့်တင်မည်',
     'back to shop page'=>'စျေးဆိုင်စာမျက်နာသို့ပြန်သွားမည်',
     'your profile'=>'သင်၏ကိုယ်ရေးအကျဉ်း',
