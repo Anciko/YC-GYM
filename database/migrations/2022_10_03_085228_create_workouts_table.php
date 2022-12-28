@@ -29,6 +29,7 @@ class CreateWorkoutsTable extends Migration
             $table->string('video');
             $table->integer('estimate_time');
             $table->integer('sets');
+            $table->string('category');
             $table->timestamps();
         });
     }

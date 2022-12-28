@@ -97,6 +97,7 @@ class WorkoutController extends Controller
         $data->video=$video_name;
         $data->estimate_time = $request->estimateTime;
         $data->sets = $request->sets;
+        $data->category = $request->category;
         $data->save();
 
         $data = new Workout();
@@ -114,6 +115,7 @@ class WorkoutController extends Controller
         $data->video=$video_name;
         $data->estimate_time = $request->estimateTime;
         $data->sets = $request->sets;
+        $data->category = $request->category;
         $data->save();
         return redirect('admin/workout');
         }
@@ -133,6 +135,7 @@ class WorkoutController extends Controller
         $data->video=$video_name;
         $data->estimate_time = $request->estimateTime;
         $data->sets = $request->sets;
+        $data->category = $request->category;
         $data->save();
         return redirect('admin/workout');
         }
@@ -206,6 +209,7 @@ class WorkoutController extends Controller
         $check->video = $video_name;
         $check->estimate_time = $request->estimateTime ?? $check->estimate_time;
         $check->sets = $request->sets ?? $check->sets;
+        $check->category = $request->category ?? $check->category;
         $check->update();
         return redirect('admin/workout');
     }

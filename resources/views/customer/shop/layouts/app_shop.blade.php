@@ -153,7 +153,14 @@
             @php
                 $date=Carbon\Carbon::now()->format('Y-m-d');
                 $user=auth()->user();
+                $user_role=$user->getRoleNames()->first();
+
+                if($user->shopmember_type_id!=null){
+                    $shop_members=DB::table('shop_members')->where('id',$user->shopmember_type_id)->first();
+                    $shop_levels=$shop_members->member_type;
+                }
             @endphp
+
             <div class="customer-main-content-container">
                 <div class="social-media-header-btns-container margin-top">
                     {{-- <a class="back-btn" href="{{route("socialmedia")}}"> --}}
@@ -161,35 +168,96 @@
                         <iconify-icon icon="bi:arrow-left" class="back-btn-icon"></iconify-icon>
                     </a>
                     <div class="shop-addpost-btns-container">
-                    @if (auth()->user()->shop_request==2)
-                    <button class="social-media-addpost-btn customer-primary-btn" data-bs-toggle="modal" data-bs-target="#addPostModal">
-                        <iconify-icon icon="akar-icons:circle-plus" class="addpost-icon"></iconify-icon>
-                        <p>{{__('msg.add post')}}</p>
-                    </button>
-                    <a href="{{route('shoprequest')}}" class="social-media-addpost-btn customer-primary-btn">
-                        <iconify-icon icon="ic:round-upgrade" class="addpost-icon"></iconify-icon>
-                        <p>{{__('msg.upgrade')}}</p>
-                    </a>
-                    @elseif (auth()->user()->shop_request==3 && (auth()->user()->shop_post_count!=0))
-                    <button class="social-media-addpost-btn customer-primary-btn" data-bs-toggle="modal" data-bs-target="#addPostModal">
-                        <iconify-icon icon="akar-icons:circle-plus" class="addpost-icon"></iconify-icon>
-                        <p>{{__('msg.add post')}}</p>
-                    </button>
-                    @elseif (auth()->user()->shopfrom_date==null && auth()->user()->shopto_date==null)
-                    <a href="javascript:void(0)" class="social-media-addpost-btn customer-primary-btn" id="dateexpired">
-                        <iconify-icon icon="akar-icons:circle-plus" class="addpost-icon"></iconify-icon>
-                        <p>{{__('msg.add post')}}</p>
-                    </a>
-                    <a href="{{route('shoprequest')}}" class="social-media-addpost-btn customer-primary-btn">
-                        <iconify-icon icon="ic:round-upgrade" class="addpost-icon"></iconify-icon>
-                        <p>{{__('msg.upgrade')}}</p>
-                    </a>
-                    @else
-                    <a href="{{route('shoprequest')}}" class="social-media-addpost-btn customer-primary-btn">
-                        <iconify-icon icon="akar-icons:circle-plus" class="addpost-icon"></iconify-icon>
-                        <p>{{__('msg.rent a shop')}}</p>
-                    </a>
-                    @endif
+                        @if ($user->shop_request==1 || $user->shop_request==3)
+                            @if ($user->shop_request==1)
+                                    <a href="{{route('shoprequest')}}" class="social-media-addpost-btn customer-primary-btn">
+                                        <iconify-icon icon="akar-icons:circle-plus" class="addpost-icon"></iconify-icon>
+                                        <p>Add Post</p>
+                                    </a>
+                            @elseif ($user->shop_request==3 && $user->shop_post_count!=0)
+                                <button class="social-media-addpost-btn customer-primary-btn" data-bs-toggle="modal" data-bs-target="#addPostModal">
+                                    <iconify-icon icon="akar-icons:circle-plus" class="addpost-icon"></iconify-icon>
+                                    <p>Add Post</p>
+                                </button>
+                            @else
+                            <a href="javascript:void(0)" class="social-media-addpost-btn customer-primary-btn" id="postcount">
+                                <iconify-icon icon="akar-icons:circle-plus" class="addpost-icon"></iconify-icon>
+                                <p>Add Post</p>
+                            </a>
+                            @endif
+                            <a href="{{route('shoprequest')}}" class="social-media-addpost-btn customer-primary-btn">
+                                <iconify-icon icon="ic:round-upgrade" class="addpost-icon"></iconify-icon>
+                                <p>Upgrade</p>
+                            </a>
+                        @elseif ($user->shop_request==2)
+                            @if ($user->shop_post_count!=0)
+                                <button class="social-media-addpost-btn customer-primary-btn" data-bs-toggle="modal" data-bs-target="#addPostModal">
+                                    <iconify-icon icon="akar-icons:circle-plus" class="addpost-icon"></iconify-icon>
+                                    <p>Add Post</p>
+                                </button>
+                            @elseif ($user->shop_post_count==0)
+                                @if($shop_levels=='level3' || $user_role=='Ruby' || $user_role=='Ruby Premium')
+                                    <button class="social-media-addpost-btn customer-primary-btn" data-bs-toggle="modal" data-bs-target="#addPostModal">
+                                        <iconify-icon icon="akar-icons:circle-plus" class="addpost-icon"></iconify-icon>
+                                        <p>Add Post</p>
+                                    </button>
+                                @else
+                                    <a href="javascript:void(0)" class="social-media-addpost-btn customer-primary-btn" id="postcount">
+                                        <iconify-icon icon="akar-icons:circle-plus" class="addpost-icon"></iconify-icon>
+                                        <p>Add Post</p>
+                                    </a>
+                                @endif
+                            @endif
+                            <a href="{{route('shoprequest')}}" class="social-media-addpost-btn customer-primary-btn">
+                                <iconify-icon icon="ic:round-upgrade" class="addpost-icon"></iconify-icon>
+                                <p>Upgrade</p>
+                            </a>
+                        @elseif($user_role=='Ruby' || $user_role=='Ruby Premium')
+                            <button class="social-media-addpost-btn customer-primary-btn" data-bs-toggle="modal" data-bs-target="#addPostModal">
+                                <iconify-icon icon="akar-icons:circle-plus" class="addpost-icon"></iconify-icon>
+                                <p>Add Post</p>
+                            </button>
+                            <a href="{{route('shoprequest')}}" class="social-media-addpost-btn customer-primary-btn">
+                                <iconify-icon icon="ic:round-upgrade" class="addpost-icon"></iconify-icon>
+                                <p>Upgrade</p>
+                            </a>
+                        @else
+                        <a href="{{route('shoprequest')}}" class="social-media-addpost-btn customer-primary-btn">
+                            <iconify-icon icon="akar-icons:circle-plus" class="addpost-icon"></iconify-icon>
+                            <p>Rent a shop</p>
+                        </a>
+                        @endif
+                        {{-- @if (auth()->user()->shop_request==2)
+                        <button class="social-media-addpost-btn customer-primary-btn" data-bs-toggle="modal" data-bs-target="#addPostModal">
+                            <iconify-icon icon="akar-icons:circle-plus" class="addpost-icon"></iconify-icon>
+                            <p>Add Post</p>
+                        </button>
+                        <a href="{{route('shoprequest')}}" class="social-media-addpost-btn customer-primary-btn">
+                            <iconify-icon icon="ic:round-upgrade" class="addpost-icon"></iconify-icon>
+                            <p>Upgrade</p>
+                        </a>
+                        @elseif (auth()->user()->shop_request==3 && (auth()->user()->shop_post_count!=0))
+                        <button class="social-media-addpost-btn customer-primary-btn" data-bs-toggle="modal" data-bs-target="#addPostModal">
+                            <iconify-icon icon="akar-icons:circle-plus" class="addpost-icon"></iconify-icon>
+                            <p>Add Post</p>
+                        </button>
+
+                        @elseif (auth()->user()->shopfrom_date==null && auth()->user()->shopto_date==null || auth()->user()->shopto_date==$date)
+                        <a href="javascript:void(0)" class="social-media-addpost-btn customer-primary-btn" id="dateexpired">
+                            <iconify-icon icon="akar-icons:circle-plus" class="addpost-icon"></iconify-icon>
+                            <p>Add Post</p>
+                        </a>
+                        <a href="{{route('shoprequest')}}" class="social-media-addpost-btn customer-primary-btn">
+                            <iconify-icon icon="ic:round-upgrade" class="addpost-icon"></iconify-icon>
+                            <p>Upgrade</p>
+                        </a>
+                        @else
+
+                        <a href="{{route('shoprequest')}}" class="social-media-addpost-btn customer-primary-btn">
+                            <iconify-icon icon="akar-icons:circle-plus" class="addpost-icon"></iconify-icon>
+                            <p>Rent a shop</p>
+                        </a>
+                        @endif --}}
                     </div>
                 </div>
 
@@ -573,7 +641,7 @@
                         }
 
                 var user_id = {{auth()->user()->id}};
-                console.log(user_id);
+
                 var pusher = new Pusher('{{env("MIX_PUSHER_APP_KEY")}}', {
                 cluster: '{{env("PUSHER_APP_CLUSTER")}}',
                 encrypted: true
@@ -1123,6 +1191,7 @@
             })
 
             $('.addpost-submit-btn').click(function(){
+                $('#addPostModal').modal('hide');
                 var $fileUpload = $("#addPostInput");
                 if (parseInt($fileUpload.get(0).files.length)>5){
                     alert("You can only upload a maximum of 5 files");s
