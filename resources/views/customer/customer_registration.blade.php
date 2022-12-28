@@ -2,23 +2,22 @@
 
 @section('content')
 <form id="regForm">
-
     <!-- body measurements-->
     <div class="cutomer-registeration-form tab customer-registeration-card">
         <p class="customer-registeration-form-header">
-            Body Measurements
+            {{__('msg.body measurements')}}
         </p>
         <input type="hidden" value={{$request_type}} name="request_type">
         <div class="customer-registeration-height-container">
-          <p class="customer-registeration-label">Height</p>
+          <p class="customer-registeration-label">{{__('msg.height')}}</p>
           <select class="customer-registeration-input" name="feet">
-              <option style="color: black;" value="">Feet</option>
+              <option style="color: black;" value="">{{__('msg.feet')}}</option>
               <option style="color: black;" value="4">4</option>
               <option style="color: black;" value="5">5</option>
               <option style="color: black;" value="6">6</option>
           </select>
           <select class="customer-registeration-input" name="inches">
-              <option style="color: black;" value="">Inches</option>
+              <option style="color: black;" value="">{{__('msg.inches')}}</option>
               <option style="color: black;" value="0">0</option>
               <option style="color: black;" value="1">1</option>
               <option style="color: black;" value="2">2</option>
@@ -33,18 +32,18 @@
               <option style="color: black;" value="11">11</option>
           </select>
         </div>
-        <input  type="number" required class="customer-registeration-input" placeholder="Age" name="age">
+        <input  type="number" required class="customer-registeration-input" placeholder="{{__('msg.age')}}" name="age">
         <select class="customer-registeration-input" name="gender" onchange="checkFemale(this)">
             <option style="color: black;" value="">Gender</option>
             <option  style="color: black;" value="male">Male</option>
             <option  style="color: black;" value="female">Female</option>
         </select>
         <div class="customer-registeration-with-description">
-            <input  type="number" required class="customer-registeration-input" placeholder="Neck" name="neck">
+            <input  type="number" required class="customer-registeration-input" placeholder="{{__('msg.neck')}}" name="neck">
             <iconify-icon icon="ant-design:exclamation-circle-outlined" class="description-icon" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Place the measuring tape around the neck at the height where the collar would normally rest – just below your Adam's apple."></iconify-icon>
         </div>
         <div class="customer-registeration-with-description">
-            <input  type="number" required class="customer-registeration-input" placeholder="Waist" name="waist">
+            <input  type="number" required class="customer-registeration-input" placeholder="{{__('msg.waist')}}" name="waist">
             <iconify-icon icon="ant-design:exclamation-circle-outlined" class="description-icon" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="place a non-stretch tape measure around your midsection above your hip bones, making sure the tape measure is horizontal around your waist. Keep the tape measure snug, but make sure to avoid compressing the skin ( 14 ). Breathe out, then measure the circumference of your waist"></iconify-icon>
         </div>
         <div class="customer-registeration-with-description" id="parent-hip">
@@ -52,7 +51,7 @@
             <iconify-icon  icon="ant-design:exclamation-circle-outlined" class="description-icon hip-tooltip" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Stand with your feet directly beneath your hips and wrap the tape around the widest part of your hips and buttocks."></iconify-icon>
         </div>
         <div class="customer-registeration-with-description">
-            <input  type="number" required class="customer-registeration-input" placeholder="Shoulders" name="shoulders">
+            <input  type="number" required class="customer-registeration-input" placeholder="{{__('msg.shoulders')}}" name="shoulders">
             <iconify-icon icon="ant-design:exclamation-circle-outlined" class="description-icon" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Description on measuring Shoulders size"></iconify-icon>
         </div>
 
@@ -60,10 +59,10 @@
         <div class="customer-form-btn-container">
           <button class="customer-registeration-prev-btn customer-primary-btn" type="button" id="prevBtn" onclick="nextPrev(-1)">
             <iconify-icon icon="akar-icons:arrow-left" class="customer-prev-icon"></iconify-icon>
-            <p>Previous</p>
+            <p>{{__('msg.previous')}}</p>
           </button>
           <button class="customer-registeration-next-btn customer-primary-btn" type="button" id="nextBtn" onclick="nextPrev(1,'bodyMeasurements')">
-            <p>Next</p>
+            <p>{{__('msg.next')}}</p>
             <iconify-icon icon="akar-icons:arrow-right" class="customer-next-icon"></iconify-icon>
           </button>
         </div>
@@ -73,7 +72,7 @@
     <!--physical limitations-->
     <div class="cutomer-registeration-form tab customer-registeration-card">
         <p class="customer-registeration-form-header">
-           Do you have any physical limitations?
+           {{__('msg.do you have any physical limitations?')}}
         </p>
 
         <div class="checkbox">
@@ -83,7 +82,7 @@
               <span class="checkbox-icon">
                 <iconify-icon icon="radix-icons:value-none" class="checkbox-icon-icon"></iconify-icon>
               </span>
-              <span class="checkbox-label">none</span>
+              <span class="checkbox-label">{{__('msg.none')}}</span>
             </span>
           </label>
         </div>
@@ -94,7 +93,7 @@
               <span class="checkbox-icon">
                 <iconify-icon icon="healthicons:back-pain" class="checkbox-icon-icon"></iconify-icon>
               </span>
-              <span class="checkbox-label">Back Pain</span>
+              <span class="checkbox-label">{{__('msg.back pain')}}</span>
             </span>
           </label>
         </div>
@@ -105,7 +104,7 @@
               <span class="checkbox-icon">
                 <iconify-icon icon="game-icons:knee-bandage" class="checkbox-icon-icon"></iconify-icon>
               </span>
-              <span class="checkbox-label">Knee pain</span>
+              <span class="checkbox-label">{{__('msg.knee pain')}}</span>
             </span>
           </label>
         </div>
@@ -116,7 +115,7 @@
               <span class="checkbox-icon">
                 <iconify-icon icon="el:wheelchair" class="checkbox-icon-icon"></iconify-icon>
               </span>
-              <span class="checkbox-label">Limited mobility</span>
+              <span class="checkbox-label">{{__('msg.limited mobility')}}</span>
             </span>
           </label>
         </div>
@@ -127,7 +126,7 @@
               <span class="checkbox-icon">
                 <iconify-icon icon="ph:dots-three-outline-thin" class="checkbox-icon-icon"></iconify-icon>
               </span>
-              <span class="checkbox-label">Other</span>
+              <span class="checkbox-label">{{__('msg.other')}}</span>
             </span>
           </label>
         </div>
@@ -136,10 +135,10 @@
         <div class="customer-form-btn-container">
           <button class="customer-registeration-prev-btn customer-primary-btn" type="button" id="prevBtn" onclick="nextPrev(-1)">
             <iconify-icon icon="akar-icons:arrow-left" class="customer-prev-icon"></iconify-icon>
-            <p>Previous</p>
+            <p>{{__('msg.previous')}}</p>
           </button>
           <button class="customer-registeration-next-btn customer-primary-btn" type="button" id="nextBtn" onclick="nextPrev(1,'physicalLimitations')">
-            <p>Next</p>
+            <p>{{__('msg.next')}}</p>
             <iconify-icon icon="akar-icons:arrow-right" class="customer-next-icon"></iconify-icon>
           </button>
         </div>
@@ -149,7 +148,7 @@
     <!--which activities do you prefer-->
     <div class="cutomer-registeration-form tab customer-registeration-card">
       <p class="customer-registeration-form-header">
-         Which activities do you prefer?
+         {{__('msg.which activities do you prefer?')}}
       </p>
 
       <div class="checkbox">
@@ -159,8 +158,12 @@
             <span class="checkbox-icon">
               <iconify-icon icon="fa-solid:home" class="checkbox-icon-icon"></iconify-icon>
             </span>
-            <span class="checkbox-label">Working out at home<br>
-              <span class="checkbox-label-small">with minimal equipment</span>
+            <span class="checkbox-label">{{__('msg.working out at home')}}<br>
+              <span class="checkbox-label-small">{{__('msg.with minimal equipment')}}
+
+
+
+            </span>
             </span>
 
           </span>
@@ -173,8 +176,8 @@
             <span class="checkbox-icon">
               <iconify-icon icon="game-icons:gym-bag" class="checkbox-icon-icon"></iconify-icon>
             </span>
-            <span class="checkbox-label">Working out at a gym<br>
-              <span class="checkbox-label-small">with weights and machines</span>
+            <span class="checkbox-label">{{__('msg.working out at a gym')}}<br>
+              <span class="checkbox-label-small">{{__('msg.with weights and machines')}}</span>
             </span>
           </span>
         </label>
@@ -186,8 +189,8 @@
             <span class="checkbox-icon">
               <iconify-icon icon="fa6-solid:person-running" class="checkbox-icon-icon"></iconify-icon>
             </span>
-            <span class="checkbox-label">Running<br>
-              <span class="checkbox-label-small">Running with guidance</span>
+            <span class="checkbox-label">{{__('msg.running')}}<br>
+              <span class="checkbox-label-small">{{__('msg.running with guidance')}}</span>
             </span>
           </span>
         </label>
@@ -199,8 +202,8 @@
             <span class="checkbox-icon">
               <iconify-icon icon="fa6-solid:person-walking" class="checkbox-icon-icon"></iconify-icon>
             </span>
-            <span class="checkbox-label">Walking<br>
-              <span class="checkbox-label-small">Walking with guidance</span>
+            <span class="checkbox-label">{{__('msg.walking')}}<br>
+              <span class="checkbox-label-small">{{__('msg.walking with guidance')}}</span>
             </span>
           </span>
         </label>
@@ -210,10 +213,10 @@
       <div class="customer-form-btn-container">
         <button class="customer-registeration-prev-btn customer-primary-btn" type="button" id="prevBtn" onclick="nextPrev(-1)">
           <iconify-icon icon="akar-icons:arrow-left" class="customer-prev-icon"></iconify-icon>
-          <p>Previous</p>
+          <p>{{__('msg.previous')}}</p>
         </button>
         <button class="customer-registeration-next-btn customer-primary-btn" type="button" id="nextBtn" onclick="nextPrev(1,'preferedActivities')">
-          <p>Next</p>
+          <p>{{__('msg.next')}}</p>
           <iconify-icon icon="akar-icons:arrow-right" class="customer-next-icon"></iconify-icon>
         </button>
       </div>
@@ -223,8 +226,8 @@
     <!--your body type-->
     <div class="cutomer-registeration-form tab customer-registeration-card">
       <p class="customer-registeration-form-header">
-         Your body type<br>
-         <span>Which body type do you have?</span>
+         {{__('msg.your body type')}}<br>
+         <span>{{__("msg.which body type do you have?")}}</span>
       </p>
 
       <div class="checkbox-flex-container">
@@ -239,7 +242,7 @@
                     <img src="{{asset('image/registeration/ectomorph.png')}}">
                 </div>
               </span>
-              <span class="checkbox-label">Ectomorph<br>
+              <span class="checkbox-label">{{__('msg.ectomorph')}}<br>
 
               </span>
 
@@ -255,7 +258,7 @@
                     <img src="{{asset('image/registeration/mesomorph.png')}}">
                 </div>
               </span>
-              <span class="checkbox-label">Mesomorph<br>
+              <span class="checkbox-label">{{__('msg.mesomorph')}}<br>
 
               </span>
             </span>
@@ -270,7 +273,7 @@
                     <img src="{{asset('image/registeration/endomorph.png')}}">
                 </div>
               </span>
-              <span class="checkbox-label">Endomorph<br>
+              <span class="checkbox-label">{{__('msg.endomorph')}}<br>
 
               </span>
             </span>
@@ -283,10 +286,10 @@
       <div class="customer-form-btn-container">
         <button class="customer-registeration-prev-btn customer-primary-btn" type="button" id="prevBtn" onclick="nextPrev(-1)">
           <iconify-icon icon="akar-icons:arrow-left" class="customer-prev-icon"></iconify-icon>
-          <p>Previous</p>
+          <p></p>
         </button>
         <button class="customer-registeration-next-btn customer-primary-btn" type="button" id="nextBtn" onclick="nextPrev(1,'bodyType')">
-          <p>Next</p>
+          <p>{{__('msg.next')}}</p>
           <iconify-icon icon="akar-icons:arrow-right" class="customer-next-icon"></iconify-icon>
         </button>
       </div>
@@ -296,7 +299,7 @@
     <!--main goal-->
     <div class="cutomer-registeration-form tab customer-registeration-card">
       <p class="customer-registeration-form-header">
-         What's your main goal?
+         {{__("msg.what's your main goal?")}}
       </p>
 
       <div class="checkbox">
@@ -306,8 +309,8 @@
             <span class="checkbox-icon">
               <iconify-icon icon="game-icons:fat" class="checkbox-icon-icon"></iconify-icon>
             </span>
-            <span class="checkbox-label">Lose Weight<br>
-              <span class="checkbox-label-small">Drop extra pounds with ease</span>
+            <span class="checkbox-label">{{__('msg.lose weight')}}<br>
+              <span class="checkbox-label-small">{{__('msg.drop extra pounds with ease')}}</span>
             </span>
 
           </span>
@@ -320,8 +323,8 @@
             <span class="checkbox-icon">
               <iconify-icon icon="icon-park-outline:muscle" class="checkbox-icon-icon"></iconify-icon>
             </span>
-            <span class="checkbox-label">Build Muscles<br>
-              <span class="checkbox-label-small">Get lean and strong</span>
+            <span class="checkbox-label">{{__("msg.build muscles")}}<br>
+              <span class="checkbox-label-small">{{__("msg.get lean and strong")}}</span>
             </span>
           </span>
         </label>
@@ -333,8 +336,8 @@
             <span class="checkbox-icon">
               <iconify-icon icon="game-icons:muscle-up" class="checkbox-icon-icon"></iconify-icon>
             </span>
-            <span class="checkbox-label">Keep fit<br>
-              <span class="checkbox-label-small">Stay in shape</span>
+            <span class="checkbox-label">{{__("msg.keep fit")}}<br>
+              <span class="checkbox-label-small">{{__('msg.stay in shape')}}</span>
             </span>
           </span>
         </label>
@@ -344,10 +347,10 @@
       <div class="customer-form-btn-container">
         <button class="customer-registeration-prev-btn customer-primary-btn" type="button" id="prevBtn" onclick="nextPrev(-1)">
           <iconify-icon icon="akar-icons:arrow-left" class="customer-prev-icon"></iconify-icon>
-          <p>Previous</p>
+          <p>{{__("msg.previous")}}</p>
         </button>
         <button class="customer-registeration-next-btn customer-primary-btn" type="button" id="nextBtn" onclick="nextPrev(1,'mainGoal')">
-          <p>Next</p>
+          <p>{{__("msg.next")}}</p>
           <iconify-icon icon="akar-icons:arrow-right" class="customer-next-icon"></iconify-icon>
         </button>
       </div>
@@ -357,8 +360,8 @@
     <!--typical day-->
     <div class="cutomer-registeration-form tab customer-registeration-card">
       <p class="customer-registeration-form-header">
-         What's your typical day look like?<br>
-         <span>You need an individual approach based on your habits to reach your goal</span>
+        {{__("msg.what's your typical day look like?")}}<br>
+         <span>{{__('msg.you need an individual approach based on your habits to reach your goal')}}</span>
       </p>
 
       <div class="checkbox checkbox-big">
@@ -370,8 +373,8 @@
                 <img src="{{asset('image/registeration/at_the_office.png')}}">
               </div>
             </span>
-            <span class="checkbox-label">At the office<br>
-              <span class="checkbox-label-small">Little to no physical activity</span>
+            <span class="checkbox-label">{{__('msg.at the office')}}<br>
+              <span class="checkbox-label-small">{{__('msg.little to no physical activity')}}</span>
             </span>
 
           </span>
@@ -386,8 +389,8 @@
                 <img src="{{asset('image/registeration/walking.png')}}">
               </div>
             </span>
-            <span class="checkbox-label">Walking Daily<br>
-              <span class="checkbox-label-small">Moderate amount of physical activity</span>
+            <span class="checkbox-label">{{__("msg.walking daily")}}<br>
+              <span class="checkbox-label-small">{{__('msg.moderate amount of physical activity')}}</span>
             </span>
           </span>
         </label>
@@ -401,8 +404,8 @@
                 <img src="{{asset('image/registeration/working_physically.png')}}">
               </div>
             </span>
-            <span class="checkbox-label">Working physically<br>
-              <span class="checkbox-label-small">Good amount of physical activity</span>
+            <span class="checkbox-label">{{__('msg.working physically')}}<br>
+              <span class="checkbox-label-small">{{__('msg.good amount of physical activity')}}</span>
             </span>
           </span>
         </label>
@@ -416,8 +419,8 @@
                 <img src="{{asset('image/registeration/physicallt_active.png')}}">
               </div>
             </span>
-            <span class="checkbox-label">Mostly at home<br>
-              <span class="checkbox-label-small">No physical ativity at all</span>
+            <span class="checkbox-label">{{__("msg.mostly at home")}}<br>
+              <span class="checkbox-label-small">{{__("msg.no physical activity at all")}}</span>
             </span>
           </span>
         </label>
@@ -427,10 +430,10 @@
       <div class="customer-form-btn-container">
         <button class="customer-registeration-prev-btn customer-primary-btn" type="button" id="prevBtn" onclick="nextPrev(-1)">
           <iconify-icon icon="akar-icons:arrow-left" class="customer-prev-icon"></iconify-icon>
-          <p>Previous</p>
+          <p>{{__('msg.previous')}}</p>
         </button>
         <button class="customer-registeration-next-btn customer-primary-btn" type="button" id="nextBtn" onclick="nextPrev(1,'typicalDay')">
-          <p>Next</p>
+          <p>{{__("msg.next")}}</p>
           <iconify-icon icon="akar-icons:arrow-right" class="customer-next-icon"></iconify-icon>
         </button>
       </div>
@@ -440,8 +443,7 @@
     <!--diet type-->
     <div class="cutomer-registeration-form tab customer-registeration-card">
       <p class="customer-registeration-form-header">
-         Choose your diet type
-
+         {{__('msg.choose your diet type')}}
       </p>
 
       <div class="checkbox checkbox-small">
@@ -561,10 +563,10 @@
       <div class="customer-form-btn-container">
         <button class="customer-registeration-prev-btn customer-primary-btn" type="button" id="prevBtn" onclick="nextPrev(-1)">
           <iconify-icon icon="akar-icons:arrow-left" class="customer-prev-icon"></iconify-icon>
-          <p>Previous</p>
+          <p>{{__('msg.previous')}}</p>
         </button>
         <button class="customer-registeration-next-btn customer-primary-btn" type="button" id="nextBtn" onclick="nextPrev(1,'diet')">
-          <p>Next</p>
+          <p>{{__('msg.next')}}</p>
           <iconify-icon icon="akar-icons:arrow-right" class="customer-next-icon"></iconify-icon>
         </button>
       </div>
@@ -574,8 +576,8 @@
     <!--average night-->
     <div class="cutomer-registeration-form tab customer-registeration-card">
       <p class="customer-registeration-form-header">
-         What's your average night like?<br>
-         <span>Sleep is vary important not only for well-being but also for keeping in shape</span>
+         {{__("msg.what's your average night like?")}}<br>
+         <span>{{__("msg.sleep is very important not only for well-being but also for keeping in shape")}}</span>
       </p>
 
       <div class="average-night-img">
@@ -588,8 +590,8 @@
             <input type="checkbox" name = "sleep" class="checkbox-input" value="minimal" onclick="checkedOnClick(this,'sleep')"/>
             <span class="checkbox-tile">
 
-              <span class="checkbox-label">Minimal<br>
-                <span class="checkbox-label-small">less than 5 hours</span>
+              <span class="checkbox-label">{{__('msg.minimal')}}<br>
+                <span class="checkbox-label-small">{{__('msg.less than 5 hours')}}</span>
               </span>
 
             </span>
@@ -600,8 +602,8 @@
             <input type="checkbox" name = "sleep" class="checkbox-input" value="average" onclick="checkedOnClick(this,'sleep')"/>
             <span class="checkbox-tile">
 
-              <span class="checkbox-label">Average<br>
-                <span class="checkbox-label-small">5 - 6 hours</span>
+              <span class="checkbox-label">{{__('msg.average')}}<br>
+                <span class="checkbox-label-small">{{__('msg.5 - 6 hours')}}</span>
               </span>
 
             </span>
@@ -612,8 +614,8 @@
             <input type="checkbox" name = "sleep" class="checkbox-input" value="good" onclick="checkedOnClick(this,'sleep')"/>
             <span class="checkbox-tile">
 
-              <span class="checkbox-label">Good<br>
-                <span class="checkbox-label-small">7 - 8 hours</span>
+              <span class="checkbox-label">{{__('msg.good')}}<br>
+                <span class="checkbox-label-small">{{__('msg.7 - 8 hours')}}</span>
               </span>
 
             </span>
@@ -624,8 +626,8 @@
             <input type="checkbox" name = "sleep" class="checkbox-input" value="sleep hero" onclick="checkedOnClick(this,'sleep')"/>
             <span class="checkbox-tile">
 
-              <span class="checkbox-label">Sleep hero<br>
-                <span class="checkbox-label-small">More than 8 hours</span>
+              <span class="checkbox-label">{{__('msg.sleep hero')}}<br>
+                <span class="checkbox-label-small">{{__("msg.more than 8 hours")}}</span>
               </span>
 
             </span>
@@ -637,10 +639,10 @@
       <div class="customer-form-btn-container">
         <button class="customer-registeration-prev-btn customer-primary-btn" type="button" id="prevBtn" onclick="nextPrev(-1)">
           <iconify-icon icon="akar-icons:arrow-left" class="customer-prev-icon"></iconify-icon>
-          <p>Previous</p>
+          <p>{{__("msg.previous")}}</p>
         </button>
         <button class="customer-registeration-next-btn customer-primary-btn" type="button" id="nextBtn" onclick="nextPrev(1,'sleep')">
-          <p>Next</p>
+          <p>{{__('msg.next')}}</p>
           <iconify-icon icon="akar-icons:arrow-right" class="customer-next-icon"></iconify-icon>
         </button>
       </div>
@@ -650,7 +652,7 @@
     <!--energy level-->
     <div class="cutomer-registeration-form tab customer-registeration-card">
       <p class="customer-registeration-form-header">
-         How's your energy level during the day?<br>
+         {{__("msg.how's your energy level during the day?")}}<br>
       </p>
 
       <div class="checkbox checkbox-big">
@@ -662,7 +664,7 @@
                 <img src="{{asset('image/registeration/even.png')}}">
               </div>
             </span>
-            <span class="checkbox-label">Even throughout the day<br>
+            <span class="checkbox-label">{{__("msg.even throughout the day")}}<br>
 
             </span>
 
@@ -678,7 +680,7 @@
                 <img src="{{asset('image/registeration/dip_lunch.png')}}">
               </div>
             </span>
-            <span class="checkbox-label">I feel a dip in energy around lunch time<br>
+            <span class="checkbox-label">{{__("msg.i feel a dip in energy around lunch time")}}<br>
 
             </span>
           </span>
@@ -693,7 +695,7 @@
                 <img src="{{asset('image/registeration/nap_aftermeals.png')}}">
               </div>
             </span>
-            <span class="checkbox-label">I need a nap after meals<br>
+            <span class="checkbox-label">{{__('msg.i need a nap after meals')}}<br>
 
             </span>
           </span>
@@ -704,10 +706,10 @@
       <div class="customer-form-btn-container">
         <button class="customer-registeration-prev-btn customer-primary-btn" type="button" id="prevBtn" onclick="nextPrev(-1)">
           <iconify-icon icon="akar-icons:arrow-left" class="customer-prev-icon"></iconify-icon>
-          <p>Previous</p>
+          <p>{{__("msg.previous")}}</p>
         </button>
         <button class="customer-registeration-next-btn customer-primary-btn" type="button" id="nextBtn" onclick="nextPrev(1,'energyLevel')">
-          <p>Next</p>
+          <p>{{__("msg.next")}}</p>
           <iconify-icon icon="akar-icons:arrow-right" class="customer-next-icon"></iconify-icon>
         </button>
       </div>
@@ -717,7 +719,7 @@
     <!--ideal weight-->
     <div class="cutomer-registeration-form tab customer-registeration-card">
       <p class="customer-registeration-form-header">
-        When was the last time you were at your ideal weight?
+        {{__('msg.when was the last time you were at your ideal weight?')}}
 
       </p>
 
@@ -731,7 +733,7 @@
             <input type="checkbox" name = "idealWeight" class="checkbox-input" value="less than a year ago" onclick="checkedOnClick(this,'idealWeight')"/>
             <span class="checkbox-tile">
 
-              <span class="checkbox-label">Less than a year ago<br>
+              <span class="checkbox-label">{{__('msg.less than a year ago')}}<br>
 
               </span>
 
@@ -743,7 +745,7 @@
             <input type="checkbox" name = "idealWeight" class="checkbox-input" value="1 to 2 years ago" onclick="checkedOnClick(this,'idealWeight')"/>
             <span class="checkbox-tile">
 
-              <span class="checkbox-label">1 to 2 years ago<br>
+              <span class="checkbox-label">{{__('msg.1 to 2 years ago')}}<br>
 
               </span>
 
@@ -755,7 +757,7 @@
             <input type="checkbox" name = "idealWeight" class="checkbox-input" value="more than 3 years ago" onclick="checkedOnClick(this,'idealWeight')"/>
             <span class="checkbox-tile">
 
-              <span class="checkbox-label">More than 3 years ago<br>
+              <span class="checkbox-label">{{__('msg.more than 3 years ago')}}<br>
 
               </span>
 
@@ -767,7 +769,7 @@
             <input type="checkbox" name = "idealWeight" class="checkbox-input" value="never" onclick="checkedOnClick(this,'idealWeight')"/>
             <span class="checkbox-tile">
 
-              <span class="checkbox-label">Never<br>
+              <span class="checkbox-label">{{__("msg.never")}}<br>
 
               </span>
 
@@ -780,10 +782,10 @@
       <div class="customer-form-btn-container">
         <button class="customer-registeration-prev-btn customer-primary-btn" type="button" id="prevBtn" onclick="nextPrev(-1)">
           <iconify-icon icon="akar-icons:arrow-left" class="customer-prev-icon"></iconify-icon>
-          <p>Previous</p>
+          <p>{{__('msg.previous')}}</p>
         </button>
         <button class="customer-registeration-next-btn customer-primary-btn" type="button" id="nextBtn" onclick="nextPrev(1,'idealWeight')">
-          <p>Next</p>
+          <p>{{__("msg.next")}}</p>
           <iconify-icon icon="akar-icons:arrow-right" class="customer-next-icon"></iconify-icon>
         </button>
       </div>
@@ -793,7 +795,7 @@
     <!--area of the body that needs the most attention-->
     <div class="cutomer-registeration-form tab customer-registeration-card">
       <p class="customer-registeration-form-header">
-        Which areas of your body need the most attention?
+        {{__('msg.which areas of your body need the most attention?')}}
 
       </p>
 
@@ -804,7 +806,7 @@
             <input type="checkbox" name = "bodyArea" class="checkbox-input" value="back" />
             <span class="checkbox-tile">
 
-              <span class="checkbox-label">Back<br>
+              <span class="checkbox-label">{{__('msg.back')}}<br>
 
               </span>
 
@@ -816,7 +818,7 @@
             <input type="checkbox" name = "bodyArea" class="checkbox-input" value="chest" />
             <span class="checkbox-tile">
 
-              <span class="checkbox-label">Chest<br>
+              <span class="checkbox-label">{{__('msg.chest')}}<br>
 
               </span>
 
@@ -828,7 +830,7 @@
             <input type="checkbox" name = "bodyArea" class="checkbox-input" value="arms" />
             <span class="checkbox-tile">
 
-              <span class="checkbox-label">Arms<br>
+              <span class="checkbox-label">{{__('msg.arms')}}<br>
 
               </span>
 
@@ -840,7 +842,7 @@
             <input type="checkbox" name = "bodyArea" class="checkbox-input" value="belly" />
             <span class="checkbox-tile">
 
-              <span class="checkbox-label">Belly<br>
+              <span class="checkbox-label">{{__('msg.belly')}}<br>
 
               </span>
 
@@ -852,7 +854,7 @@
             <input type="checkbox" name = "bodyArea" class="checkbox-input" value="butt" />
             <span class="checkbox-tile">
 
-              <span class="checkbox-label">Butt<br>
+              <span class="checkbox-label">{{__('msg.butt')}}<br>
 
               </span>
 
@@ -864,7 +866,7 @@
             <input type="checkbox" name = "bodyArea" class="checkbox-input" value="legs" />
             <span class="checkbox-tile">
 
-              <span class="checkbox-label">Legs<br>
+              <span class="checkbox-label">{{__("msg.legs")}}<br>
 
               </span>
 
@@ -881,10 +883,10 @@
       <div class="customer-form-btn-container">
         <button class="customer-registeration-prev-btn customer-primary-btn" type="button" id="prevBtn" onclick="nextPrev(-1)">
           <iconify-icon icon="akar-icons:arrow-left" class="customer-prev-icon"></iconify-icon>
-          <p>Previous</p>
+          <p>{{__('msg.previous')}}</p>
         </button>
         <button class="customer-registeration-next-btn customer-primary-btn" type="button" id="nextBtn" onclick="nextPrev(1,'bodyArea')">
-          <p>Next</p>
+          <p>{{__('msg.next')}}</p>
           <iconify-icon icon="akar-icons:arrow-right" class="customer-next-icon"></iconify-icon>
         </button>
       </div>
@@ -893,8 +895,8 @@
     <!--how physically active are you-->
     <div class="cutomer-registeration-form tab customer-registeration-card">
       <p class="customer-registeration-form-header">
-         How physically active are you?<br>
-         <span>Your physical activity plays a major role if you want to lose weight or keep in shape while spending most of your time in the office</span>
+        {{__("msg.how physically active are you?")}}<br>
+         <span>{{__("msg.your physical activity plays a major role if you want to lose weight or keep in shape while spending most of your time in the office")}}</span>
       </p>
 
       <div class="average-night-img">
@@ -907,7 +909,7 @@
             <input type="checkbox" name = "physicalActivity" class="checkbox-input" value="not much" onclick="checkedOnClick(this,'physicalActivity')"/>
             <span class="checkbox-tile">
 
-              <span class="checkbox-label">Not much<br>
+              <span class="checkbox-label">{{__("msg.not much")}}<br>
 
               </span>
 
@@ -919,7 +921,7 @@
             <input type="checkbox" name = "physicalActivity" class="checkbox-input" value="1 - 2 times a week" onclick="checkedOnClick(this,'physicalActivity')"/>
             <span class="checkbox-tile">
 
-              <span class="checkbox-label">1 - 2 times a week<br>
+              <span class="checkbox-label">{{__("msg.1 - 2 times a week")}}<br>
 
               </span>
 
@@ -931,7 +933,7 @@
             <input type="checkbox" name = "physicalActivity" class="checkbox-input" value="3 - 5 times a week" onclick="checkedOnClick(this,'physicalActivity')"/>
             <span class="checkbox-tile">
 
-              <span class="checkbox-label">3 - 5 times a week<br>
+              <span class="checkbox-label">{{__('msg.3 - 5 times a week')}}<br>
 
               </span>
 
@@ -943,7 +945,7 @@
             <input type="checkbox" name = "physicalActivity" class="checkbox-input" value="5 - 7 times a week" onclick="checkedOnClick(this,'physicalActivity')"/>
             <span class="checkbox-tile">
 
-              <span class="checkbox-label">5 - 7 times a week<br>
+              <span class="checkbox-label">{{__("msg.5 - 7 times a week")}}<br>
 
               </span>
 
@@ -956,10 +958,10 @@
       <div class="customer-form-btn-container">
         <button class="customer-registeration-prev-btn customer-primary-btn" type="button" id="prevBtn" onclick="nextPrev(-1)">
           <iconify-icon icon="akar-icons:arrow-left" class="customer-prev-icon"></iconify-icon>
-          <p>Previous</p>
+          <p>{{__("msg.previous")}}</p>
         </button>
         <button class="customer-registeration-next-btn customer-primary-btn" type="button" id="nextBtn" onclick="nextPrev(1,'physicalActivity')">
-          <p>Next</p>
+          <p>{{__('msg.next')}}</p>
           <iconify-icon icon="akar-icons:arrow-right" class="customer-next-icon"></iconify-icon>
         </button>
       </div>
@@ -969,8 +971,8 @@
     <!--bad habits-->
     <div class="cutomer-registeration-form tab customer-registeration-card">
       <p class="customer-registeration-form-header">
-         Bad habits<br>
-         <span>Which activities are yout guilty pleasure?</span>
+        {{__("msg.bad habits")}}<br>
+         <span>{{__("msg.which activities are your guilty pleasure?")}}</span>
       </p>
 
       <div class="checkbox">
@@ -982,7 +984,7 @@
                 <img src="{{asset('image/registeration/enough_rest.png')}}">
               </div>
             </span>
-            <span class="checkbox-label">I don't rest enough<br>
+            <span class="checkbox-label">{{__("msg.i don't rest enough")}}<br>
 
             </span>
 
@@ -998,7 +1000,7 @@
                 <img src="{{asset('image/registeration/sweet_tooth.png')}}">
               </div>
             </span>
-            <span class="checkbox-label">I have a sweet tooth<br>
+            <span class="checkbox-label">{{__("msg.i have a sweet tooth")}}<br>
 
             </span>
 
@@ -1014,7 +1016,7 @@
                 <img src="{{asset('image/registeration/soda.png')}}">
               </div>
             </span>
-            <span class="checkbox-label">I consume too much soda<br>
+            <span class="checkbox-label">{{__("msg.i consume too much soda")}}<br>
 
             </span>
 
@@ -1030,7 +1032,7 @@
                 <img src="{{asset('image/registeration/salty_food.png')}}">
               </div>
             </span>
-            <span class="checkbox-label">I consume a lot of salty foods<br>
+            <span class="checkbox-label">{{__('msg.i consume a lot of salty foods')}}<br>
 
             </span>
 
@@ -1046,7 +1048,7 @@
                 <img src="{{asset('image/registeration/snacks.png')}}">
               </div>
             </span>
-            <span class="checkbox-label">Late night snacks<br>
+            <span class="checkbox-label">{{__('msg.late night snacks')}}<br>
 
             </span>
 
@@ -1059,10 +1061,10 @@
       <div class="customer-form-btn-container">
         <button class="customer-registeration-prev-btn customer-primary-btn" type="button" id="prevBtn" onclick="nextPrev(-1)">
           <iconify-icon icon="akar-icons:arrow-left" class="customer-prev-icon"></iconify-icon>
-          <p>Previous</p>
+          <p>{{__('msg.previous')}}</p>
         </button>
         <button class="customer-registeration-next-btn customer-primary-btn" type="button" id="nextBtn" onclick="nextPrev(1,'badHabits')">
-          <p>Next</p>
+          <p>{{__('msg.next')}}</p>
           <iconify-icon icon="akar-icons:arrow-right" class="customer-next-icon"></iconify-icon>
         </button>
       </div>
@@ -1072,7 +1074,7 @@
     <!--daily water intake-->
     <div class="cutomer-registeration-form tab customer-registeration-card">
       <p class="customer-registeration-form-header">
-         What's your daily water intake?
+         {{__("msg.what's your daily water intake?")}}
 
       </p>
 
@@ -1085,7 +1087,7 @@
                 <img src="{{asset('image/registeration/coffee.png')}}">
               </div>
             </span>
-            <span class="checkbox-label">I only have coffee or tea<br>
+            <span class="checkbox-label">{{__("msg.i only have coffee or tea")}}<br>
 
             </span>
 
@@ -1101,7 +1103,7 @@
                 <img src="{{asset('image/registeration/2glasses.png')}}">
               </div>
             </span>
-            <span class="checkbox-label">About 2 glasses<br>
+            <span class="checkbox-label">{{__("msg.about 2 glasses")}}<br>
 
             </span>
 
@@ -1117,7 +1119,7 @@
                 <img src="{{asset('image/registeration/6glasses.png')}}">
               </div>
             </span>
-            <span class="checkbox-label">2 to 6 glasses<br>
+            <span class="checkbox-label">{{__("msg.2 to 6 glasses")}}<br>
 
             </span>
 
@@ -1133,7 +1135,7 @@
                 <img src="{{asset('image/registeration/water_bottle.png')}}">
               </div>
             </span>
-            <span class="checkbox-label">More than 6 glasses<br>
+            <span class="checkbox-label">{{__("msg.more than 6 glasses")}}<br>
 
             </span>
 
@@ -1145,10 +1147,10 @@
       <div class="customer-form-btn-container">
         <button class="customer-registeration-prev-btn customer-primary-btn" type="button" id="prevBtn" onclick="nextPrev(-1)">
           <iconify-icon icon="akar-icons:arrow-left" class="customer-prev-icon"></iconify-icon>
-          <p>Previous</p>
+          <p>{{__("msg.previous")}}</p>
         </button>
         <button class="customer-registeration-next-btn customer-primary-btn" type="button" id="nextBtn" onclick="nextPrev(1,'waterIntake')">
-          <p>Next</p>
+          <p>{{__("msg.next")}}</p>
           <iconify-icon icon="akar-icons:arrow-right" class="customer-next-icon"></iconify-icon>
         </button>
       </div>
@@ -1158,7 +1160,7 @@
     <!--weight -->
     <div class="cutomer-registeration-form tab customer-registeration-card">
         <p class="customer-registeration-form-header">
-            Weight
+            {{__("msg.weight")}}
          </p>
          <input  type="number" required class="customer-registeration-input" placeholder="Weight" name="weight">
          <input  type="number" required class="customer-registeration-input" placeholder="Ideal Weight" name="idealWeightInput">
@@ -1168,10 +1170,10 @@
          <div class="customer-form-btn-container">
             <button class="customer-registeration-prev-btn customer-primary-btn" type="button" id="prevBtn" onclick="nextPrev(-1)">
               <iconify-icon icon="akar-icons:arrow-left" class="customer-prev-icon"></iconify-icon>
-              <p>Previous</p>
+              <p>{{__('msg.previous')}}</p>
             </button>
             <button class="customer-registeration-next-btn customer-primary-btn" type="button" id="nextBtn" onclick="nextPrev(1,'weight')">
-              <p>Next</p>
+              <p>{{__('msg.next')}}</p>
               <iconify-icon icon="akar-icons:arrow-right" class="customer-next-icon"></iconify-icon>
             </button>
         </div>
@@ -1181,7 +1183,7 @@
     <!--proficiency-->
     <div class="cutomer-registeration-form tab customer-registeration-card">
       <p class="customer-registeration-form-header">
-         How proficient are you?<br>
+         {{__("msg.how proficient are you?")}}<br>
 
       </p>
 
@@ -1197,7 +1199,7 @@
                     <img src="{{asset('image/registeration/beginner.png')}}">
                 </div>
               </span>
-              <span class="checkbox-label">Beginner<br>
+              <span class="checkbox-label">{{__('msg.beginner')}}<br>
 
               </span>
 
@@ -1213,7 +1215,7 @@
                     <img src="{{asset('image/registeration/advanced.png')}}">
                 </div>
               </span>
-              <span class="checkbox-label">Advanced<br>
+              <span class="checkbox-label">{{__('msg.advanced')}}<br>
 
               </span>
             </span>
@@ -1228,7 +1230,7 @@
                     <img src="{{asset('image/registeration/professional.png')}}">
                 </div>
               </span>
-              <span class="checkbox-label">Professional<br>
+              <span class="checkbox-label">{{__('msg.professional')}}<br>
 
               </span>
             </span>
@@ -1241,10 +1243,10 @@
       <div class="customer-form-btn-container">
         <button class="customer-registeration-prev-btn customer-primary-btn" type="button" id="prevBtn" onclick="nextPrev(-1)">
           <iconify-icon icon="akar-icons:arrow-left" class="customer-prev-icon"></iconify-icon>
-          <p>Previous</p>
+          <p>{{__("msg.previous")}}</p>
         </button>
         <button type="button" class="customer-registeration-next-btn customer-primary-btn" id="nextBtn" onclick="nextPrev(1,'proficiency')">
-          <p>Next</p>
+          <p>{{__('msg.next')}}</p>
           <iconify-icon icon="akar-icons:arrow-right" class="customer-next-icon"></iconify-icon>
         </button>
 

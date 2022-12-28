@@ -43,6 +43,7 @@
                             <p class="card-text mb-1"><b>Burn Calories :</b> {{$workout->calories}} Calories</p>
                             <p class="card-text mb-1"><b>Estimate Time :</b> {{$workout->estimate_time}} minutes</p>
                             <p class="card-text mb-1"><b>Sets :</b> {{$workout->sets}} times</p>
+                            <p class="card-text mb-1"><b>Category :</b> {{$workout->category}} </p>
                             <a href="{{route('workoutedit',[$workout->id])}}" class="btn btn-sm btn-primary">Edit</a>
                             <a href="{{route('workoutdelete',[$workout->id])}}" class="btn btn-sm btn-danger ms-2">Delete</a>
                         </div>

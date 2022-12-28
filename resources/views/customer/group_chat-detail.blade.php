@@ -7,7 +7,7 @@
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">Add Members</h5>
+                        <h5 class="modal-title" id="exampleModalLabel">{{__('msg.add members')}}</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
@@ -15,7 +15,7 @@
                             method="POST">
                             @csrf
                             <div class="create-group-addfris">
-                                <p>Add Your Friends</p>
+                                <p>{{__('msg.add your friends')}}</p>
                                 <select class="js-example-basic-multiple" name="members[]" multiple="multiple">
 
                                     @if ($members == null || count($members) == 0)
@@ -37,7 +37,7 @@
                                 </select>
                             </div>
 
-                            <button type="submit" class="customer-primary-btn create-group-submit-btn">Create</button>
+                            <button type="submit" class="customer-primary-btn create-group-submit-btn">{{__('msg.create')}}</button>
                         </form>
                     </div>
 
@@ -60,7 +60,7 @@
                 <iconify-icon icon="eva:video-outline" class="chat-header-video-icon"></iconify-icon>
 
                 <a href="{{ route('socialmedia.group.viewmedia', $group->id) }}" class="group-chat-view-midea-link">
-                    <p>View Media</p>
+                    <p>{{__('msg.view media')}}</p>
                     <iconify-icon icon="akar-icons:arrow-right" class="group-chat-view-midea-link-icon"></iconify-icon>
                 </a>
             </div>
@@ -72,12 +72,12 @@
             <button type="button" class="social-media-allchats-header-add-btn customer-primary-btn group-chat-add-btn"
                 data-bs-toggle="modal" data-bs-target="#createGroupModal">
                 <iconify-icon icon="akar-icons:circle-plus" class="social-media-allchats-header-plus-icon"></iconify-icon>
-                <p>Add Member</p>
+                <p>{{__('msg.add members')}}</p>
             </button>
 
             <a href="{{ route('socialmedia.group.delete', $group->id) }}" class="text-decoration-none">
                 <button type="button" class="social-media-allchats-header-add-btn customer-primary-btn group-chat-add-btn">
-                    <p>Delete Group</p>
+                    <p>{{__('msg.delete group')}}</p>
                 </button>
             </a>
         </div>
@@ -85,7 +85,7 @@
             <a href="{{ route('socialmedia.group.leave', [$group->id, auth()->user()->id]) }}"
                 class="text-decoration-none">
                 <button class="social-media-allchats-header-add-btn customer-primary-btn group-chat-add-btn">
-                    <p>Leave group</p>
+                    <p>{{__('msg.leave group')}}</p>
                 </button>
             </a>
         @endif
@@ -126,7 +126,7 @@
                         </div>
                         <div class="social-media-view-members-row-btns">
                             @if (auth()->user()->id == $gp_admin->group_owner_id)
-                                <button type="submit" class="customer-red-btn">Kick</button>
+                                <button type="submit" class="customer-red-btn">{{__('msg.kick')}}</button>
                             @endif
                         </div>
                     </div>

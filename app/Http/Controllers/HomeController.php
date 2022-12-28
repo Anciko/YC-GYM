@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+
+use File;
 use DatePeriod;
 use DateInterval;
 use Carbon\Carbon;
@@ -16,7 +18,10 @@ use App\Models\MemberHistory;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Redirect;
 use PhpOffice\PhpSpreadsheet\Calculation\DateTimeExcel\Month;
 
 class HomeController extends Controller
@@ -49,10 +54,10 @@ class HomeController extends Controller
         $user->members()->attach($request->member_id, ['member_type_level' => $user_member_type_level]);
     }
 
-    public function lang($locale)
+    public function lang(Request $request)
     {
-        App::setLocale($locale);
-        Session::put("locale", $locale);
+        App::setLocale($request->lang);
+        session()->put('locale',$request->lang);
         return redirect()->back();
     }
 
@@ -138,6 +143,30 @@ class HomeController extends Controller
                         ->orderBy('created_at', 'DESC')
                         ->with('user')
                         ->paginate(30);
+
+                    // foreach($posts as $post){
+                    //     $final = [];
+                    //     $images=json_decode($post->media);
+                    //         // foreach($final as $key => $value){
+                    //         //     $final['image'] = "image";
+                    //             // foreach ($images as $key => $value) {
+
+
+                    //              for($i=0;$i<count($images);$i++){
+
+                    //                // Storage::disk('public')->url($file->path);
+                    //                 //dd(File::size(public_path('storage/post/'.$img)));
+                    //                 $img_size=File::size(public_path('storage/post/'.$images[$i]));
+                    //                 $obj=[];
+                    //                 $obj['size']=$img_size;
+                    //                 $obj['name']=$images[$i];
+                    //                 }
+
+                    //         }
+                    //         dd($obj);
+
+                        // }
+
                 }
                         $member_plans = Member::where('member_type', '!=', 'Free')->where('member_type', '!=', 'Gym Member')->get();
                         return view('customer.socialmedia', compact('member_plans','posts'));

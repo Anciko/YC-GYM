@@ -226,6 +226,12 @@
                 });
          })
     </script>
+    <script>
+        var url = "{{route('langChange')}}"
+        $('.langChange').change(function(){
+            window.location.href = url + "?lang="+$(this).val()
+        })
+    </script>
 
     @stack('scripts')
 

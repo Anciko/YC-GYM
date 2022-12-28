@@ -1,6 +1,13 @@
 <?php
 return[
-    'home'=>'Home',
+    'rate this shop' => 'Rate this shop',
+    'rate' => 'Rate',
+    'home1'=>'Home',
+    'inches' => 'Inches',
+    'feet' => 'Feet',
+    "ectomorph"=>"Ectomorph",
+    "mesomorph"=>"Mesomorph",
+    "endomorph"=>"Endomorph",
     'log in'=>'Log In',
     'log out'=>'Log Out',
     'profile'=>'Profile',
@@ -139,7 +146,7 @@ return[
     'exercises'=>'exercises',
     'save and continue'=>'Save and Continue',
     'log everything you eat today'=>'Log Everything you eat today',
-    'be honest and track everything. we’ll optimize your program and based on the data'=>'Be honest and track everything. We’ll optimize your program and based on the data',
+    'be honest and track everything. well optimize your program and based on the data'=>'Be honest and track everything. We’ll optimize your program and based on the data',
     'breakfast'=>'Breakfast',
     'lunch'=>'Lunch',
     'snack'=>'Snack',
@@ -153,9 +160,10 @@ return[
     'fat'=>'Fat',
     'no. of servings'=>'No. of servings',
     'delete'=>'Delete',
-    "let's drink"=>"Let's drink",
+    "let drink"=>"Let's drink",
     'add post'=>'Add post',
     'friends'=>'Friends',
+    'friend'=>'Friend',
     'messages'=>'Messages',
     'see all'=>"See all",
     'save'=>'Save',
@@ -219,6 +227,8 @@ return[
     'cover photos'=>'Cover Photos',
     'go back'=>'Go Back',
     'confirm'=>'Confirm',
+    'add friend' => 'Add Friend',
+    'cancel request' =>'Cancel Request',
+    'create' => 'Create'
 ]
-
 ?>

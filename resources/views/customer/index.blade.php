@@ -10,13 +10,13 @@
         <p>Lorem ipsum dolor sit amet consectetur adipiscing elit Ut et massa mi. Aliquam in hendrerit urna. Pellentesque sit amet sapien.</p>
         <div class="index-hero-btns-container">
             @guest
-            <a href="{{route('login')}}" class="customer-primary-btn">Log In</a>
-            <a href="{{route('customer_register')}}" class="customer-secondary-btn">Sign Up</a>
+            <a href="{{route('login')}}" class="customer-primary-btn">{{__('msg.log in')}}</a>
+            <a href="{{route('customer_register')}}" class="customer-secondary-btn">{{__('msg.sign up')}}</a>
             @endguest
             @auth
             <form id="logout-form" action="{{ route('logout') }}" method="POST">
                 @csrf
-                <button class="customer-primary-btn customer-login-btn" type="submit">Logout</button>
+                <button class="customer-primary-btn customer-login-btn" type="submit">{{__('msg.log out')}}</button>
             </form>
             @endauth
         </div>
@@ -27,7 +27,7 @@
 <section class="index-aboutus-section">
     <div class="customer-main-content-container">
         <div class="section-header">
-            <p>About Us</p>
+            <p>{{__('msg.about us')}}</p>
             <div class="section-header-underline">
 
             </div>
@@ -52,7 +52,7 @@
 <section class="index-prices-section">
     <div class="customer-main-content-container">
         <div class="section-header">
-            <p>Pricing Details</p>
+            <p>{{__('msg.pricing details')}}</p>
             <div class="section-header-underline">
 
             </div>
@@ -87,7 +87,7 @@
 <section class="index-trainers-section">
     <div class="customer-main-content-container">
         <div class="section-header">
-            <p>Our Trainers</p>
+            <p>{{__('msg.our trainers')}}</p>
             <div class="section-header-underline">
 
             </div>
@@ -218,7 +218,7 @@
 <section class="index-contact-section">
     <div class="customer-main-content-container">
         <div class="section-header">
-            <p>Contact Us</p>
+            <p>{{__('msg.contact us')}}</p>
             <div class="section-header-underline">
 
             </div>
@@ -247,8 +247,8 @@
                 </div>
 
                 <div class="index-contact-us-btns-container">
-                    <button type="submit" class="customer-primary-btn">Send Message</button>
-                    <button type="submit" class="customer-secondary-btn">Cancel</button>
+                    <button type="submit" class="customer-primary-btn">{{__('msg.send message')}}</button>
+                    <button type="submit" class="customer-secondary-btn">{{__('msg.cancel')}}</button>
                 </div>
             </div>
         </form>

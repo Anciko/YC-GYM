@@ -6,7 +6,7 @@
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">Rate this shop</h5>
+          <h5 class="modal-title" id="exampleModalLabel">{{__('msg.rate this shop')}}</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
@@ -31,10 +31,10 @@
 
 <div class="shop-right-container">
     <div class="shop-posts-header-container">
-        <p>{{$user->name}}'s Shop</p>
+        <p>{{$user->name}}{{__('msg.\'s shop')}}</p>
         <button type="button" class="shop-rating-btn customer-primary-btn" >
         {{-- <button type="button" class="shop-rating-btn customer-primary-btn" data-bs-toggle="modal" data-bs-target="#ratingModal"> --}}
-            Rate
+            {{__('msg.rate')}}
           </button>
         <div class="shop-search-container">
             <input type="text" placeholder="Search..." id  = "caption_search">
@@ -68,8 +68,8 @@
                     data:{ rating : rating,post_user:post_user},
                     datatype: "json",
                     success: function(data) {
-
-                        if(data.message==200){
+                        setTimeout(function(){
+                            if(data.message==200){
                             Swal.fire({
                                     title:'Submitted',
                                     text: 'Thanks for your feedback.',
@@ -85,6 +85,7 @@
                                     icon: 'warning',
                                 })
                         }
+                        },1000)
 
                     }
         })
