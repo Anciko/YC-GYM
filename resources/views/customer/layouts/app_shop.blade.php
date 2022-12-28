@@ -745,7 +745,9 @@
 
         })
 
-        $(document).on('click','#edit_post',function(e){
+        $(document).on('click','#edit_shoppost',function(e){
+
+            alert('drfgdrg');
             e.preventDefault();
             $(".editpost-photo-video-imgpreview-container").empty();
 
@@ -754,7 +756,7 @@
             var id = $(this).data('id');
 
             $('#editPostModal').modal('show');
-            var add_url = "{{ route('post.edit', [':id']) }}";
+            var add_url = "{{ route('shoppost.edit', [':id']) }}";
             add_url = add_url.replace(':id', id);
 
             $.ajaxSetup({
@@ -770,10 +772,13 @@
                         if(data.status==400){
                             alert(data.message)
                         }else{
+                            console.log('fgghfghfghgh');
                             $('#editPostCaption').val(data.post.caption);
                             $('#edit_post_id').val(data.post.id);
 
                             var filesdb =data.post.media ? JSON.parse(data.post.media) : [];
+
+                            console.log(data.imageData,'image data');
                             // var filesAmount=files.length;
                             var storedFilesdb = filesdb;
                             // console.log(storedFilesdb)

@@ -1162,6 +1162,7 @@
             })
 
             $(document).on('click', '#edit_post', function(e) {
+                alert('gfgdg');
                 e.preventDefault();
                 $(".editpost-photo-video-imgpreview-container").empty();
 
@@ -1173,13 +1174,13 @@
                 var add_url = "{{ route('post.edit', [':id']) }}";
                 add_url = add_url.replace(':id', id);
 
-                // $.ajaxSetup({
-                //     headers: {
-                //         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                //     }
-                // });
+                $.ajaxSetup({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    }
+                });
                 $.ajax({
-                    method: "GET",
+                    method: "POST",
                     url: add_url,
                     datatype: "json",
                     success: function(data) {

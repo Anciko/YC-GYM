@@ -164,7 +164,7 @@
                         htmlView +=`</div>
                                             </a>`
                                             if(auth_user==posts[i].user_id){
-                                            htmlView +=`<a id="edit_post" data-id="`+posts[i].id+`" data-bs-toggle="modal" >
+                                            htmlView +=`<a id="edit_shoppost" data-id="`+posts[i].id+`" data-bs-toggle="modal" >
                                                             <div class="post-action">
                                                                 <iconify-icon icon="material-symbols:edit" class="post-action-icon"></iconify-icon>
                                                                 <p>Edit</p>

@@ -948,8 +948,9 @@
 
             })
 
-            $(document).on('click','#edit_post',function(e){
+            $(document).on('click','#edit_shoppost',function(e){
                 e.preventDefault();
+
                 $(".editpost-photo-video-imgpreview-container").empty();
 
                 dtEdit.clearData()
@@ -979,8 +980,8 @@
                                 var filesdb =data.post.media ? JSON.parse(data.post.media) : [];
                                 // var filesAmount=files.length;
                                 var storedFilesdb = filesdb;
-                                // console.log(storedFilesdb)
-                                console.log(data.imageData)
+
+                                 console.log(data.imageData,'imgdata ati')
 
 
                                 filesdb.forEach(function(f) {

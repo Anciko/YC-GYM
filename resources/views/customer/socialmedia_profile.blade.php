@@ -246,15 +246,15 @@
                                                 @endphp
 
                                                 @if ($already_save)
-                                                    <p class="save">Unsave</p>
+                                                    <p class="save">{{__('msg.unsave')}}</p>
                                                 @else
-                                                    <p class="save">Save</p>
+                                                    <p class="save">{{__('msg.save')}}</p>
                                                     @endif
                                             </div>
                                         </a>
                                         <div class="post-action" id="report" data-id="{{$post->id}}">
                                             <iconify-icon icon="material-symbols:report-outline" class="post-action-icon"></iconify-icon>
-                                            <p>Report</p>
+                                            <p>{{__('msg.report')}}</p>
                                         </div>
                                     </div>
                                 </div>

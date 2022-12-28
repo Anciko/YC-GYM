@@ -229,6 +229,7 @@ return[
     'confirm'=>'Confirm',
     'add friend' => 'Add Friend',
     'cancel request' =>'Cancel Request',
-    'create' => 'Create'
+    'create' => 'Create',
+    'all' => 'All'
 ]
 ?>

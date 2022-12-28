@@ -187,12 +187,12 @@
                             <div class="message-actions-box">
                                 <p onclick="message_hide(event,{{ $send_message->id }})">
                                     <iconify-icon icon="mdi:hide" class="message-action-icon"></iconify-icon>
-                                    Delete
+                                    {{__('msg.delete')}}
                                 </p>
                                 <p onclick="message_delete(event,{{ $send_message->id }})">
                                     <iconify-icon icon="material-symbols:cancel-schedule-send-rounded"
                                         class="message-action-icon"></iconify-icon>
-                                    Unsend
+                                    {{__('msg.unsend')}}
                                 </p>
                             </div>
 
