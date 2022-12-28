@@ -1151,13 +1151,13 @@
                 var add_url = "{{ route('post.edit', [':id']) }}";
                 add_url = add_url.replace(':id', id);
 
-                $.ajaxSetup({
-                    headers: {
-                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                    }
-                });
+                // $.ajaxSetup({
+                //     headers: {
+                //         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                //     }
+                // });
                 $.ajax({
-                    method: "POST",
+                    method: "GET",
                     url: add_url,
                     datatype: "json",
                     success: function(data) {
@@ -1168,6 +1168,8 @@
                             $('#edit_post_id').val(data.post.id);
 
                             var filesdb = data.post.media ? JSON.parse(data.post.media) : [];
+                            console.log(data.post.media,'media');
+                            console.log(data.imageData,'image data');
                             // var filesAmount=files.length;
                             var storedFilesdb = filesdb;
                             // console.log(storedFilesdb)

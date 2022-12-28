@@ -26,11 +26,6 @@
             <div class="customer-workout-plan-header-detail-container">
                 <iconify-icon icon="noto:alarm-clock" class="customer-workout-plan-detail-icon"></iconify-icon>
                 <p>{{__('msg.minutes')}} : <span>{{$time_sum_home}} Mins</span>
-                    {{-- @if ($time_sum_home < 60)
-                    <span>0:{{$sec_home}}</span>
-                    @elseif ($time_sum_home >= 60)
-                    <span>{{$duration_home}}:{{$sec}}</span>
-                    @endif --}}
                 </p>
             </div>
         </div>
