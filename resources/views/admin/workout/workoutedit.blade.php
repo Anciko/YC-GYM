@@ -65,7 +65,7 @@
                                 placeholder="Workout level select" name="workoutlevel">
 
                                 <option value="beginner" id="beginner">Beginner</option>
-                                <option value="advanced" id="advance">Advance</option>
+                                <option value="advance" id="advance">Advance</option>
                                 <option value="professional" id="professional">Professional</option>
                             </select>
                             <label for="floatingInput">Workout level select</label>
@@ -208,7 +208,7 @@
             if (user.workout_level == 'beginner') {
                 var select = $("#beginner");
                 select.attr('selected', true);
-            } else if (user.workout_level == 'advanced') {
+            } else if (user.workout_level == 'advance') {
                 var select = $("#advance");
                 select.attr('selected', true);
             } else if (user.workout_level == 'professional') {
