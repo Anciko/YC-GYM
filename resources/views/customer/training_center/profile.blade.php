@@ -301,7 +301,7 @@
                 <div class="customer-profile-posts-header">
                     <p>{{__("msg.post & activities")}}</p>
                     <select class="customer-profile-selector">
-                        <option value="all">{{__("msg.all")}}</option>
+                        <option value="all">{{__('msg.all')}}</option>
                         <option value="saved" class="saved_post_selectbox">{{__("msg.save")}}</option>
                     </select>
                 </div>
@@ -373,10 +373,10 @@
     </div>
     <div class="customer-profile-shop-container">
         <div class="customer-profile-posts-header">
-            <p>{{__("msg.shop & activities")}}/p>
+            <p>{{__("msg.shop & activities")}}</p>
             <select class="customer-shop-profile-selector">
-                <option value="shop-all">All</option>
-                <option value="shop-saved" class="saved_post_selectbox">Saved</option>
+                <option value="shop-all">{{__("msg.all")}}</option>
+                <option value="shop-saved" class="saved_post_selectbox">{{__('msg.save')}}</option>
             </select>
         </div>
         <div class="customer-profile-shop-container_data">
