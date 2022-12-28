@@ -1227,14 +1227,14 @@
                             $("body").on("click", ".delete-preview-db-icon", removeFiledb);
 
                             function removeFiledb() {
-                                console.log(imageDataDb)
                                 var file = $(this).data('file')
                                 storedFilesdb = storedFilesdb.filter((item) => {
                                     return file !== item
                                 })
                                 imageDataDb = imageDataDb.filter((item) => {
-                                    return file !== item
+                                    return file !== item.name
                                 })
+
 
                                 $(this).parent().remove();
                             }
@@ -1255,11 +1255,15 @@
                                     }
                                 });
 
+                                for(var j = 0;j < imageDataDb.length;j++){
+                                    totalSize += imageDataDb[j].size
+                                }
+
 
 
                                 var valid = totalSize <= 157286400;
 
-                                console.log(valid)
+
 
 
 
@@ -1281,7 +1285,16 @@
                                             timer: 5000,
                                             icon: 'warning',
                                         });
-                                    } else {
+                                    }else if(!valid){
+                                        Swal.fire({
+                                            text: "You cannot upload more than 150MBs",
+                                            timerProgressBar: true,
+                                            timer: 5000,
+                                            icon: 'warning',
+                                        });
+                                    }
+
+                                    else {
                                         e.preventDefault();
 
                                         var url = "{{ route('post.update') }}";
