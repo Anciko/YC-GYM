@@ -558,7 +558,7 @@ class SocialmediaController extends Controller
 
 
                     }
-                //dd($imageData);
+            $imageData=(array)$imageData;
 
         if ($post) {
             return response()->json([

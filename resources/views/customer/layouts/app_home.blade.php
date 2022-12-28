@@ -1173,13 +1173,13 @@
                 var add_url = "{{ route('post.edit', [':id']) }}";
                 add_url = add_url.replace(':id', id);
 
-                $.ajaxSetup({
-                    headers: {
-                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                    }
-                });
+                // $.ajaxSetup({
+                //     headers: {
+                //         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                //     }
+                // });
                 $.ajax({
-                    method: "POST",
+                    method: "GET",
                     url: add_url,
                     datatype: "json",
                     success: function(data) {
