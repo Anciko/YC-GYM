@@ -543,6 +543,9 @@ class SocialmediaController extends Controller
     {
         $post = Post::find($id);
 
+        if($post->media==null){
+            $imageData=null;
+        }else{
             $images=json_decode($post->media);
             $imageData=new stdClass();
             foreach($images as $key=>$value){
@@ -559,6 +562,8 @@ class SocialmediaController extends Controller
 
                     }
             $imageData=(array)$imageData;
+        }
+
 
         if ($post) {
             return response()->json([
