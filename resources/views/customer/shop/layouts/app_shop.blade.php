@@ -128,7 +128,7 @@
                             <input type="file" id="editPostInput" name="editPostInput[]" multiple enctype="multipart/form-data">
                         </div>
 
-                        <button class="addpost-photovideo-clear-btn" type="button" onclick="clearEditPost()">Clear</button>
+                        <button class="addpost-photovideo-clear-btn" type="button" onclick="clearEditPost()">{{__('msg.clear')}}</button>
 
                     </span>
 
@@ -172,59 +172,59 @@
                             @if ($user->shop_request==1)
                                     <a href="{{route('shoprequest')}}" class="social-media-addpost-btn customer-primary-btn">
                                         <iconify-icon icon="akar-icons:circle-plus" class="addpost-icon"></iconify-icon>
-                                        <p>Add Post</p>
+                                        <p>{{__('msg.add post')}}</p>
                                     </a>
                             @elseif ($user->shop_request==3 && $user->shop_post_count!=0)
                                 <button class="social-media-addpost-btn customer-primary-btn" data-bs-toggle="modal" data-bs-target="#addPostModal">
                                     <iconify-icon icon="akar-icons:circle-plus" class="addpost-icon"></iconify-icon>
-                                    <p>Add Post</p>
+                                    <p>{{__('msg.add post')}}</p>
                                 </button>
                             @else
                             <a href="javascript:void(0)" class="social-media-addpost-btn customer-primary-btn" id="postcount">
                                 <iconify-icon icon="akar-icons:circle-plus" class="addpost-icon"></iconify-icon>
-                                <p>Add Post</p>
+                                <p>{{__('msg.add post')}}</p>
                             </a>
                             @endif
                             <a href="{{route('shoprequest')}}" class="social-media-addpost-btn customer-primary-btn">
                                 <iconify-icon icon="ic:round-upgrade" class="addpost-icon"></iconify-icon>
-                                <p>Upgrade</p>
+                                <p>{{__('msg.upgrade')}}</p>
                             </a>
                         @elseif ($user->shop_request==2)
                             @if ($user->shop_post_count!=0)
                                 <button class="social-media-addpost-btn customer-primary-btn" data-bs-toggle="modal" data-bs-target="#addPostModal">
                                     <iconify-icon icon="akar-icons:circle-plus" class="addpost-icon"></iconify-icon>
-                                    <p>Add Post</p>
+                                    <p>{{__('msg.add post')}}</p>
                                 </button>
                             @elseif ($user->shop_post_count==0)
                                 @if($shop_levels=='level3' || $user_role=='Ruby' || $user_role=='Ruby Premium')
                                     <button class="social-media-addpost-btn customer-primary-btn" data-bs-toggle="modal" data-bs-target="#addPostModal">
                                         <iconify-icon icon="akar-icons:circle-plus" class="addpost-icon"></iconify-icon>
-                                        <p>Add Post</p>
+                                        <p>{{__('msg.add post')}}</p>
                                     </button>
                                 @else
                                     <a href="javascript:void(0)" class="social-media-addpost-btn customer-primary-btn" id="postcount">
                                         <iconify-icon icon="akar-icons:circle-plus" class="addpost-icon"></iconify-icon>
-                                        <p>Add Post</p>
+                                        <p>{{__('msg.add post')}}</p>
                                     </a>
                                 @endif
                             @endif
                             <a href="{{route('shoprequest')}}" class="social-media-addpost-btn customer-primary-btn">
                                 <iconify-icon icon="ic:round-upgrade" class="addpost-icon"></iconify-icon>
-                                <p>Upgrade</p>
+                                <p>{{__('msg.upgrade')}}</p>
                             </a>
                         @elseif($user_role=='Ruby' || $user_role=='Ruby Premium')
                             <button class="social-media-addpost-btn customer-primary-btn" data-bs-toggle="modal" data-bs-target="#addPostModal">
                                 <iconify-icon icon="akar-icons:circle-plus" class="addpost-icon"></iconify-icon>
-                                <p>Add Post</p>
+                                <p>{{__('msg.add post')}}</p>
                             </button>
                             <a href="{{route('shoprequest')}}" class="social-media-addpost-btn customer-primary-btn">
                                 <iconify-icon icon="ic:round-upgrade" class="addpost-icon"></iconify-icon>
-                                <p>Upgrade</p>
+                                <p>{{__('msg.upgrade')}}</p>
                             </a>
                         @else
                         <a href="{{route('shoprequest')}}" class="social-media-addpost-btn customer-primary-btn">
                             <iconify-icon icon="akar-icons:circle-plus" class="addpost-icon"></iconify-icon>
-                            <p>Rent a shop</p>
+                            <p>{{__('msg.rent a shop')}}</p>
                         </a>
                         @endif
                         {{-- @if (auth()->user()->shop_request==2)

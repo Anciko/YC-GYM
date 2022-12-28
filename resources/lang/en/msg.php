@@ -1,5 +1,7 @@
 <?php
 return[
+    'rate this shop' => 'Rate this shop',
+    'rate' => 'Rate',
     'home1'=>'Home',
     'inches' => 'Inches',
     'feet' => 'Feet',

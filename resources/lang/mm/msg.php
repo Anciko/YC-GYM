@@ -1,5 +1,8 @@
 <?php
 return[
+    'rate this shop' => 'အမှတ်ပေးမည်',
+    'rate' => 'အမှတ်ပေးမည်',
+
     'home1'=>'ပင်မ',
     'inches' => 'လက်မ',
     'feet' => 'ပေ',
