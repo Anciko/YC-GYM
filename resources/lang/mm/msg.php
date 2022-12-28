@@ -1,6 +1,14 @@
 <?php
 return[
+    'rate this shop' => 'အမှတ်ပေးမည်',
+    'rate' => 'အမှတ်ပေးမည်',
+
     'home1'=>'ပင်မ',
+    'inches' => 'လက်မ',
+    'feet' => 'ပေ',
+    "ectomorph"=>"ကိုယ်ခန္ဓာ ၁",
+    "mesomorph"=>"ကိုယ်ခန္ဓာ ၂",
+    "endomorph"=>"ကိုယ်ခန္ဓာ ၃",
     'log in'=>'ဝင်မည်',
     'log out'=>'ထွက်မည်',
     'profile'=>'ပရိုဖိုင်',
@@ -156,6 +164,7 @@ return[
     "let drink"=>'သောက်ကြစို့',
     "add post"=>'ပို့စ်တင်မည်',
     'friends'=>'သူငယ်ချင်းများ',
+    'friend'=>'သူငယ်ချင်း',
     'messages'=>'စာများ',
     'see all'=>'အားလုံး',
     'save'=>'သိမ်းဆည်း',
@@ -170,6 +179,7 @@ return[
     'view media'=>'မီဒီယာကြည့်မည်',
     'group'=>'အဖွဲ့',
     'create group'=>'အဖွဲ့ဖွဲ့မည်',
+    'create' =>'ပြုလုပ်မည်',
     'group name'=>'အဖွဲ့နာမည်',
     'add your friends'=>'သူငယ်ချင်းထည့်မည်',
     'add members'=>'အဖွဲ့ဝင်ထည့်မည်',
@@ -194,7 +204,7 @@ return[
     'invest your products with yc fitness shop'=>'သင်၏ပစ္စည်းများကို YC စျေးဆိုင်တွက်ရင်းနှီးမြုပ်နှံပါ',
     'can upload 10 posts per month'=>'၁လအတွင်း၁၀ပို့စ်တင်နိုင်သည်',
     'mmk'=>'မြန်မာကျပ်',
-    'month'=>'တစ်လ',
+    'month'=>'လ',
     'upgrade'=>'မြှင့်တင်မည်',
     'back to shop page'=>'စျေးဆိုင်စာမျက်နာသို့ပြန်သွားမည်',
     'your profile'=>'သင်၏ကိုယ်ရေးအကျဉ်း',
@@ -220,5 +230,7 @@ return[
     'cover photos'=>'ကာဗာဓာတ်ပုံများ',
     'go back'=>'နောက်သို့',
     'confirm'=>'အတည်ပြုသည်',
+    'add friend' => 'အပ်မည်',
+    'cancel request' =>'တောင်းဆိုချက်ဖျက်မည်'
 ]
 ?>

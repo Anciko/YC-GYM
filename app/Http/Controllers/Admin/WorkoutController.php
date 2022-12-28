@@ -209,6 +209,7 @@ class WorkoutController extends Controller
         $check->video = $video_name;
         $check->estimate_time = $request->estimateTime ?? $check->estimate_time;
         $check->sets = $request->sets ?? $check->sets;
+        $check->category = $request->category ?? $check->category;
         $check->update();
         return redirect('admin/workout');
     }

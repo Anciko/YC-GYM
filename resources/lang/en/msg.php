@@ -1,6 +1,13 @@
 <?php
 return[
+    'rate this shop' => 'Rate this shop',
+    'rate' => 'Rate',
     'home1'=>'Home',
+    'inches' => 'Inches',
+    'feet' => 'Feet',
+    "ectomorph"=>"Ectomorph",
+    "mesomorph"=>"Mesomorph",
+    "endomorph"=>"Endomorph",
     'log in'=>'Log In',
     'log out'=>'Log Out',
     'profile'=>'Profile',
@@ -156,6 +163,7 @@ return[
     "let drink"=>"Let's drink",
     'add post'=>'Add post',
     'friends'=>'Friends',
+    'friend'=>'Friend',
     'messages'=>'Messages',
     'see all'=>"See all",
     'save'=>'Save',
@@ -219,6 +227,8 @@ return[
     'cover photos'=>'Cover Photos',
     'go back'=>'Go Back',
     'confirm'=>'Confirm',
+    'add friend' => 'Add Friend',
+    'cancel request' =>'Cancel Request',
+    'create' => 'Create'
 ]
-
 ?>
