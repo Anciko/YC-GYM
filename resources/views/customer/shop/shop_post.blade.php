@@ -68,8 +68,8 @@
                     data:{ rating : rating,post_user:post_user},
                     datatype: "json",
                     success: function(data) {
-
-                        if(data.message==200){
+                        setTimeout(function(){
+                            if(data.message==200){
                             Swal.fire({
                                     title:'Submitted',
                                     text: 'Thanks for your feedback.',
@@ -85,6 +85,7 @@
                                     icon: 'warning',
                                 })
                         }
+                        },1000)
 
                     }
         })
