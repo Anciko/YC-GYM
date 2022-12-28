@@ -747,7 +747,6 @@
 
         $(document).on('click','#edit_shoppost',function(e){
 
-            alert('drfgdrg');
             e.preventDefault();
             $(".editpost-photo-video-imgpreview-container").empty();
 
