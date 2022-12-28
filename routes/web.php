@@ -93,7 +93,7 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
         Route::post('/socialmedia/report', [SocialmediaController::class, 'post_report'])->name('socialmedia.report');
 
         Route::post('/socialmedia/delete/{id}', [SocialmediaController::class, 'post_destroy'])->name('post.destroy');
-        Route::get('/socialmedia/edit/{id}', [SocialmediaController::class, 'post_edit'])->name('post.edit');
+        Route::post('/socialmedia/edit/{id}', [SocialmediaController::class, 'post_edit'])->name('post.edit');
         Route::post('/socialmedia/update', [SocialmediaController::class, 'post_update'])->name('post.update');
         Route::post('/profile/photo/delete', [SocialmediaController::class, 'profile_photo_delete'])->name('profile.photo.delete');
 
