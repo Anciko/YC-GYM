@@ -1067,7 +1067,19 @@
 
             $('#form').submit(function(e) {
                 e.preventDefault();
-                $('#addPostModal').modal('hide');
+                var totalSize = 0;
+
+                $("#addPostInput").each(function() {
+                    for (var i = 0; i < this.files.length; i++) {
+                    totalSize += this.files[i].size;
+                    }
+                });
+
+                var valid = totalSize <= 157286400;
+
+                console.log(valid)
+
+
                 var caption = $('#addPostCaption').val();
 
                 var url = "{{ route('post.store') }}";
@@ -1083,8 +1095,18 @@
                             timer: 5000,
                             icon: 'warning',
                         });
-                    } else {
+                    }else if(!valid){
+                        Swal.fire({
+                            text: "You cannot upload more than 150MBs",
+                            timerProgressBar: true,
+                            timer: 5000,
+                            icon: 'warning',
+                        });
+                    }
+
+                    else {
                         e.preventDefault();
+                        $('#addPostModal').modal('hide');
                         let formData = new FormData(form);
 
                         const totalImages = $("#addPostInput")[0].files.length;
@@ -1217,6 +1239,8 @@
                             $('#edit_form').submit(function(e) {
                                 e.preventDefault();
                                 $('#editPostModal').modal('hide');
+
+
 
                                 var fileUpload = $('#editPostInput');
                                 console.log(storedFilesdb.length);
@@ -1986,7 +2010,7 @@
                 () => {
 
                     localStream.play("local-audio");
-                    
+
                     client.publish(localStream, (data) => {
                         console.log("publish local stream", data);
                     });
