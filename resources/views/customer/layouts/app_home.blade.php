@@ -1168,6 +1168,8 @@
                             $('#edit_post_id').val(data.post.id);
 
                             var filesdb = data.post.media ? JSON.parse(data.post.media) : [];
+                            console.log(data.post.media,'media');
+                            console.log(data.imageData,'image data');
                             // var filesAmount=files.length;
                             var storedFilesdb = filesdb;
                             // console.log(storedFilesdb)
