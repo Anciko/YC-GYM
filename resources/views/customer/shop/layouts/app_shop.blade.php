@@ -150,7 +150,10 @@
 
         <div class="nav-overlay">
         </div>
-
+            @php
+                $date=Carbon\Carbon::now()->format('Y-m-d');
+                $user=auth()->user();
+            @endphp
             <div class="customer-main-content-container">
                 <div class="social-media-header-btns-container margin-top">
                     {{-- <a class="back-btn" href="{{route("socialmedia")}}"> --}}
@@ -335,6 +338,15 @@
                         icon: 'warning',
                         });
         });
+        $(document).on('click', '#postcount', function(e) {
+            Swal.fire({
+                        text: "You reached post limit.Please Upgrade Level",
+                        timerProgressBar: true,
+                        timer: 5000,
+                        icon: 'warning',
+                        });
+        });
+
 
 
 

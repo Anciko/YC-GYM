@@ -9,7 +9,7 @@
     </a>
 
     <div class="shop-member-plans-parent-container">
-        @if (auth()->user()->shop_request==1)
+        @if (auth()->user()->shop_request==1 || auth()->user()->shop_request==3)
             <div class="shop-member-pending-container">
                 <svg width="266" height="224" viewBox="0 0 266 224" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M41.4934 203.344C92.8497 230.174 176.118 230.174 227.481 203.344C278.843 176.513 278.837 133.015 227.481 106.185C176.124 79.3542 92.8497 79.3481 41.4873 106.185C-9.87516 133.021 -9.86903 176.513 41.4934 203.344Z" fill="#D2D2D2" fill-opacity="0.6"/>
