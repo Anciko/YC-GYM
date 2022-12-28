@@ -1140,7 +1140,7 @@
             })
 
             $(document).on('click', '#edit_post', function(e) {
-                alert('gfgdg');
+              
                 e.preventDefault();
                 $(".editpost-photo-video-imgpreview-container").empty();
 
