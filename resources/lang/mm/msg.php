@@ -164,6 +164,7 @@ return[
     "let drink"=>'သောက်ကြစို့',
     "add post"=>'ပို့စ်တင်မည်',
     'friends'=>'သူငယ်ချင်းများ',
+    'friend'=>'သူငယ်ချင်း',
     'messages'=>'စာများ',
     'see all'=>'အားလုံး',
     'save'=>'သိမ်းဆည်း',
@@ -178,6 +179,7 @@ return[
     'view media'=>'မီဒီယာကြည့်မည်',
     'group'=>'အဖွဲ့',
     'create group'=>'အဖွဲ့ဖွဲ့မည်',
+    'create' =>'ပြုလုပ်မည်',
     'group name'=>'အဖွဲ့နာမည်',
     'add your friends'=>'သူငယ်ချင်းထည့်မည်',
     'add members'=>'အဖွဲ့ဝင်ထည့်မည်',
@@ -228,5 +230,7 @@ return[
     'cover photos'=>'ကာဗာဓာတ်ပုံများ',
     'go back'=>'နောက်သို့',
     'confirm'=>'အတည်ပြုသည်',
+    'add friend' => 'အပ်မည်',
+    'cancel request' =>'တောင်းဆိုချက်ဖျက်မည်'
 ]
 ?>

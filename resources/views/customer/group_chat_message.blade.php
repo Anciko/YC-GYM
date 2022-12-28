@@ -160,7 +160,7 @@
                 </a>
 
                 <a href="{{ route('socialmedia.group.viewmedia', $group->id) }}" class="group-chat-view-midea-link">
-                    <p>View Media</p>
+                    <p>{{__('msg.view media')}}</p>
                     <iconify-icon icon="akar-icons:arrow-right" class="group-chat-view-midea-link-icon"></iconify-icon>
                 </a>
             </div>

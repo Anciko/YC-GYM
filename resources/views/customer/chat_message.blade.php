@@ -165,7 +165,7 @@
                     <iconify-icon icon="eva:video-outline" class="chat-header-video-icon"></iconify-icon>
                 </a>
                 <a href="{{ route('message.viewmedia', $receiver_user->id) }}" class="group-chat-view-midea-link">
-                    <p>View Media</p>
+                    <p>{{__('msg.view media')}}</p>
                     <iconify-icon icon="akar-icons:arrow-right" class="group-chat-view-midea-link-icon"></iconify-icon>
                 </a>
             </div>
