@@ -150,7 +150,10 @@
 
         <div class="nav-overlay">
         </div>
-
+            @php
+                $date=Carbon\Carbon::now()->format('Y-m-d');
+                $user=auth()->user();
+            @endphp
             <div class="customer-main-content-container">
                 <div class="social-media-header-btns-container margin-top">
                     {{-- <a class="back-btn" href="{{route("socialmedia")}}"> --}}
@@ -158,35 +161,80 @@
                         <iconify-icon icon="bi:arrow-left" class="back-btn-icon"></iconify-icon>
                     </a>
                     <div class="shop-addpost-btns-container">
-                    @if (auth()->user()->shop_request==2)
-                    <button class="social-media-addpost-btn customer-primary-btn" data-bs-toggle="modal" data-bs-target="#addPostModal">
-                        <iconify-icon icon="akar-icons:circle-plus" class="addpost-icon"></iconify-icon>
-                        <p>Add Post</p>
-                    </button>
-                    <a href="{{route('shoprequest')}}" class="social-media-addpost-btn customer-primary-btn">
-                        <iconify-icon icon="ic:round-upgrade" class="addpost-icon"></iconify-icon>
-                        <p>Upgrade</p>
-                    </a>
-                    @elseif (auth()->user()->shop_request==3 && (auth()->user()->shop_post_count!=0))
-                    <button class="social-media-addpost-btn customer-primary-btn" data-bs-toggle="modal" data-bs-target="#addPostModal">
-                        <iconify-icon icon="akar-icons:circle-plus" class="addpost-icon"></iconify-icon>
-                        <p>Add Post</p>
-                    </button>
-                    @elseif (auth()->user()->shopfrom_date==null && auth()->user()->shopto_date==null)
-                    <a href="javascript:void(0)" class="social-media-addpost-btn customer-primary-btn" id="dateexpired">
-                        <iconify-icon icon="akar-icons:circle-plus" class="addpost-icon"></iconify-icon>
-                        <p>Add Post</p>
-                    </a>
-                    <a href="{{route('shoprequest')}}" class="social-media-addpost-btn customer-primary-btn">
-                        <iconify-icon icon="ic:round-upgrade" class="addpost-icon"></iconify-icon>
-                        <p>Upgrade</p>
-                    </a>
-                    @else
-                    <a href="{{route('shoprequest')}}" class="social-media-addpost-btn customer-primary-btn">
-                        <iconify-icon icon="akar-icons:circle-plus" class="addpost-icon"></iconify-icon>
-                        <p>Rent a shop</p>
-                    </a>
-                    @endif
+                        @if ($user->shop_request==1 || $user->shop_request==3)
+                            @if ($user->shop_request==1)
+                                    <a href="{{route('shoprequest')}}" class="social-media-addpost-btn customer-primary-btn">
+                                        <iconify-icon icon="akar-icons:circle-plus" class="addpost-icon"></iconify-icon>
+                                        <p>Add Post</p>
+                                    </a>
+                            @elseif ($user->shop_request==3 && $user->shop_post_count!=0)
+                                <button class="social-media-addpost-btn customer-primary-btn" data-bs-toggle="modal" data-bs-target="#addPostModal">
+                                    <iconify-icon icon="akar-icons:circle-plus" class="addpost-icon"></iconify-icon>
+                                    <p>Add Post</p>
+                                </button>
+                            @else
+                            <a href="javascript:void(0)" class="social-media-addpost-btn customer-primary-btn" id="postcount">
+                                <iconify-icon icon="akar-icons:circle-plus" class="addpost-icon"></iconify-icon>
+                                <p>Add Post</p>
+                            </a>
+                            @endif
+                            <a href="{{route('shoprequest')}}" class="social-media-addpost-btn customer-primary-btn">
+                                <iconify-icon icon="ic:round-upgrade" class="addpost-icon"></iconify-icon>
+                                <p>Upgrade</p>
+                            </a>
+                        @elseif ($user->shop_request==2)
+                            @if ($user->shop_post_count!=0)
+                                <button class="social-media-addpost-btn customer-primary-btn" data-bs-toggle="modal" data-bs-target="#addPostModal">
+                                    <iconify-icon icon="akar-icons:circle-plus" class="addpost-icon"></iconify-icon>
+                                    <p>Add Post</p>
+                                </button>
+                            @elseif ($user->shop_post_count==0)
+                                <a href="javascript:void(0)" class="social-media-addpost-btn customer-primary-btn" id="postcount">
+                                    <iconify-icon icon="akar-icons:circle-plus" class="addpost-icon"></iconify-icon>
+                                    <p>Add Post</p>
+                                </a>
+                            @endif
+                            <a href="{{route('shoprequest')}}" class="social-media-addpost-btn customer-primary-btn">
+                                <iconify-icon icon="ic:round-upgrade" class="addpost-icon"></iconify-icon>
+                                <p>Upgrade</p>
+                            </a>
+                        @else
+                        <a href="{{route('shoprequest')}}" class="social-media-addpost-btn customer-primary-btn">
+                            <iconify-icon icon="akar-icons:circle-plus" class="addpost-icon"></iconify-icon>
+                            <p>Rent a shop</p>
+                        </a>
+                        @endif
+                        {{-- @if (auth()->user()->shop_request==2)
+                        <button class="social-media-addpost-btn customer-primary-btn" data-bs-toggle="modal" data-bs-target="#addPostModal">
+                            <iconify-icon icon="akar-icons:circle-plus" class="addpost-icon"></iconify-icon>
+                            <p>Add Post</p>
+                        </button>
+                        <a href="{{route('shoprequest')}}" class="social-media-addpost-btn customer-primary-btn">
+                            <iconify-icon icon="ic:round-upgrade" class="addpost-icon"></iconify-icon>
+                            <p>Upgrade</p>
+                        </a>
+                        @elseif (auth()->user()->shop_request==3 && (auth()->user()->shop_post_count!=0))
+                        <button class="social-media-addpost-btn customer-primary-btn" data-bs-toggle="modal" data-bs-target="#addPostModal">
+                            <iconify-icon icon="akar-icons:circle-plus" class="addpost-icon"></iconify-icon>
+                            <p>Add Post</p>
+                        </button>
+
+                        @elseif (auth()->user()->shopfrom_date==null && auth()->user()->shopto_date==null || auth()->user()->shopto_date==$date)
+                        <a href="javascript:void(0)" class="social-media-addpost-btn customer-primary-btn" id="dateexpired">
+                            <iconify-icon icon="akar-icons:circle-plus" class="addpost-icon"></iconify-icon>
+                            <p>Add Post</p>
+                        </a>
+                        <a href="{{route('shoprequest')}}" class="social-media-addpost-btn customer-primary-btn">
+                            <iconify-icon icon="ic:round-upgrade" class="addpost-icon"></iconify-icon>
+                            <p>Upgrade</p>
+                        </a>
+                        @else
+
+                        <a href="{{route('shoprequest')}}" class="social-media-addpost-btn customer-primary-btn">
+                            <iconify-icon icon="akar-icons:circle-plus" class="addpost-icon"></iconify-icon>
+                            <p>Rent a shop</p>
+                        </a>
+                        @endif --}}
                     </div>
                 </div>
 
@@ -335,6 +383,15 @@
                         icon: 'warning',
                         });
         });
+        $(document).on('click', '#postcount', function(e) {
+            Swal.fire({
+                        text: "You reached post limit.Please Upgrade Level",
+                        timerProgressBar: true,
+                        timer: 5000,
+                        icon: 'warning',
+                        });
+        });
+
 
 
 

@@ -514,11 +514,11 @@
                 url = url.replace(':id', id);
                 var group_url = "{{ route('socialmedia.group', ':id') }}";
                 group_url = group_url.replace(':id', id);
-                text =   data[i].text == null ? "" :  data[i].text;
-                if(data[i].is_group == 0){
-                    if(data[i].profile_image!=null){
-                        htmlView += `<a href=`+url+` class="social-media-left-messages-row">
-                                            <img  class="nav-profile-img" src="{{asset('storage/post/`+data[i].profile_image+`')}}"/>
+                text = data[i].text == null ? "" : data[i].text;
+                if (data[i].is_group == 0) {
+                    if (data[i].profile_image != null) {
+                        htmlView += `<a href=` + url + ` class="social-media-left-messages-row">
+                                            <img  class="nav-profile-img" src="{{ asset('storage/post/`+data[i].profile_image+`') }}"/>
                                         <p>
                                             ` + data[i].name + `<br>
                                             <span>` + text + ` </span>
@@ -570,8 +570,8 @@
 
                 var group_url = "{{ route('socialmedia.group', ':id') }}";
                 group_url = group_url.replace(':id', id);
-                text =   latest_messages[i].text == null ? "" :  latest_messages[i].text;
-                if(latest_messages[i].is_group == 0){
+                text = latest_messages[i].text == null ? "" : latest_messages[i].text;
+                if (latest_messages[i].is_group == 0) {
 
                     if (latest_messages[i].profile_image === null) {
                         htmlView += `
@@ -1178,12 +1178,12 @@
                                 console.log(fileExtension);
                                 if (fileExtension == 'mp4') {
                                     var html = "<div class='addpost-preview'>\
-                                                <iconify-icon icon='akar-icons:cross' data-file='" + f + "' class='delete-preview-db-icon'></iconify-icon>\
-                                                <video controls><source src='storage/post/" + f + "' data-file='" + f +
+                                                    <iconify-icon icon='akar-icons:cross' data-file='" + f + "' class='delete-preview-db-icon'></iconify-icon>\
+                                                    <video controls><source src='storage/post/" + f + "' data-file='" + f +
                                         "' class='selFile' title='Click to remove'>" +
                                         f + "<br clear=\"left\"/>\
-                                                <video>\
-                                            </div>"
+                                                    <video>\
+                                                </div>"
                                     $(".editpost-photo-video-imgpreview-container")
                                         .append(html);
 
@@ -1191,7 +1191,7 @@
                                     var html =
                                         "<div class='addpost-preview'><iconify-icon icon='akar-icons:cross' data-file='" +
                                         f + "' class='delete-preview-db-icon'></iconify-icon>\
-                                                <img src='storage/post/" + f + "' data-file='" + f +
+                                                    <img src='storage/post/" + f + "' data-file='" + f +
                                         "' class='selFile' title='Click to remove'></div>";
                                     $(".editpost-photo-video-imgpreview-container")
                                         .append(html);
@@ -1648,27 +1648,22 @@
         let authuser_name = null
         let receiveruser_name = null
 
+        let friend_data= @json($left_friends);
+        console.log('friends',friend_data);
+
         Echo.channel('agora-videocall')
             .listen(".MakeAgoraCall", ({
                 data
             }) => {
-                console.log('listening-------------------------', data);
+
                 myArray = data.channelName.split("_");
                 receiveruser_name = myArray[0];
                 receiver_user_id = data.from
                 if (parseInt(data.userToCall) === parseInt(authuserId)) {
 
-
-
-                    // incomingCaller = onlineUsers[callerIndex]["name"]
                     incomingCall = true
 
 
-                    // console.log('incomingcaller', incomingCaller);
-
-                    console.log('llllllrweer', incomingCall);
-
-                    console.log('incoming audio calll checkkkkk', incomingAudioCall);
                     if (incomingCall) {
                         $(".chat-backdrop").show();
 
@@ -1696,7 +1691,7 @@
             }).listen(".MakeAgoraAudioCall", ({
                 data
             }) => {
-                console.log('listening-------------------------', data);
+
                 myArray = data.channelName.split("_");
                 receiveruser_name = myArray[0];
                 receiver_user_id = data.from
@@ -1736,17 +1731,21 @@
             }).listen(".DeclineCallUser", ({
                 data
             }) => {
-                if (parseInt(data.userFromCall) == parseInt(authuserId)) {
-                    video_container.innerHTML = "";
+
+                friend_data.forEach(friend => {
+                    if(parseInt(data.userFromCall) == friend.id){
+                        video_container.innerHTML = "";
                     $(".chat-backdrop").hide();
                     location.reload(true)
-                }
+                    }
+               });
+
             })
 
 
 
         async function placeCall(id, call_name) {
-            // console.log(id, call_name);
+
             try {
                 const channelName = `${authuser}_${call_name}`;
                 const tokenRes = await generateToken(channelName)
@@ -1764,9 +1763,7 @@
 
                 videoCallEvent = true;
 
-                // if(callPlaced){
-                //     video_container.classList.remove('hide')
-                // }
+
             } catch (error) {
                 console.log("No internet connection");
             }
@@ -1790,9 +1787,7 @@
                 incomingAudioCall = true;
 
                 audioCallEvent = true;
-                // if(callPlaced){
-                //     video_container.classList.remove('hide')
-                // }
+
             } catch (error) {
                 console.log(error);
             }
@@ -1839,7 +1834,7 @@
             $(".chat-backdrop").hide();
             // nc start
             axios.post("/agora/decline-call-user", {
-                user_from_call: receiver_user_id
+                user_from_call: authuserId
             });
 
         }
@@ -1857,7 +1852,7 @@
                     console.log("incoming audio call lay pr", incomingAudioCall);
 
                     if (callPlaced) {
-                        // parent.document.body.classList.add('backdrop')
+
                         $("#video-main-container").show()
                         $(".chat-backdrop").show();
                         if (incomingAudioCall) {
@@ -1866,7 +1861,7 @@
                                                        <div id="local-audio"></div>
                                                         <div id="remote-audio"></div>
                                                     <div class="text-center ">
-                                                        <p class="text-black">Audio call with ${receiveruser_name}</p>
+                                                        <p class="text-black">Audio Call</p>
                                                     </div>
                                                     <div class="action-btns">
                                                         <button type="button" class="btn btn-info p-2 me-3" id="muteAudio" onclick="handleAudioToggle(this)">
@@ -1911,12 +1906,12 @@
         }
 
         function initializedAgoraListeners() {
-            //   Register event listeners
+
             client.on("stream-published", function(evt) {
                 console.log("Publish local stream successfully");
                 console.log(evt);
             });
-            //subscribe remote stream
+
             client.on("stream-added", ({
                 stream
             }) => {
@@ -1926,9 +1921,7 @@
                 });
             });
             client.on("stream-subscribed", (evt) => {
-                // Attach remote stream to the remote-video div
-                // evt.stream.play("remote-video");
-                //     client.publish(evt.stream);
+
                 if (videoCallEvent) {
                     evt.stream.play("remote-video");
                     client.publish(evt.stream);
@@ -1967,12 +1960,12 @@
                 audio: true,
                 video: true,
             });
-            // Initialize the local stream
+
             localStream.init(
                 () => {
-                    // Play the local stream
+
                     localStream.play("local-video");
-                    // Publish the local stream
+
                     client.publish(localStream, (data) => {
                         console.log("publish local stream", data);
                     });
@@ -1988,12 +1981,12 @@
                 audio: true,
                 video: false,
             });
-            // Initialize the local stream
+
             localStream.init(
                 () => {
-                    // Play the local stream
+
                     localStream.play("local-audio");
-                    // Publish the local stream
+                    
                     client.publish(localStream, (data) => {
                         console.log("publish local stream", data);
                     });
@@ -2017,7 +2010,7 @@
             );
 
             axios.post("/agora/decline-call-user", {
-                user_from_call: receiver_user_id
+                user_from_call: authuserId
             });
             video_container.innerHTML = "";
             $(".chat-backdrop").hide()
