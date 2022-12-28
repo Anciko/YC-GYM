@@ -7,25 +7,25 @@
 </a>
 <div class="customer-workout-plan-place-container">
     <p class="customer-workout-plan-place-btn customer-workout-plan-home-btn" >
-        Home
+        {{__('msg.home')}}
     </p>
     <p class="customer-workout-plan-place-btn customer-workout-plan-gym-btn">
-        Gym
+        {{__('msg.gym')}}
     </p>
 </div>
 <div class="customer-workout-plan-home">
     <div class="customer-workout-plan-header-container">
-        <h1>Get Lean At Home</h1>
+        <h1>{{__('msg.get lean at home')}}</h1>
         <div class="customer-workout-plan-header-details-container">
 
 
             <div class="customer-workout-plan-header-detail-container">
                 <iconify-icon icon="fluent-emoji-flat:fire" class="customer-workout-plan-detail-icon"></iconify-icon>
-                <p>Calories : <span>{{$c_sum_home}}</span></p>
+                <p>{{__('msg.calories')}} : <span>{{$c_sum_home}}</span></p>
             </div>
             <div class="customer-workout-plan-header-detail-container">
                 <iconify-icon icon="noto:alarm-clock" class="customer-workout-plan-detail-icon"></iconify-icon>
-                <p>Minutes : <span>{{$time_sum_home}} Mins</span>
+                <p>{{__('msg.minutes')}} : <span>{{$time_sum_home}} Mins</span>
                     {{-- @if ($time_sum_home < 60)
                     <span>0:{{$sec_home}}</span>
                     @elseif ($time_sum_home >= 60)
@@ -36,31 +36,31 @@
         </div>
 
         <a href="{{url('customer/training_center/workout/home')}}" class="customer-primary-btn customer-workout-letsgo-btn">
-            Let's Go
+           {{__('msg.let\'s go')}}
         </a>
 
     </div>
     <div class="customer-workout-plan-details-parent-container">
         <div class="customer-workout-plan-details-equipment-container">
-            <h1>Equipment</h1>
+            <h1>{{__('msg.equipment')}}</h1>
             <div class="customer-workout-plan-equipments-container">
                 <div class="customer-workout-plan-equipment-container">
                     <img src="{{asset('image/icons8-yoga-mat-96 (1).png')}}">
-                    <p>yoga mat</p>
+                    <p>{{__('msg.yoga mat')}}</p>
                 </div>
                 <div class="customer-workout-plan-equipment-container">
                     <img src="{{asset('image/icons8-bench-press-96.png')}}">
-                    <p>Bench Press</p>
+                    <p>{{__('msg.bench press')}}</p>
                 </div>
                 <div class="customer-workout-plan-equipment-container">
                     <img src="{{asset('image/icons8-dumbbell-64.png')}}">
-                    <p>Dumbbells</p>
+                    <p>{{__('msg.dumbbells')}}</p>
                 </div>
             </div>
         </div>
 
         <div class="customer-workout-plan-details-workouts-container">
-            <h1>Workouts</h1>
+            <h1>{{__('msg.workouts')}}</h1>
             <div class="customer-workout-plan-workouts-container">
                 @forelse ($tc_home_workoutplans as $workout)
                     <div class="customer-workout-plan-workout-container">
@@ -96,17 +96,17 @@
 </div>
 <div class="customer-workout-plan-gym">
     <div class="customer-workout-plan-header-container">
-        <h1>Get Lean At Gym</h1>
+        <h1>{{__('msg.get lean at gym')}}</h1>
         <div class="customer-workout-plan-header-details-container">
 
 
             <div class="customer-workout-plan-header-detail-container">
                 <iconify-icon icon="fluent-emoji-flat:fire" class="customer-workout-plan-detail-icon"></iconify-icon>
-                <p>Calories : <span>{{$c_sum}}</span></p>
+                <p>{{__('msg.calories')}} : <span>{{$c_sum}}</span></p>
             </div>
             <div class="customer-workout-plan-header-detail-container">
                 <iconify-icon icon="noto:alarm-clock" class="customer-workout-plan-detail-icon"></iconify-icon>
-                <p>Minutes : <span>{{$time_sum}} Mins</span>
+                <p>{{__('msg.minutes')}} : <span>{{$time_sum}} Mins</span>
                     {{-- @if ($time_sum < 60)
                     <span>0:{{$sec}}</span>
                     @elseif ($time_sum >= 60)
@@ -117,31 +117,31 @@
         </div>
 
         <a href="{{route('training_center.workout.gym')}}" class="customer-primary-btn customer-workout-letsgo-btn">
-            Let's Go
+           {{__('msg.let\'s go')}}
         </a>
 
     </div>
     <div class="customer-workout-plan-details-parent-container">
         <div class="customer-workout-plan-details-equipment-container">
-            <h1>Equipment</h1>
+            <h1>{{__('msg.equipment')}}</h1>
             <div class="customer-workout-plan-equipments-container">
                 <div class="customer-workout-plan-equipment-container">
                     <img src="{{asset('image/icons8-yoga-mat-96 (1).png')}}">
-                    <p>yoga mat</p>
+                    <p>{{__('msg.yoga mat')}}</p>
                 </div>
                 <div class="customer-workout-plan-equipment-container">
                     <img src="{{asset('image/icons8-bench-press-96.png')}}">
-                    <p>Bench Press</p>
+                    <p>{{__('msg.bench press')}}</p>
                 </div>
                 <div class="customer-workout-plan-equipment-container">
                     <img src="{{asset('image/icons8-dumbbell-64.png')}}">
-                    <p>Dumbbells</p>
+                    <p>{{__('msg.dumbbells')}}</p>
                 </div>
             </div>
         </div>
 
         <div class="customer-workout-plan-details-workouts-container">
-            <h1>Workouts</h1>
+            <h1>{{__('msg.workouts')}}</h1>
             <div class="customer-workout-plan-workouts-container">
                 @forelse ($tc_gym_workoutplans as $workout)
                 <div class="customer-workout-plan-workout-container">

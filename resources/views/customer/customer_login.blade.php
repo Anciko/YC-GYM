@@ -5,7 +5,7 @@
         @csrf
         <div class="cutomer-registeration-form">
             <p class="customer-registeration-form-header">
-                Log In
+                {{__('msg.log in')}}
             </p>
             <div class="customer-login-phone-container">
                 <iconify-icon icon="akar-icons:phone" class="customer-login-phone-icon"></iconify-icon>
@@ -17,14 +17,14 @@
             </div>
 
 
-            <a href="#" class="forgot-password-link">Forgot Password?</a>
+            <a href="#" class="forgot-password-link">{{__('msg.forgot password?')}}</a>
 
             <div class="customer-form-btn-container">
                 <button class="customer-primary-btn customer-login-submit-form-btn" type="submit" >
-                Log In
+               {{__('msg.log in')}}
                 </button>
                 <button class="customer-secondary-btn customer-login-cancel-form-btn" type="reset">
-                Cancel
+                {{__('msg.cancel')}}
                 </button>
             </div>
 

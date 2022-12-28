@@ -6,7 +6,7 @@
     <!-- body measurements-->
     <div class="cutomer-registeration-form tab customer-registeration-card">
         <p class="customer-registeration-form-header">
-            Body Measurements
+            {{__('msg.body measurements')}}
         </p>
         <input type="hidden" value={{$request_type}} name="request_type">
         <div class="customer-registeration-height-container">
@@ -60,10 +60,10 @@
         <div class="customer-form-btn-container">
           <button class="customer-registeration-prev-btn customer-primary-btn" type="button" id="prevBtn" onclick="nextPrev(-1)">
             <iconify-icon icon="akar-icons:arrow-left" class="customer-prev-icon"></iconify-icon>
-            <p>Previous</p>
+            <p>{{__('msg.previous')}}</p>
           </button>
           <button class="customer-registeration-next-btn customer-primary-btn" type="button" id="nextBtn" onclick="nextPrev(1,'bodyMeasurements')">
-            <p>Next</p>
+            <p>{{__('msg.next')}}</p>
             <iconify-icon icon="akar-icons:arrow-right" class="customer-next-icon"></iconify-icon>
           </button>
         </div>
@@ -73,7 +73,7 @@
     <!--physical limitations-->
     <div class="cutomer-registeration-form tab customer-registeration-card">
         <p class="customer-registeration-form-header">
-           Do you have any physical limitations?
+           {{__('msg.do you have any physical limitations?')}}
         </p>
 
         <div class="checkbox">
@@ -83,7 +83,7 @@
               <span class="checkbox-icon">
                 <iconify-icon icon="radix-icons:value-none" class="checkbox-icon-icon"></iconify-icon>
               </span>
-              <span class="checkbox-label">none</span>
+              <span class="checkbox-label">{{__('msg.none')}}</span>
             </span>
           </label>
         </div>
@@ -94,7 +94,7 @@
               <span class="checkbox-icon">
                 <iconify-icon icon="healthicons:back-pain" class="checkbox-icon-icon"></iconify-icon>
               </span>
-              <span class="checkbox-label">Back Pain</span>
+              <span class="checkbox-label">{{__('msg.back pain')}}</span>
             </span>
           </label>
         </div>
@@ -105,7 +105,7 @@
               <span class="checkbox-icon">
                 <iconify-icon icon="game-icons:knee-bandage" class="checkbox-icon-icon"></iconify-icon>
               </span>
-              <span class="checkbox-label">Knee pain</span>
+              <span class="checkbox-label">{{__('msg.knee pain')}}</span>
             </span>
           </label>
         </div>
@@ -116,7 +116,7 @@
               <span class="checkbox-icon">
                 <iconify-icon icon="el:wheelchair" class="checkbox-icon-icon"></iconify-icon>
               </span>
-              <span class="checkbox-label">Limited mobility</span>
+              <span class="checkbox-label">{{__('msg.limited mobility')}}</span>
             </span>
           </label>
         </div>
@@ -127,7 +127,7 @@
               <span class="checkbox-icon">
                 <iconify-icon icon="ph:dots-three-outline-thin" class="checkbox-icon-icon"></iconify-icon>
               </span>
-              <span class="checkbox-label">Other</span>
+              <span class="checkbox-label">{{__('msg.other')}}</span>
             </span>
           </label>
         </div>
@@ -136,10 +136,10 @@
         <div class="customer-form-btn-container">
           <button class="customer-registeration-prev-btn customer-primary-btn" type="button" id="prevBtn" onclick="nextPrev(-1)">
             <iconify-icon icon="akar-icons:arrow-left" class="customer-prev-icon"></iconify-icon>
-            <p>Previous</p>
+            <p>{{__('msg.previous')}}</p>
           </button>
           <button class="customer-registeration-next-btn customer-primary-btn" type="button" id="nextBtn" onclick="nextPrev(1,'physicalLimitations')">
-            <p>Next</p>
+            <p>{{__('msg.next')}}</p>
             <iconify-icon icon="akar-icons:arrow-right" class="customer-next-icon"></iconify-icon>
           </button>
         </div>
@@ -149,7 +149,7 @@
     <!--which activities do you prefer-->
     <div class="cutomer-registeration-form tab customer-registeration-card">
       <p class="customer-registeration-form-header">
-         Which activities do you prefer?
+         {{__('msg.which activities do you prefer?')}}
       </p>
 
       <div class="checkbox">
@@ -159,8 +159,12 @@
             <span class="checkbox-icon">
               <iconify-icon icon="fa-solid:home" class="checkbox-icon-icon"></iconify-icon>
             </span>
-            <span class="checkbox-label">Working out at home<br>
-              <span class="checkbox-label-small">with minimal equipment</span>
+            <span class="checkbox-label">{{__('msg.working out at home')}}<br>
+              <span class="checkbox-label-small">{{__('msg.with minimal equipment')}}
+
+
+
+            </span>
             </span>
 
           </span>

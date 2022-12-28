@@ -5,7 +5,7 @@
 
     <a href="{{route('shop')}}" class="customer-shop-member-request-btn customer-primary-btn margin-top">
 
-        Back To Shop Page
+       {{__('msg.back to shop page')}}
     </a>
 
     <div class="shop-member-plans-parent-container">
@@ -226,7 +226,7 @@
                     <path d="M89.0308 120.496C89.0181 120.612 88.9818 120.723 88.9243 120.824C88.8667 120.925 88.7891 121.013 88.6963 121.083L86.3486 122.844C86.18 122.968 85.969 123.021 85.7616 122.991C85.6616 122.976 85.5658 122.94 85.4799 122.887C85.3941 122.833 85.3202 122.763 85.2627 122.68L83.9245 120.801C83.8102 120.644 83.758 120.449 83.7778 120.255C83.7873 120.14 83.8216 120.028 83.8783 119.926C83.935 119.825 84.0128 119.737 84.1065 119.669L86.5951 117.908C86.6783 117.846 86.7734 117.802 86.8744 117.779C86.9754 117.756 87.0801 117.754 87.182 117.773C87.283 117.789 87.3794 117.826 87.4653 117.882C87.5512 117.937 87.6246 118.01 87.6809 118.096L88.9076 119.903C89.0227 120.076 89.0726 120.284 89.0484 120.49L89.0308 120.496Z" fill="#444444"/>
                 </svg>
                 <h1>
-                    Invest Your products with YC Fitness Shop <span>Pro<iconify-icon icon="clarity:crown-solid" class="crown-icon"></iconify-icon></span>
+                    {{__('msg.invest your products with yc fitness shop')}} <span>Pro<iconify-icon icon="clarity:crown-solid" class="crown-icon"></iconify-icon></span>
                 </h1>
             </div>
 
@@ -241,17 +241,17 @@
                             @else
                             <iconify-icon icon="clarity:crown-solid" class="shop-member-plan-3-icon"></iconify-icon></h1>
                             @endif
-                        <p>MMK 20000 / month</p>
+                        <p>{{__('msg.mmk')}} 20000 / {{__('msg.month')}}</p>
 
                         <div class="shop-member-plan-benefit">
                             <iconify-icon icon="material-symbols:check-small-rounded" class="shop-member-plan-benefit-icon"></iconify-icon>
-                            <p>Can upload 10 posts per month</p>
+                            <p>{{__('msg.can upload 10 posts per month')}}</p>
                         </div>
                         <form action="{{route('shoppayment')}}" method="POST">
                             @csrf
                             <input type="hidden" name="shop_level_id" value={{$shop_level->id}}>
                             <button type="submit" class="customer-secondary-btn">
-                                Upgrade
+                                {{__('msg.upgrade')}}
                             </button>
                         </form>
 

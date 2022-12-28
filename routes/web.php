@@ -38,7 +38,7 @@ use App\Http\Controllers\Customer\Customer_TrainingCenterController;
 use App\Http\Controllers\ShopController;
 
 Route::group(['middleware' => 'prevent-back-history'], function () {
-    Route::get('/locale/{lange}', [HomeController::class, 'lang'])->name('locale');
+    Route::get('/locale/change', [HomeController::class, 'lang'])->name('langChange');
     Route::get('/customerlogin', [CustomerLoginController::class, 'login'])->name('customerlogin');
     Route::get('customer/checkPhone', [CustomerRegisterController::class, 'checkPhone'])->name('checkPhone');
     Route::get('customer/checkemail', [CustomerRegisterController::class, 'checkemail'])->name('checkEmail');
