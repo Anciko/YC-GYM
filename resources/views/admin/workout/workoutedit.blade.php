@@ -124,6 +124,24 @@
                 <input type="hidden" name="videoTime" value="" class="video-duration">
               </div>
 
+              <div class="form-floating mb-3">
+                <select class="form-select" aria-label="Default select example" placeholder="Select Categories"
+                    name="category">
+                    <option value=""></option>
+                    <option value="category1" id="category1">Category 1</option>
+                    <option value="category2" id="category2">Category 2</option>
+                    <option value="category3" id="category3">Category 3</option>
+                    <option value="category4" id="category4">Category 4</option>
+                    <option value="category5" id="category5">Category 5</option>
+                    <option value="category6" id="category6">Category 6</option>
+                    <option value="category7" id="category7">Category 7</option>
+                    <option value="category8" id="category8">Category 8</option>
+                    <option value="category9" id="category9">Category 9</option>
+                    <option value="category10" id="category10">Category 10</option>
+                </select>
+                <label for="floatingInput">Select Categories</label>
+            </div>
+
 
             <div class="referee-remark-input-btns-container">
                 <button type ="submit" class="btn btn-primary">Update</button>
@@ -202,6 +220,28 @@
             $("#Gym").attr('selected',true);
         } else {
             $("#Home").attr('selected',true);
+        }
+
+        if(user.category == 'category1'){
+            $("#category1").attr('selected', true);
+        }else if(user.category == 'category2'){
+            $("#category2").attr('selected', true);
+        }else if(user.category == 'category3'){
+            $("#category3").attr('selected', true);
+        }else if(user.category == 'category4'){
+            $("#category4").attr('selected', true);
+        }else if(user.category == 'category5'){
+            $("#category5").attr('selected', true);
+        }else if(user.category == 'category6'){
+            $("#category6").attr('selected', true);
+        }else if(user.category == 'category7'){
+            $("#category7").attr('selected', true);
+        }else if(user.category == 'category8'){
+            $("#category8").attr('selected', true);
+        }else if(user.category == 'category9'){
+            $("#category9").attr('selected', true);
+        }else if(user.category == 'category10'){
+            $("#category10").attr('selected', true);
         }
     })
 
