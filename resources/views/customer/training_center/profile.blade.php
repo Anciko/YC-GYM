@@ -2682,7 +2682,7 @@
                 }
             }
 
-            $('.customer-profile-shop-container_data1').html(htmlView);
+            $('.customer-profile-shop-container_data').html(htmlView);
             $('.social-media-media-slider').hide();
             //image slider start
                     console.log($(".image-slider"))
@@ -3797,7 +3797,7 @@
                             var filesdb =data.post.media ? JSON.parse(data.post.media) : [];
                             // var filesAmount=files.length;
                             var storedFilesdb = filesdb;
-                            // console.log(storedFilesdb)
+                             console.log(data.imageData,'img data a ti naw')
 
 
                             filesdb.forEach(function(f) {

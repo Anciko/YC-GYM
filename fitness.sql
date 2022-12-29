@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Dec 20, 2022 at 08:50 AM
+-- Generation Time: Dec 28, 2022 at 11:22 AM
 -- Server version: 10.4.24-MariaDB
 -- PHP Version: 8.1.6
 
@@ -251,18 +251,18 @@ CREATE TABLE `members` (
 --
 
 INSERT INTO `members` (`id`, `member_type`, `duration`, `price`, `pros`, `cons`, `role_id`, `created_at`, `updated_at`) VALUES
-(1, 'Platinum', '1', 5000, 'adipisicing elit, Dolore fugit hic,ullam cumque', 'sequi est, quod', 4, '2022-12-20 07:49:56', '2022-12-20 07:49:56'),
-(2, 'Gold', '1', 20000, 'adipisicing elit, Dolore fugit hic,ullam cumque', 'sequi est, quod', 5, '2022-12-20 07:49:56', '2022-12-20 07:49:56'),
-(3, 'Diamond', '1', 40000, 'adipisicing elit, Dolore fugit hic,ullam cumque', 'sequi est, quod', 6, '2022-12-20 07:49:56', '2022-12-20 07:49:56'),
-(4, 'Ruby', '1', 100000, 'adipisicing elit, Dolore fugit hic,ullam cumque', 'sequi est, quod', 7, '2022-12-20 07:49:56', '2022-12-20 07:49:56'),
-(5, 'Ruby Premium', '1', 200000, 'adipisicing elit, Dolore fugit hic,ullam cumque', 'sequi est, quod', 8, '2022-12-20 07:49:56', '2022-12-20 07:49:56'),
-(6, 'Gym Member', '1', 40000, 'adipisicing elit, Dolore fugit hic,ullam cumque', 'sequi est, quod', 10, '2022-12-20 07:49:56', '2022-12-20 07:49:56'),
-(7, 'Platinum', '3', 12000, 'adipisicing elit, Dolore fugit hic,ullam cumque', 'sequi est, quod', 4, '2022-12-20 07:49:56', '2022-12-20 07:49:56'),
-(8, 'Gold', '3', 50000, 'adipisicing elit, Dolore fugit hic,ullam cumque', 'sequi est, quod', 5, '2022-12-20 07:49:56', '2022-12-20 07:49:56'),
-(9, 'Diamond', '3', 100000, 'adipisicing elit, Dolore fugit hic,ullam cumque', 'sequi est, quod', 6, '2022-12-20 07:49:56', '2022-12-20 07:49:56'),
-(10, 'Ruby', '3', 250000, 'adipisicing elit, Dolore fugit hic,ullam cumque', 'sequi est, quod', 7, '2022-12-20 07:49:56', '2022-12-20 07:49:56'),
-(11, 'Ruby Premium', '3', 500000, 'adipisicing elit, Dolore fugit hic,ullam cumque', 'sequi est, quod', 8, '2022-12-20 07:49:56', '2022-12-20 07:49:56'),
-(12, 'Gym Member', '3', 100000, 'adipisicing elit, Dolore fugit hic,ullam cumque', 'sequi est, quod', 10, '2022-12-20 07:49:56', '2022-12-20 07:49:56');
+(1, 'Platinum', '1', 5000, 'adipisicing elit, Dolore fugit hic,ullam cumque', 'sequi est, quod', 4, '2022-12-28 10:20:15', '2022-12-28 10:20:15'),
+(2, 'Gold', '1', 20000, 'adipisicing elit, Dolore fugit hic,ullam cumque', 'sequi est, quod', 5, '2022-12-28 10:20:15', '2022-12-28 10:20:15'),
+(3, 'Diamond', '1', 40000, 'adipisicing elit, Dolore fugit hic,ullam cumque', 'sequi est, quod', 6, '2022-12-28 10:20:15', '2022-12-28 10:20:15'),
+(4, 'Ruby', '1', 100000, 'adipisicing elit, Dolore fugit hic,ullam cumque', 'sequi est, quod', 7, '2022-12-28 10:20:15', '2022-12-28 10:20:15'),
+(5, 'Ruby Premium', '1', 200000, 'adipisicing elit, Dolore fugit hic,ullam cumque', 'sequi est, quod', 8, '2022-12-28 10:20:15', '2022-12-28 10:20:15'),
+(6, 'Gym Member', '1', 40000, 'adipisicing elit, Dolore fugit hic,ullam cumque', 'sequi est, quod', 10, '2022-12-28 10:20:15', '2022-12-28 10:20:15'),
+(7, 'Platinum', '3', 12000, 'adipisicing elit, Dolore fugit hic,ullam cumque', 'sequi est, quod', 4, '2022-12-28 10:20:15', '2022-12-28 10:20:15'),
+(8, 'Gold', '3', 50000, 'adipisicing elit, Dolore fugit hic,ullam cumque', 'sequi est, quod', 5, '2022-12-28 10:20:15', '2022-12-28 10:20:15'),
+(9, 'Diamond', '3', 100000, 'adipisicing elit, Dolore fugit hic,ullam cumque', 'sequi est, quod', 6, '2022-12-28 10:20:15', '2022-12-28 10:20:15'),
+(10, 'Ruby', '3', 250000, 'adipisicing elit, Dolore fugit hic,ullam cumque', 'sequi est, quod', 7, '2022-12-28 10:20:15', '2022-12-28 10:20:15'),
+(11, 'Ruby Premium', '3', 500000, 'adipisicing elit, Dolore fugit hic,ullam cumque', 'sequi est, quod', 8, '2022-12-28 10:20:15', '2022-12-28 10:20:15'),
+(12, 'Gym Member', '3', 100000, 'adipisicing elit, Dolore fugit hic,ullam cumque', 'sequi est, quod', 10, '2022-12-28 10:20:15', '2022-12-28 10:20:15');
 
 -- --------------------------------------------------------
 
@@ -358,7 +358,10 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
 (41, '2022_12_06_104414_create_chat_group_messages_table', 1),
 (42, '2022_12_06_131420_create_chat_group_members_table', 1),
 (43, '2022_12_19_095121_create_shopmember_histories_table', 1),
-(44, '2022_12_20_101102_create_shop_posts_table', 1);
+(44, '2022_12_20_101102_create_shop_posts_table', 1),
+(45, '2022_12_20_150038_create_user_saved_shopposts_table', 1),
+(46, '2022_12_21_091126_create_user_react_shopposts_table', 1),
+(47, '2022_12_27_094248_create_shop_ratings_table', 1);
 
 -- --------------------------------------------------------
 
@@ -537,6 +540,7 @@ CREATE TABLE `posts` (
   `favourite_status` tinyint(1) NOT NULL,
   `viewers` int(11) NOT NULL DEFAULT 0,
   `report_status` int(11) NOT NULL DEFAULT 0,
+  `shop_status` int(11) NOT NULL DEFAULT 0,
   `deleted_at` timestamp NULL DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
@@ -609,16 +613,16 @@ CREATE TABLE `roles` (
 --
 
 INSERT INTO `roles` (`id`, `name`, `guard_name`, `created_at`, `updated_at`) VALUES
-(1, 'King', 'web', '2022-12-20 07:49:55', '2022-12-20 07:49:55'),
-(2, 'Queen', 'web', '2022-12-20 07:49:55', '2022-12-20 07:49:55'),
-(3, 'System_Admin', 'web', '2022-12-20 07:49:55', '2022-12-20 07:49:55'),
-(4, 'Platinum', 'web', '2022-12-20 07:49:55', '2022-12-20 07:49:55'),
-(5, 'Gold', 'web', '2022-12-20 07:49:55', '2022-12-20 07:49:55'),
-(6, 'Diamond', 'web', '2022-12-20 07:49:55', '2022-12-20 07:49:55'),
-(7, 'Ruby', 'web', '2022-12-20 07:49:55', '2022-12-20 07:49:55'),
-(8, 'Ruby Premium', 'web', '2022-12-20 07:49:55', '2022-12-20 07:49:55'),
-(9, 'Trainer', 'web', '2022-12-20 07:49:56', '2022-12-20 07:49:56'),
-(10, 'Gym Member', 'web', '2022-12-20 07:49:56', '2022-12-20 07:49:56');
+(1, 'King', 'web', '2022-12-28 10:20:15', '2022-12-28 10:20:15'),
+(2, 'Queen', 'web', '2022-12-28 10:20:15', '2022-12-28 10:20:15'),
+(3, 'System_Admin', 'web', '2022-12-28 10:20:15', '2022-12-28 10:20:15'),
+(4, 'Platinum', 'web', '2022-12-28 10:20:15', '2022-12-28 10:20:15'),
+(5, 'Gold', 'web', '2022-12-28 10:20:15', '2022-12-28 10:20:15'),
+(6, 'Diamond', 'web', '2022-12-28 10:20:15', '2022-12-28 10:20:15'),
+(7, 'Ruby', 'web', '2022-12-28 10:20:15', '2022-12-28 10:20:15'),
+(8, 'Ruby Premium', 'web', '2022-12-28 10:20:15', '2022-12-28 10:20:15'),
+(9, 'Trainer', 'web', '2022-12-28 10:20:15', '2022-12-28 10:20:15'),
+(10, 'Gym Member', 'web', '2022-12-28 10:20:15', '2022-12-28 10:20:15');
 
 -- --------------------------------------------------------
 
@@ -675,9 +679,9 @@ CREATE TABLE `shop_members` (
   `member_type` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `duration` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '0',
   `price` int(11) NOT NULL DEFAULT 0,
+  `post_count` int(11) NOT NULL DEFAULT 0,
   `pros` text COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `cons` text COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `post_count` int(11) NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -694,6 +698,21 @@ CREATE TABLE `shop_posts` (
   `caption` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `media` longtext COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `deleted_at` timestamp NULL DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `shop_ratings`
+--
+
+CREATE TABLE `shop_ratings` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `shop_id` int(11) NOT NULL,
+  `rating` int(11) NOT NULL DEFAULT 0,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -801,6 +820,8 @@ CREATE TABLE `users` (
   `shopmember_type_id` int(11) NOT NULL DEFAULT 0,
   `shop_request` int(11) NOT NULL DEFAULT 0,
   `shop_post_count` int(11) NOT NULL DEFAULT 0,
+  `shopfrom_date` date DEFAULT NULL,
+  `shopto_date` date DEFAULT NULL,
   `member_code` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `ingroup` tinyint(1) NOT NULL DEFAULT 0,
   `height` int(11) NOT NULL DEFAULT 0,
@@ -845,9 +866,9 @@ CREATE TABLE `users` (
 -- Dumping data for table `users`
 --
 
-INSERT INTO `users` (`id`, `name`, `phone`, `address`, `email`, `bio`, `member_type`, `request_type`, `membertype_level`, `shopmember_type_id`, `shop_request`, `shop_post_count`, `member_code`, `ingroup`, `height`, `weight`, `ideal_weight`, `bad_habits`, `most_attention_areas`, `average_night`, `physical_activity`, `diet_type`, `daily_life`, `energy_level`, `body_type`, `physical_limitation`, `age`, `goal`, `activities`, `bmi`, `bmr`, `bfp`, `gender`, `from_date`, `to_date`, `active_status`, `neck`, `waist`, `hip`, `shoulders`, `password`, `hydration`, `training_type`, `profile_id`, `cover_id`, `chat_id`, `message_id`, `remember_token`, `created_at`, `updated_at`) VALUES
-(1, 'user', '0912345678', NULL, 'user@gmail.com', NULL, '', 0, '', 0, 0, 0, NULL, 0, 0, 0.00, 0.00, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0.00, 0.00, 0.00, NULL, NULL, NULL, NULL, 0.00, 0.00, 0.00, 0.00, '$2y$10$bfyxBprMuI/FILu9WVthnerRqNqoFjFga.gr2WmdhNh6LsJ0rpotO', NULL, NULL, NULL, NULL, 0, 0, NULL, '2022-12-20 07:49:56', '2022-12-20 07:49:56'),
-(2, 'trainer', '09123456789', NULL, 'trainer@gmail.com', NULL, '', 0, '', 0, 0, 0, NULL, 0, 0, 0.00, 0.00, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0.00, 0.00, 0.00, NULL, NULL, NULL, NULL, 0.00, 0.00, 0.00, 0.00, '$2y$10$vFp5bnVSCI4DqNWYGdQnX.V.6BXyRqH1sBfNGunhl1EOu1BU8lY2O', NULL, NULL, NULL, NULL, 0, 0, NULL, '2022-12-20 07:49:56', '2022-12-20 07:49:56');
+INSERT INTO `users` (`id`, `name`, `phone`, `address`, `email`, `bio`, `member_type`, `request_type`, `membertype_level`, `shopmember_type_id`, `shop_request`, `shop_post_count`, `shopfrom_date`, `shopto_date`, `member_code`, `ingroup`, `height`, `weight`, `ideal_weight`, `bad_habits`, `most_attention_areas`, `average_night`, `physical_activity`, `diet_type`, `daily_life`, `energy_level`, `body_type`, `physical_limitation`, `age`, `goal`, `activities`, `bmi`, `bmr`, `bfp`, `gender`, `from_date`, `to_date`, `active_status`, `neck`, `waist`, `hip`, `shoulders`, `password`, `hydration`, `training_type`, `profile_id`, `cover_id`, `chat_id`, `message_id`, `remember_token`, `created_at`, `updated_at`) VALUES
+(1, 'user', '0912345678', NULL, 'user@gmail.com', NULL, '', 0, '', 0, 0, 0, NULL, NULL, NULL, 0, 0, 0.00, 0.00, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0.00, 0.00, 0.00, NULL, NULL, NULL, NULL, 0.00, 0.00, 0.00, 0.00, '$2y$10$ptI80kAJLsnrz/alnL0qqusUuqErsxAmFJjYFmBFH.VTqLarsBeq6', NULL, NULL, NULL, NULL, 0, 0, NULL, '2022-12-28 10:20:15', '2022-12-28 10:20:15'),
+(2, 'trainer', '09123456789', NULL, 'trainer@gmail.com', NULL, '', 0, '', 0, 0, 0, NULL, NULL, NULL, 0, 0, 0.00, 0.00, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0.00, 0.00, 0.00, NULL, NULL, NULL, NULL, 0.00, 0.00, 0.00, 0.00, '$2y$10$uI2sAf.SWD.RDM0s4V25vOLUY339p4pLxIeOatK8V55ctEQdOsU0a', NULL, NULL, NULL, NULL, 0, 0, NULL, '2022-12-28 10:20:15', '2022-12-28 10:20:15');
 
 -- --------------------------------------------------------
 
@@ -867,10 +888,40 @@ CREATE TABLE `user_react_posts` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `user_react_shopposts`
+--
+
+CREATE TABLE `user_react_shopposts` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `post_id` int(11) NOT NULL,
+  `reacted_status` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `user_saved_posts`
 --
 
 CREATE TABLE `user_saved_posts` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `post_id` int(11) NOT NULL,
+  `saved_status` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `user_saved_shopposts`
+--
+
+CREATE TABLE `user_saved_shopposts` (
   `id` bigint(20) UNSIGNED NOT NULL,
   `user_id` int(11) NOT NULL,
   `post_id` int(11) NOT NULL,
@@ -931,6 +982,7 @@ CREATE TABLE `workouts` (
   `video` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `estimate_time` int(11) NOT NULL,
   `sets` int(11) NOT NULL,
+  `category` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -1186,6 +1238,12 @@ ALTER TABLE `shop_posts`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `shop_ratings`
+--
+ALTER TABLE `shop_ratings`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `shop_reacts`
 --
 ALTER TABLE `shop_reacts`
@@ -1229,9 +1287,21 @@ ALTER TABLE `user_react_posts`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `user_react_shopposts`
+--
+ALTER TABLE `user_react_shopposts`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `user_saved_posts`
 --
 ALTER TABLE `user_saved_posts`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `user_saved_shopposts`
+--
+ALTER TABLE `user_saved_shopposts`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -1362,7 +1432,7 @@ ALTER TABLE `messages`
 -- AUTO_INCREMENT for table `migrations`
 --
 ALTER TABLE `migrations`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=45;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=48;
 
 --
 -- AUTO_INCREMENT for table `notifications`
@@ -1461,6 +1531,12 @@ ALTER TABLE `shop_posts`
   MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT for table `shop_ratings`
+--
+ALTER TABLE `shop_ratings`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT for table `shop_reacts`
 --
 ALTER TABLE `shop_reacts`
@@ -1503,9 +1579,21 @@ ALTER TABLE `user_react_posts`
   MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT for table `user_react_shopposts`
+--
+ALTER TABLE `user_react_shopposts`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT for table `user_saved_posts`
 --
 ALTER TABLE `user_saved_posts`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `user_saved_shopposts`
+--
+ALTER TABLE `user_saved_shopposts`
   MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
