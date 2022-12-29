@@ -1162,7 +1162,7 @@
             })
 
             $(document).on('click', '#edit_post', function(e) {
-              
+
                 e.preventDefault();
                 $(".editpost-photo-video-imgpreview-container").empty();
 
