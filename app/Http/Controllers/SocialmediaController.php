@@ -873,6 +873,7 @@ class SocialmediaController extends Controller
     public function post_store(Request $request)
     {
         $input = $request->all();
+
         $user = auth()->user();
         $post = new Post();
 
