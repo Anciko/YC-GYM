@@ -444,14 +444,14 @@
                                 <option value="10" {{"10" == $height_in ? 'selected' : ''}}>10</option>
                                 <option value="11" {{"11" == $height_in ? 'selected' : ''}}>11</option>
                             </select>
-                            <span>in</span>
+                            <span>{{__('msg.in')}}</span>
                         </div>
 
                         <div class="customer-profile-personaldetail-container">
                             <p>{{__('msg.weight')}}:</p>
                             <div>
                                 <input type="number" value="{{auth()->user()->weight}}" class="weight" name="weight" readonly>
-                                <span>lb</span>
+                                <span>{{__('msg.lb')}}</span>
                             </div>
 
                         </div>
@@ -459,7 +459,7 @@
                             <p>{{__('msg.neck')}}:</p>
                             <div>
                                 <input type="number" value="{{auth()->user()->neck}}" class="neck" name="neck" readonly>
-                                <span>in</span>
+                                <span>{{__('msg.in')}}</span>
                             </div>
                         </div>
                     </div>
@@ -468,15 +468,15 @@
                             <p>{{__('msg.waist')}}:</p>
                             <div>
                                 <input type="number" value="{{auth()->user()->waist}}" name="waist" class="waist" readonly>
-                                <span>in</span>
+                                <span>{{__('msg.in')}}</span>
                             </div>
                         </div>
 
                         <div class="customer-profile-personaldetail-container ">
-                            <p>Hip:</p>
+                            <p>{{__('msg.hip')}}:</p>
                             <div>
                                 <input type="number"  value="{{auth()->user()->hip}}" name="hip" class="hip" readonly>
-                                <span>in</span>
+                                <span>{{__('msg.in')}}</span>
                             </div>
                         </div>
 
@@ -484,7 +484,7 @@
                             <p>{{__("msg.shoulders")}}:</p>
                             <div>
                                 <input type="number"  value="{{auth()->user()->shoulders}}" name="shoulders" class="shoulders" readonly>
-                                <span>in</span>
+                                <span>{{__('msg.in')}}</span>
                             </div>
 
                         </div>
@@ -492,8 +492,8 @@
                     </div>
                 </div>
                 <div class="customer-profile-save-cancel-container">
-                    <button type="submit" class="customer-primary-btn customer-bmi-calculate-btn">Save and Calculate BMI</button>
-                    <button type="button" class="customer-secondary-btn customer-bmi-calculate-btn" id="customer_cancel">Cancel</button>
+                    <button type="submit" class="customer-primary-btn customer-bmi-calculate-btn">{{__('msg.save and calculate BMI')}}</button>
+                    <button type="button" class="customer-secondary-btn customer-bmi-calculate-btn" id="customer_cancel">{{__('msg.cancel')}}</button>
                 </div>
 
 

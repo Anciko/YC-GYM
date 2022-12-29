@@ -232,6 +232,7 @@ return[
     'confirm'=>'အတည်ပြုသည်',
     'add friend' => 'အပ်မည်',
     'cancel request' =>'တောင်းဆိုချက်ဖျက်မည်',
-    'all' => 'အားလုံး'
+    'all' => 'အားလုံး',
+    'save and calculate BMI' => 'သိမ်းပြီးBMIတွက်မည်'
 ]
 ?>

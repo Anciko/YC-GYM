@@ -230,6 +230,7 @@ return[
     'add friend' => 'Add Friend',
     'cancel request' =>'Cancel Request',
     'create' => 'Create',
-    'all' => 'All'
+    'all' => 'All',
+    'save and calculate BMI' => 'Save and Calculate BMI'
 ]
 ?>
