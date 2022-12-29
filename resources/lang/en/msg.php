@@ -2,7 +2,7 @@
 return[
     'rate this shop' => 'Rate this shop',
     'rate' => 'Rate',
-    'home1'=>'Home',
+    'home'=>'Home',
     'inches' => 'Inches',
     'feet' => 'Feet',
     "ectomorph"=>"Ectomorph",
@@ -131,7 +131,7 @@ return[
     'our testimonials'=>'Our Testimonials',
     'get lean at home'=>'Get Lean At Home',
     'get lean at gym'=>'Get Lean At Gym',
-    'home'=>'Home',
+    'home1'=>'Home',
     'gym'=>'Gym',
     'calories'=>'Calories',
     'minutes'=>'Minutes',
