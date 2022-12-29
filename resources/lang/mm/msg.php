@@ -3,7 +3,7 @@ return[
     'rate this shop' => 'အမှတ်ပေးမည်',
     'rate' => 'အမှတ်ပေးမည်',
 
-    'home1'=>'ပင်မ',
+    'home'=>'ပင်မ',
     'inches' => 'လက်မ',
     'feet' => 'ပေ',
     "ectomorph"=>"ကိုယ်ခန္ဓာ ၁",
@@ -132,7 +132,7 @@ return[
     'our testimonials'=>'သက်သေခံချက်များ',
     'get lean at home'=>'အိမ်တွင်းလေ့ကျင်ခန်း',
     'get lean at gym'=>'အားကစားရုံတွင်းလေ့ကျင့်ခန်း',
-    'home'=>'အိမ်',
+    'home1'=>'အိမ်',
     'gym'=>'အားကစားရုံ',
     'calories'=>'ကယ်လိုရီ',
     'minutes'=>'မိနစ်',
@@ -232,6 +232,7 @@ return[
     'confirm'=>'အတည်ပြုသည်',
     'add friend' => 'အပ်မည်',
     'cancel request' =>'တောင်းဆိုချက်ဖျက်မည်',
-    'all' => 'အားလုံး'
+    'all' => 'အားလုံး',
+    'save and calculate BMI' => 'သိမ်းပြီးBMIတွက်မည်'
 ]
 ?>

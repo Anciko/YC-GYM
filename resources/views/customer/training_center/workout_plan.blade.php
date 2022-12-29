@@ -7,7 +7,7 @@
 </a>
 <div class="customer-workout-plan-place-container">
     <p class="customer-workout-plan-place-btn customer-workout-plan-home-btn" >
-        {{__('msg.home')}}
+        {{__('msg.home1')}}
     </p>
     <p class="customer-workout-plan-place-btn customer-workout-plan-gym-btn">
         {{__('msg.gym')}}
