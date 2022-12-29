@@ -529,7 +529,7 @@ class Customer_TrainingCenterController extends Controller
             foreach ($tc_home_workoutplans as $home) {
                 $time_sum_home+=$home->estimate_time;
             }
-            dd($tc_home_workoutplans);
+            //dd($tc_home_workoutplans);
 
         return view('customer.training_center.workout_plan', compact('tc_gym_workoutplans', 'tc_home_workoutplans', 'time_sum', 'c_sum', 'time_sum_home', 'c_sum_home',));
     }
