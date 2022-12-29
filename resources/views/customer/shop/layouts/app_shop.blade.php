@@ -805,6 +805,7 @@
                     }
                     else{
                         e.preventDefault();
+                        $('#addPostModal').modal('hide');
                         let formData = new FormData(form);
 
                         const totalImages = $("#addPostInput")[0].files.length;
@@ -1001,7 +1002,7 @@
                                 var storedFilesdb = filesdb;
                                 var imageDataDb = data.imageData
 
-                                 console.log(data.imageData,'imgdata ati')
+                                console.log(data.imageData,'imgdata ati')
 
 
                                 filesdb.forEach(function(f) {
@@ -1077,7 +1078,15 @@
                                                     timer: 5000,
                                                     icon: 'warning',
                                                 });
-                                    }else{
+                                    }else if(!valid){
+                                        Swal.fire({
+                                            text: "You cannot upload more than 150MBs",
+                                            timerProgressBar: true,
+                                            timer: 5000,
+                                            icon: 'warning',
+                                        });
+                                    }
+                                    else{
                                         e.preventDefault();
 
                                         var url="{{route('shoppost.update')}}";
@@ -1232,7 +1241,7 @@
             })
 
             $('.addpost-submit-btn').click(function(){
-                $('#addPostModal').modal('hide');
+                // $('#addPostModal').modal('hide');
                 var $fileUpload = $("#addPostInput");
                 if (parseInt($fileUpload.get(0).files.length)>5){
                     alert("You can only upload a maximum of 5 files");s

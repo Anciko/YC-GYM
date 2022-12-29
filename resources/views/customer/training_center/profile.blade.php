@@ -3798,6 +3798,7 @@
                             // var filesAmount=files.length;
                             var storedFilesdb = filesdb;
                              console.log(data.imageData,'img data a ti naw')
+                             var imageDataDb = data.imageData
 
 
                             filesdb.forEach(function(f) {
@@ -3825,6 +3826,9 @@
                                 storedFilesdb = storedFilesdb.filter((item) => {
                                     return file !== item
                                 })
+                                imageDataDb = imageDataDb.filter((item) => {
+                                    return file !== item.name
+                                })
 
                                 $(this).parent().remove();
                             }
@@ -3843,6 +3847,22 @@
                             console.log(storedFilesdb);
                             console.log(fileUpload.get(0).files);
 
+                            var totalSize = 0;
+
+                            $("#editPostInput").each(function() {
+                                for (var i = 0; i < this.files.length; i++) {
+                                totalSize += this.files[i].size;
+                                }
+                            });
+
+                            for(var j = 0;j < imageDataDb.length;j++){
+                                totalSize += imageDataDb[j].size
+                            }
+
+
+
+                            var valid = totalSize <= 157286400;
+
                             if(!$('#editPostCaption').val() && (parseInt(fileUpload.get(0).files.length) + storedFilesdb.length) === 0){
                                 alert("Cannot post!!")
                             }else{
@@ -3852,7 +3872,15 @@
                                                 timer: 5000,
                                                 icon: 'warning',
                                             });
-                                }else{
+                                }else if(!valid){
+                                        Swal.fire({
+                                            text: "You cannot upload more than 150MBs",
+                                            timerProgressBar: true,
+                                            timer: 5000,
+                                            icon: 'warning',
+                                        });
+                                }
+                                else{
                                     e.preventDefault();
 
                                     var url="{{route('post.update')}}";
