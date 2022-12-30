@@ -120,7 +120,7 @@ class ShopController extends Controller
                 ->where('shop_id',$shop_list->id)
                 ->first();
 
-            if($rating != 0 and $sum != 0){
+            if($rating->rating != 0 and $sum->sum != 0){
                 if($rating->shop_id == $sum->shop_id){
                     $result =   $sum->sum / $rating->rating;
                     $rating->Avg_rating = $result;
