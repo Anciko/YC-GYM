@@ -119,11 +119,18 @@ class ShopController extends Controller
                 ->select('shop_id', DB::raw('SUM(rating) as sum'))
                 ->where('shop_id',$shop_list->id)
                 ->first();
-            $rating->Avg_rating = 0;
-            if($rating->shop_id == $sum->shop_id){
-                $result =   $sum->sum / $rating->rating;
-                $rating->Avg_rating = $result;
+
+            if($rating != 0 and $sum != 0){
+                if($rating->shop_id == $sum->shop_id){
+                    $result =   $sum->sum / $rating->rating;
+                    $rating->Avg_rating = $result;
+                }
             }
+            else{
+                $rating->Avg_rating = 0;
+            }
+
+
             foreach($shop_list as $value){
                 if(!empty($rating)){
                     $shop_list->avg_rating = $rating->Avg_rating;
