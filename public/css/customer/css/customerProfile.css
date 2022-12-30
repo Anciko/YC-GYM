@@ -145,7 +145,7 @@ margin: 10px;
 .customer-profile-personaldetail-container{
     display: flex;
     align-items: center;
-    width: 150px;
+    width: 180px;
     justify-content: space-between;
 }
 

@@ -867,6 +867,10 @@ padding: 10px 10px;
 text-align: center;
 }
 
+.customer-dropdown .customer-dropdown-menu li form .customer-primary-btn{
+    padding: 8px;
+}
+
 .customer-dropdown .customer-dropdown-menu li a:hover {
 background: var(--customer-primary-color);
 }
