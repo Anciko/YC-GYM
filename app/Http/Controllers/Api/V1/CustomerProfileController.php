@@ -2,15 +2,16 @@
 
 namespace App\Http\Controllers\Api\V1;
 
-use App\Http\Controllers\Controller;
-use App\Models\PersonalMealInfo;
-use App\Models\PersonalWorkOutInfo;
+use Carbon\Carbon;
 use App\Models\User;
 use App\Models\WaterTracked;
-use App\Models\WeightHistory;
-use Carbon\Carbon;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
+use App\Models\WeightHistory;
+use App\Models\PersonalMealInfo;
+use Illuminate\Support\Facades\DB;
+use App\Models\PersonalWorkOutInfo;
+use App\Http\Controllers\Controller;
+use Illuminate\Database\Eloquent\Builder;
 
 class CustomerProfileController extends Controller
 {
@@ -326,22 +327,60 @@ class CustomerProfileController extends Controller
 
     public function customerLast7daysWorkout()
     {
-        $auth_user = auth()->user();
-        $workouts = [];
+        // $auth_user = auth()->user();
+        // $workouts = [];
 
-        for ($i = 1; $i < 8; $i++) {
-            $current_date = Carbon::now('Asia/Yangon')->subDays($i)->toDateString();
+        // for ($i = 1; $i < 8; $i++) {
+        //     $current_date = Carbon::now('Asia/Yangon')->subDays($i)->toDateString();
 
-            $workout = PersonalWorkOutInfo::where('user_id', $auth_user->id)->where('date', $current_date)
-                ->with('workout')->get();
+        //     $workout = PersonalWorkOutInfo::where('user_id', $auth_user->id)->where('date', $current_date)
+        //         ->with('workout')->get();
 
-            if (!$workout->isEmpty()) {
-                array_push($workouts, $workout);
+        //     if (!$workout->isEmpty()) {
+        //         array_push($workouts, $workout);
+        //     }
+        // }
+        // return response()->json([
+        //     'workouts' => $workout
+        // ]);
+
+        $user_id = auth()->user()->id;
+        $current_date = Carbon::now('Asia/Yangon')->subDays(1)->toDateString();
+        $sevenday = Carbon::now('Asia/Yangon')->subDays(7)->toDateString();
+
+        $current = Carbon::now('Asia/Yangon')->subDays(1)->format('d,M,Y');
+        $seven = Carbon::now('Asia/Yangon')->subDays(7)->format('d,M,Y');
+
+        $workouts = DB::table('personal_work_out_infos')
+            ->where('user_id', $user_id)
+            ->whereBetween('date', [$sevenday, $current_date])
+            ->join('workouts', 'workouts.id', 'personal_work_out_infos.workout_id')
+            ->get();
+        $cal_sum = 0;
+        $time_sum = 0;
+        $time_min = 0;
+        $time_sec = 0;
+        foreach ($workouts as $s) {
+            $cal_sum += $s->calories;
+            $time_sum += $s->time;
+            if ($time_sum >= 60) {
+                $time_min = floor($time_sum / 60);
+                $time_sec = $time_sum % 60;
+            } else {
+                $time_min = 0;
+                $time_sec = $time_sum;
             }
         }
-        return response()->json([
-            'workouts' => $workouts
-        ]);
+
+        return response()
+            ->json([
+                'workouts' => $workouts,
+                'current' => $current,
+                'seven' => $seven,
+                'cal_sum' => $cal_sum,
+                'time_min' => $time_min,
+                'time_sec' => $time_sec
+            ]);
     }
 
     public function customerBetweenDaysWrokout($start_date, $end_date)

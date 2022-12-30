@@ -1559,8 +1559,7 @@ class SocialMediaController extends Controller
          broadcast(new Chatting($message, $request->sender));
 
         $user_id = auth()->user()->id;
-        $messages = DB::select("SELECT users.id as id,users.name,profiles.profile_im
-        age,chats.text,chats.created_at as date
+        $messages = DB::select("SELECT users.id as id,users.name,profiles.profile_image,chats.text,chats.created_at as date
         from
             chats
           join
