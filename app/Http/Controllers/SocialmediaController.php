@@ -1191,30 +1191,7 @@ class SocialmediaController extends Controller
             ->where('shop_id',$shop_list->id)
             ->first();
 
-            $sum = DB::table('shop_ratings')
-                    ->select('shop_id', DB::raw('SUM(rating) as sum'))
-                    ->where('shop_id',$shop_list->id)
-                    ->first();
 
-
-
-                $rating->Avg_rating = 0;
-
-
-                if($rating->shop_id == $sum->shop_id){
-                    $result =   $sum->sum / $rating->rating;
-                    $rating->Avg_rating = $result;
-                }
-
-        foreach($shop_list as $value){
-            if(!empty($rating)){
-                $shop_list->avg_rating = $rating->Avg_rating;
-            }
-            else{
-                $shop_list->avg_rating = 0;
-            }
-    }
-            dd($shop_list);
         return view('customer.comments', compact('post', 'comments', 'post_likes'));
     }
 
@@ -1279,6 +1256,11 @@ class SocialmediaController extends Controller
                     'ban' => 'You used our banned words!',
                 ]);
             }
+        }
+        if($request->mention == null AND $request->comment == null){
+            return response()->json([
+                'message' => 'text something',
+            ]);
         }
         $comments = new Comment();
         $comments->user_id = auth()->user()->id;
