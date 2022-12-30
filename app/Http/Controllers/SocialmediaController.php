@@ -1180,8 +1180,41 @@ class SocialmediaController extends Controller
         $post_likes = UserReactPost::where('post_id', $post->id)
             ->with('user')
             ->get();
+            $shop_list = User::select('users.id','users.name','profiles.profile_image')
+            ->leftJoin('profiles','users.profile_id','profiles.id')
+            ->where('shop_request',2)
+            ->orWhere('shop_request',3)
+            ->where('users.id',auth()->user()->id)
+            ->first();
+            $rating = DB::table('shop_ratings')
+            ->select('shop_id', DB::raw('count(*) as rating'))
+            ->where('shop_id',$shop_list->id)
+            ->first();
+
+            $sum = DB::table('shop_ratings')
+                    ->select('shop_id', DB::raw('SUM(rating) as sum'))
+                    ->where('shop_id',$shop_list->id)
+                    ->first();
 
 
+
+                $rating->Avg_rating = 0;
+
+
+                if($rating->shop_id == $sum->shop_id){
+                    $result =   $sum->sum / $rating->rating;
+                    $rating->Avg_rating = $result;
+                }
+
+        foreach($shop_list as $value){
+            if(!empty($rating)){
+                $shop_list->avg_rating = $rating->Avg_rating;
+            }
+            else{
+                $shop_list->avg_rating = 0;
+            }
+    }
+            dd($shop_list);
         return view('customer.comments', compact('post', 'comments', 'post_likes'));
     }
 
@@ -1253,6 +1286,7 @@ class SocialmediaController extends Controller
         $comments->comment = $request->comment;
         $comments->mentioned_users = json_encode($request->mention);
         $comments->save();
+
         $post_owner = Post::where('posts.id', $comments->post_id)->first();
         $options = array(
             'cluster' => env('PUSHER_APP_CLUSTER'),

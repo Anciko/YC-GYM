@@ -337,6 +337,7 @@ class SocialMediaController extends Controller
             ->leftJoin('users', 'users.id', 'posts.user_id')
             ->leftJoin('profiles', 'users.profile_id', 'profiles.id')
             ->orderBy('posts.created_at', 'DESC')
+            ->where('posts.shop_status',0)
             ->paginate(30);
 
         $saved_post = UserSavedPost::select('posts.*')->leftJoin('posts', 'posts.id', 'user_saved_posts.post_id')
