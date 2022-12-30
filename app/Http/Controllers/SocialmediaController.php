@@ -1180,6 +1180,18 @@ class SocialmediaController extends Controller
         $post_likes = UserReactPost::where('post_id', $post->id)
             ->with('user')
             ->get();
+            $shop_list = User::select('users.id','users.name','profiles.profile_image')
+            ->leftJoin('profiles','users.profile_id','profiles.id')
+            ->where('shop_request',2)
+            ->orWhere('shop_request',3)
+            ->where('users.id',auth()->user()->id)
+            ->first();
+            $rating = DB::table('shop_ratings')
+            ->select('shop_id', DB::raw('count(*) as rating'))
+            ->where('shop_id',$shop_list->id)
+            ->first();
+
+
         return view('customer.comments', compact('post', 'comments', 'post_likes'));
     }
 
@@ -1245,12 +1257,18 @@ class SocialmediaController extends Controller
                 ]);
             }
         }
+        if($request->mention == null AND $request->comment == null){
+            return response()->json([
+                'message' => 'text something',
+            ]);
+        }
         $comments = new Comment();
         $comments->user_id = auth()->user()->id;
         $comments->post_id = $request->post_id;
         $comments->comment = $request->comment;
         $comments->mentioned_users = json_encode($request->mention);
         $comments->save();
+
         $post_owner = Post::where('posts.id', $comments->post_id)->first();
         $options = array(
             'cluster' => env('PUSHER_APP_CLUSTER'),
@@ -1350,7 +1368,8 @@ class SocialmediaController extends Controller
                 $comments[$key]['Replace'] = $comm1->comment;
             }
         }
-        //dd($comments);
+
+
         return response()->json([
             'comment' => $comments
         ]);

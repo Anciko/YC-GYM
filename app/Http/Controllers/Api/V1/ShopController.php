@@ -110,6 +110,28 @@ class ShopController extends Controller
                     $shop_list['total_post'] = 0;
                 }
         }
+        $rating = DB::table('shop_ratings')
+                ->select('shop_id', DB::raw('count(*) as rating'))
+                ->where('shop_id',$shop_list->id)
+                ->first();
+
+        $sum = DB::table('shop_ratings')
+                ->select('shop_id', DB::raw('SUM(rating) as sum'))
+                ->where('shop_id',$shop_list->id)
+                ->first();
+            $rating->Avg_rating = 0;
+            if($rating->shop_id == $sum->shop_id){
+                $result =   $sum->sum / $rating->rating;
+                $rating->Avg_rating = $result;
+            }
+            foreach($shop_list as $value){
+                if(!empty($rating)){
+                    $shop_list->avg_rating = $rating->Avg_rating;
+                }
+                else{
+                    $shop_list->avg_rating = 0;
+                }
+        }
         }
         return response()->json([
             'data' => $shop_list

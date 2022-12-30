@@ -337,6 +337,7 @@ class SocialMediaController extends Controller
             ->leftJoin('users', 'users.id', 'posts.user_id')
             ->leftJoin('profiles', 'users.profile_id', 'profiles.id')
             ->orderBy('posts.created_at', 'DESC')
+            ->where('posts.shop_status',0)
             ->paginate(30);
 
         $saved_post = UserSavedPost::select('posts.*')->leftJoin('posts', 'posts.id', 'user_saved_posts.post_id')
@@ -1558,8 +1559,7 @@ class SocialMediaController extends Controller
          broadcast(new Chatting($message, $request->sender));
 
         $user_id = auth()->user()->id;
-        $messages = DB::select("SELECT users.id as id,users.name,profiles.profile_im
-        age,chats.text,chats.created_at as date
+        $messages = DB::select("SELECT users.id as id,users.name,profiles.profile_image,chats.text,chats.created_at as date
         from
             chats
           join

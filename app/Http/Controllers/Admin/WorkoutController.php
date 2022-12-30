@@ -134,7 +134,7 @@ class WorkoutController extends Controller
         $data->image = $image_name;
         $data->video=$video_name;
         $data->estimate_time = $request->estimateTime;
-        $data->sets = $request->sets;
+        $data->sets = $request->sets;       
         $data->category = $request->category;
         $data->save();
         return redirect('admin/workout');

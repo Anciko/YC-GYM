@@ -52,6 +52,7 @@ class ShopController extends Controller
                 ->select('shop_id', DB::raw('SUM(rating) as sum'))
                 ->groupBy('shop_id')
                 ->get();
+
         foreach($rating as $key=>$total){
         $rating[$key]->Avg_rating = 0;
         foreach($sum as $value){

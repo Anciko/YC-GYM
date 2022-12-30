@@ -2,11 +2,14 @@
 
 namespace App\Http\Controllers\Customer;
 
+
+
 use Carbon\Carbon;
 use App\Models\Meal;
 use App\Models\Post;
 use App\Models\User;
 use App\Models\Member;
+use App\Models\Comment;
 use App\Models\Profile;
 use App\Models\Workout;
 use App\Models\MealPlan;
@@ -19,8 +22,11 @@ use App\Models\PersonalMealInfo;
 use Illuminate\Support\Facades\DB;
 use App\Models\PersonalWorkOutInfo;
 use App\Http\Controllers\Controller;
-use App\Models\Comment;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Storage;
 use RealRashid\SweetAlert\Facades\Alert;
+
+
 
 class Customer_TrainingCenterController extends Controller
 
@@ -469,7 +475,7 @@ class Customer_TrainingCenterController extends Controller
         return view('customer.training_center.member_plan',compact('members','durations','pros','cons'));
     }
 
-    public function workout_plan()
+    public function workout_plan(Request $request)
     {
         $user = auth()->user();
         $bmi = $user->bmi;
@@ -483,6 +489,15 @@ class Customer_TrainingCenterController extends Controller
 
         $current_day = Carbon::now()->format('l');
 
+        // $random_category =  Workout::get()->random()->category;
+
+        $random_category = Cache::remember('random_category', 60*24, function () {
+            return Workout::get()->random()->category;
+        });
+
+
+        //Storage::disk('local')->put('aa', $random_category);
+
         $tc_gym_workoutplans = DB::table('workouts')
             ->where('workout_plan_type', $workout_plan)
             ->where('place', 'gym')
@@ -490,6 +505,7 @@ class Customer_TrainingCenterController extends Controller
             ->where('gender_type', $user->gender)
             ->where('workout_level', $user->membertype_level)
             ->where('day', $current_day)
+            ->where('category',  $random_category)
             ->get();
 
         $tc_home_workoutplans = DB::table('workouts')
@@ -499,7 +515,7 @@ class Customer_TrainingCenterController extends Controller
             ->where('gender_type', $user->gender)
             ->where('workout_level', $user->membertype_level)
             ->where('day', $current_day)
-            ->groupBy('workouts.category')
+            ->where('category',  $random_category)
             ->get();
             dd($tc_home_workoutplans);
 
@@ -1225,6 +1241,7 @@ class Customer_TrainingCenterController extends Controller
         }
 
         $current_day = Carbon::now()->format('l');
+        $category = Cache::get('random_category');
         $tc_workouts = DB::table('workouts')
             ->where('place', 'Home')
             ->where('workout_plan_type', $workout_plan)
@@ -1232,7 +1249,9 @@ class Customer_TrainingCenterController extends Controller
             ->where('gender_type', $user->gender)
             ->where('workout_level', $user->membertype_level)
             ->where('day', $current_day)
+            ->where('category',$category)
             ->get();
+
 
         $time_sum = 0;
         $t_sum = 0;
@@ -1274,6 +1293,7 @@ class Customer_TrainingCenterController extends Controller
         }
 
         $current_day = Carbon::now()->format('l');
+        $category = Cache::get('random_category');
         $tc_workouts = DB::table('workouts')
             ->where('place', 'Gym')
             ->where('workout_plan_type', $workout_plan)
@@ -1281,6 +1301,7 @@ class Customer_TrainingCenterController extends Controller
             ->where('gender_type', $user->gender)
             ->where('workout_level', $user->membertype_level)
             ->where('day', $current_day)
+            ->where('category',$category)
             ->get();
 
         //$time_sum = 0;
