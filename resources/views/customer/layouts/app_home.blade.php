@@ -1268,7 +1268,7 @@
                                 storedFilesdb = []
                             })
 
-                            $('#edit_form').submit(function(e) {
+                                $('#edit_form').off('submit').on('submit', function (e) {
                                 e.preventDefault();
                                 $('#editPostModal').modal('hide');
 
