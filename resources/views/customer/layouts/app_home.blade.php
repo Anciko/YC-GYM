@@ -1064,10 +1064,44 @@
                 $(".social-media-left-container-trigger .arrow-icon").toggleClass("rotate-arrow")
             })
 
+            // $('#form').submit(function(e) {
+            //     e.preventDefault();
+
+            //     var url = "{{ route('post.store') }}";
+
+            //             $.ajaxSetup({
+            //                 headers: {
+            //                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            //                 }
+            //             });
+
+            //             $.ajax({
+            //                 type: 'POST',
+            //                 url: "{{ route('post.store') }}",
+            //                 processData: false,
+            //                 cache: false,
+            //                 contentType: false,
+            //                 success: function(data) {
+            //                 }
+            //         })
+            // })
 
             $('#form').submit(function(e) {
+
                 e.preventDefault();
-                $('#addPostModal').modal('hide');
+                var totalSize = 0;
+
+                $("#addPostInput").each(function() {
+                    for (var i = 0; i < this.files.length; i++) {
+                    totalSize += this.files[i].size;
+                    }
+                });
+
+                var valid = totalSize <= 157286400;
+
+                console.log(valid)
+
+
                 var caption = $('#addPostCaption').val();
 
                 var url = "{{ route('post.store') }}";
@@ -1083,8 +1117,18 @@
                             timer: 5000,
                             icon: 'warning',
                         });
-                    } else {
+                    }else if(!valid){
+                        Swal.fire({
+                            text: "You cannot upload more than 150MBs",
+                            timerProgressBar: true,
+                            timer: 5000,
+                            icon: 'warning',
+                        });
+                    }
+
+                    else {
                         e.preventDefault();
+                        $('#addPostModal').modal('hide');
                         let formData = new FormData(form);
 
                         const totalImages = $("#addPostInput")[0].files.length;
@@ -1139,7 +1183,10 @@
 
             })
 
+
+
             $(document).on('click', '#edit_post', function(e) {
+                sessionStorage.clear();
                 e.preventDefault();
                 $(".editpost-photo-video-imgpreview-container").empty();
 
@@ -1168,6 +1215,9 @@
                             $('#edit_post_id').val(data.post.id);
 
                             var filesdb = data.post.media ? JSON.parse(data.post.media) : [];
+                            console.log(data.post.media,'media');
+                            console.log(data.imageData,'image data');
+                            var imageDataDb = data.imageData
                             // var filesAmount=files.length;
                             var storedFilesdb = filesdb;
                             // console.log(storedFilesdb)
@@ -1206,6 +1256,10 @@
                                 storedFilesdb = storedFilesdb.filter((item) => {
                                     return file !== item
                                 })
+                                imageDataDb = imageDataDb.filter((item) => {
+                                    return file !== item.name
+                                })
+
 
                                 $(this).parent().remove();
                             }
@@ -1214,10 +1268,23 @@
                                 storedFilesdb = []
                             })
 
-                            $('#edit_form').submit(function(e) {
+                                $('#edit_form').off('submit').on('submit', function (e) {
                                 e.preventDefault();
                                 $('#editPostModal').modal('hide');
 
+                                var totalSize = 0;
+
+                                $("#editPostInput").each(function() {
+                                    for (var i = 0; i < this.files.length; i++) {
+                                    totalSize += this.files[i].size;
+                                    }
+                                });
+
+                                for(var j = 0;j < imageDataDb.length;j++){
+                                    totalSize += imageDataDb[j].size
+                                }
+
+                                var valid = totalSize <= 157286400;
                                 var fileUpload = $('#editPostInput');
                                 console.log(storedFilesdb.length);
                                 console.log(parseInt(fileUpload.get(0).files.length));
@@ -1236,7 +1303,16 @@
                                             timer: 5000,
                                             icon: 'warning',
                                         });
-                                    } else {
+                                    }else if(!valid){
+                                        Swal.fire({
+                                            text: "You cannot upload more than 150MBs",
+                                            timerProgressBar: true,
+                                            timer: 5000,
+                                            icon: 'warning',
+                                        });
+                                    }
+
+                                    else {
                                         e.preventDefault();
 
                                         var url = "{{ route('post.update') }}";

@@ -120,12 +120,14 @@ class RegisterPaymentController extends Controller
         $user = User::findOrFail($user->id);
 
         if($request->member_type=='level1' ||$request->member_type=='level2' ||$request->member_type=='level3'){
+            $type=1;
             if($user->shop_request==2){
                 $user->shop_request=3;
             }elseif($user->shop_request==0 || $user->shop_request==null){
                 $user->shop_request=1;
             }
         }else{
+            $type=2;
             $user->active_status = 1;
         }
 
@@ -150,7 +152,11 @@ class RegisterPaymentController extends Controller
         $payment->save();
         if ($payment) {
             Alert::success('Success', 'Payment Successfull!');
-            return redirect('/home');
+            if($type==2){
+                return redirect()->route('social_media');
+            }else{
+                return redirect()->route('shop');
+            }
         }
         else {
             Alert::error('Failed', 'Payment failed! Please Try Again!');

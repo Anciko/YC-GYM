@@ -2,7 +2,7 @@
 return[
     'rate this shop' => 'Rate this shop',
     'rate' => 'Rate',
-    'home1'=>'Home',
+    'home'=>'Home',
     'inches' => 'Inches',
     'feet' => 'Feet',
     "ectomorph"=>"Ectomorph",
@@ -131,7 +131,7 @@ return[
     'our testimonials'=>'Our Testimonials',
     'get lean at home'=>'Get Lean At Home',
     'get lean at gym'=>'Get Lean At Gym',
-    'home'=>'Home',
+    'home1'=>'Home',
     'gym'=>'Gym',
     'calories'=>'Calories',
     'minutes'=>'Minutes',
@@ -163,6 +163,7 @@ return[
     "let drink"=>"Let's drink",
     'add post'=>'Add post',
     'friends'=>'Friends',
+    'friend'=>'Friend',
     'messages'=>'Messages',
     'see all'=>"See all",
     'save'=>'Save',
@@ -226,6 +227,10 @@ return[
     'cover photos'=>'Cover Photos',
     'go back'=>'Go Back',
     'confirm'=>'Confirm',
+    'add friend' => 'Add Friend',
+    'cancel request' =>'Cancel Request',
+    'create' => 'Create',
+    'all' => 'All',
+    'save and calculate BMI' => 'Save and Calculate BMI'
 ]
-
 ?>

@@ -301,7 +301,7 @@
                 <div class="customer-profile-posts-header">
                     <p>{{__("msg.post & activities")}}</p>
                     <select class="customer-profile-selector">
-                        <option value="all">{{__("msg.all")}}</option>
+                        <option value="all">{{__('msg.all')}}</option>
                         <option value="saved" class="saved_post_selectbox">{{__("msg.save")}}</option>
                     </select>
                 </div>
@@ -373,10 +373,10 @@
     </div>
     <div class="customer-profile-shop-container">
         <div class="customer-profile-posts-header">
-            <p>{{__("msg.shop & activities")}}/p>
+            <p>{{__("msg.shop & activities")}}</p>
             <select class="customer-shop-profile-selector">
-                <option value="shop-all">All</option>
-                <option value="shop-saved" class="saved_post_selectbox">Saved</option>
+                <option value="shop-all">{{__("msg.all")}}</option>
+                <option value="shop-saved" class="saved_post_selectbox">{{__('msg.save')}}</option>
             </select>
         </div>
         <div class="customer-profile-shop-container_data">
@@ -444,14 +444,14 @@
                                 <option value="10" {{"10" == $height_in ? 'selected' : ''}}>10</option>
                                 <option value="11" {{"11" == $height_in ? 'selected' : ''}}>11</option>
                             </select>
-                            <span>in</span>
+                            <span>{{__('msg.in')}}</span>
                         </div>
 
                         <div class="customer-profile-personaldetail-container">
                             <p>{{__('msg.weight')}}:</p>
                             <div>
                                 <input type="number" value="{{auth()->user()->weight}}" class="weight" name="weight" readonly>
-                                <span>lb</span>
+                                <span>{{__('msg.lb')}}</span>
                             </div>
 
                         </div>
@@ -459,7 +459,7 @@
                             <p>{{__('msg.neck')}}:</p>
                             <div>
                                 <input type="number" value="{{auth()->user()->neck}}" class="neck" name="neck" readonly>
-                                <span>in</span>
+                                <span>{{__('msg.in')}}</span>
                             </div>
                         </div>
                     </div>
@@ -468,15 +468,15 @@
                             <p>{{__('msg.waist')}}:</p>
                             <div>
                                 <input type="number" value="{{auth()->user()->waist}}" name="waist" class="waist" readonly>
-                                <span>in</span>
+                                <span>{{__('msg.in')}}</span>
                             </div>
                         </div>
 
                         <div class="customer-profile-personaldetail-container ">
-                            <p>Hip:</p>
+                            <p>{{__('msg.hip')}}:</p>
                             <div>
                                 <input type="number"  value="{{auth()->user()->hip}}" name="hip" class="hip" readonly>
-                                <span>in</span>
+                                <span>{{__('msg.in')}}</span>
                             </div>
                         </div>
 
@@ -484,7 +484,7 @@
                             <p>{{__("msg.shoulders")}}:</p>
                             <div>
                                 <input type="number"  value="{{auth()->user()->shoulders}}" name="shoulders" class="shoulders" readonly>
-                                <span>in</span>
+                                <span>{{__('msg.in')}}</span>
                             </div>
 
                         </div>
@@ -492,8 +492,8 @@
                     </div>
                 </div>
                 <div class="customer-profile-save-cancel-container">
-                    <button type="submit" class="customer-primary-btn customer-bmi-calculate-btn">Save and Calculate BMI</button>
-                    <button type="button" class="customer-secondary-btn customer-bmi-calculate-btn" id="customer_cancel">Cancel</button>
+                    <button type="submit" class="customer-primary-btn customer-bmi-calculate-btn">{{__('msg.save and calculate BMI')}}</button>
+                    <button type="button" class="customer-secondary-btn customer-bmi-calculate-btn" id="customer_cancel">{{__('msg.cancel')}}</button>
                 </div>
 
 
@@ -2682,7 +2682,7 @@
                 }
             }
 
-            $('.customer-profile-shop-container_data1').html(htmlView);
+            $('.customer-profile-shop-container_data').html(htmlView);
             $('.social-media-media-slider').hide();
             //image slider start
                     console.log($(".image-slider"))
@@ -3797,7 +3797,8 @@
                             var filesdb =data.post.media ? JSON.parse(data.post.media) : [];
                             // var filesAmount=files.length;
                             var storedFilesdb = filesdb;
-                            // console.log(storedFilesdb)
+                             console.log(data.imageData,'img data a ti naw')
+                             var imageDataDb = data.imageData
 
 
                             filesdb.forEach(function(f) {
@@ -3825,6 +3826,9 @@
                                 storedFilesdb = storedFilesdb.filter((item) => {
                                     return file !== item
                                 })
+                                imageDataDb = imageDataDb.filter((item) => {
+                                    return file !== item.name
+                                })
 
                                 $(this).parent().remove();
                             }
@@ -3843,6 +3847,22 @@
                             console.log(storedFilesdb);
                             console.log(fileUpload.get(0).files);
 
+                            var totalSize = 0;
+
+                            $("#editPostInput").each(function() {
+                                for (var i = 0; i < this.files.length; i++) {
+                                totalSize += this.files[i].size;
+                                }
+                            });
+
+                            for(var j = 0;j < imageDataDb.length;j++){
+                                totalSize += imageDataDb[j].size
+                            }
+
+
+
+                            var valid = totalSize <= 157286400;
+
                             if(!$('#editPostCaption').val() && (parseInt(fileUpload.get(0).files.length) + storedFilesdb.length) === 0){
                                 alert("Cannot post!!")
                             }else{
@@ -3852,7 +3872,15 @@
                                                 timer: 5000,
                                                 icon: 'warning',
                                             });
-                                }else{
+                                }else if(!valid){
+                                        Swal.fire({
+                                            text: "You cannot upload more than 150MBs",
+                                            timerProgressBar: true,
+                                            timer: 5000,
+                                            icon: 'warning',
+                                        });
+                                }
+                                else{
                                     e.preventDefault();
 
                                     var url="{{route('post.update')}}";

@@ -517,20 +517,15 @@ class Customer_TrainingCenterController extends Controller
             ->where('day', $current_day)
             ->where('category',  $random_category)
             ->get();
+            dd($tc_home_workoutplans);
+
+            // array_rand()
+
+            // for($i=1;$i<=$tc_home_workoutplans->count();$i++){
+
+            // }
 
             $time_sum = 0;
-            // $t_sum = 0;
-            // $duration = 0;
-            // $sec = 0;
-            // foreach ($tc_gym_workoutplans as $s) {
-            //     $time_sum += $s->time;
-            //     if ($time_sum < 60) {
-            //         $sec = $time_sum;
-            //     } elseif ($time_sum >= 60) {
-            //         $duration = floor($time_sum / 60);
-            //         $t_sum = $time_sum % 60;
-            //     }
-            // }
 
             $c_sum = 0;
             foreach ($tc_gym_workoutplans as $s) {
@@ -538,18 +533,6 @@ class Customer_TrainingCenterController extends Controller
             }
             // // home
              $time_sum_home = 0;
-            // $t_sum_home = 0;
-            // $duration_home = 0;
-            // $sec_home = 0;
-            // foreach ($tc_home_workoutplans as $s) {
-            //     $time_sum_home += $s->time;
-            //     if ($time_sum_home < 60) {
-            //         $sec_home = $time_sum_home;
-            //     } elseif ($time_sum_home >= 60) {
-            //         $duration_home = floor($time_sum_home / 60);
-            //         $t_sum_home = $time_sum_home % 60;
-            //     }
-            // }
 
             $c_sum_home = 0;
             foreach ($tc_home_workoutplans as $s) {
@@ -562,6 +545,7 @@ class Customer_TrainingCenterController extends Controller
             foreach ($tc_home_workoutplans as $home) {
                 $time_sum_home+=$home->estimate_time;
             }
+            //dd($tc_home_workoutplans);
 
         return view('customer.training_center.workout_plan', compact('tc_gym_workoutplans', 'tc_home_workoutplans', 'time_sum', 'c_sum', 'time_sum_home', 'c_sum_home',));
     }

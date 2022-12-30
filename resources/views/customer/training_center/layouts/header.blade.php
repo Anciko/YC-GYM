@@ -101,8 +101,8 @@
 
             <div class="notis-box-container">
                 <div class="notis-box-header">
-                    <p>Notifications</p>
-                    <a href="{{ route('notification_center') }}">See All</a>
+                    <p>{{__('msg.notifications')}}</p>
+                    <a href="{{ route('notification_center') }}">{{__('msg.see all')}}</a>
                 </div>
 
                 <div class="notis-box-notis-container">

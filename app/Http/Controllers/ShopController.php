@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use stdClass;
+use File;
 use Carbon\Carbon;
 use App\Models\Post;
 use App\Models\User;
@@ -196,10 +198,32 @@ class ShopController extends Controller
     public function shoppost_edit(Request $request, $id)
     {
         $post = Post::find($id);
+        if($post->media==null){
+            $imageData=null;
+        }else{
+            $images=json_decode($post->media);
+            $imageData=new stdClass();
+            foreach($images as $key=>$value){
+                     for($i=0;$i<count($images);$i++){
+
+                        $img_size=File::size(public_path('storage/post/'.$value));
+
+                        // $obj['size']=$img_size;
+                        // $obj['name']=$images[$i];
+                        $imageData->$key['size']=$img_size;
+                        $imageData->$key['name']=$value;
+                        }
+
+
+                    }
+            $imageData=(array)$imageData;
+        }
+
         if ($post) {
             return response()->json([
                 'status' => 200,
                 'post' => $post,
+                'imageData'=>$imageData
             ]);
         } else {
             return response()->json([

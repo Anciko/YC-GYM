@@ -7,18 +7,18 @@
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">Create Group</h5>
+                        <h5 class="modal-title" id="exampleModalLabel">{{__('msg.create group')}}</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
                         <form action="{{ route('socialmedia.group.create') }}" class="create-group-form" method="POST">
                             @csrf
                             <div class="create-group-name">
-                                <p>Group Name</p>
+                                <p>{{__('msg.group name')}}</p>
                                 <input type="text" name="group_name" required>
                             </div>
                             <div class="create-group-addfris">
-                                <p>Add Your Friends</p>
+                                <p>{{__('msg.add your friends')}}</p>
                                 <select class="js-example-basic-multiple" name="members[]" multiple="multiple">
 
                                     @forelse ($friends as $friend)
@@ -29,7 +29,7 @@
 
                                 </select>
                             </div>
-                            <button type="submit" class="customer-primary-btn create-group-submit-btn">Create</button>
+                            <button type="submit" class="customer-primary-btn create-group-submit-btn">{{__('msg.create')}}</button>
                         </form>
                     </div>
 
@@ -38,13 +38,13 @@
         </div>
 
         <div class="social-media-allchats-header">
-            <p>Messages</p>
+            <p>{{__('msg.messages')}}</p>
             <div class="social-media-allchats-header-btn-container">
                 <button type="button" class="social-media-allchats-header-add-btn customer-primary-btn"
                     data-bs-toggle="modal" data-bs-target="#createGroupModal">
                     <iconify-icon icon="akar-icons:circle-plus" class="social-media-allchats-header-plus-icon">
                     </iconify-icon>
-                    <p>Group</p>
+                    <p>{{__('msg.group')}}</p>
                 </button>
             </div>
         </div>

@@ -116,7 +116,7 @@
                         @if (count($friend) < 1)
                         <a href ="?id={{$user->id}}" class="customer-primary-btn add-friend-btn" id = "Add">
                             <iconify-icon icon="akar-icons:circle-plus" class="add-friend-icon"></iconify-icon>
-                            <p>Add friend</p>
+                            <p>{{__('msg.add friend')}}</p>
                         </a>
                         @elseif($user->id == auth()->user()->id)
                             <button class="customer-primary-btn add-friend-btn">
@@ -129,16 +129,16 @@
                     @if($friend_status->friend_status == 2  )
                         <a href="{{route('message.chat',$user->id)}}" class="customer-primary-btn add-friend-btn">
                             <iconify-icon icon="mdi:message-reply-outline" class="add-friend-icon"></iconify-icon>
-                            <p>Message</p>
+                            <p>{{__('msg.message')}}</p>
                         </a>
                         <a href ="?id={{$user->id}}" class="customer-red-btn add-friend-btn unfriend "  data-id = {{$user->id}}>
                             <iconify-icon icon="mdi:account-minus-outline" class="add-friend-icon"></iconify-icon>
-                            <p>Unfriend</p>
+                            <p>{{__('msg.unfriend')}}</p>
                         </a>
                         @elseif ($friend_status->friend_status == 1 AND $friend_status->sender_id  === auth()->user()->id )
                         <button class="customer-primary-btn add-friend-btn">
                             <iconify-icon icon="material-symbols:cancel-schedule-send-outline-rounded" class="add-friend-icon"></iconify-icon>
-                            <p>Cancel Request</p>
+                            <p>{{__('msg.cancel request')}}</p>
                         </button>
                         @elseif ($friend_status->friend_status == 1 AND $friend_status->receiver_id  === auth()->user()->id)
                         <div class="" style = "margin-top:10px; display:flex; justify-content:right">
@@ -168,12 +168,12 @@
                     <div class="social-media-profile-friends-parent-container">
                         <div class="social-media-profile-friends-header">
                             @if (count($friends)>1)
-                            <p>{{count($friends)}} Friends</p>
+                            <p>{{count($friends)}} {{__('msg.friends')}}</p>
                             @else
-                            <p>{{count($friends)}} Friend</p>
+                            <p>{{count($friends)}} {{__('msg.friend')}}</p>
                             @endif
                             <a href="{{route('friendsList',$user->id)}}">
-                                See All
+                               {{__('msg.see all')}}
                                 <iconify-icon icon="bi:arrow-right" class="arrow-icon"></iconify-icon>
                             </a>
                         </div>
@@ -204,11 +204,11 @@
                         </div>
                     </div>
 
-                        <a href="{{route('socialmedia_profile_photos',$user->id)}}" class="social-media-profile-photos-link">Photos</a>
+                        <a href="{{route('socialmedia_profile_photos',$user->id)}}" class="social-media-profile-photos-link">{{__('msg.photos')}}</a>
                         {{-- <a href="{{route('socialmedia_profile_photos')}}" class="social-media-profile-photos-link">Photos</a> --}}
 
                     <div class="social-media-profile-posts-parent-container">
-                        <p>Post & Activities</p>
+                        <p>{{__('msg.post & activities')}}</p>
 
                         @forelse ($posts as $post)
                             <div class="social-media-post-container">
@@ -246,15 +246,15 @@
                                                 @endphp
 
                                                 @if ($already_save)
-                                                    <p class="save">Unsave</p>
+                                                    <p class="save">{{__('msg.unsave')}}</p>
                                                 @else
-                                                    <p class="save">Save</p>
+                                                    <p class="save">{{__('msg.save')}}</p>
                                                     @endif
                                             </div>
                                         </a>
                                         <div class="post-action" id="report" data-id="{{$post->id}}">
                                             <iconify-icon icon="material-symbols:report-outline" class="post-action-icon"></iconify-icon>
-                                            <p>Report</p>
+                                            <p>{{__('msg.report')}}</p>
                                         </div>
                                     </div>
                                 </div>

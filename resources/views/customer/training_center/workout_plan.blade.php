@@ -7,7 +7,7 @@
 </a>
 <div class="customer-workout-plan-place-container">
     <p class="customer-workout-plan-place-btn customer-workout-plan-home-btn" >
-        {{__('msg.home')}}
+        {{__('msg.home1')}}
     </p>
     <p class="customer-workout-plan-place-btn customer-workout-plan-gym-btn">
         {{__('msg.gym')}}
@@ -26,11 +26,6 @@
             <div class="customer-workout-plan-header-detail-container">
                 <iconify-icon icon="noto:alarm-clock" class="customer-workout-plan-detail-icon"></iconify-icon>
                 <p>{{__('msg.minutes')}} : <span>{{$time_sum_home}} Mins</span>
-                    {{-- @if ($time_sum_home < 60)
-                    <span>0:{{$sec_home}}</span>
-                    @elseif ($time_sum_home >= 60)
-                    <span>{{$duration_home}}:{{$sec}}</span>
-                    @endif --}}
                 </p>
             </div>
         </div>

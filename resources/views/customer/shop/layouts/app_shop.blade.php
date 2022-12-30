@@ -772,6 +772,18 @@
                 var url="{{route('post.store')}}";
                 var $fileUpload=$('#addPostInput');
 
+                var totalSize = 0;
+
+                $("#addPostInput").each(function() {
+                    for (var i = 0; i < this.files.length; i++) {
+                    totalSize += this.files[i].size;
+                    }
+                });
+
+                var valid = totalSize <= 157286400;
+
+                console.log(valid)
+
                 if(!$('.addpost-caption-input').val() && parseInt($fileUpload.get(0).files.length) === 0){
                     alert("Cannot post!!")
                 }
@@ -783,9 +795,17 @@
                             timer: 5000,
                             icon: 'warning',
                         });
+                    }else if(!valid){
+                        Swal.fire({
+                            text: "You cannot upload more than 150MBs",
+                            timerProgressBar: true,
+                            timer: 5000,
+                            icon: 'warning',
+                        });
                     }
                     else{
                         e.preventDefault();
+                        $('#addPostModal').modal('hide');
                         let formData = new FormData(form);
 
                         const totalImages = $("#addPostInput")[0].files.length;
@@ -948,8 +968,9 @@
 
             })
 
-            $(document).on('click','#edit_post',function(e){
+            $(document).on('click','#edit_shoppost',function(e){
                 e.preventDefault();
+
                 $(".editpost-photo-video-imgpreview-container").empty();
 
                 dtEdit.clearData()
@@ -979,7 +1000,9 @@
                                 var filesdb =data.post.media ? JSON.parse(data.post.media) : [];
                                 // var filesAmount=files.length;
                                 var storedFilesdb = filesdb;
-                                // console.log(storedFilesdb)
+                                var imageDataDb = data.imageData
+
+                                console.log(data.imageData,'imgdata ati')
 
 
                                 filesdb.forEach(function(f) {
@@ -1009,6 +1032,9 @@
                                     storedFilesdb = storedFilesdb.filter((item) => {
                                         return file !== item
                                     })
+                                    imageDataDb = imageDataDb.filter((item) => {
+                                        return file !== item.name
+                                    })
 
                                     $(this).parent().remove();
                                 }
@@ -1027,6 +1053,22 @@
                                 console.log(storedFilesdb);
                                 console.log(fileUpload.get(0).files);
 
+                                var totalSize = 0;
+
+                                $("#editPostInput").each(function() {
+                                    for (var i = 0; i < this.files.length; i++) {
+                                    totalSize += this.files[i].size;
+                                    }
+                                });
+
+                                for(var j = 0;j < imageDataDb.length;j++){
+                                    totalSize += imageDataDb[j].size
+                                }
+
+
+
+                                var valid = totalSize <= 157286400;
+
                                 if(!$('#editPostCaption').val() && (parseInt(fileUpload.get(0).files.length) + storedFilesdb.length) === 0){
                                     alert("Cannot post!!")
                                 }else{
@@ -1036,7 +1078,15 @@
                                                     timer: 5000,
                                                     icon: 'warning',
                                                 });
-                                    }else{
+                                    }else if(!valid){
+                                        Swal.fire({
+                                            text: "You cannot upload more than 150MBs",
+                                            timerProgressBar: true,
+                                            timer: 5000,
+                                            icon: 'warning',
+                                        });
+                                    }
+                                    else{
                                         e.preventDefault();
 
                                         var url="{{route('shoppost.update')}}";
@@ -1191,7 +1241,7 @@
             })
 
             $('.addpost-submit-btn').click(function(){
-                $('#addPostModal').modal('hide');
+                // $('#addPostModal').modal('hide');
                 var $fileUpload = $("#addPostInput");
                 if (parseInt($fileUpload.get(0).files.length)>5){
                     alert("You can only upload a maximum of 5 files");s
@@ -1372,7 +1422,12 @@
         }
 
     </script>
-
+<script>
+    var url = "{{route('langChange')}}"
+    $('.langChange').change(function(){
+        window.location.href = url + "?lang="+$(this).val()
+    })
+</script>
 @stack('scripts')
 
   </body>

@@ -165,7 +165,7 @@
                     <iconify-icon icon="eva:video-outline" class="chat-header-video-icon"></iconify-icon>
                 </a>
                 <a href="{{ route('message.viewmedia', $receiver_user->id) }}" class="group-chat-view-midea-link">
-                    <p>View Media</p>
+                    <p>{{__('msg.view media')}}</p>
                     <iconify-icon icon="akar-icons:arrow-right" class="group-chat-view-midea-link-icon"></iconify-icon>
                 </a>
             </div>
@@ -187,12 +187,12 @@
                             <div class="message-actions-box">
                                 <p onclick="message_hide(event,{{ $send_message->id }})">
                                     <iconify-icon icon="mdi:hide" class="message-action-icon"></iconify-icon>
-                                    Delete
+                                    {{__('msg.delete')}}
                                 </p>
                                 <p onclick="message_delete(event,{{ $send_message->id }})">
                                     <iconify-icon icon="material-symbols:cancel-schedule-send-rounded"
                                         class="message-action-icon"></iconify-icon>
-                                    Unsend
+                                    {{__('msg.unsend')}}
                                 </p>
                             </div>
 

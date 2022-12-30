@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use File;
+use stdClass;
 use Carbon\Carbon;
 use Pusher\Pusher;
 use App\Models\Chat;
@@ -12,9 +14,12 @@ use App\Models\BanWord;
 use App\Models\Comment;
 use App\Models\Profile;
 use App\Events\Chatting;
+use App\Models\ShopPost;
 use App\Models\ChatGroup;
+use App\Models\ShopReact;
 use App\Models\Friendship;
 use App\Models\ShopMember;
+use App\Models\ShopRating;
 use App\Models\NotiFriends;
 use App\Models\Notification;
 use Illuminate\Http\Request;
@@ -23,10 +28,6 @@ use App\Models\UserReactPost;
 use App\Models\UserSavedPost;
 use App\Models\ChatGroupMember;
 use App\Models\ChatGroupMessage;
-use App\Models\ShopPost;
-use App\Models\ShopRating;
-use App\Models\ShopReact;
-use App\Models\Workout;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
@@ -69,9 +70,9 @@ class SocialmediaController extends Controller
                 ->paginate(30);
         }
 
-
-
-
+        // $postdata ='Testing local storage';
+        // $date =Carbon::now();
+        // Storage::disk('local')->put('test/test.txt', $postdata);
 
         return view('customer.socialmedia', compact('posts'));
     }
@@ -545,10 +546,34 @@ class SocialmediaController extends Controller
     public function post_edit(Request $request, $id)
     {
         $post = Post::find($id);
+
+        if($post->media==null){
+            $imageData=null;
+        }else{
+            $images=json_decode($post->media);
+            $imageData=new stdClass();
+            foreach($images as $key=>$value){
+                     for($i=0;$i<count($images);$i++){
+
+                        $img_size=File::size(public_path('storage/post/'.$value));
+
+                        // $obj['size']=$img_size;
+                        // $obj['name']=$images[$i];
+                        $imageData->$key['size']=$img_size;
+                        $imageData->$key['name']=$value;
+                        }
+
+
+                    }
+            $imageData=(array)$imageData;
+        }
+
+
         if ($post) {
             return response()->json([
                 'status' => 200,
                 'post' => $post,
+                'imageData'=>$imageData,
             ]);
         } else {
             return response()->json([
@@ -848,6 +873,7 @@ class SocialmediaController extends Controller
     public function post_store(Request $request)
     {
         $input = $request->all();
+
         $user = auth()->user();
         $post = new Post();
 
