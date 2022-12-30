@@ -149,6 +149,10 @@
                         <video>
                             <source src="{{asset('/storage/upload/'.$workout->video)}}" type="video/mp4">
                         </video>
+
+
+                       
+
                     </div>
 
                     <div class="customer-workout-plan-name">

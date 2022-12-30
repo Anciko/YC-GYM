@@ -26,6 +26,7 @@ use App\Models\ChatGroupMessage;
 use App\Models\ShopPost;
 use App\Models\ShopRating;
 use App\Models\ShopReact;
+use App\Models\Workout;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
@@ -1153,6 +1154,8 @@ class SocialmediaController extends Controller
         $post_likes = UserReactPost::where('post_id', $post->id)
             ->with('user')
             ->get();
+
+
         return view('customer.comments', compact('post', 'comments', 'post_likes'));
     }
 
@@ -1323,7 +1326,8 @@ class SocialmediaController extends Controller
                 $comments[$key]['Replace'] = $comm1->comment;
             }
         }
-        //dd($comments);
+
+
         return response()->json([
             'comment' => $comments
         ]);
