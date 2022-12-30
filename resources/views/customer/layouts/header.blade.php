@@ -29,10 +29,10 @@
         </div>
         <div class="customer-navlinks-container">
             @guest
-            <a href="{{route('home')}}">{{ __('msg.home1')}}</a>
+            <a href="{{route('home')}}">{{ __('msg.home')}}</a>
             @endguest
             @auth
-            <a href="{{route('social_media')}}">{{__('msg.home1')}}</a>
+            <a href="{{route('social_media')}}">{{__('msg.home')}}</a>
             @endauth
             @hasanyrole('System_Admin')
             <a href="{{route('home')}}">Dashboard</a>

@@ -109,9 +109,9 @@
                             @endphp
 
                             @if ($already_save)
-                                <p class="save">{{__('msg.unsave')}}</p>
+                                <p class="save">Unsave</p>
                             @else
-                                <p class="save">{{__('msg.save')}}</p>
+                                <p class="save">Save</p>
                                 @endif
                         </div>
                     </a>
@@ -120,19 +120,19 @@
                         <a id="edit_post" data-id="{{$post->id}}" data-bs-toggle="modal" >
                             <div class="post-action">
                                 <iconify-icon icon="material-symbols:edit" class="post-action-icon"></iconify-icon>
-                                <p>{{__('msg.edit')}}</p>
+                                <p>Edit</p>
                             </div>
                         </a>
                         <a id="delete_post" data-id="{{$post->id}}">
                             <div class="post-action">
                             <iconify-icon icon="material-symbols:delete-forever-outline-rounded" class="post-action-icon"></iconify-icon>
-                            <p>{{__('msg.delete')}}</p>
+                            <p>Delete</p>
                             </div>
                         </a>
                     @else
                     <div class="post-action" id="report" data-id="{{$post->id}}">
                         <iconify-icon icon="material-symbols:report-outline" class="post-action-icon"></iconify-icon>
-                        <p>{{__('msg.report')}}</p>
+                        <p>Report</p>
                     </div>
                     @endif
                 </div>
