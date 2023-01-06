@@ -476,7 +476,6 @@
     display: flex;
     align-items: center;
     gap: 0 5px;
-
 }
 
 .social-media-post-comment-container a{
@@ -2119,6 +2118,19 @@ ul{
 
     .group-chat-img-preview-container{
         width: 290px;
+    }
+
+    .social-media-post-like-container, .social-media-post-comment-container{
+        gap: 0 3px;
+
+    }
+
+    .social-media-post-like-container p, .social-media-post-comment-container p{
+        font-size: 12px;
+    }
+
+    .social-media-post-footer-container{
+        gap: 0 15px;
     }
 
 }
